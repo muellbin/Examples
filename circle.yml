@@ -19,6 +19,10 @@ machine:
     java:
         version: oraclejdk8
         
+dependencies:
+    pre:
+        - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
+
 test:
     override:
         - mvn package -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1}
