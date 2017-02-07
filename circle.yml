@@ -1,0 +1,42 @@
+general:
+    branches:
+        ignore:
+            - master
+            - /dev-.*/
+            - /jar-.*/
+
+machine:
+    timezone:
+        Europe/Berlin
+
+    environment:
+        GIT_AUTHOR_NAME: CircleCI
+        GIT_AUTHOR_EMAIL: info@lightjason.org
+        GIT_COMMITTER_NAME: CircleCI
+        GIT_COMMITTER_EMAIL: info@lightjason.org
+        DOCUMENT: myapp
+
+    java:
+        version: oraclejdk8
+        
+test:
+    override:
+        - mvn package -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1}
+    post:
+        - mv -f target/$DOCUMENT.jar /tmp
+
+deployment:
+    production:
+        branch: /^(?!(master$|jar-.*$|dev-.*$)).*$/
+        commands:
+            - git push origin :jar-$CIRCLE_BRANCH || true
+            - git brach -D jar-$CIRCLE_BRANCH || true 
+            - git checkout --orphan jar-$CIRCLE_BRANCH
+            - rm -Rf *
+            - mv -f /tmp/$DOCUMENT.jar .
+            - echo -e 'general:\n    branches:\n        ignore:\n            - /.*/\n' > circle.yml 
+            - echo -e '*.*\n!.gitignore\n!circle.yml\n!*.jar\n' > .gitignore   
+            - git add --all .
+            - git commit -m "Jar"          
+            - git push origin jar-$CIRCLE_BRANCH
+            
