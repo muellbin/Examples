@@ -1,2 +1,2 @@
-# LightJason - Examples
+# LightJason - Tutorial: Agent Communication
 
