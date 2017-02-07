@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.lightjason</groupId>
-            <artifactId>agentspeak</artifactId>
+            <artifactId>AgentSpeak</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
