@@ -25,11 +25,14 @@
 // initial-goal
 !main.
 
+
 // initial plan (triggered by the initial goal)
 +!main <-
     !mynextgoal
-    .
+.
 
+
+// plan which calls the plan again within the next cycle
 +!mynextgoal <-
     !mynextgoal
-    .
+.

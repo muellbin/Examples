@@ -25,13 +25,16 @@
 // initial-goal
 !main.
 
+
 // initial plan (triggered by the initial goal)
 +!main <-
     generic/print("Hello World!");
     !mynextgoal
-    .
+.
 
+
+// plan which calls the plan again within the next cycle
 +!mynextgoal <-
     generic/print("Hello World! (again)", Cycle);
     !mynextgoal
-    .
+.
