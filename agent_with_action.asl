@@ -29,8 +29,8 @@
 // initial plan (triggered by the initial goal)
 +!main <-
 
-    // generates a random string with a random length with maximum 12 and minimum 1
-    I = math/statistic/randomsimple() * 12 + 1;
+    // generates a random string with a random length with maximum 12 and minimum 4
+    I = math/statistic/randomsimple() * 12 + 4;
     R = generic/string/random( I, "abcdefghijklmnopqrstuvwxyz");
 
     // run standalone-action and get return value
@@ -40,6 +40,6 @@
     L = my/object-action( N );
 
     // just print the results
-    generic/print( "agent creates string", R, "gets from standalone action", N, "and from object action", L )
+    generic/print( "agent uses string", R, "gets from standalone action", N, "and from object action", L )
 .
 
