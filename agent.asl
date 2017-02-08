@@ -22,7 +22,6 @@
  */
 
 
-
 // initial-goal
 !main.
 
