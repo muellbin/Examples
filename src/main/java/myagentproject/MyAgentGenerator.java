@@ -29,7 +29,6 @@ import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -47,20 +46,7 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
             p_stream,
 
             // we use all build-in actions of LightJason
-            Stream.concat(
-                CCommon.actionsFromPackage(),
-
-                // add own actions
-                Stream.concat(
-
-                    // read inner-actions of the agent class
-                    CCommon.actionsFromAgentClass( MyAgent.class ),
-
-                    // add standalone-action
-                    Stream.of( new CStandaloneAction() )
-                )
-
-            ).collect( Collectors.toSet() ),
+            CCommon.actionsFromPackage().collect( Collectors.toSet() ),
 
             // aggregation function for the optimization function,
             // here we use an empty function

@@ -26,32 +26,25 @@
 !main.
 
 
-
 // initial plan (triggered by the initial goal)
 +!main <-
-    generic/print("Hello World! on", MyName);
+    generic/print("Hello World on agent", MyName);
     !mynextgoal
 .
 
 
-
 // plan with is run every cycle
 +!mynextgoal <-
-    generic/print( "Hello World! (again)", Cycle, "on agent", MyName );
+    generic/print( "Hello World again in cycle", Cycle, "on agent", MyName );
     !mynextgoal
 .
 
 
 /**
- * trigger-plan which is called by the trigger
+ * trigger-plan which is called by the trigger-method call
  *
  * @param X any value which is pushed by the trigger call
  */
 +!special-goal(X) <-
-    generic/print( "special goal with value", X, "triggered in cycle", Cycle, "on agent", MyName );
-
-    R = my/standalone-action( "Lorem Ipsum" );
-    generic/print("return of my standalone action is", R, "on agent", MyName );
-
-    my/inner-action( 4711 )
+    generic/print( "special goal with value", X, "triggered in cycle", Cycle, "on agent", MyName )
 .
