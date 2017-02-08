@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 final class CVariableBuilder implements IVariableBuilder
 {
     @Override
-    public final Stream<IVariable<?>> generate( IAgent<?> p_agent, IInstantiable p_runningcontext )
+    public final Stream<IVariable<?>> generate( final IAgent<?> p_agent, final IInstantiable p_runningcontext )
     {
         return Stream.of(
             new CConstant<>( "MyName", p_agent.<MyCommunicationAgent>raw().name() )
