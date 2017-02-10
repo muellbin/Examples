@@ -58,13 +58,13 @@ final class MyAgent extends IBaseAgent<MyAgent>
 
     /**
      * internal object action, that calls
-     * an environment method
+     * the environment method
      *
-     * @param p_value input value
+     * @param p_value new index position
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "env/number-action" )
-    private void env_action( final Number p_value )
+    @IAgentActionName( name = "env/move" )
+    private void env_move( final Number p_value )
     {
         m_environment.move( this, p_value );
     }

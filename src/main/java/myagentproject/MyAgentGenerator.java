@@ -62,7 +62,7 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
                 // we use all build-in actions of LightJason
                 CCommon.actionsFromPackage(),
 
-                // read object actions
+                // read object actions, so that the agent get access to the environment
                 CCommon.actionsFromAgentClass( MyAgent.class )
 
             ).collect( Collectors.toSet() ),
@@ -76,7 +76,8 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
     }
 
     /**
-     * generator method of the agent
+     * generator method of the agent, which puts the
+     * agent on a random position into the environment
      *
      * @param p_data any data which can be put from outside to the generator method
      * @return returns an agent
@@ -87,12 +88,10 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
         // create agent with a reference to the environment
         final MyAgent l_agent = new MyAgent( m_configuration, m_environment );
 
-        // set agent into environment by random position
+        // set agent into environment on creation by random position
         int l_position = (int) ( Math.random() * m_environment.size() );
         while ( m_environment.set( l_agent, l_position ) )
-        {
             l_position = (int) ( Math.random() * m_environment.size() );
-        }
 
         return l_agent;
     }

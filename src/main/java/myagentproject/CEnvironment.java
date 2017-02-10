@@ -23,7 +23,6 @@
 
 package myagentproject;
 
-import org.apache.commons.compress.archivers.sevenz.CLI;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
@@ -36,15 +35,20 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * environment class
+ * @note we use here two thread-safe data structure
+ * for resolving position-to-agent and agent-to-position
+ * on a general point of view it can be also done in a
+ * single data structure, but for this example we split it
+ * into two parts
  */
 final class CEnvironment
 {
     /**
-     * thread-safe structure to define world coordinates
+     * thread-safe structure to position-to-agent mapping
      */
     private final AtomicReferenceArray<MyAgent> m_position;
     /**
-     * map with agent-position mapping
+     * map with agent-to-position mapping
      */
     private final Map<MyAgent, Integer> m_agentposition = new ConcurrentHashMap<>();
     /**
