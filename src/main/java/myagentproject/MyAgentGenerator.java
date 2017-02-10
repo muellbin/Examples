@@ -84,10 +84,10 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
     @Override
     public final MyAgent generatesingle( final Object... p_data )
     {
-        // create agent
+        // create agent with a reference to the environment
         final MyAgent l_agent = new MyAgent( m_configuration, m_environment );
 
-        // set agent into environment by random
+        // set agent into environment by random position
         int l_position = (int) ( Math.random() * m_environment.size() );
         while ( m_environment.set( l_agent, l_position ) )
         {

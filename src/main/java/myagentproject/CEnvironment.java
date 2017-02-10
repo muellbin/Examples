@@ -23,6 +23,12 @@
 
 package myagentproject;
 
+import org.apache.commons.compress.archivers.sevenz.CLI;
+import org.lightjason.agentspeak.language.CLiteral;
+import org.lightjason.agentspeak.language.CRawTerm;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -64,7 +70,7 @@ final class CEnvironment
      *
      * @return number of agent
      */
-    int length()
+    final int length()
     {
         return m_size;
     }
@@ -74,7 +80,7 @@ final class CEnvironment
      *
      * @return number of cells inside world
      */
-    int size()
+    final int size()
     {
         return m_position.length();
     }
@@ -87,7 +93,7 @@ final class CEnvironment
      * @param p_position position
      * @return if position can be set
      */
-    boolean set( final MyAgent p_agent, final int p_position )
+    final boolean set( final MyAgent p_agent, final int p_position )
     {
         // check if structure is not full set
         if ( m_agentposition.size() >= m_size )
@@ -120,16 +126,36 @@ final class CEnvironment
         if ( ( p_value.intValue() < 0 ) || ( p_value.intValue() < m_position.length() ) )
             throw new RuntimeException( "position index is incorrect" );
 
-        // reset the agent
+        // set the new position to the agent
         if ( m_position.compareAndSet( p_value.intValue(), p_agent, p_agent ) )
         {
-            m_position.set( m_agentposition.get( p_agent ), null );
+            final int l_oldposition = m_agentposition.get( p_agent );
+
+            // change the agent position
+            m_position.set( l_oldposition, null );
             m_agentposition.put( p_agent, p_value.intValue() );
+
+            // create an goal-trigger once and use it later for all agents
+            final ITrigger l_trigger = CTrigger.from(
+                ITrigger.EType.ADDGOAL,
+                CLiteral.from(
+                    "other/agent-position/changed",
+                    CLiteral.from( "from", CRawTerm.from( l_oldposition ) ),
+                    CLiteral.from( "to", CRawTerm.from( p_value.intValue() ) )
+                )
+            );
+
+            // trigger all other agents and tells the new position to the agents with the trigger
+            m_agentposition
+                .keySet()
+                .parallelStream()
+                // ignore agent which changes the position
+                .filter( i -> !i.equals( p_agent ) )
+                .forEach( i -> i.trigger( l_trigger ) );
 
         }
         else
             throw new RuntimeException( "position is not free" );
-
     }
 
 }
