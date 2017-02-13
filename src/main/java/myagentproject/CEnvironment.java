@@ -65,7 +65,7 @@ final class CEnvironment
     CEnvironment( final int p_size )
     {
         m_size = p_size;
-        m_position = new AtomicReferenceArray<>( new MyAgent[(int) ( m_size * 1.25 )] );
+        m_position = new AtomicReferenceArray<>( new MyAgent[(int) ( m_size * 1.5 )] );
     }
 
 
@@ -104,7 +104,7 @@ final class CEnvironment
             return true;
 
         // check for existing position
-        if ( ( p_position < 0 ) || ( p_position < m_position.length() ) )
+        if ( ( p_position < 0 ) || ( p_position >= m_position.length() ) )
             return false;
 
         if ( m_position.compareAndSet( p_position, null, p_agent ) )
@@ -127,11 +127,11 @@ final class CEnvironment
     {
         // check number value if outside the arrays boundaries thrown
         // an exception which fails the agent action
-        if ( ( p_value.intValue() < 0 ) || ( p_value.intValue() < m_position.length() ) )
+        if ( ( p_value.intValue() < 0 ) || ( p_value.intValue() >= m_position.length() ) )
             throw new RuntimeException( "position index is incorrect" );
 
         // set the new position to the agent
-        if ( m_position.compareAndSet( p_value.intValue(), p_agent, p_agent ) )
+        if ( m_position.compareAndSet( p_value.intValue(), null, p_agent ) )
         {
             final int l_oldposition = m_agentposition.get( p_agent );
 
@@ -160,6 +160,18 @@ final class CEnvironment
         }
         else
             throw new RuntimeException( "position is not free" );
+    }
+
+
+    /**
+     * returns agent position
+     *
+     * @param p_agent agent
+     * @return position
+     */
+    final int position( final MyAgent p_agent )
+    {
+        return m_agentposition.getOrDefault( p_agent, 0 );
     }
 
 }

@@ -69,7 +69,10 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
 
             // aggregation function for the optimization function, here
             // we use an empty function
-            IAggregation.EMPTY
+            IAggregation.EMPTY,
+
+            // variable builder
+            new CVariableBuilder( p_environment )
         );
 
         m_environment = p_environment;
@@ -90,7 +93,7 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
 
         // set agent into environment on creation by random position
         int l_position = (int) ( Math.random() * m_environment.size() );
-        while ( m_environment.set( l_agent, l_position ) )
+        while ( !m_environment.set( l_agent, l_position ) )
             l_position = (int) ( Math.random() * m_environment.size() );
 
         return l_agent;

@@ -28,7 +28,32 @@
 
 // initial plan (triggered by the initial goal)
 +!main <-
-
-
+    NewPosition = MyPosition + 1;
+    NewPosition = NewPosition % EnvSize;
+    !!move( NewPosition )
 .
 
+
+// plan to move the agent to another cell
++!move(X) <-
+    generic/print( "agent", MyName, "in cycle ", Cycle, "on position", MyPosition, "should move to ", X );
+    env/move( X );
+    X++;
+    X = X % EnvSize;
+    !move( X )
+.
+
+
+// if move-plan fails this plan will be triggered
+-!move(X) <-
+    Y = MyPosition - 1;
+    Y = Y < 0 ? EnvSize + Y : Y;
+    generic/print( "agent", MyName, "in cycle ", Cycle, "on position", MyPosition, "cannot move to ", X, "try to move to", Y );
+    !move(Y)
+.
+
+
+// plan to get information about changing other agents
++!other/agent-position/changed( from(X), to(Y) ) <-
+    generic/print( "agent", MyName, "get information in cycle ", Cycle, "that other agent has moved from", X, "to", Y )
+.

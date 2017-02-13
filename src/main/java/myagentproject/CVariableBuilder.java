@@ -23,63 +23,45 @@
 
 package myagentproject;
 
-import org.lightjason.agentspeak.action.binding.IAgentAction;
-import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
-import org.lightjason.agentspeak.action.binding.IAgentActionName;
-import org.lightjason.agentspeak.agent.IBaseAgent;
-import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.agentspeak.language.execution.IVariableBuilder;
+import org.lightjason.agentspeak.language.instantiable.IInstantiable;
+import org.lightjason.agentspeak.language.variable.CConstant;
+import org.lightjason.agentspeak.language.variable.IVariable;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.text.MessageFormat;
+import java.util.stream.Stream;
 
 
 /**
- * agent with internal actions, on default
- * all methods are blacklisted, so a method
- * which should be an action must be annotated
+ * variable builder
  */
-@IAgentAction
-final class MyAgent extends IBaseAgent<MyAgent>
+final class CVariableBuilder implements IVariableBuilder
 {
-
     /**
      * environment reference
      */
     private final CEnvironment m_environment;
 
-
     /**
-     * constructor of the agent
+     * constructor
      *
-     * @param p_configuration agent configuration of the agent generator
-     * @param p_environment environment reference
+     * @param p_environment environment
      */
-    MyAgent( final IAgentConfiguration<MyAgent> p_configuration, final CEnvironment p_environment )
+    CVariableBuilder( final CEnvironment p_environment )
     {
-        super( p_configuration );
         m_environment = p_environment;
     }
 
-    /**
-     * internal object action, that calls
-     * the environment method
-     *
-     * @param p_value new index position
-     */
-    @IAgentActionFilter
-    @IAgentActionName( name = "env/move" )
-    private void env_move( final Number p_value )
-    {
-        m_environment.move( this, p_value );
-    }
 
-    /**
-     * returns the current agent position
-     *
-     * @return agent position
-     */
-    final int position()
+    @Override
+    public final Stream<IVariable<?>> generate( final IAgent<?> p_agent, final IInstantiable p_runningcontext )
     {
-        return m_environment.position( this );
-    }
+        return Stream.of(
+            new CConstant<>( "MyPosition", p_agent.<MyAgent>raw().position() ),
+            new CConstant<>( "MyName", MessageFormat.format( "{0}", p_agent.hashCode() ) ),
+            new CConstant<>( "EnvSize", m_environment.length() )
 
+        );
+    }
 }
