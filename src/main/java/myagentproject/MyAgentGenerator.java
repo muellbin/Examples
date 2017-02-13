@@ -93,7 +93,7 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
 
         // set agent into environment on creation by random position
         int l_position = (int) ( Math.random() * m_environment.size() );
-        while ( !m_environment.set( l_agent, l_position ) )
+        while ( !m_environment.initialset( l_agent, l_position ) )
             l_position = (int) ( Math.random() * m_environment.size() );
 
         return l_agent;

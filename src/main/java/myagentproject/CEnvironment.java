@@ -97,7 +97,7 @@ final class CEnvironment
      * @param p_position position
      * @return if position can be set
      */
-    final boolean set( final MyAgent p_agent, final int p_position )
+    final boolean initialset( final MyAgent p_agent, final int p_position )
     {
         // check if structure is not full set
         if ( m_agentposition.size() >= m_size )
