@@ -34,9 +34,13 @@
 .
 
 
-// plan to move the agent to another cell
+/**
+ * plan to move the agent to another cell
+ *
+ * @param X new position
+ */
 +!move(X) <-
-    generic/print( "agent", MyName, "in cycle ", Cycle, "on position", MyPosition, "should move to ", X );
+    generic/print( "agent", MyName, "is on position", MyPosition, "move to ", X );
     env/move( X );
     X++;
     X = X % EnvSize;
@@ -44,16 +48,24 @@
 .
 
 
-// if move-plan fails this plan will be triggered
+/**
+ * if move-plan fails this plan will be triggered
+ * @param X
+ */
 -!move(X) <-
     Y = MyPosition - 1;
     Y = Y < 0 ? EnvSize + Y : Y;
-    generic/print( "agent", MyName, "in cycle ", Cycle, "on position", MyPosition, "cannot move to ", X, "try to move to", Y );
+    generic/print( "agent", MyName, "cannot move from", MyPosition, "to ", X, "try to move to", Y );
     !move(Y)
 .
 
 
-// plan to get information about changing other agents
+/**
+ * plan to get information about changing other agents
+ *
+ * @param X from position
+ * @param Y to position
+ */
 +!other/agent-position/changed( from(X), to(Y) ) <-
-    generic/print( "agent", MyName, "get information in cycle ", Cycle, "that other agent has moved from", X, "to", Y )
+    generic/print( "agent", MyName, "get information that other agent has moved from", X, "to", Y )
 .

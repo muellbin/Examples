@@ -171,7 +171,7 @@ final class CEnvironment
      */
     final int position( final MyAgent p_agent )
     {
-        return m_agentposition.getOrDefault( p_agent, 0 );
+        return m_agentposition.get( p_agent );
     }
 
 }
