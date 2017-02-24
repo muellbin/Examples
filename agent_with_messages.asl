@@ -30,7 +30,7 @@
 +!main <-
 
     // generates a random string
-    R = generic/string/random( 12, "abcdefghijklmnopqrstuvwxyz");
+    R = generic/string/random( "abcdefghijklmnopqrstuvwxyz", 12 );
 
     // calls actions and sends generated messages to "agent 0", agent names
     // are defined by the Java object / agent generator
