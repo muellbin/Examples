@@ -31,7 +31,7 @@
 
     // generates a random string with a random length with maximum 12 and minimum 4
     I = math/statistic/randomsimple() * 12 + 4;
-    R = generic/string/random( "abcdefghijklmnopqrstuvwxyz", I );
+    R = string/random( "abcdefghijklmnopqrstuvwxyz", I );
 
     // run standalone-action and get return value
     N = my/standalone-action( R );
