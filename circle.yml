@@ -23,6 +23,15 @@ dependencies:
     pre:
         - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
 
+
+checkout:
+    post:
+        - git clean -xdf
+        - git fetch -p
+        - git gc --prune=now
+        - mvn clean dependency:purge-local-repository -DreResolve=false -DactTransitively=true
+
+
 test:
     override:
         - mvn package -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1}
