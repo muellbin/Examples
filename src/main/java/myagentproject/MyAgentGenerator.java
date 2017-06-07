@@ -25,7 +25,6 @@ package myagentproject;
 
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
-import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -72,10 +71,6 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyCommunicationAgent>
 
                 // build the set with a collector
             ).collect( Collectors.toSet() ),
-
-            // aggregation function for the optimization function, here
-            // we use an empty function
-            IAggregation.EMPTY,
 
             // variable builder for fixed variables within each plan
             new CVariableBuilder()
