@@ -26,6 +26,8 @@ package myagentproject;
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.util.stream.Collectors;
 
@@ -38,7 +40,7 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
     /**
      * @param p_stream ASL code as any stream e.g. FileInputStream
      */
-    MyAgentGenerator( final InputStream p_stream ) throws Exception
+    MyAgentGenerator( @Nonnull final InputStream p_stream ) throws Exception
     {
         super(
             // input ASL stream
@@ -58,8 +60,9 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
      * @param p_data any data which can be put from outside to the generator method
      * @return returns an agent
      */
+    @Nullable
     @Override
-    public final MyAgent generatesingle( final Object... p_data )
+    public final MyAgent generatesingle( @Nullable final Object... p_data )
     {
         return new MyAgent( m_configuration );
     }

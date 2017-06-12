@@ -26,6 +26,8 @@ package myagentproject;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * agent class with annotation to define inner-action
@@ -38,7 +40,7 @@ final class MyAgent extends IBaseAgent<MyAgent>
      *
      * @param p_configuration agent configuration of the agent generator
      */
-    MyAgent( final IAgentConfiguration<MyAgent> p_configuration )
+    MyAgent( @Nonnull final IAgentConfiguration<MyAgent> p_configuration )
     {
         super( p_configuration );
     }

@@ -29,6 +29,7 @@ import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.variable.CConstant;
 import org.lightjason.agentspeak.language.variable.IVariable;
 
+import javax.annotation.Nonnull;
 import java.text.MessageFormat;
 import java.util.stream.Stream;
 
@@ -38,10 +39,9 @@ import java.util.stream.Stream;
  */
 final class CVariableBuilder implements IVariableBuilder
 {
-
+    @Nonnull
     @Override
-    public final Stream<IVariable<?>> apply( final IAgent<?> p_agent, final IInstantiable p_runningcontext
-    )
+    public final Stream<IVariable<?>> apply( @Nonnull final IAgent<?> p_agent, @Nonnull final IInstantiable p_runningcontext )
     {
         return Stream.of(
             new CConstant<>( "MyName", MessageFormat.format( "{0}", p_agent.hashCode() ) )
