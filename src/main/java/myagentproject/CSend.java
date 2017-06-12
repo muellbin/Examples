@@ -36,6 +36,7 @@ import org.lightjason.agentspeak.language.fuzzy.IFuzzyValue;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +52,7 @@ final class CSend extends IBaseAction
      */
     private final Map<String, MyCommunicationAgent> m_agents = new ConcurrentHashMap<>();
 
+    @Nonnull
     @Override
     public final IPath name()
     {
@@ -64,8 +66,8 @@ final class CSend extends IBaseAction
     }
 
     @Override
-    public final IFuzzyValue<Boolean> execute( final IContext p_context, final boolean p_parallel, final List<ITerm> p_argument,
-                                               final List<ITerm> p_return )
+    public final IFuzzyValue<Boolean> execute( final boolean p_parallel, @Nonnull final IContext p_context,
+                                               @Nonnull final List<ITerm> p_argument, @Nonnull final List<ITerm> p_return )
     {
         // first parameter of the action is the name of the receiving agent
         final IAgent<?> l_receiver = m_agents.get( p_argument.get( 0 ).<String>raw() );
@@ -119,7 +121,8 @@ final class CSend extends IBaseAction
      * @param p_agent agent object
      * @return agent object
      */
-    final MyCommunicationAgent register( final MyCommunicationAgent p_agent )
+    @Nonnull
+    final MyCommunicationAgent register( @Nonnull final MyCommunicationAgent p_agent )
     {
         m_agents.put( p_agent.name(), p_agent );
         return p_agent;
@@ -131,7 +134,8 @@ final class CSend extends IBaseAction
      * @param p_agent agent object
      * @return agent object
      */
-    final MyCommunicationAgent unregister( final MyCommunicationAgent p_agent )
+    @Nonnull
+    final MyCommunicationAgent unregister( @Nonnull final MyCommunicationAgent p_agent )
     {
         m_agents.remove( p_agent.name() );
         return p_agent;

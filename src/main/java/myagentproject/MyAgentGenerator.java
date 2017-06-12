@@ -26,6 +26,7 @@ package myagentproject;
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 
+import javax.annotation.Nonnull;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.concurrent.atomic.AtomicLong;
@@ -52,11 +53,11 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyCommunicationAgent>
     /**
      * constructor of the generator
      *
-     * @param p_send send action
      * @param p_stream asl stream
+     * @param p_send send action
      * @throws Exception on any error
      */
-    MyAgentGenerator( final CSend p_send, final InputStream p_stream ) throws Exception
+    MyAgentGenerator( @Nonnull final InputStream p_stream, @Nonnull final CSend p_send ) throws Exception
     {
         super(
             // input ASL stream
@@ -96,10 +97,9 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyCommunicationAgent>
                 // create a string with the agent name "agent <number>"
                 // get the value of the counter first and increment, build the agent
                 // name with message format (see Java documentation)
-                MessageFormat.format( "agent {0}", m_counter.getAndIncrement() ),
+                m_configuration, MessageFormat.format( "agent {0}", m_counter.getAndIncrement() )
 
                 // add the agent configuration
-                m_configuration
             )
         );
     }

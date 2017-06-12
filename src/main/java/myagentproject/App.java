@@ -74,7 +74,7 @@ final class App
         {
             l_agents = Collections.unmodifiableSet(
                 // create agent generator with send-action
-                new MyAgentGenerator( new CSend(), l_stream )
+                new MyAgentGenerator( l_stream, new CSend() )
                     // generate multiple agents
                     .generatemultiple( Integer.parseInt( p_args[1] ) )
                     // create set

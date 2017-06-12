@@ -26,6 +26,8 @@ package myagentproject;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * agent, here in detail an communication agents with an individual name
@@ -40,10 +42,10 @@ final class MyCommunicationAgent extends IBaseAgent<MyCommunicationAgent>
     /**
      * constructor of the agent
      *
-     * @param p_name agent name
      * @param p_configuration agent configuration of the agent generator
+     * @param p_name agent name
      */
-    MyCommunicationAgent( final String p_name, final IAgentConfiguration<MyCommunicationAgent> p_configuration )
+    MyCommunicationAgent( @Nonnull final IAgentConfiguration<MyCommunicationAgent> p_configuration, @Nonnull final String p_name )
     {
         super( p_configuration );
         m_name = p_name;
@@ -54,6 +56,7 @@ final class MyCommunicationAgent extends IBaseAgent<MyCommunicationAgent>
      *
      * @return agent name
      */
+    @Nonnull
     final String name()
     {
         return m_name;
