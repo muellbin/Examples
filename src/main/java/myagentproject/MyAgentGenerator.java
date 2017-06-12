@@ -27,6 +27,7 @@ import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.concurrent.atomic.AtomicLong;
@@ -86,8 +87,9 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyCommunicationAgent>
      * @param p_data any data which can be put from outside to the generator method
      * @return returns an agent
      */
+    @Nullable
     @Override
-    public final MyCommunicationAgent generatesingle( final Object... p_data )
+    public final MyCommunicationAgent generatesingle( @Nullable final Object... p_data )
     {
         // register a new agent object at the send action and the register
         // method retruns the object reference
