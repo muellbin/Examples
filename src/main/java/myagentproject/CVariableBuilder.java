@@ -29,6 +29,7 @@ import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.variable.CConstant;
 import org.lightjason.agentspeak.language.variable.IVariable;
 
+import javax.annotation.Nonnull;
 import java.text.MessageFormat;
 import java.util.stream.Stream;
 
@@ -53,9 +54,16 @@ final class CVariableBuilder implements IVariableBuilder
         m_environment = p_environment;
     }
 
-
+    /**
+     * builds the variables
+     *
+     * @param p_agent agent that runs the builder
+     * @param p_runningcontext context (plan or rule) which defines the instantiation
+     * @return stream with variables
+     */
+    @Nonnull
     @Override
-    public final Stream<IVariable<?>> apply( final IAgent<?> p_agent, final IInstantiable p_runningcontext )
+    public final Stream<IVariable<?>> apply( @Nonnull final IAgent<?> p_agent, @Nonnull final IInstantiable p_runningcontext )
     {
         return Stream.of(
             new CConstant<>( "MyPosition", p_agent.<MyAgent>raw().position() ),

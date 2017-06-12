@@ -26,6 +26,8 @@ package myagentproject;
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,7 +52,7 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
      * @param p_environment environment reference
      * @throws Exception on any error
      */
-    MyAgentGenerator( final InputStream p_stream, final CEnvironment p_environment ) throws Exception
+    MyAgentGenerator( @Nonnull final InputStream p_stream, @Nonnull final CEnvironment p_environment ) throws Exception
     {
         super(
             // input ASL stream
@@ -80,8 +82,9 @@ final class MyAgentGenerator extends IBaseAgentGenerator<MyAgent>
      * @param p_data any data which can be put from outside to the generator method
      * @return returns an agent
      */
+    @Nullable
     @Override
-    public final MyAgent generatesingle( final Object... p_data )
+    public final MyAgent generatesingle( @Nullable final Object... p_data )
     {
         // create agent with a reference to the environment
         final MyAgent l_agent = new MyAgent( m_configuration, m_environment );

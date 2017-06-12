@@ -29,6 +29,7 @@ import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -53,7 +54,7 @@ final class MyAgent extends IBaseAgent<MyAgent>
      * @param p_configuration agent configuration of the agent generator
      * @param p_environment environment reference
      */
-    MyAgent( final IAgentConfiguration<MyAgent> p_configuration, final CEnvironment p_environment )
+    MyAgent( @Nonnull final IAgentConfiguration<MyAgent> p_configuration, @Nonnull final CEnvironment p_environment )
     {
         super( p_configuration );
         m_environment = p_environment;
@@ -67,7 +68,7 @@ final class MyAgent extends IBaseAgent<MyAgent>
      */
     @IAgentActionFilter
     @IAgentActionName( name = "env/move" )
-    private void env_move( final Number p_value )
+    private void env_move( @Nonnull final Number p_value )
     {
         m_environment.move( this, p_value );
     }

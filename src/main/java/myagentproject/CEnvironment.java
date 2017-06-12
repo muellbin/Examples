@@ -28,6 +28,7 @@ import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -97,7 +98,7 @@ final class CEnvironment
      * @param p_position position
      * @return if position can be set
      */
-    final boolean initialset( final MyAgent p_agent, final int p_position )
+    final boolean initialset( @Nonnull final MyAgent p_agent, final int p_position )
     {
         // check if structure is not full set
         if ( m_agentposition.size() >= m_size )
@@ -123,7 +124,7 @@ final class CEnvironment
      * @param p_agent agent
      * @param p_value new position
      */
-    final void move( final MyAgent p_agent, final Number p_value )
+    final void move( @Nonnull final MyAgent p_agent, @Nonnull final Number p_value )
     {
         // check number value if outside the arrays boundaries thrown
         // an exception which fails the agent action
@@ -169,7 +170,7 @@ final class CEnvironment
      * @param p_agent agent
      * @return position
      */
-    final int position( final MyAgent p_agent )
+    final int position( @Nonnull final MyAgent p_agent )
     {
         return m_agentposition.get( p_agent );
     }
