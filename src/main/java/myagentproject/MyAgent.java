@@ -29,6 +29,8 @@ import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * agent with internal actions, on default
@@ -44,7 +46,7 @@ final class MyAgent extends IBaseAgent<MyAgent>
      *
      * @param p_configuration agent configuration of the agent generator
      */
-    MyAgent( final IAgentConfiguration<MyAgent> p_configuration )
+    MyAgent( @Nonnull final IAgentConfiguration<MyAgent> p_configuration )
     {
         super( p_configuration );
     }
@@ -57,9 +59,10 @@ final class MyAgent extends IBaseAgent<MyAgent>
      * @param p_value input value
      * @return value
      */
+    @Nonnull
     @IAgentActionFilter
     @IAgentActionName( name = "my/object-action" )
-    private Number calculate( final Number p_value )
+    private Number calculate( @Nonnull final Number p_value )
     {
         return p_value.intValue() ^ this.hashCode();
     }

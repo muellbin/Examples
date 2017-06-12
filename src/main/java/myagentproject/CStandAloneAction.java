@@ -32,6 +32,7 @@ import org.lightjason.agentspeak.language.execution.IContext;
 import org.lightjason.agentspeak.language.fuzzy.CFuzzyValue;
 import org.lightjason.agentspeak.language.fuzzy.IFuzzyValue;
 
+import javax.annotation.Nonnull;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -41,7 +42,7 @@ import java.util.List;
  */
 final class CStandAloneAction extends IBaseAction
 {
-
+    @Nonnull
     @Override
     public final IPath name()
     {
@@ -55,8 +56,8 @@ final class CStandAloneAction extends IBaseAction
     }
 
     @Override
-    public final IFuzzyValue<Boolean> execute( final IContext p_context, final boolean p_parallel, final List<ITerm> p_argument,
-                                               final List<ITerm> p_return
+    public final IFuzzyValue<Boolean> execute( final boolean p_parallel, @Nonnull final IContext p_context,
+                                               @Nonnull final List<ITerm> p_argument, @Nonnull final List<ITerm> p_return
     )
     {
         // output of the calling agent and get parameter with correct typing
