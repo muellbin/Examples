@@ -30,7 +30,6 @@ import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -41,7 +40,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @IAgentAction
 final class MyAgent extends IBaseAgent<MyAgent>
 {
-
+    /**
+     * serial id
+     */
+    private static final long serialVersionUID = -5105593330267677627L;
     /**
      * environment reference
      */
@@ -68,7 +70,7 @@ final class MyAgent extends IBaseAgent<MyAgent>
      */
     @IAgentActionFilter
     @IAgentActionName( name = "env/move" )
-    private void env_move( @Nonnull final Number p_value )
+    private void envmove( @Nonnull final Number p_value )
     {
         m_environment.move( this, p_value );
     }
