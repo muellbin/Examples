@@ -87,34 +87,26 @@ final class App
             return;
         }
 
-
+        // runtime call (with parallel execution)
         IntStream
-            // define cycle range, i.e. number of cycles to run sequentially
             .range(
                 0,
                 p_args.length < 3
                 ? Integer.MAX_VALUE
                 : Integer.parseInt( p_args[2] )
             )
-            .forEach( j ->
-                      {
-                          System.out.println();
-
-                          // iterate in parallel over all agents
-                          l_agents.parallelStream().forEach( i ->
-                                                             {
-                                                                 try
-                                                                 {
-                                                                     // call each agent, i.e. trigger a new agent cycle
-                                                                     i.call();
-                                                                 }
-                                                                 catch ( final Exception l_exception )
-                                                                 {
-                                                                     l_exception.printStackTrace();
-                                                                     throw new RuntimeException();
-                                                                 }
-                                                             } );
-                      } );
-
+            .forEach( j -> l_agents.parallelStream()
+                                   .forEach( i ->
+                                   {
+                                       try
+                                       {
+                                           i.call();
+                                       }
+                                       catch ( final Exception l_exception )
+                                       {
+                                           l_exception.printStackTrace();
+                                           throw new RuntimeException();
+                                       }
+                                   } ) );
     }
 }

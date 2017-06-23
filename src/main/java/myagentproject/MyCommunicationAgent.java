@@ -35,6 +35,10 @@ import javax.annotation.Nonnull;
 final class MyCommunicationAgent extends IBaseAgent<MyCommunicationAgent>
 {
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = 3523915760001772665L;
+    /**
      * agent name
      */
     private final String m_name;
