@@ -97,34 +97,34 @@ final class App
                 ? Integer.MAX_VALUE
                 : Integer.parseInt( p_args[2] )
             )
-            .forEach( j -> l_agents.parallelStream().forEach( i ->
-                                                              {
-                                                                  try
-                                                                  {
-                                                                      i.call();
+            .forEach( j -> l_agents.parallelStream()
+                                   .forEach( i ->
+                                   {
+                                       try
+                                       {
+                                           i.call();
 
-                                                                      // call the add-goal-trigger by random with
-                                                                      // 50% probability and put a random value
-                                                                      if ( Math.random() < 0.5 )
-                                                                          i.trigger(
-                                                                              CTrigger.from(
+                                           // call the add-goal-trigger by random with
+                                           // 50% probability and put a random value
+                                           if ( Math.random() < 0.5 )
+                                               i.trigger(
+                                                   CTrigger.from(
 
-                                                                                  // trigger-type
-                                                                                  ITrigger.EType.ADDGOAL,
+                                                       // trigger-type
+                                                       ITrigger.EType.ADDGOAL,
 
-                                                                                  // goal-literal with value
-                                                                                  CLiteral.from(
-                                                                                      "special-goal",
-                                                                                      CRawTerm.from( 100 * Math.random() )
-                                                                                  )
-                                                                              )
-                                                                          );
-
-                                                                  }
-                                                                  catch ( final Exception l_exception )
-                                                                  {
-                                                                      l_exception.printStackTrace();
-                                                                  }
-                                                              } ) );
+                                                       // goal-literal with value
+                                                       CLiteral.from(
+                                                           "special-goal",
+                                                           CRawTerm.from( 100 * Math.random() )
+                                                       )
+                                                   )
+                                               );
+                                       }
+                                       catch ( final Exception l_exception )
+                                       {
+                                           l_exception.printStackTrace();
+                                       }
+                                   } ) );
     }
 }
