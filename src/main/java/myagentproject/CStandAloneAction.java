@@ -42,6 +42,11 @@ import java.util.List;
  */
 final class CStandAloneAction extends IBaseAction
 {
+    /**
+     * serial id
+     */
+    private static final long serialVersionUID = 2237639821101860757L;
+
     @Nonnull
     @Override
     public final IPath name()
