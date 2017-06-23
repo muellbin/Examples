@@ -92,16 +92,17 @@ final class App
                 ? Integer.MAX_VALUE
                 : Integer.parseInt( p_args[2] )
             )
-            .forEach( j -> l_agents.parallelStream().forEach( i ->
-                                                              {
-                                                                  try
-                                                                  {
-                                                                      i.call();
-                                                                  }
-                                                                  catch ( final Exception l_exception )
-                                                                  {
-                                                                      l_exception.printStackTrace();
-                                                                  }
-                                                              } ) );
+            .forEach( j -> l_agents.parallelStream()
+                                   .forEach( i ->
+                                   {
+                                       try
+                                       {
+                                           i.call();
+                                       }
+                                       catch ( final Exception l_exception )
+                                       {
+                                           l_exception.printStackTrace();
+                                       }
+                                   } ) );
     }
 }
