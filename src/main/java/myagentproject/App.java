@@ -102,6 +102,7 @@ final class App
                                        catch ( final Exception l_exception )
                                        {
                                            l_exception.printStackTrace();
+                                           throw new RuntimeException();
                                        }
                                    } ) );
     }
