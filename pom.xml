@@ -1,7 +1,29 @@
+<!--
+
+    ######################################################################################
+    # LGPL License                                                                       #
+    #                                                                                    #
+    # This file is part of the LightJason AgentSpeak(L++) Traffic-Simulation             #
+    # Copyright (c) 2017, LightJason (info@lightjason.org)                               #
+    # This program is free software: you can redistribute it and/or modify               #
+    # it under the terms of the GNU Lesser General Public License as                     #
+    # published by the Free Software Foundation, either version 3 of the                 #
+    # License, or (at your option) any later version.                                    #
+    #                                                                                    #
+    # This program is distributed in the hope that it will be useful,                    #
+    # but WITHOUT ANY WARRANTY; without even the implied warranty of                     #
+    # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                      #
+    # GNU Lesser General Public License for more details.                                #
+    #                                                                                    #
+    # You should have received a copy of the GNU Lesser General Public License           #
+    # along with this program. If not, see http://www.gnu.org/licenses/                  #
+    ######################################################################################
+
+-->
 <project xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.lightjason.workshop</groupId>
+    <groupId>org.lightjason</groupId>
     <artifactId>trafficsimulation</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
@@ -16,13 +38,109 @@
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!-- will be set outside (build parameter) -->
+        <build.number></build.number>
+        <build.commit></build.commit>
+        <coverall.token></coverall.token>
+
+        <jetty.version>9.4.6.v20170531</jetty.version>
     </properties>
 
     <dependencies>
+
+        <!-- agent behaviour based on my PhD framework - must installed manually into the local Maven repository
+             https://github.com/LightJason/AgentSpeak
+        -->
         <dependency>
             <groupId>org.lightjason</groupId>
-            <artifactId>agentspeak</artifactId>
+            <artifactId>rest</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+
+        <!-- UI webserver -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlets</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>2.26-b03</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.0.pr3</version>
+        </dependency>
+
+
+        <!-- base packages -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.18</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>22.0-rc1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codepoetics</groupId>
+            <artifactId>protonpack</artifactId>
+            <version>1.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>colt</groupId>
+            <artifactId>colt</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
+
+        <!-- junit test -->
+        <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>[3.2.6,)</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -31,6 +149,14 @@
             <version>[4.12,)</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.tngtech.java</groupId>
+            <artifactId>junit-dataprovider</artifactId>
+            <version>[1.11.0,)</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -130,12 +256,38 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>myagentproject.App</mainClass>
+                                    <mainClass>org.lightjason.trafficsimulation.CMain</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- License -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0.rc1</version>
+                <configuration>
+                    <header>src/analysis/license/licensetemplate.txt</header>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                    <headerDefinitions>
+                        <headerDefinition>src/analysis/license/style.xml</headerDefinition>
+                    </headerDefinitions>
+                    <excludes>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/*.yml</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>**/*.htm</exclude>
+                        <exclude>**/*.doxyfile</exclude>
+                        <exclude>target/**</exclude>
+                    </excludes>
+                    <mapping>
+                        <g4>javadoc_style</g4>
+                        <asl>javadoc_style</asl>
+                    </mapping>
+                </configuration>
             </plugin>
 
             <!-- checkstyle is perform at compile phase -->
@@ -160,11 +312,24 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <configLocation>src/checkstyle/style.xml</configLocation>
+                    <configLocation>src/analysis/checkstyle/style.xml</configLocation>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- coversall report plugin -->
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+                <configuration>
+                    <repoToken>${coverall.token}</repoToken>
+                    <sourceDirectories>
+                        <directory>target/generated-sources/jaxb</directory>
+                    </sourceDirectories>
                 </configuration>
             </plugin>
 

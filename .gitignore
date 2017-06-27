@@ -5,5 +5,22 @@
 !*.md
 !*.java
 !*.asl
+!*.yaml
+!*.properties
+
+!src/main/webapp/**/*.htm*
+!src/main/webapp/**/*.css
+!src/main/webapp/**/*.js
+!src/test/resources/**/*.xml
+
+!src/site/*.doxyfile
+!src/site/*.htm*
+!src/site/*.css
+!src/site/*.xml
+!src/site/*.graffle
+
+!src/analysis/**/*.xml
+!src/analysis/**/*.txt
+!src/analysis/**/*.md
 
 target/**
