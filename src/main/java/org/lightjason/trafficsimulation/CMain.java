@@ -64,10 +64,6 @@ public final class CMain
         l_clioptions.addOption( "help", false, "shows this information" );
         l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
         l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
-        l_clioptions.addOption( "sequential", false, "run simulation in sequential (default is parallel)" );
-        l_clioptions.addOption( "iteration", true, "number of iterations" );
-        l_clioptions.addOption( "scenariotype", true, "comma-separated list of scenario types (default: xml)" );
-        l_clioptions.addOption( "scenario", true, "comma-separated list of scenario files" );
 
         final CommandLine l_cli;
         try

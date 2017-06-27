@@ -19,6 +19,21 @@
 # ######################################################################################
 #
 
+agents:
+    environment:
+      show: false
+      asl: "environment.asl"
+    areas:
+      show: false
+      asl: "areas.asl"
+    car:
+      show: false
+      asl: "car.asl"
+    user:
+      show: true
+      asl: "user.asl"
+
+
 # HTTP server binding for UI
 httpserver:
     enable: true
