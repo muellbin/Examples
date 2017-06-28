@@ -33,7 +33,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.lightjason.rest.CApplication;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
-import org.lightjason.trafficsimulation.elements.IElement;
+import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.servlet.DispatcherType;
 import java.awt.*;
@@ -133,7 +133,7 @@ public final class CHTTPServer
      * @param p_group additional group
      * @return agent object
      */
-    public static <T extends IElement<?>> T register( final T p_agent, final String... p_group )
+    public static <T extends IObject<?>> T register( final T p_agent, final String... p_group )
     {
         if ( INSTANCE == null )
             return p_agent;
@@ -150,7 +150,7 @@ public final class CHTTPServer
      * @return agent object
      * @tparam T agent type
      */
-    public static <T extends IElement<?>> T register( final Pair<T, Stream<String>> p_agentgroup )
+    public static <T extends IObject<?>> T register( final Pair<T, Stream<String>> p_agentgroup )
     {
         return register( p_agentgroup.getLeft(), p_agentgroup.getRight().toArray( String[]::new ) );
     }

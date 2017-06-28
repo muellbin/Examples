@@ -23,42 +23,35 @@
 
 package org.lightjason.trafficsimulation.elements;
 
-
-import org.lightjason.agentspeak.agent.IAgent;
-import org.lightjason.agentspeak.generator.IAgentGenerator;
-
-import java.util.concurrent.Callable;
+import java.util.Locale;
 
 
 /**
- * any object interface
- *
- * @tparam T domain specific type
+ * object factory
  */
-public interface IElement<T extends IAgent<?>> extends IPerceiveable, IAgent<T>, Callable<T>
+public enum EFactory
 {
+    CAR,
+    AREA,
+    ENVIRONMENT;
+
 
     /**
-     * name of the object
+     * case-insensitive generator
      *
-     * @return string name
+     * @param p_value value
+     * @return factory
      */
-    String id();
-
-    /**
-     * generator interface
-     *
-     * @tparam T element generator
-     */
-    interface IGenerator<T extends IElement<?>> extends IAgentGenerator<T>
+    public static EFactory from( final String p_value )
     {
-        /**
-         * resets the internal counter
-         *
-         * @return self-reference
-         */
-        IGenerator<T> resetcount();
+        return EFactory.valueOf( p_value.toUpperCase( Locale.ROOT ) );
     }
 
-}
+    /**
+     * resets all generator counters
+     */
+    public static void resetcount()
+    {
 
+    }
+}

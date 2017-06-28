@@ -24,31 +24,48 @@
 package org.lightjason.trafficsimulation.elements;
 
 
-import org.lightjason.agentspeak.language.ILiteral;
+import cern.colt.matrix.DoubleMatrix1D;
+import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.agentspeak.generator.IAgentGenerator;
 
-import java.util.stream.Stream;
+import java.util.concurrent.Callable;
 
 
 /**
- * any object which be perceived by an agent
+ * any object interface
+ *
+ * @tparam T domain specific type
  */
-public interface IPerceiveable
+public interface IObject<T extends IAgent<?>> extends IPerceiveable, IAgent<T>, Callable<T>
 {
 
     /**
-     * get literal of the object
+     * name of the object
      *
-     * @param p_object objects
-     * @return stream of literal
+     * @return string name
      */
-    Stream<ILiteral> literal( final IObject<?>... p_object );
+    String id();
 
     /**
-     * get literal of the object
-     *
-     * @param p_object objects
-     * @return stream of literal
+     * position of the object
+     * @return position
      */
-    Stream<ILiteral> literal( final Stream<IObject<?>> p_object );
+    DoubleMatrix1D position();
+
+    /**
+     * generator interface
+     *
+     * @tparam T element generator
+     */
+    interface IGenerator<T extends IObject<?>> extends IAgentGenerator<T>
+    {
+        /**
+         * resets the internal counter
+         *
+         * @return self-reference
+         */
+        IGenerator<T> resetcount();
+    }
 
 }
+
