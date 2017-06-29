@@ -25,6 +25,7 @@ package org.lightjason.trafficsimulation.common;
 
 
 import org.lightjason.agentspeak.action.IAction;
+import org.lightjason.agentspeak.common.CCommon;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -35,6 +36,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +55,15 @@ public final class CConfiguration
      */
     public static final CConfiguration INSTANCE = new CConfiguration();
     /**
+     * default configuration path
+     */
+    public static final String DEFAULTPATH = Stream.of( System.getProperty( "user.home" ), ".lightjason", "trafficsimulation" )
+                                                   .collect( Collectors.joining( File.separator ) );
+    /**
+     * action set
+     */
+    public static final Set<IAction> ACTIONS = Collections.unmodifiableSet( CCommon.actionsFromPackage().collect( Collectors.toSet() ) );
+    /**
      * map with configuration data
      */
     private final Map<String, Object> m_configuration = new ConcurrentHashMap<>();
@@ -60,6 +71,10 @@ public final class CConfiguration
      * all global agent actions
      */
     private final Set<IAction> m_agentaction = org.lightjason.agentspeak.common.CCommon.actionsFromPackage().collect( Collectors.toSet() );
+
+
+
+
 
     /**
      * ctor
@@ -127,11 +142,7 @@ public final class CConfiguration
     private static String orDefaultPath( final String p_path )
     {
         return ( p_path == null ) || ( p_path.isEmpty() )
-               ? Stream.of(
-            System.getProperty( "user.home" ),
-            ".asimov",
-            "configuration.yaml"
-        ).collect( Collectors.joining( File.separator ) )
+               ? Stream.of( DEFAULTPATH, "configuration.yaml" ).collect( Collectors.joining( File.separator ) )
                : p_path;
     }
 
@@ -143,19 +154,14 @@ public final class CConfiguration
      */
     public static String createdefault() throws IOException
     {
-        final String l_path = Stream.of(
-            System.getProperty( "user.home" ),
-            ".asimov"
-        ).collect( Collectors.joining( File.separator ) );
-
-        new File( l_path ).mkdirs();
+        new File( DEFAULTPATH ).mkdirs();
         Files.copy(
             CConfiguration.class.getResourceAsStream(  "configuration.yaml"   ),
-            FileSystems.getDefault().getPath( l_path + File.separator + "configuration.yaml" ),
+            FileSystems.getDefault().getPath( DEFAULTPATH + File.separator + "configuration.yaml" ),
             StandardCopyOption.REPLACE_EXISTING
         );
 
-        return l_path;
+        return DEFAULTPATH;
     }
 
     /**

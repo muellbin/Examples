@@ -32,13 +32,17 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 
 /**
@@ -118,6 +122,27 @@ public final class CCommon
     public static ResourceBundle configuration()
     {
         return PROPERTIES;
+    }
+
+    /**
+     * returns a file from the search path
+     *
+     * @param p_filename filename
+     * @return file instance
+     */
+    public static File searchpath( final String p_filename )
+    {
+        return Stream.concat(
+            CConfiguration.INSTANCE
+                          .<List<String>>getOrDefault( Collections.emptyList(), "main", "searchpath" )
+                          .stream(),
+            Stream.of( CConfiguration.DEFAULTPATH )
+        )
+                      .map( i -> Paths.get( i, p_filename ).normalize().toFile() )
+                      .filter( i -> i.exists() && i.canRead() )
+                      .findFirst()
+                      .orElseThrow( () -> new RuntimeException( CCommon.languagestring( CCommon.class, "filenotfound", p_filename ) ) );
+
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

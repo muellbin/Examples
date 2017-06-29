@@ -29,9 +29,13 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
+import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
+import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.LogManager;
 
 
@@ -63,7 +67,7 @@ public final class CMain
         final Options l_clioptions = new Options();
         l_clioptions.addOption( "help", false, "shows this information" );
         l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
-        l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
+        l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.lightjason/trafficsimulation)" );
 
         final CommandLine l_cli;
         try
@@ -93,15 +97,42 @@ public final class CMain
             return;
         }
 
-        if ( !l_cli.hasOption( "scenario" ) )
-        {
-            System.out.println( CCommon.languagestring( CMain.class, "noscenario", CConfiguration.createdefault() ) );
-            System.exit( -1 );
-            return;
-        }
 
         // load configuration
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
+
+        // execute environment agent
+        new Thread( new Runnable()
+        {
+            @Override
+            public final void run()
+            {
+                final IEnvironment l_agent;
+
+                try
+                (
+                    final InputStream l_stream = new FileInputStream( CConfiguration.INSTANCE.<String>get( "agent", "environment", "asl" ) )
+                )
+                {
+                    l_agent = new CEnvironment.CGenerator( l_stream ).generatesingle();
+                }
+                catch ( final Exception l_exception )
+                {
+                    return;
+                }
+
+                if ( l_agent != null )
+                    while ( l_agent.shutdown() )
+                        try
+                        {
+                            l_agent.call();
+                        }
+                        catch ( final Exception l_exception )
+                        {
+                            break;
+                        }
+            }
+        } ).start();
 
         // start http server if possible
         CHTTPServer.execute();

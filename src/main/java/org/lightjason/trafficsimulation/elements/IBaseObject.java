@@ -24,8 +24,7 @@
 package org.lightjason.trafficsimulation.elements;
 
 import cern.colt.matrix.DoubleMatrix1D;
-import org.apache.commons.lang3.tuple.Pair;
-import org.lightjason.agentspeak.action.IAction;
+import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.beliefbase.view.IView;
 import org.lightjason.agentspeak.common.CCommon;
@@ -34,8 +33,11 @@ import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -80,7 +82,8 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
      * @param p_id name of the object
      * @param p_position initial position
      */
-    protected IBaseObject( final IAgentConfiguration<T> p_configuration, final String p_functor, final String p_id, final DoubleMatrix1D p_position )
+    protected IBaseObject( @Nonnull final IAgentConfiguration<T> p_configuration, @Nonnull final String p_functor,
+                           @Nonnull final String p_id, @Nonnull final DoubleMatrix1D p_position )
     {
         super( p_configuration );
         m_functor = p_functor;
@@ -159,27 +162,28 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
     {
         /**
          * @param p_stream stream
-         * @param p_actions action
          * @throws Exception on any error
          */
-        protected IBaseGenerator( final InputStream p_stream, final Stream<IAction> p_actions, final Class<? extends T> p_agentclass ) throws Exception
+        protected IBaseGenerator( @Nonnull final InputStream p_stream, @Nonnull final Class<? extends T> p_agentclass ) throws Exception
         {
-            super( p_stream, Stream.concat( p_actions, CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ) );
+            super( p_stream, Stream.concat( CConfiguration.ACTIONS.stream(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ) );
         }
 
         @Override
-        public final T generatesingle( final Object... p_data )
+        public final T generatesingle( @Nullable final Object... p_data )
         {
-            return CHTTPServer.register( this.generate( p_data ) );
+            final Triple<T, Boolean, Stream<String>> l_data = this.generate( p_data );
+            return l_data == null ? null : CHTTPServer.register( l_data );
         }
 
         /**
          * generates the agent
          *
          * @param p_data creating arguments
-         * @return agent object and group names
+         * @return agent object, visibility and group names
          */
-        protected abstract Pair<T, Stream<String>> generate( final Object... p_data );
+        @Nullable
+        protected abstract Triple<T, Boolean, Stream<String>> generate( @Nullable final Object... p_data );
     }
 
 }

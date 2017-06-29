@@ -23,7 +23,7 @@
 
 package org.lightjason.trafficsimulation.ui;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -35,6 +35,8 @@ import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.DispatcherType;
 import java.awt.*;
 import java.net.InetSocketAddress;
@@ -86,7 +88,7 @@ public final class CHTTPServer
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
         l_webapp.setResourceBase(
             CHTTPServer.class.getResource(
-                MessageFormat.format( "/{1}/html", CCommon.PACKAGEROOT.replace( ".", "/" ) )
+                MessageFormat.format( "/{0}/html", CCommon.PACKAGEROOT.replace( ".", "/" ) )
             ).toExternalForm()
         );
         l_webapp.addServlet( new ServletHolder( new ServletContainer( m_restagent ) ), "/rest/*" );
@@ -133,13 +135,12 @@ public final class CHTTPServer
      * @param p_group additional group
      * @return agent object
      */
-    public static <T extends IObject<?>> T register( final T p_agent, final String... p_group )
+    public static <T extends IObject<?>> T register( @Nonnull final T p_agent, final boolean p_register, @Nullable final String... p_group )
     {
-        if ( INSTANCE == null )
+        if ( ( INSTANCE == null ) || ( !p_register ) )
             return p_agent;
 
         INSTANCE.m_restagent.register( p_agent.id(), p_agent, p_group );
-
         return p_agent;
     }
 
@@ -150,9 +151,9 @@ public final class CHTTPServer
      * @return agent object
      * @tparam T agent type
      */
-    public static <T extends IObject<?>> T register( final Pair<T, Stream<String>> p_agentgroup )
+    public static <T extends IObject<?>> T register( @Nonnull final Triple<T, Boolean, Stream<String>> p_agentgroup )
     {
-        return register( p_agentgroup.getLeft(), p_agentgroup.getRight().toArray( String[]::new ) );
+        return register( p_agentgroup.getLeft(), p_agentgroup.getMiddle(), p_agentgroup.getRight().toArray( String[]::new ) );
     }
 
 }

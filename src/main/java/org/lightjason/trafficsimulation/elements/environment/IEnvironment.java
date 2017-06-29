@@ -21,49 +21,21 @@
  * @endcond
  */
 
-package org.lightjason.trafficsimulation.elements;
+package org.lightjason.trafficsimulation.elements.environment;
 
-
-import cern.colt.matrix.DoubleMatrix1D;
-import org.lightjason.agentspeak.agent.IAgent;
-import org.lightjason.agentspeak.generator.IAgentGenerator;
+import org.lightjason.trafficsimulation.elements.IObject;
 
 
 /**
- * any object interface
- *
- * @tparam T domain specific type
+ * environment interface
  */
-public interface IObject<T extends IAgent<?>> extends IPerceiveable, IAgent<T>
+public interface IEnvironment extends IObject<IEnvironment>
 {
-
     /**
-     * name of the object
+     * shutdown execution
      *
-     * @return string name
+     * @return shutdown is enabled
      */
-    String id();
-
-    /**
-     * position of the object
-     * @return position
-     */
-    DoubleMatrix1D position();
-
-    /**
-     * generator interface
-     *
-     * @tparam T element generator
-     */
-    interface IGenerator<T extends IObject<?>> extends IAgentGenerator<T>
-    {
-        /**
-         * resets the internal counter
-         *
-         * @return self-reference
-         */
-        IGenerator<T> resetcount();
-    }
+    boolean shutdown();
 
 }
-
