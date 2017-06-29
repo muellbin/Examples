@@ -64,16 +64,13 @@ public final class CConfiguration
      */
     public static final Set<IAction> ACTIONS = Collections.unmodifiableSet( CCommon.actionsFromPackage().collect( Collectors.toSet() ) );
     /**
+     * default configuration file
+     */
+    private static final String DEFAULTCONFIG = Stream.of( DEFAULTPATH, "configuration.yaml" ).collect( Collectors.joining( File.separator ) );
+    /**
      * map with configuration data
      */
     private final Map<String, Object> m_configuration = new ConcurrentHashMap<>();
-    /**
-     * all global agent actions
-     */
-    private final Set<IAction> m_agentaction = org.lightjason.agentspeak.common.CCommon.actionsFromPackage().collect( Collectors.toSet() );
-
-
-
 
 
     /**
@@ -95,7 +92,7 @@ public final class CConfiguration
 
         try
             (
-                final InputStream l_stream = new FileInputStream( orDefaultPath( p_path ) );
+                    final InputStream l_stream = new FileInputStream( orDefaultConfig( p_path ) );
             )
         {
 
@@ -136,14 +133,12 @@ public final class CConfiguration
     /**
      * set default path
      *
-     * @param p_path path or null / empty
+     * @param p_config path or null / empty
      * @return default path on empty or input path
      */
-    private static String orDefaultPath( final String p_path )
+    private static String orDefaultConfig( final String p_config )
     {
-        return ( p_path == null ) || ( p_path.isEmpty() )
-               ? Stream.of( DEFAULTPATH, "configuration.yaml" ).collect( Collectors.joining( File.separator ) )
-               : p_path;
+        return ( p_config == null ) || ( p_config.isEmpty() ) ? DEFAULTCONFIG : p_config;
     }
 
     /**
@@ -156,36 +151,12 @@ public final class CConfiguration
     {
         new File( DEFAULTPATH ).mkdirs();
         Files.copy(
-            CConfiguration.class.getResourceAsStream(  "configuration.yaml"   ),
-            FileSystems.getDefault().getPath( DEFAULTPATH + File.separator + "configuration.yaml" ),
+            CConfiguration.class.getResourceAsStream(  "configuration.yaml" ),
+            FileSystems.getDefault().getPath( DEFAULTCONFIG ),
             StandardCopyOption.REPLACE_EXISTING
         );
 
         return DEFAULTPATH;
-    }
-
-    /**
-     * returns a set with all agent actions
-     *
-     * @param p_action arguments with additional actions
-     * @return action set
-     */
-    public final Set<IAction> agentaction( final IAction... p_action )
-    {
-        return ( p_action == null ) || ( p_action.length == 0 )
-               ? m_agentaction
-               : this.agentaction( Arrays.stream( p_action ) );
-    }
-
-    /**
-     * returns a set with all agent actions
-     *
-     * @param p_action stream with additional actions
-     * @return action set
-     */
-    public final Set<IAction> agentaction( final Stream<IAction> p_action )
-    {
-        return Stream.concat( m_agentaction.stream(), p_action ).collect( Collectors.toSet() );
     }
 
     /**

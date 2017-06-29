@@ -163,6 +163,17 @@
         <!-- create default goal to run "mvn package" everytime -->
         <defaultGoal>install versions:display-dependency-updates versions:display-plugin-updates versions:display-property-updates</defaultGoal>
 
+        <!-- include resource directory with replacing configuration variables -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+            </resource>
+        </resources>
+
         <!-- using build plugins -->
         <pluginManagement>
 
