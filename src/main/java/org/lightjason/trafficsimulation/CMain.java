@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 
 /**
@@ -44,6 +45,11 @@ import java.util.logging.LogManager;
  */
 public final class CMain
 {
+    /**
+     * logger
+     */
+    private static final Logger LOGGER = CCommon.logger( CMain.class );
+
     static
     {
         LogManager.getLogManager().reset();
@@ -102,36 +108,39 @@ public final class CMain
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
 
         // execute environment agent
-        new Thread( new Runnable()
+        new Thread( () ->
         {
-            @Override
-            public final void run()
-            {
-                final IEnvironment l_agent;
+            final IEnvironment l_agent;
 
-                try
-                (
-                    final InputStream l_stream = new FileInputStream( CConfiguration.INSTANCE.<String>get( "agent", "environment", "asl" ) )
+            try
+            (
+                final InputStream l_stream = new FileInputStream(
+                    CCommon.searchpath( CConfiguration.INSTANCE.get( "agent", "environment", "asl" ) )
                 )
-                {
-                    l_agent = new CEnvironment.CGenerator( l_stream ).generatesingle();
-                }
-                catch ( final Exception l_exception )
-                {
-                    return;
-                }
-
-                if ( l_agent != null )
-                    while ( l_agent.shutdown() )
-                        try
-                        {
-                            l_agent.call();
-                        }
-                        catch ( final Exception l_exception )
-                        {
-                            break;
-                        }
+            )
+            {
+                l_agent = new CEnvironment.CGenerator( l_stream ).generatesingle();
             }
+            catch ( final Exception l_exception )
+            {
+                System.out.println( l_exception );
+                LOGGER.warning( l_exception.getLocalizedMessage() );
+                return;
+            }
+
+            if ( l_agent != null )
+                while ( !l_agent.shutdown() )
+                    try
+                    {
+                        l_agent.call();
+                    }
+                    catch ( final Exception l_exception )
+                    {
+                        LOGGER.warning( l_exception.getLocalizedMessage() );
+                        break;
+                    }
+
+            CHTTPServer.shutdown();
         } ).start();
 
         // start http server if possible

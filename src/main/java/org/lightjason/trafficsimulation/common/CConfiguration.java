@@ -24,6 +24,9 @@
 package org.lightjason.trafficsimulation.common;
 
 
+import com.codepoetics.protonpack.StreamUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.common.CCommon;
 import org.yaml.snakeyaml.Yaml;
@@ -32,9 +35,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
@@ -59,6 +61,10 @@ public final class CConfiguration
      */
     public static final String DEFAULTPATH = Stream.of( System.getProperty( "user.home" ), ".lightjason", "trafficsimulation" )
                                                    .collect( Collectors.joining( File.separator ) );
+    /**
+     * asl name
+     */
+    public static final String ASLPATH = Stream.of( DEFAULTPATH, "asl" ).collect( Collectors.joining( File.separator ) );
     /**
      * action set
      */
@@ -149,12 +155,35 @@ public final class CConfiguration
      */
     public static String createdefault() throws IOException
     {
-        new File( DEFAULTPATH ).mkdirs();
-        Files.copy(
-            CConfiguration.class.getResourceAsStream(  "configuration.yaml" ),
-            FileSystems.getDefault().getPath( DEFAULTCONFIG ),
-            StandardCopyOption.REPLACE_EXISTING
-        );
+        StreamUtils.zip(
+            Stream.of(
+                "",
+                "asl"
+            ),
+
+            Stream.of(
+                "configuration.yaml",
+                "environment.asl"
+            ),
+
+            ImmutablePair::new
+
+        )
+                   .peek( i -> new File( DEFAULTPATH + File.separator + i.getLeft() ).mkdirs() )
+                   .forEach( i ->
+                   {
+                       try
+                       {
+                           FileUtils.copyInputStreamToFile(
+                               CConfiguration.class.getResourceAsStream( i.getRight() ),
+                               FileSystems.getDefault().getPath( DEFAULTPATH, i.getLeft(), i.getRight() ).toFile()
+                           );
+                       }
+                       catch ( final IOException l_exception )
+                       {
+                           throw new UncheckedIOException( l_exception );
+                       }
+                   } );
 
         return DEFAULTPATH;
     }

@@ -114,7 +114,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
          */
         public CGenerator( @Nonnull final InputStream p_stream ) throws Exception
         {
-            super( p_stream, IEnvironment.class );
+            super( p_stream, CEnvironment.class );
         }
 
         @Override
@@ -132,8 +132,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
                     FUNCTOR,
                     FUNCTOR,
                     new DenseDoubleMatrix1D( new double[]{
-                        CConfiguration.INSTANCE.<Double>get( "main", "dimension", "width" ),
-                        CConfiguration.INSTANCE.<Double>get( "main", "dimension", "height" )
+                        CConfiguration.INSTANCE.<Number>getOrDefault( 0, "main", "dimension", "width" ).doubleValue(),
+                        CConfiguration.INSTANCE.<Number>getOrDefault( 0, "main", "dimension", "height" ).doubleValue()
                     } )
                 ),
                 CConfiguration.INSTANCE.getOrDefault( false, "agent", "environment", "visible" ),

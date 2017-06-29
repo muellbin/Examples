@@ -129,6 +129,27 @@ public final class CHTTPServer
     }
 
     /**
+     * server shutdown
+     */
+    public static void shutdown()
+    {
+        if ( INSTANCE == null )
+            return;
+
+        try
+        {
+            INSTANCE.m_server.stop();
+        }
+        catch ( final Exception l_exception )
+        {
+        }
+        finally
+        {
+            INSTANCE.m_server.destroy();
+        }
+    }
+
+    /**
      * register agent if server is started
      *
      * @param p_agent agent object

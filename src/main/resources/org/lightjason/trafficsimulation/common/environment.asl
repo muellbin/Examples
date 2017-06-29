@@ -1,4 +1,5 @@
 /*
+ * @cond LICENSE
  * ######################################################################################
  * # LGPL License                                                                       #
  * #                                                                                    #
@@ -17,9 +18,17 @@
  * # You should have received a copy of the GNU Lesser General Public License           #
  * # along with this program. If not, see http://www.gnu.org/licenses/                  #
  * ######################################################################################
+ * @endcond
  */
-"use strict";
 
-jQuery(function() {
+!main.
 
-});
++!main <-
+    generic/print( "environment" );
+    !run
+.
+
++!run
+    : Cycle < 1000 <- !run
+    : Cycle >= 1000 <- shutdown
+.

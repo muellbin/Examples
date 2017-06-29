@@ -24,7 +24,7 @@ main:
   searchpath: [ "." ]
   dimension:
     width: 1000
-    heigh: 10
+    height: 10
 
 
 # agent definition (asl is relative to search path)
