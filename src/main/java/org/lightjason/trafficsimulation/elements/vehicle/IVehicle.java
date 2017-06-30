@@ -23,6 +23,7 @@
 
 package org.lightjason.trafficsimulation.elements.vehicle;
 
+import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 
@@ -38,6 +39,5 @@ public interface IVehicle extends IObject<IVehicle>
      * @return current speed
      */
     double speed();
-
 
 }

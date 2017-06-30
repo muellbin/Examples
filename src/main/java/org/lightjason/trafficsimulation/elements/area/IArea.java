@@ -23,9 +23,24 @@
 
 package org.lightjason.trafficsimulation.elements.area;
 
+import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
+
+import javax.annotation.Nonnull;
+
+
 /**
  * area interface
  */
-public interface IArea
+public interface IArea extends IAgent<IArea>
 {
+
+    /**
+     * adds a vehicle to the area
+     *
+     * @param p_vehicle vehicle
+     * @return vehicle
+     */
+    IVehicle push( @Nonnull IVehicle p_vehicle );
+
 }
