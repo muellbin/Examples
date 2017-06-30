@@ -28,6 +28,8 @@ import com.google.common.util.concurrent.AtomicDouble;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
+import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
+import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
@@ -98,6 +100,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     /**
      * accelerate
      */
+    @IAgentActionFilter
+    @IAgentActionName( name = "accelerate" )
     private void accelerate()
     {
 
@@ -106,6 +110,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     /**
      * decelerate
      */
+    @IAgentActionFilter
+    @IAgentActionName( name = "decelerate" )
     private void decelerate()
     {
 
@@ -114,6 +120,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     /**
      * swing-out
      */
+    @IAgentActionFilter
+    @IAgentActionName( name = "swingout" )
     private void swingout()
     {
 
@@ -122,7 +130,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     /**
      * go back into lane
      */
-    private void gobackintolane()
+    @IAgentActionFilter
+    @IAgentActionName( name = "goback" )
+    private void goback()
     {
 
     }

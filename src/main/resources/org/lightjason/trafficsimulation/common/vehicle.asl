@@ -21,22 +21,28 @@
  * @endcond
  */
 
-package org.lightjason.trafficsimulation.elements.vehicle;
+!drive.
 
-import org.lightjason.trafficsimulation.elements.IObject;
++!drive <-
+    accelerate;
+    !drive
+    !linger
+.
 
+-!drive <-
+    decelerate;
+    !drive
+.
 
-/**
- * vehicle interface
- */
-public interface IVehicle extends IObject<IVehicle>
-{
++!linger <-
+    generic/type/fuzzyreturn( true, math/statistic/randomsimple() );
+    decelerate
+.
 
-    /**
-     * get current speed
-     *
-     * @return current speed
-     */
-    double speed();
++!lowdistance(X) <-
+    swingout()
+.
 
-}
++!largedistance(X) <-
+    goback()
+.
