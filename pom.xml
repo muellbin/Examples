@@ -28,6 +28,7 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>Traffic-Simulation</name>
+    <description>Microscopic multi-agent based traffic simulation</description>
 
     <prerequisites>
         <maven>3.1</maven>
@@ -247,6 +248,8 @@
                             <directory>.</directory>
                             <includes>
                                 <include>dependency-reduced-pom.xml</include>
+                                <include>src/main/webapp/org/lightjason/trafficsimulation/html/js/package.js</include>
+                                <include>node_modules</include>
                             </includes>
                         </fileset>
                     </filesets>
@@ -270,6 +273,39 @@
                                     <mainClass>org.lightjason.trafficsimulation.CMain</mainClass>
                                 </transformer>
                             </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- NPM execution -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <id>npm</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>browserify</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>browserify</executable>
+                            <arguments>package.js -o src/main/webapp/org/lightjason/trafficsimulation/html/js/package.js</arguments>
                         </configuration>
                     </execution>
                 </executions>

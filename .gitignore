@@ -8,6 +8,9 @@
 !*.yaml
 !*.properties
 
+!package.json
+!package.js
+
 !src/main/webapp/**/*.htm*
 !src/main/webapp/**/*.css
 !src/main/webapp/**/*.js
@@ -24,3 +27,5 @@
 !src/analysis/**/*.md
 
 target/**
+node_modules/**
+src/main/webapp/org/lightjason/trafficsimulation/html/js/package.js
