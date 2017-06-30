@@ -24,15 +24,20 @@
 package org.lightjason.trafficsimulation.elements.vehicle;
 
 import cern.colt.matrix.DoubleMatrix1D;
+import com.google.common.util.concurrent.AtomicDouble;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
@@ -40,6 +45,7 @@ import java.util.stream.Stream;
 /**
  * vehicle agent
  */
+@IAgentAction
 public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 {
     /**
@@ -50,6 +56,18 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * literal functor
      */
     private static final String FUNCTOR = "vehicle";
+    /**
+     * current speed
+     */
+    private final AtomicDouble m_speed = new AtomicDouble();
+    /**
+     * accelerate speed
+     */
+    private final double m_accelerate;
+    /**
+     * decelerate speed
+     */
+    private final double m_decelerate;
 
     /**
      * ctor
@@ -57,19 +75,62 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * @param p_configuration agent configuration
      * @param p_id name of the object
      * @param p_position initial position
+     * @param p_accelerate accelerate speed
+     * @param p_decelerate decelerate speed
      */
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration,
                       @Nonnull final String p_id,
-                      @Nonnull final DoubleMatrix1D p_position
+                      @Nonnull final DoubleMatrix1D p_position,
+                      @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate
     )
     {
         super( p_configuration, FUNCTOR, p_id, p_position );
+        m_accelerate = p_accelerate;
+        m_decelerate = p_decelerate;
     }
 
     @Override
     protected final Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object )
     {
         return Stream.empty();
+    }
+
+    /**
+     * accelerate
+     */
+    private void accelerate()
+    {
+
+    }
+
+    /**
+     * decelerate
+     */
+    private void decelerate()
+    {
+
+    }
+
+    /**
+     * swing-out
+     */
+    private void swingout()
+    {
+
+    }
+
+    /**
+     * go back into lane
+     */
+    private void gobackintolane()
+    {
+
+    }
+
+    @Override
+    public final double speed()
+    {
+        return m_speed.get();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -83,14 +144,19 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          * counter
          */
         private static final AtomicLong COUNTER = new AtomicLong();
+        /**
+         * visibility within the UI
+         */
+        private final boolean m_visible;
 
         /**
          * @param p_stream stream
          * @throws Exception on any error
          */
-        protected CGenerator( @Nonnull final InputStream p_stream ) throws Exception
+        protected CGenerator( @Nonnull final InputStream p_stream, final boolean p_visible ) throws Exception
         {
             super( p_stream, CVehicle.class );
+            m_visible = p_visible;
         }
 
         @Override
@@ -104,7 +170,17 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @Override
         protected final Triple<IVehicle, Boolean, Stream<String>> generate( @Nullable final Object... p_data )
         {
-            return null;
+            return new ImmutableTriple<>(
+                new CVehicle(
+                        m_configuration,
+                        MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
+                        null,
+                        1,
+                        1
+                ),
+                m_visible,
+                Stream.of( "vehicle" )
+            );
         }
     }
 }

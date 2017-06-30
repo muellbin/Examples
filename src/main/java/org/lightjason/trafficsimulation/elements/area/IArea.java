@@ -21,23 +21,11 @@
  * @endcond
  */
 
-package org.lightjason.trafficsimulation.elements.vehicle;
-
-import org.lightjason.trafficsimulation.elements.IObject;
-
+package org.lightjason.trafficsimulation.elements.area;
 
 /**
- * vehicle interface
+ * area interface
  */
-public interface IVehicle extends IObject<IVehicle>
+public interface IArea
 {
-
-    /**
-     * get current speed
-     *
-     * @return current speed
-     */
-    double speed();
-
-
 }
