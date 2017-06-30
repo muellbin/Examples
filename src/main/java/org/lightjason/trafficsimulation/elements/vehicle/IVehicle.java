@@ -21,34 +21,14 @@
  * @endcond
  */
 
-package org.lightjason.trafficsimulation.ui;
+package org.lightjason.trafficsimulation.elements.vehicle;
 
-
-import org.glassfish.jersey.server.ResourceConfig;
-import org.lightjason.rest.CCommon;
-import org.lightjason.trafficsimulation.ui.api.CMain;
-
-import java.text.MessageFormat;
+import org.lightjason.trafficsimulation.elements.IObject;
 
 
 /**
- * rest-api servlet
+ * vehicle interface
  */
-public final class CRestAPI extends ResourceConfig
+public interface IVehicle extends IObject<IVehicle>
 {
-
-    /**
-     * ctor
-     */
-    public CRestAPI()
-    {
-        this.register( new CMain() );
-
-        this.packages(
-            true,
-            MessageFormat.format( "{0}.{1}", CCommon.PACKAGEROOT, "container" ),
-            "com.fasterxml.jackson.jaxrs.json"
-        );
-    }
-
 }

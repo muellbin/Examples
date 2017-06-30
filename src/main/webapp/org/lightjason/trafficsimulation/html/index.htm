@@ -4,26 +4,38 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title >LightJason - Traffic-Simulation</title >
-    <link href="https://fonts.googleapis.com/css?family=Pridi:200,300,400,500,600,700" type="text/css" rel="stylesheet" media="all">
+    <link href="//fonts.googleapis.com/css?family=Pridi:200,300,400,500,600,700" type="text/css" rel="stylesheet" media="all">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">jQuery.noConflict();</script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.27.2/codemirror.min.js"></script>
     <script src="//cdn.html5quintus.com/v0.2.0/quintus-all.min.js"></script>
 
     <script src="js/global.js"></script>
     <script src="js/lightjason.js"></script>
     <script src="js/initialize.js"></script>
+
+    // https://github.com/puikinsh/gentelella
 </head>
 <body>
 
-    <script>
-        // http://www.html5quintus.com/
-        var Q = Quintus()
-            .include("Sprites, Scenes, Input, 2D, Touch, UI")
-            .setup()
-            .controls()
-            .touch();
-    </script>
+    <div class="ui-layout-west">
+        <div id="menu" class="basic"></div>
+    </div>
+
+    <div class="ui-layout-center" style="display: none;">
+
+        <div id="screen">
+            <script>
+                // http://www.html5quintus.com/
+                var Q = Quintus()
+                    .include("Sprites, Scenes, Input, 2D, Touch, UI")
+                    .setup()
+                    .controls()
+                    .touch();
+            </script>
+        </div>
+
+    </div>
 
 </body>
 </html>

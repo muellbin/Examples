@@ -43,7 +43,7 @@ agent:
       asl: "car.asl"
     user:
       visible: true
-      asl: "user.asl"
+      asl: ["user.asl"]
 
 
 # HTTP server binding for UI

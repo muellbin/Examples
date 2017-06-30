@@ -21,46 +21,35 @@
  * @endcond
  */
 
-package org.lightjason.trafficsimulation.elements.environment;
+package org.lightjason.trafficsimulation.elements.vehicle;
 
 import cern.colt.matrix.DoubleMatrix1D;
-import cern.colt.matrix.impl.DenseDoubleMatrix1D;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.lightjason.agentspeak.action.binding.IAgentAction;
-import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
-import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
-import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 
 /**
- * environment agent
+ * vehicle agent
  */
-@IAgentAction
-public final class CEnvironment extends IBaseObject<IEnvironment> implements IEnvironment
+public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 {
     /**
      * serial id
      */
-    private static final long serialVersionUID = -4598520582091540701L;
+    private static final long serialVersionUID = 3822143462033345857L;
     /**
      * literal functor
      */
-    private static final String FUNCTOR = "environment";
-    /**
-     * shutdown flag
-     */
-    private final AtomicBoolean m_shutdown = new AtomicBoolean();
+    private static final String FUNCTOR = "vehicle";
 
     /**
      * ctor
@@ -69,17 +58,12 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * @param p_id name of the object
      * @param p_position initial position
      */
-    private CEnvironment( @Nonnull final IAgentConfiguration<IEnvironment> p_configuration,
-                          @Nonnull final String p_id,
-                          @Nonnull final DoubleMatrix1D p_position )
+    private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration,
+                      @Nonnull final String p_id,
+                      @Nonnull final DoubleMatrix1D p_position
+    )
     {
         super( p_configuration, FUNCTOR, p_id, p_position );
-    }
-
-    @Override
-    public final boolean shutdown()
-    {
-        return m_shutdown.get();
     }
 
     @Override
@@ -88,55 +72,39 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return Stream.empty();
     }
 
-
-    @IAgentActionFilter
-    @IAgentActionName( name = "shutdown" )
-    private void actionshutdown()
-    {
-        m_shutdown.set( true );
-    }
-
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     /**
-     * environment generator
+     * generator
      */
-    public static final class CGenerator extends IBaseGenerator<IEnvironment>
+    public static final class CGenerator extends IBaseGenerator<IVehicle>
     {
+        /**
+         * counter
+         */
+        private static final AtomicLong COUNTER = new AtomicLong();
 
         /**
-         * ctor
-         *
          * @param p_stream stream
          * @throws Exception on any error
          */
-        public CGenerator( @Nonnull final InputStream p_stream ) throws Exception
+        protected CGenerator( @Nonnull final InputStream p_stream ) throws Exception
         {
-            super( p_stream, CEnvironment.class );
+            super( p_stream, CVehicle.class );
         }
 
         @Override
-        public final IGenerator<IEnvironment> resetcount()
+        public final IGenerator<IVehicle> resetcount()
         {
+            COUNTER.set( 0 );
             return this;
         }
 
+        @Nullable
         @Override
-        protected final Triple<IEnvironment, Boolean, Stream<String>> generate( @Nullable final Object... p_data )
+        protected final Triple<IVehicle, Boolean, Stream<String>> generate( @Nullable final Object... p_data )
         {
-            return new ImmutableTriple<>(
-                new CEnvironment(
-                    m_configuration,
-                    FUNCTOR,
-                    new DenseDoubleMatrix1D( new double[]{
-                        CConfiguration.INSTANCE.<Number>getOrDefault( 0, "main", "dimension", "width" ).doubleValue(),
-                        CConfiguration.INSTANCE.<Number>getOrDefault( 0, "main", "dimension", "height" ).doubleValue()
-                    } )
-                ),
-                CConfiguration.INSTANCE.getOrDefault( false, "agent", "environment", "visible" ),
-                Stream.of( FUNCTOR )
-            );
+            return null;
         }
     }
-
 }

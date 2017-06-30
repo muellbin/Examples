@@ -21,34 +21,34 @@
  * @endcond
  */
 
-package org.lightjason.trafficsimulation.ui;
+package org.lightjason.trafficsimulation.ui.api;
 
-
-import org.glassfish.jersey.server.ResourceConfig;
-import org.lightjason.rest.CCommon;
-import org.lightjason.trafficsimulation.ui.api.CMain;
-
-import java.text.MessageFormat;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
- * rest-api servlet
+ * rest-api of main functionality
  */
-public final class CRestAPI extends ResourceConfig
+@Path( "/main" )
+public final class CMain
 {
-
     /**
-     * ctor
+     * returns a list of agents
+     *
+     * @return agent name list
      */
-    public CRestAPI()
+    @GET
+    @Path( "/list" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public List<String> agents()
     {
-        this.register( new CMain() );
-
-        this.packages(
-            true,
-            MessageFormat.format( "{0}.{1}", CCommon.PACKAGEROOT, "container" ),
-            "com.fasterxml.jackson.jaxrs.json"
-        );
+        return Stream.of( "x", "yy", "zzz" ).collect( Collectors.toList() );
     }
 
 }

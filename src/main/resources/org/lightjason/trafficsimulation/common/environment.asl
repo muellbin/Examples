@@ -28,7 +28,9 @@
     !run
 .
 
+/*
 +!run
-    : Cycle < 1000 <- !run
-    : Cycle >= 1000 <- shutdown
+    : Cycle < 10000 <- !run
+    : Cycle >= 10000 <- shutdown
 .
+*/
