@@ -23,7 +23,7 @@
 
 package org.lightjason.trafficsimulation.elements.area;
 
-import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 /**
  * area interface
  */
-public interface IArea extends IAgent<IArea>
+public interface IArea extends IObject<IArea>
 {
 
     /**

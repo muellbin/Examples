@@ -39,10 +39,14 @@
     decelerate
 .
 
-+!lowdistance(X) <-
-    swingout()
++!nearby(X, D) <-
+    swingout
 .
 
-+!largedistance(X) <-
-    goback()
++!faraway(X, D) <-
+    goback
+.
+
++!collide(X) <-
+    generic/print(X)
 .

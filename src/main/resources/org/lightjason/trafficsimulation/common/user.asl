@@ -38,3 +38,11 @@
     generic/type/fuzzyreturn( true, math/statistic/randomsimple() );
     decelerate
 .
+
++!nearby(X, D) <-
+   generic/print(X, D)
+.
+
++!faraway(X, D) <-
+    generic/print(X, D)
+.
