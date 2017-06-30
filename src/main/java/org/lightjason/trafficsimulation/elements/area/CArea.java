@@ -26,10 +26,15 @@ package org.lightjason.trafficsimulation.elements.area;
 import cern.colt.matrix.DoubleMatrix1D;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.lightjason.agentspeak.action.binding.IAgentAction;
+import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
+import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -39,6 +44,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
@@ -48,6 +55,7 @@ import java.util.stream.Stream;
 /**
  * area agent
  */
+@IAgentAction
 public final class CArea extends IBaseObject<IArea> implements IArea
 {
     /**
@@ -89,7 +97,15 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     public final IVehicle push( @Nonnull final IVehicle p_vehicle )
     {
         // @todo checking inside
-        m_elements.add( p_vehicle );
+        if ( m_elements.add( p_vehicle ) )
+        {
+            this.trigger(
+                CTrigger.from(
+                    ITrigger.EType.ADDGOAL,
+                    CLiteral.from( "vehicle", CRawTerm.from( p_vehicle ) )
+                )
+            );
+        }
         return p_vehicle;
     }
 
@@ -100,6 +116,47 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         return Stream.of(
             CLiteral.from( "allowedspeed", CRawTerm.from( m_allowedspeed ) )
         );
+    }
+
+    @Override
+    public final IArea call() throws Exception
+    {
+        m_elements.parallelStream()
+                  // @todo can be removed
+                  .filter( i -> true )
+                  .forEach( i -> this.trigger(
+                      CTrigger.from(
+                        ITrigger.EType.DELETEGOAL,
+                        CLiteral.from( "vehicle", CRawTerm.from( i ) )
+                      )
+                  ) );
+
+        return super.call();
+    }
+
+    /**
+     * returns a list of all vehicles inside
+     *
+     * @return list
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "list" )
+    private List<IVehicle> listvehicle()
+    {
+        return new ArrayList<>( m_elements );
+    }
+
+    /**
+     * set the panalize of the cars
+     *
+     * @param p_vehicle car
+     * @param p_value value
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "penalize" )
+    private void penalize( final IVehicle p_vehicle, final Number p_value )
+    {
+
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

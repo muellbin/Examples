@@ -70,6 +70,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * decelerate speed
      */
     private final double m_decelerate;
+    /**
+     * panelize value
+     */
+    private final AtomicDouble m_panelize = new AtomicDouble();
 
     /**
      * ctor
@@ -141,6 +145,19 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final double speed()
     {
         return m_speed.get();
+    }
+
+    @Override
+    public final IVehicle penalize( @Nonnull final Number p_value )
+    {
+        m_panelize.addAndGet( p_value.doubleValue() );
+        return this;
+    }
+
+    @Override
+    public final double penalize()
+    {
+        return m_panelize.get();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

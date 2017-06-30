@@ -25,6 +25,8 @@ package org.lightjason.trafficsimulation.elements.vehicle;
 
 import org.lightjason.trafficsimulation.elements.IObject;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * vehicle interface
@@ -38,5 +40,20 @@ public interface IVehicle extends IObject<IVehicle>
      * @return current speed
      */
     double speed();
+
+    /**
+     * set penalize value
+     *
+     * @param p_value value
+     * @return self reference
+     */
+    IVehicle penalize( @Nonnull final Number p_value );
+
+    /**
+     * get penalize value
+     *
+     * @return value
+     */
+    double penalize();
 
 }

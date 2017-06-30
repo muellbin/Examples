@@ -88,7 +88,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return Stream.empty();
     }
 
-
     @IAgentActionFilter
     @IAgentActionName( name = "shutdown" )
     private void actionshutdown()
