@@ -248,8 +248,9 @@
                             <directory>.</directory>
                             <includes>
                                 <include>dependency-reduced-pom.xml</include>
+                                <include>package-lock.json</include>
                                 <include>src/main/webapp/org/lightjason/trafficsimulation/html/js/package.js</include>
-                                <include>node_modules</include>
+                                <include>node_modules/**</include>
                             </includes>
                         </fileset>
                     </filesets>
@@ -299,13 +300,15 @@
                     </execution>
                     <execution>
                         <id>browserify</id>
-                        <phase>generate-resources</phase>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
                         <configuration>
                             <executable>browserify</executable>
-                            <arguments>package.js -o src/main/webapp/org/lightjason/trafficsimulation/html/js/package.js</arguments>
+                            <arguments>
+                                <argument>package.js -o src/main/webapp/org/lightjason/trafficsimulation/html/js/package.js</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
