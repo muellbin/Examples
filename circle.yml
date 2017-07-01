@@ -22,6 +22,10 @@ machine:
 dependencies:
     pre:
         - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
+        # see relese version https://github.com/nodesource/distributions
+        - "curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash"
+        - sudo apt-get install -y nodejs
+        - npm install -g browserify
 
 
 checkout:
