@@ -18,7 +18,8 @@ machine:
 
     java:
         version: oraclejdk8
-        
+
+
 dependencies:
     pre:
         - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
@@ -26,7 +27,6 @@ dependencies:
         - "curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash"
         - sudo apt-get install -y nodejs
         - npm install -g browserify
-
 
 checkout:
     post:
@@ -38,14 +38,15 @@ checkout:
 
 test:
     override:
-        - mvn -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1} -Dcoverall.token=${COVERALL_TOKEN} -DperformRelease=false -DskipTests=true
+        - mvn -B -Dbuild.number=${CIRCLE_BUILD_NUM} -Dcoverall.token=${COVERALL_TOKEN} -Dbuild.commit=${CIRCLE_SHA1} -DperformRelease=false -DskipTests=true
     post:
-        # documentation and test build: coveralls:report
+        # documentation and test build (coveralls:report)
         - mvn -B -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1} -Dcoverall.token=${COVERALL_TOKEN} site
         # create CircleCI reports
-        - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-        - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+        - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
+        - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
         - mv -f target/$DOCUMENT.jar /tmp
+
 
 deployment:
     production:
