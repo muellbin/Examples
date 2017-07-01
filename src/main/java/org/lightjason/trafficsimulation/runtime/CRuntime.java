@@ -21,14 +21,58 @@
  * @endcond
  */
 
-!main.
+package org.lightjason.trafficsimulation.runtime;
 
-+!main <-
-    generic/print( "environment" );
-    !run
-.
+import javax.annotation.Nonnull;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
-+!run
-    : Cycle < 10000 <- !run
-    : Cycle >= 10000 <- simulation/shutdown
-.
+
+/**
+ * runtime singletone instance
+ */
+public final class CRuntime implements IRuntime
+{
+    /**
+     * instance
+     */
+    public static final CRuntime INSTANCE = new CRuntime();
+    /**
+     * execution task
+     */
+    private final AtomicReference<ITask> m_task = new AtomicReference<>();
+    /**
+     * supplier of tasks
+     */
+    private Supplier<ITask> m_tasksupply = () -> ITask.EMPTY;
+
+
+    /**
+     * ctor
+     */
+    private CRuntime()
+    {
+    }
+
+    @Override
+    public final void run()
+    {
+        m_task.compareAndSet( null, m_tasksupply.get() );
+        m_task.get().run();
+        m_task.compareAndSet( m_task.get(), null );
+    }
+
+
+    @Override
+    public IRuntime supplier( @Nonnull final Supplier<ITask> p_supplier )
+    {
+        m_tasksupply = p_supplier;
+        return this;
+    }
+
+    @Override
+    public final boolean running()
+    {
+        return m_task.get() != null;
+    }
+}

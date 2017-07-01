@@ -44,7 +44,7 @@ public final class CMain
      * @return agent name list
      */
     @GET
-    @Path( "/list" )
+    @Path( "/execute" )
     @Produces( MediaType.APPLICATION_JSON )
     public List<String> agents()
     {

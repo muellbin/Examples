@@ -21,14 +21,31 @@
  * @endcond
  */
 
-!main.
+package org.lightjason.trafficsimulation.runtime;
 
-+!main <-
-    generic/print( "environment" );
-    !run
-.
+import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
-+!run
-    : Cycle < 10000 <- !run
-    : Cycle >= 10000 <- simulation/shutdown
-.
+
+/**
+ * runtime instance
+ */
+public interface IRuntime extends Runnable
+{
+
+    /**
+     * sets the task-supplier
+     *
+     * @param p_supplier  task supplier
+     * @return self reference
+     */
+    IRuntime supplier( @Nonnull final Supplier<ITask> p_supplier );
+
+    /**
+     * task is running
+     *
+     * @return running flag
+     */
+    boolean running();
+
+}

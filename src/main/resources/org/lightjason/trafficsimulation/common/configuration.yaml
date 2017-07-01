@@ -21,7 +21,7 @@
 
 # main definition
 main:
-  searchpath: [ "." ]
+  searchpath: []
   dimension:
     width: 1000
     height: 10

@@ -34,6 +34,7 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -58,6 +59,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * literal functor
      */
     private static final String FUNCTOR = "vehicle";
+    /**
+     * environment
+     */
+    private final IEnvironment m_environment;
     /**
      * accelerate speed
      */
@@ -90,7 +95,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration,
                       @Nonnull final String p_id,
-                      @Nonnull final DoubleMatrix1D p_position,
+                      @Nonnull final DoubleMatrix1D p_position, @Nonnull final IEnvironment p_environment,
                       @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate, @Nonnegative final double p_maximumspeed
     )
     {
@@ -98,6 +103,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_accelerate = p_accelerate;
         m_decelerate = p_decelerate;
         m_maximumspeed = p_maximumspeed;
+        m_environment = p_environment;
     }
 
     @Override
@@ -184,15 +190,22 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          * visibility within the UI
          */
         private final boolean m_visible;
+        /**
+         * environment
+         */
+        private final IEnvironment m_environment;
 
         /**
          * @param p_stream stream
+         * @param p_environment environment reference
+         * @param p_uiaccessiable generated cars are ui-accessable
          * @throws Exception on any error
          */
-        protected CGenerator( @Nonnull final InputStream p_stream, final boolean p_visible ) throws Exception
+        protected CGenerator( @Nonnull final InputStream p_stream, @Nonnull final IEnvironment p_environment, final boolean p_uiaccessiable ) throws Exception
         {
             super( p_stream, CVehicle.class );
-            m_visible = p_visible;
+            m_visible = p_uiaccessiable;
+            m_environment = p_environment;
         }
 
         @Override
@@ -211,6 +224,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                         m_configuration,
                         MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
                         null,
+                        m_environment,
                         1,
                         1,
                         200

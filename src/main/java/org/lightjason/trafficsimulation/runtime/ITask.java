@@ -21,14 +21,24 @@
  * @endcond
  */
 
-!main.
+package org.lightjason.trafficsimulation.runtime;
 
-+!main <-
-    generic/print( "environment" );
-    !run
-.
+/**
+ * runtime task
+ */
+public interface ITask extends Runnable
+{
+    /**
+     * empty task
+     */
+    ITask EMPTY = new ITask()
+    {
+        @Override
+        public final void run()
+        {
 
-+!run
-    : Cycle < 10000 <- !run
-    : Cycle >= 10000 <- simulation/shutdown
-.
+        }
+    };
+
+
+}

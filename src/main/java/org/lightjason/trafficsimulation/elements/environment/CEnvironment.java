@@ -24,7 +24,9 @@
 package org.lightjason.trafficsimulation.elements.environment;
 
 import cern.colt.matrix.DoubleMatrix1D;
+import cern.colt.matrix.ObjectMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
+import cern.colt.matrix.impl.SparseObjectMatrix2D;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
@@ -35,10 +37,13 @@ import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.elements.area.IArea;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
@@ -61,19 +66,28 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * shutdown flag
      */
     private final AtomicBoolean m_shutdown = new AtomicBoolean();
+    /**
+     * hastset with areas
+     */
+    private final Set<IArea> m_areas = new CopyOnWriteArraySet<>();
+    /**
+     * grid
+     */
+    private final ObjectMatrix2D m_grid;
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
      * @param p_id name of the object
-     * @param p_position initial position
+     * @param p_position size of the world
      */
     private CEnvironment( @Nonnull final IAgentConfiguration<IEnvironment> p_configuration,
                           @Nonnull final String p_id,
                           @Nonnull final DoubleMatrix1D p_position )
     {
         super( p_configuration, FUNCTOR, p_id, p_position );
+        m_grid = new SparseObjectMatrix2D( (int) m_position.get( 0 ), (int) m_position.get( 1 ) );
     }
 
     @Override
@@ -83,16 +97,28 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     @Override
+    public final IObject<?> set( final IObject<?> p_object, final DoubleMatrix1D p_position )
+    {
+        return p_object;
+    }
+
+    @Override
     protected final Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object )
     {
         return Stream.empty();
     }
 
     @IAgentActionFilter
-    @IAgentActionName( name = "shutdown" )
+    @IAgentActionName( name = "simulation/shutdown" )
     private void actionshutdown()
     {
         m_shutdown.set( true );
+    }
+
+    @IAgentActionFilter
+    @IAgentActionName( name = "area/create" )
+    private void createarea( final Number p_xlowerbound, final Number p_ylowerbound, final Number p_xupperbound, final Number p_yupperbound )
+    {
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

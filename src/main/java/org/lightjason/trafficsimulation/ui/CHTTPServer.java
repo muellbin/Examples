@@ -122,10 +122,6 @@ public final class CHTTPServer
         {
             throw new RuntimeException( l_exception );
         }
-        finally
-        {
-            INSTANCE.m_server.destroy();
-        }
     }
 
     /**
@@ -142,6 +138,7 @@ public final class CHTTPServer
         }
         catch ( final Exception l_exception )
         {
+            // errors are ignored
         }
         finally
         {

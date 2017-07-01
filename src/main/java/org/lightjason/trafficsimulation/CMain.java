@@ -29,13 +29,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
-import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
-import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
+import org.lightjason.trafficsimulation.runtime.CRuntime;
+import org.lightjason.trafficsimulation.runtime.CTask;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -107,41 +105,7 @@ public final class CMain
         // load configuration
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
 
-        // execute environment agent
-        new Thread( () ->
-        {
-            final IEnvironment l_agent;
-
-            try
-            (
-                final InputStream l_stream = new FileInputStream(
-                    CCommon.searchpath( CConfiguration.INSTANCE.get( "agent", "environment", "asl" ) )
-                )
-            )
-            {
-                l_agent = new CEnvironment.CGenerator( l_stream ).generatesingle();
-            }
-            catch ( final Exception l_exception )
-            {
-                System.out.println( l_exception );
-                LOGGER.warning( l_exception.getLocalizedMessage() );
-                return;
-            }
-
-            if ( l_agent != null )
-                while ( !l_agent.shutdown() )
-                    try
-                    {
-                        l_agent.call();
-                    }
-                    catch ( final Exception l_exception )
-                    {
-                        LOGGER.warning( l_exception.getLocalizedMessage() );
-                        break;
-                    }
-
-            CHTTPServer.shutdown();
-        } ).start();
+        CRuntime.INSTANCE.supplier( CTask::new ).run();
 
         // start http server if possible
         CHTTPServer.execute();

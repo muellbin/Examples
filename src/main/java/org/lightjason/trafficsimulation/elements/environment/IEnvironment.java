@@ -23,6 +23,7 @@
 
 package org.lightjason.trafficsimulation.elements.environment;
 
+import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 
@@ -37,5 +38,14 @@ public interface IEnvironment extends IObject<IEnvironment>
      * @return shutdown is enabled
      */
     boolean shutdown();
+
+    /**
+     * sets on object inside the grid
+     *
+     * @param p_object object
+     * @param p_position position
+     * @return input object or other objects which blocks the position
+     */
+    IObject<?> set( final IObject<?> p_object, final DoubleMatrix1D p_position );
 
 }
