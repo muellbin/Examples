@@ -38,8 +38,11 @@ checkout:
 
 test:
     override:
-        - mvn -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1}
+        - mvn -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1} -Dcoverall.token=${COVERALL_TOKEN} -DperformRelease=false -DskipTests=true
     post:
+        # documentation and test build: coveralls:report
+        - mvn -B -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1} -Dcoverall.token=${COVERALL_TOKEN} site
+        # create CircleCI reports
         - mkdir -p $CIRCLE_TEST_REPORTS/junit/
         - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
         - mv -f target/$DOCUMENT.jar /tmp
