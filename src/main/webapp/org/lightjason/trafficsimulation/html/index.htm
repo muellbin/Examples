@@ -15,23 +15,15 @@
 </head>
 <body>
 
-    <div class="ui-layout-west">
-        <div id="menu" class="basic"></div>
-    </div>
-
-    <div class="ui-layout-center" style="display: none;">
-
-        <div id="screen">
-            <script>
-                // http://www.html5quintus.com/
-                var Q = Quintus()
-                    .include("Sprites, Scenes, Input, 2D, Touch, UI")
-                    .setup()
-                    .controls()
-                    .touch();
-            </script>
-        </div>
-
+    <div id="screen">
+        <script>
+            // http://www.html5quintus.com/
+            var Q = Quintus()
+                .include("Sprites, Scenes, Input, 2D, Touch, UI")
+                .setup()
+                .controls()
+                .touch();
+        </script>
     </div>
 
 </body>

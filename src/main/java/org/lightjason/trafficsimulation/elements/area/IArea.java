@@ -24,7 +24,6 @@
 package org.lightjason.trafficsimulation.elements.area;
 
 import org.lightjason.trafficsimulation.elements.IObject;
-import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
 
@@ -36,11 +35,19 @@ public interface IArea extends IObject<IArea>
 {
 
     /**
-     * adds a vehicle to the area
+     * adds an object to the area
      *
-     * @param p_vehicle vehicle
-     * @return vehicle
+     * @param p_object object
+     * @return input object
      */
-    IVehicle push( @Nonnull IVehicle p_vehicle );
+    IObject<?> push( @Nonnull IObject<?> p_object );
+
+    /**
+     * check if vehicle inside
+     *
+     * @param p_object vehicle
+     * @return in-side flag
+     */
+    boolean inside( final IObject<?> p_object );
 
 }

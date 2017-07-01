@@ -59,10 +59,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     private static final String FUNCTOR = "vehicle";
     /**
-     * current speed
-     */
-    private final AtomicDouble m_speed = new AtomicDouble();
-    /**
      * accelerate speed
      */
     private final double m_accelerate;
@@ -70,6 +66,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * decelerate speed
      */
     private final double m_decelerate;
+    /**
+     * maximum speed
+     */
+    private final double m_maximumspeed;
+    /**
+     * current speed
+     */
+    private final AtomicDouble m_speed = new AtomicDouble();
     /**
      * panelize value
      */
@@ -87,12 +91,13 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration,
                       @Nonnull final String p_id,
                       @Nonnull final DoubleMatrix1D p_position,
-                      @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate
+                      @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate, @Nonnegative final double p_maximumspeed
     )
     {
         super( p_configuration, FUNCTOR, p_id, p_position );
         m_accelerate = p_accelerate;
         m_decelerate = p_decelerate;
+        m_maximumspeed = p_maximumspeed;
     }
 
     @Override
@@ -108,7 +113,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "accelerate" )
     private void accelerate()
     {
+        if ( m_speed.get() + m_accelerate > m_maximumspeed )
+            throw new RuntimeException( MessageFormat.format( "cannot increment speed: {0}", this ) );
 
+        m_speed.addAndGet( m_accelerate );
     }
 
     /**
@@ -118,7 +126,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "decelerate" )
     private void decelerate()
     {
+        if ( m_speed.get() - m_decelerate < 0 )
+            throw new RuntimeException( MessageFormat.format( "cannot decrement speed: {0}", this ) );
 
+        m_speed.addAndGet( m_decelerate );
     }
 
     /**
@@ -128,7 +139,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "swingout" )
     private void swingout()
     {
-
     }
 
     /**
@@ -138,7 +148,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "goback" )
     private void goback()
     {
-
     }
 
     @Override
@@ -148,14 +157,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     }
 
     @Override
-    public final IVehicle penalize( @Nonnull final Number p_value )
+    public final IVehicle penalty( @Nonnull final Number p_value )
     {
         m_panelize.addAndGet( p_value.doubleValue() );
         return this;
     }
 
     @Override
-    public final double penalize()
+    public final double penalty()
     {
         return m_panelize.get();
     }
@@ -203,7 +212,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                         MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
                         null,
                         1,
-                        1
+                        1,
+                        200
                 ),
                 m_visible,
                 Stream.of( "vehicle" )

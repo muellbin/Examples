@@ -67,9 +67,9 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     private static final String FUNCTOR = "area";
     /**
-     * set of vehicles
+     * set of objects inside
      */
-    private final Set<IVehicle> m_elements = new CopyOnWriteArraySet<>();
+    private final Set<IObject<?>> m_elements = new CopyOnWriteArraySet<>();
     /**
      * allowed speed
      */
@@ -94,24 +94,29 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     }
 
     @Override
-    public final IVehicle push( @Nonnull final IVehicle p_vehicle )
+    public final IObject<?> push( @Nonnull final IObject<?> p_object )
     {
-        // @todo checking inside
-        if ( m_elements.add( p_vehicle ) )
+        if ( ( this.inside( p_object ) ) && ( m_elements.add( p_object ) ) )
         {
             this.trigger(
                 CTrigger.from(
                     ITrigger.EType.ADDGOAL,
-                    CLiteral.from( "vehicle", CRawTerm.from( p_vehicle ) )
+                    CLiteral.from( "element", CRawTerm.from( p_object ) )
                 )
             );
         }
-        return p_vehicle;
+        return p_object;
     }
 
     @Override
-    protected final Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object
-    )
+    public final boolean inside( final IObject<?> p_object )
+    {
+        return ( m_position.get( 0 ) <= p_object.position().get( 0 ) ) && ( m_position.get( 1 ) <= p_object.position().get( 1 ) )
+            && ( m_position.get( 3 ) >= p_object.position().get( 0 ) ) && ( m_position.get( 4 ) >= p_object.position().get( 1 ) );
+    }
+
+    @Override
+    protected final Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object )
     {
         return Stream.of(
             CLiteral.from( "allowedspeed", CRawTerm.from( m_allowedspeed ) )
@@ -122,17 +127,17 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     public final IArea call() throws Exception
     {
         m_elements.parallelStream()
-                  // @todo can be removed
-                  .filter( i -> true )
+                  .filter( i -> !this.inside( i ) )
                   .forEach( i -> this.trigger(
                       CTrigger.from(
                         ITrigger.EType.DELETEGOAL,
-                        CLiteral.from( "vehicle", CRawTerm.from( i ) )
+                        CLiteral.from( "element", CRawTerm.from( i ) )
                       )
                   ) );
 
         return super.call();
     }
+
 
     /**
      * returns a list of all vehicles inside
@@ -141,7 +146,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     @IAgentActionFilter
     @IAgentActionName( name = "list" )
-    private List<IVehicle> listvehicle()
+    private List<IObject<?>> list()
     {
         return new ArrayList<>( m_elements );
     }
@@ -149,14 +154,15 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     /**
      * set the panalize of the cars
      *
-     * @param p_vehicle car
+     * @param p_object object
      * @param p_value value
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "penalize" )
-    private void penalize( final IVehicle p_vehicle, final Number p_value )
+    @IAgentActionName( name = "penalty" )
+    private void penalty( final IObject<?> p_object, final Number p_value )
     {
-
+        if ( p_object instanceof IVehicle )
+            p_object.<IVehicle>raw().penalty( p_value );
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

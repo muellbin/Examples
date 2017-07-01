@@ -42,18 +42,18 @@ public interface IVehicle extends IObject<IVehicle>
     double speed();
 
     /**
-     * set penalize value
+     * set penalty value
      *
      * @param p_value value
      * @return self reference
      */
-    IVehicle penalize( @Nonnull final Number p_value );
+    IVehicle penalty( @Nonnull final Number p_value );
 
     /**
-     * get penalize value
+     * get penalty value
      *
      * @return value
      */
-    double penalize();
+    double penalty();
 
 }
