@@ -51,11 +51,17 @@ public class CTask implements ITask
      * environement
      */
     private Set<IObject<?>> m_elements = Collections.synchronizedSet( new HashSet<>() );
+    /**
+     * thread
+     */
+    private final Thread m_thread;
 
-    @Override
-    public final void run()
+    /**
+     * ctor
+     */
+    public CTask()
     {
-        new Thread( () ->
+        m_thread = new Thread( () ->
         {
             final IEnvironment l_environment;
 
@@ -88,6 +94,21 @@ public class CTask implements ITask
                     }
 
             CHTTPServer.shutdown();
-        } ).start();
+        } );
+    }
+
+    @Override
+    public final ITask call() throws Exception
+    {
+        if ( ( !m_thread.isAlive() ) && ( !m_thread.isInterrupted() ) )
+            m_thread.start();
+
+        return this;
+    }
+
+    @Override
+    public final boolean running()
+    {
+        return !m_thread.isAlive();
     }
 }

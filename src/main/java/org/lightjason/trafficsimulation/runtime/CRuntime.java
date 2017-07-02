@@ -44,7 +44,7 @@ public final class CRuntime implements IRuntime
     /**
      * supplier of tasks
      */
-    private Supplier<ITask> m_tasksupply = () -> ITask.EMPTY;
+    private Supplier<ITask> m_supplier = () -> ITask.EMPTY;
 
 
     /**
@@ -57,22 +57,27 @@ public final class CRuntime implements IRuntime
     @Override
     public final void run()
     {
-        m_task.compareAndSet( null, m_tasksupply.get() );
-        m_task.get().run();
-        m_task.compareAndSet( m_task.get(), null );
+        try
+        {
+            m_task.getAndUpdate( ( i ) -> i.running() ? i : m_supplier.get() ).call();
+        }
+        catch ( final Exception l_exception )
+        {
+            // ignore errors
+        }
     }
 
 
     @Override
     public IRuntime supplier( @Nonnull final Supplier<ITask> p_supplier )
     {
-        m_tasksupply = p_supplier;
+        m_supplier = p_supplier;
         return this;
     }
 
     @Override
     public final boolean running()
     {
-        return m_task.get() != null;
+        return m_task.get().running();
     }
 }

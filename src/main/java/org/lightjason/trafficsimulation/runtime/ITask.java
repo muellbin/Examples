@@ -23,10 +23,13 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
+import java.util.concurrent.Callable;
+
+
 /**
  * runtime task
  */
-public interface ITask extends Runnable
+public interface ITask extends Callable<ITask>
 {
     /**
      * empty task
@@ -34,11 +37,23 @@ public interface ITask extends Runnable
     ITask EMPTY = new ITask()
     {
         @Override
-        public final void run()
+        public final boolean running()
         {
+            return false;
+        }
 
+        @Override
+        public final ITask call() throws Exception
+        {
+            return this;
         }
     };
 
+    /**
+     * checks running state
+     *
+     * @return running state
+     */
+    boolean running();
 
 }

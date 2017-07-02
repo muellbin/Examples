@@ -23,13 +23,13 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
+import org.lightjason.trafficsimulation.runtime.CRuntime;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -46,9 +46,10 @@ public final class CMain
     @GET
     @Path( "/execute" )
     @Produces( MediaType.APPLICATION_JSON )
-    public List<String> agents()
+    public Response execute()
     {
-        return Stream.of( "x", "yy", "zzz" ).collect( Collectors.toList() );
+        CRuntime.INSTANCE.run();
+        return Response.status( Response.Status.OK ).build();
     }
 
 }
