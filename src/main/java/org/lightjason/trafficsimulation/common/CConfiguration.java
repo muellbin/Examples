@@ -158,12 +158,20 @@ public final class CConfiguration
         StreamUtils.zip(
             Stream.of(
                 "",
+                "asl",
+                "asl",
+                "asl",
+                "asl",
                 "asl"
             ),
 
             Stream.of(
                 "configuration.yaml",
-                "environment.asl"
+                "area.asl",
+                "communication.asl",
+                "environment.asl",
+                "user.asl",
+                "vehicle.asl"
             ),
 
             ImmutablePair::new

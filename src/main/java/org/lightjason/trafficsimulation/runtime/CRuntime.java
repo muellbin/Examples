@@ -23,9 +23,22 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
+import org.apache.commons.io.IOUtils;
+import org.lightjason.trafficsimulation.common.CCommon;
+import org.lightjason.trafficsimulation.common.CConfiguration;
+
 import javax.annotation.Nonnull;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -44,7 +57,11 @@ public final class CRuntime implements IRuntime
     /**
      * supplier of tasks
      */
-    private AtomicReference<Supplier<ITask>> m_supplier = new AtomicReference<>( () -> ITask.EMPTY );
+    private AtomicReference<Function<Map<String, String>, ITask>> m_supplier = new AtomicReference<>( ( i ) -> ITask.EMPTY );
+    /**
+     * map with asl codes
+     */
+    private final Map<String, String> m_asl = Collections.synchronizedMap( new TreeMap<>( String.CASE_INSENSITIVE_ORDER ) );
 
 
     /**
@@ -52,14 +69,48 @@ public final class CRuntime implements IRuntime
      */
     private CRuntime()
     {
+        // read asl codes
+        final Set<String> l_items = Stream.of( "area", "communication", "environment", "vehicle" )
+                                          .filter( i -> !read( m_asl, CConfiguration.INSTANCE.getOrDefault( "", "agent", i, "asl" ) ) )
+                                          .collect( Collectors.toSet() );
+        if ( !l_items.isEmpty() )
+            throw new RuntimeException( CCommon.languagestring( this, "agentnotfound", l_items ) );
     }
+
+    /**
+     * read agetn data
+     *
+     * @param p_code code map
+     * @param p_key key / file name
+     * @return data can be read
+     */
+    private boolean read( @Nonnull final Map<String, String> p_code, @Nonnull final String p_key )
+    {
+        if ( ( p_key.isEmpty() ) || ( p_code.containsKey( p_key ) ) )
+            return false;
+
+        try
+        (
+            final InputStream l_stream = new FileInputStream( CCommon.searchpath( p_key ) )
+        )
+        {
+            m_asl.put( p_key.substring( 0, p_key.lastIndexOf( '.' ) ), IOUtils.toString( l_stream, "UTF-8" ) );
+            return true;
+        }
+        catch ( final IOException l_exception )
+        {
+            return false;
+        }
+    }
+
+
 
     @Override
     public final void run()
     {
         try
         {
-            m_task.updateAndGet( ( i ) -> i.running() ? i : m_supplier.get().get() ).call();
+            m_task.updateAndGet( ( i ) -> i.running() ? i : m_supplier.get().apply( m_asl ) ).call();
         }
         catch ( final Exception l_exception )
         {
@@ -69,7 +120,7 @@ public final class CRuntime implements IRuntime
 
 
     @Override
-    public final IRuntime supplier( @Nonnull final Supplier<ITask> p_supplier )
+    public final IRuntime supplier( @Nonnull final Function<Map<String, String>, ITask> p_supplier )
     {
         m_supplier.set( p_supplier );
         return this;

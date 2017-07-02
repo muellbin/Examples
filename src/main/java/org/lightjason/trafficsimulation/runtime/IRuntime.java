@@ -24,7 +24,8 @@
 package org.lightjason.trafficsimulation.runtime;
 
 import javax.annotation.Nonnull;
-import java.util.function.Supplier;
+import java.util.Map;
+import java.util.function.Function;
 
 
 /**
@@ -36,10 +37,10 @@ public interface IRuntime extends Runnable
     /**
      * sets the task-supplier
      *
-     * @param p_supplier  task supplier
+     * @param p_supplier task supplier
      * @return self reference
      */
-    IRuntime supplier( @Nonnull final Supplier<ITask> p_supplier );
+    IRuntime supplier( @Nonnull final Function<Map<String, String>, ITask> p_supplier );
 
     /**
      * task is running

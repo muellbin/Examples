@@ -23,16 +23,15 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
+import org.apache.commons.io.IOUtils;
 import org.lightjason.trafficsimulation.common.CCommon;
-import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
 import javax.annotation.Nonnull;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
@@ -56,19 +55,18 @@ public class CTask implements ITask
 
     /**
      * ctor
+     *
+     * @param p_asl asl map
      */
-    public CTask()
+    public CTask( @Nonnull final Map<String, String> p_asl )
     {
         m_thread = new Thread( () ->
         {
             final IEnvironment l_environment;
 
             try
-            (
-                final InputStream l_stream = new FileInputStream( CCommon.searchpath( CConfiguration.INSTANCE.get( "agent", "environment", "asl" ) ) )
-            )
             {
-                l_environment = new CEnvironment.CGenerator( l_stream ).generatesingle();
+                l_environment = new CEnvironment.CGenerator( IOUtils.toInputStream( p_asl.get( "environment" ), "UTF-8" ) ).generatesingle();
             }
             catch ( final Exception l_exception )
             {
