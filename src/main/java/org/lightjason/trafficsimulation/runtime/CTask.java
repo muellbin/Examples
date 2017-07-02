@@ -30,12 +30,16 @@ import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
+import javax.annotation.Nonnull;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -47,10 +51,6 @@ public class CTask implements ITask
      * logger
      */
     private static final Logger LOGGER = CCommon.logger( ITask.class );
-    /**
-     * environement
-     */
-    private Set<IObject<?>> m_elements = Collections.synchronizedSet( new HashSet<>() );
     /**
      * thread
      */
@@ -66,11 +66,9 @@ public class CTask implements ITask
             final IEnvironment l_environment;
 
             try
-                (
-                    final InputStream l_stream = new FileInputStream(
-                        CCommon.searchpath( CConfiguration.INSTANCE.get( "agent", "environment", "asl" ) )
-                    )
-                )
+            (
+                final InputStream l_stream = new FileInputStream( CCommon.searchpath( CConfiguration.INSTANCE.get( "agent", "environment", "asl" ) ) )
+            )
             {
                 l_environment = new CEnvironment.CGenerator( l_stream ).generatesingle();
             }
@@ -81,21 +79,39 @@ public class CTask implements ITask
                 return;
             }
 
-            if ( l_environment != null )
-                while ( !l_environment.shutdown() )
-                    try
-                    {
-                        l_environment.call();
-                    }
-                    catch ( final Exception l_exception )
-                    {
-                        LOGGER.warning( l_exception.getLocalizedMessage() );
-                        break;
-                    }
+            if ( l_environment == null )
+            {
+                LOGGER.warning( "environment cannot be instantiable" );
+                return;
+            }
+
+            // execute objects
+            final Set<Callable<?>> l_elements = Collections.synchronizedSet( Stream.of( l_environment ).collect( Collectors.toSet() ) );
+            while ( !l_environment.shutdown() )
+                l_elements.parallelStream().forEach( CTask::execute );
 
             CHTTPServer.shutdown();
         } );
     }
+
+
+    /**
+     * execute any object
+     *
+     * @param p_object callable
+     */
+    private static void execute( @Nonnull final Callable<?> p_object )
+    {
+        try
+        {
+            p_object.call();
+        }
+        catch ( final Exception l_execution )
+        {
+            LOGGER.warning( l_execution.getLocalizedMessage() );
+        }
+    }
+
 
     @Override
     public final ITask call() throws Exception
