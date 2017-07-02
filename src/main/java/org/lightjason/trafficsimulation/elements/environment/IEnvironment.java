@@ -26,6 +26,8 @@ package org.lightjason.trafficsimulation.elements.environment;
 import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.trafficsimulation.elements.IObject;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * environment interface
@@ -46,6 +48,7 @@ public interface IEnvironment extends IObject<IEnvironment>
      * @param p_position position
      * @return input object or other objects which blocks the position
      */
-    IObject<?> set( final IObject<?> p_object, final DoubleMatrix1D p_position );
+    @Nonnull
+    IObject<?> set( @Nonnull final IObject<?> p_object, @Nonnull final DoubleMatrix1D p_position );
 
 }

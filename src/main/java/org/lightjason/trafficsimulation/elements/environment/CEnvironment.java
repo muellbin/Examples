@@ -29,6 +29,7 @@ import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.impl.SparseObjectMatrix2D;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.commons.math3.distribution.AbstractRealDistribution;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
@@ -38,6 +39,7 @@ import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.IArea;
+import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,8 +98,9 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return m_shutdown.get();
     }
 
+    @Nonnull
     @Override
-    public final IObject<?> set( final IObject<?> p_object, final DoubleMatrix1D p_position )
+    public final IObject<?> set( @Nonnull final IObject<?> p_object, @Nonnull final DoubleMatrix1D p_position )
     {
         return p_object;
     }
@@ -108,6 +111,9 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return Stream.empty();
     }
 
+    /**
+     * shuts down the current execution
+     */
     @IAgentActionFilter
     @IAgentActionName( name = "simulation/shutdown" )
     private void actionshutdown()
@@ -115,10 +121,36 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_shutdown.set( true );
     }
 
+    /**
+     * creates an area
+     * @param p_xlowerbound x-value left-lower bound
+     * @param p_ylowerbound y-value left-lower bound
+     * @param p_xupperbound x-value right-upper bound
+     * @param p_yupperbound y-value right-upper bound
+     */
     @IAgentActionFilter
     @IAgentActionName( name = "area/create" )
     private void createarea( final Number p_xlowerbound, final Number p_ylowerbound, final Number p_xupperbound, final Number p_yupperbound )
     {
+    }
+
+    /**
+     * creates a vehicle generator
+     *
+     * @param p_distribution distribution
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "vehicle/create" )
+    private void createvehiclegenerator( @Nonnull final AbstractRealDistribution p_distribution )
+    {
+
+    }
+
+    @IAgentActionFilter
+    @IAgentActionName( name = "element/list" )
+    private boolean isvehicle( @Nonnull final IObject<?> p_object )
+    {
+        return p_object instanceof IVehicle;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

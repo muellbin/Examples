@@ -128,6 +128,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     {
         m_elements.parallelStream()
                   .filter( i -> !this.inside( i ) )
+                  .filter( m_elements::remove )
                   .forEach( i -> this.trigger(
                       CTrigger.from(
                         ITrigger.EType.DELETEGOAL,
@@ -145,10 +146,26 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      * @return list
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "list" )
+    @IAgentActionName( name = "element/list" )
     private List<IObject<?>> list()
     {
         return new ArrayList<>( m_elements );
+    }
+
+    /**
+     * returns the current speed
+     *
+     * @param p_object any object
+     * @return speed of the object
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "vehicle/speed" )
+    private double speed( @Nonnull final IObject<?> p_object )
+    {
+        if ( !( p_object instanceof IVehicle ) )
+            throw new RuntimeException( MessageFormat.format( "speed value can be read for vehicles only, but it is: {0}", p_object ) );
+
+        return p_object.<IVehicle>raw().speed();
     }
 
     /**
@@ -158,11 +175,13 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      * @param p_value value
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "penalty" )
-    private void penalty( final IObject<?> p_object, final Number p_value )
+    @IAgentActionName( name = "vehicle/penalty" )
+    private void penalty( @Nonnull final IObject<?> p_object, @Nonnull final Number p_value )
     {
-        if ( p_object instanceof IVehicle )
-            p_object.<IVehicle>raw().penalty( p_value );
+        if ( !( p_object instanceof IVehicle ) )
+            throw new RuntimeException( MessageFormat.format( "penality value can be set for vehicles only, but it is set to: {0}", p_object ) );
+
+        p_object.<IVehicle>raw().penalty( p_value );
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

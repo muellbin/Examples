@@ -56,4 +56,11 @@ public interface IVehicle extends IObject<IVehicle>
      */
     double penalty();
 
+    /**
+     * vehicle is user-definied
+     *
+     * @return user-defined object
+     */
+    boolean user();
+
 }

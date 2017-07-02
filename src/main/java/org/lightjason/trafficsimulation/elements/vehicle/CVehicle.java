@@ -60,6 +60,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     private static final String FUNCTOR = "vehicle";
     /**
+     * user definied vehicle
+     */
+    private final boolean m_userdefinied;
+    /**
      * environment
      */
     private final IEnvironment m_environment;
@@ -96,7 +100,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration,
                       @Nonnull final String p_id,
                       @Nonnull final DoubleMatrix1D p_position, @Nonnull final IEnvironment p_environment,
-                      @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate, @Nonnegative final double p_maximumspeed
+                      @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate, @Nonnegative final double p_maximumspeed,
+                      final boolean p_userdefinied
     )
     {
         super( p_configuration, FUNCTOR, p_id, p_position );
@@ -104,6 +109,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_decelerate = p_decelerate;
         m_maximumspeed = p_maximumspeed;
         m_environment = p_environment;
+        m_userdefinied = p_userdefinied;
     }
 
     @Override
@@ -175,6 +181,12 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         return m_panelize.get();
     }
 
+    @Override
+    public final boolean user()
+    {
+        return m_userdefinied;
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -191,6 +203,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          */
         private final boolean m_visible;
         /**
+         * user-definied vehicle
+         */
+        private final boolean m_userdefinied;
+        /**
          * environment
          */
         private final IEnvironment m_environment;
@@ -201,11 +217,13 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          * @param p_uiaccessiable generated cars are ui-accessable
          * @throws Exception on any error
          */
-        protected CGenerator( @Nonnull final InputStream p_stream, @Nonnull final IEnvironment p_environment, final boolean p_uiaccessiable ) throws Exception
+        protected CGenerator( @Nonnull final InputStream p_stream, @Nonnull final IEnvironment p_environment,
+                              final boolean p_uiaccessiable, final boolean p_userdefinied ) throws Exception
         {
             super( p_stream, CVehicle.class );
             m_visible = p_uiaccessiable;
             m_environment = p_environment;
+            m_userdefinied = p_userdefinied;
         }
 
         @Override
@@ -227,7 +245,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                         m_environment,
                         1,
                         1,
-                        200
+                        200,
+                        m_userdefinied
                 ),
                 m_visible,
                 Stream.of( "vehicle" )
