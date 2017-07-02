@@ -40,11 +40,11 @@ public final class CRuntime implements IRuntime
     /**
      * execution task
      */
-    private final AtomicReference<ITask> m_task = new AtomicReference<>();
+    private final AtomicReference<ITask> m_task = new AtomicReference<>( ITask.EMPTY );
     /**
      * supplier of tasks
      */
-    private Supplier<ITask> m_supplier = () -> ITask.EMPTY;
+    private AtomicReference<Supplier<ITask>> m_supplier = new AtomicReference<>( () -> ITask.EMPTY );
 
 
     /**
@@ -59,7 +59,7 @@ public final class CRuntime implements IRuntime
     {
         try
         {
-            m_task.getAndUpdate( ( i ) -> i.running() ? i : m_supplier.get() ).call();
+            m_task.updateAndGet( ( i ) -> i.running() ? i : m_supplier.get().get() ).call();
         }
         catch ( final Exception l_exception )
         {
@@ -69,9 +69,9 @@ public final class CRuntime implements IRuntime
 
 
     @Override
-    public IRuntime supplier( @Nonnull final Supplier<ITask> p_supplier )
+    public final IRuntime supplier( @Nonnull final Supplier<ITask> p_supplier )
     {
-        m_supplier = p_supplier;
+        m_supplier.set( p_supplier );
         return this;
     }
 
