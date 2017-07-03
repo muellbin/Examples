@@ -23,7 +23,6 @@
 
 package org.lightjason.trafficsimulation.elements;
 
-import cern.colt.matrix.DoubleMatrix1D;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.beliefbase.view.IView;

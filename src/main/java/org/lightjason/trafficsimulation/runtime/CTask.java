@@ -23,7 +23,6 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
-import org.apache.commons.io.IOUtils;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;

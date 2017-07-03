@@ -44,7 +44,6 @@ import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -78,7 +77,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     /**
      * grid
      */
-    private final AtomicReference<ObjectMatrix2D> m_grid = new AtomicReference<>( new SparseObjectMatrix2D( 0, 0) );
+    private final AtomicReference<ObjectMatrix2D> m_grid = new AtomicReference<>( new SparseObjectMatrix2D( 0, 0 ) );
 
     /**
      * ctor
