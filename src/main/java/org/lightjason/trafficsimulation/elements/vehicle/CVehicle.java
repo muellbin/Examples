@@ -41,6 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
@@ -87,6 +88,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * panelize value
      */
     private final AtomicDouble m_panelize = new AtomicDouble();
+    /*
+     * current position
+     */
+    private final DoubleMatrix1D m_position;
 
     /**
      * ctor
@@ -104,12 +109,19 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                       final boolean p_userdefinied
     )
     {
-        super( p_configuration, FUNCTOR, p_id, p_position );
+        super( p_configuration, FUNCTOR, p_id );
         m_accelerate = p_accelerate;
         m_decelerate = p_decelerate;
         m_maximumspeed = p_maximumspeed;
         m_environment = p_environment;
         m_userdefinied = p_userdefinied;
+        m_position = p_position;
+    }
+
+    @Override
+    public final DoubleMatrix1D position()
+    {
+        return m_position;
     }
 
     @Override
@@ -192,7 +204,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     /**
      * generator
      */
-    public static final class CGenerator extends IBaseGenerator<IVehicle>
+    public static final class CGenerator extends IBaseGenerator<IVehicle> implements Callable<IVehicle>
     {
         /**
          * counter
@@ -231,6 +243,12 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         {
             COUNTER.set( 0 );
             return this;
+        }
+
+        @Override
+        public final IVehicle call() throws Exception
+        {
+            return this.generatesingle();
         }
 
         @Nullable

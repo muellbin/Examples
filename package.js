@@ -21,4 +21,10 @@
 var jquery = require("jquery"),
     codemirror = require("codemirror"),
     quintus = require("quintus");
-    //gentelella = require("gentelella");
+
+angular.module('home.html', []).run(["$templateCache", function($templateCache) {
+    $templateCache.put('home.html',
+        '<h2>Home</h2>\n' +
+        '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>\n' +
+        '');
+}]);

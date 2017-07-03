@@ -69,10 +69,17 @@ public final class CRuntime implements IRuntime
      */
     private CRuntime()
     {
-        // read asl codes
+        // read main asl codes
         final Set<String> l_items = Stream.of( "area", "communication", "environment", "vehicle" )
                                           .filter( i -> !read( m_asl, CConfiguration.INSTANCE.getOrDefault( "", "agent", i, "asl" ) ) )
                                           .collect( Collectors.toSet() );
+
+        // add user asl codes
+        CConfiguration.INSTANCE.getOrDefault( Collections.<String>emptyList(), "agent", "user", "asl" )
+                               .stream()
+                               .filter( i -> !read( m_asl, i ) )
+                               .forEach( l_items::add );
+
         if ( !l_items.isEmpty() )
             throw new RuntimeException( CCommon.languagestring( this, "agentnotfound", l_items ) );
     }

@@ -66,7 +66,7 @@ public class CTask implements ITask
 
             try
             {
-                l_environment = new CEnvironment.CGenerator( IOUtils.toInputStream( p_asl.get( "environment" ), "UTF-8" ) ).generatesingle();
+                l_environment = new CEnvironment.CGenerator( Collections.unmodifiableMap( p_asl ) ).generatesingle();
             }
             catch ( final Exception l_exception )
             {

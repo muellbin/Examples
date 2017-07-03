@@ -56,10 +56,6 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
      */
     private static final long serialVersionUID = 6278806527768825298L;
     /**
-     * current position of the agent
-     */
-    protected DoubleMatrix1D m_position;
-    /**
      * functor definition
      */
     private final String m_functor;
@@ -80,15 +76,12 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
      * @param p_configuration agent configuration
      * @param p_functor functor of the object literal
      * @param p_id name of the object
-     * @param p_position initial position
      */
-    protected IBaseObject( @Nonnull final IAgentConfiguration<T> p_configuration, @Nonnull final String p_functor,
-                           @Nonnull final String p_id, @Nonnull final DoubleMatrix1D p_position )
+    protected IBaseObject( @Nonnull final IAgentConfiguration<T> p_configuration, @Nonnull final String p_functor, @Nonnull final String p_id )
     {
         super( p_configuration );
         m_functor = p_functor;
         m_id = p_id;
-        m_position = p_position;
 
         //m_beliefbase.add( new CEnvironmentBeliefbase().create( "env", m_beliefbase ) );
         m_external = m_beliefbase.beliefbase().view( "extern" );
@@ -145,11 +138,6 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
         return ( p_object != null ) && ( p_object instanceof IObject<?> ) && ( this.hashCode() == p_object.hashCode() );
     }
 
-    @Override
-    public final DoubleMatrix1D position()
-    {
-        return m_position;
-    }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 

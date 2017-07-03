@@ -74,6 +74,10 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      * allowed speed
      */
     private final Double m_allowedspeed;
+    /**
+     * current position
+     */
+    private final DoubleMatrix1D m_position;
 
     /**
      * ctor
@@ -89,8 +93,9 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         @Nonnull final Number p_allowedspeed
     )
     {
-        super( p_configuration, FUNCTOR, p_id, p_position );
+        super( p_configuration, FUNCTOR, p_id );
         m_allowedspeed = p_allowedspeed.doubleValue();
+        m_position = p_position;
     }
 
     @Override
@@ -113,6 +118,12 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     {
         return ( m_position.get( 0 ) <= p_object.position().get( 0 ) ) && ( m_position.get( 1 ) <= p_object.position().get( 1 ) )
             && ( m_position.get( 3 ) >= p_object.position().get( 0 ) ) && ( m_position.get( 4 ) >= p_object.position().get( 1 ) );
+    }
+
+    @Override
+    public final DoubleMatrix1D position()
+    {
+        return m_position;
     }
 
     @Override

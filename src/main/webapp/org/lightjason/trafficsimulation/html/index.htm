@@ -10,14 +10,15 @@
     <script src="js/global.js"></script>
     <script src="js/lightjason.js"></script>
     <script src="js/initialize.js"></script>
-
-    // https://github.com/puikinsh/gentelella
 </head>
 <body>
+
+    <div ng-view class="view-frame"></div>
 
     <div id="screen">
         <script>
             // http://www.html5quintus.com/
+            // https://github.com/javoire/browserify-ng-html2js
             var Q = Quintus()
                 .include("Sprites, Scenes, Input, 2D, Touch, UI")
                 .setup()

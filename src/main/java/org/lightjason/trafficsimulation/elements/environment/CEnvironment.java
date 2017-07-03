@@ -27,6 +27,7 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.ObjectMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.impl.SparseObjectMatrix2D;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.distribution.AbstractRealDistribution;
@@ -44,9 +45,11 @@ import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 
@@ -75,21 +78,23 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     /**
      * grid
      */
-    private final ObjectMatrix2D m_grid;
+    private final AtomicReference<ObjectMatrix2D> m_grid = new AtomicReference<>( new SparseObjectMatrix2D( 0, 0) );
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
      * @param p_id name of the object
-     * @param p_position size of the world
      */
-    private CEnvironment( @Nonnull final IAgentConfiguration<IEnvironment> p_configuration,
-                          @Nonnull final String p_id,
-                          @Nonnull final DoubleMatrix1D p_position )
+    private CEnvironment( @Nonnull final IAgentConfiguration<IEnvironment> p_configuration, @Nonnull final String p_id )
     {
-        super( p_configuration, FUNCTOR, p_id, p_position );
-        m_grid = new SparseObjectMatrix2D( (int) m_position.get( 0 ), (int) m_position.get( 1 ) );
+        super( p_configuration, FUNCTOR, p_id );
+    }
+
+    @Override
+    public final DoubleMatrix1D position()
+    {
+        return new DenseDoubleMatrix1D( new double[]{m_grid.get().columns(), m_grid.get().rows()} );
     }
 
     @Override
@@ -111,12 +116,23 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return Stream.empty();
     }
 
+    @IAgentActionFilter
+    @IAgentActionName( name = "simulation/initialize" )
+    private void simulationinitialize( final Number p_width, final Number p_height )
+    {
+        if ( m_grid.get() != null )
+            throw new RuntimeException( "world is initialized" );
+
+        m_grid.set( new SparseObjectMatrix2D( p_width.intValue(), p_height.intValue() ) );
+        m_areas.clear();
+    }
+
     /**
      * shuts down the current execution
      */
     @IAgentActionFilter
     @IAgentActionName( name = "simulation/shutdown" )
-    private void actionshutdown()
+    private void simulationshutdown()
     {
         m_shutdown.set( true );
     }
@@ -130,7 +146,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     @IAgentActionFilter
     @IAgentActionName( name = "area/create" )
-    private void createarea( final Number p_xlowerbound, final Number p_ylowerbound, final Number p_xupperbound, final Number p_yupperbound )
+    private void areacreate( final Number p_xlowerbound, final Number p_ylowerbound, final Number p_xupperbound, final Number p_yupperbound )
     {
     }
 
@@ -146,8 +162,14 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
     }
 
+    /**
+     * checks if an object element is a vehicle
+     *
+     * @param p_object any object
+     * @return is vehicle
+     */
     @IAgentActionFilter
-    @IAgentActionName( name = "element/list" )
+    @IAgentActionName( name = "element/isvehicle" )
     private boolean isvehicle( @Nonnull final IObject<?> p_object )
     {
         return p_object instanceof IVehicle;
@@ -164,12 +186,12 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         /**
          * ctor
          *
-         * @param p_stream stream
+         * @param p_asl map with asl codes
          * @throws Exception on any error
          */
-        public CGenerator( @Nonnull final InputStream p_stream ) throws Exception
+        public CGenerator( @Nonnull final Map<String, String> p_asl ) throws Exception
         {
-            super( p_stream, CEnvironment.class );
+            super( IOUtils.toInputStream( p_asl.get( "environment" ), "UTF-8" ), CEnvironment.class );
         }
 
         @Override
@@ -184,11 +206,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             return new ImmutableTriple<>(
                 new CEnvironment(
                     m_configuration,
-                    FUNCTOR,
-                    new DenseDoubleMatrix1D( new double[]{
-                        CConfiguration.INSTANCE.<Number>getOrDefault( 0, "main", "dimension", "width" ).doubleValue(),
-                        CConfiguration.INSTANCE.<Number>getOrDefault( 0, "main", "dimension", "height" ).doubleValue()
-                    } )
+                    FUNCTOR
+
                 ),
                 CConfiguration.INSTANCE.getOrDefault( false, "agent", "environment", "visible" ),
                 Stream.of( FUNCTOR )

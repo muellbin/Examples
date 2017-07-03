@@ -22,9 +22,6 @@
 # main definition
 main:
   searchpath: []
-  dimension:
-    width: 1000
-    height: 10
 
 
 # agent definition (asl is relative to search path)
