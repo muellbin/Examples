@@ -18,8 +18,13 @@
   "homepage": "https://github.com/LightJason/Examples#readme",
   "dependencies": {
     "codemirror": "^5.27.4",
+    "gulpfile-ninecms": "^0.4.3",
     "jquery": "^3.2.1",
     "ng-gentelella": "^0.2.6",
-    "quintus": "^0.2.0"
+    "quintus": "^0.2.0",
+    "yargs": "^8.0.2"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
   }
 }

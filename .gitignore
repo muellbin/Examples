@@ -9,7 +9,7 @@
 !*.properties
 
 !package.json
-!package.js
+!gulpfile.js
 
 !src/main/webapp/**/*.htm*
 !src/main/webapp/**/*.css

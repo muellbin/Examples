@@ -386,21 +386,6 @@
                             </arguments>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>browserify</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>browserify</executable>
-                            <arguments>
-                                <argument>package.js</argument>
-                                <argument>-o</argument>
-                                <argument>src/main/webapp/org/lightjason/trafficsimulation/html/js/package.js</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 
