@@ -20,7 +20,7 @@
     "codemirror": "^5.27.4",
     "jquery": "^3.2.1",
     "ng-gentelella": "^0.2.6",
-    "quintus": "^0.2.0",
+    "quintus": "^0.2.0"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
