@@ -1,21 +1,23 @@
 {
   "name": "org.lightjason.trafficsimulation",
-  "version": "1.0.0",
   "description": "Microscopic multi-agent based traffic simulation",
-  "main": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "homepage": "https://github.com/LightJason/Examples",
+  "version": "1.0.0",
+  "author": "LightJason",
+  "license": "LGPL-3.0",
+  "main": null,
+  "engines": {
+    "npm": ">=2.0.0",
+    "node": ">=5.0.0"
   },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LightJason/Examples.git"
   },
-  "author": "LightJason",
-  "license": "LGPL-3.0",
   "bugs": {
     "url": "https://github.com/LightJason/Examples/issues"
   },
-  "homepage": "https://github.com/LightJason/Examples#readme",
   "dependencies": {
     "codemirror": "^5.27.4",
     "jquery": "^3.2.1",
@@ -24,7 +26,6 @@
   },
   "devDependencies": {
     "gulp": "^3.9.1",
-    "gulpfile-ninecms": "^0.4.3",
-    "yargs": "^8.0.2"
+    "gulpfile-ninecms": "^0.4.3"
   }
 }

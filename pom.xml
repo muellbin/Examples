@@ -258,9 +258,11 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            <!--
             <resource>
                 <directory>src/main/webapp</directory>
             </resource>
+            -->
         </resources>
 
         <!-- using build plugins -->
@@ -337,7 +339,6 @@
                             <includes>
                                 <include>dependency-reduced-pom.xml</include>
                                 <include>package-lock.json</include>
-                                <include>src/main/webapp/org/lightjason/trafficsimulation/html/js/package.js</include>
                                 <include>node_modules/**</include>
                             </includes>
                         </fileset>
@@ -384,6 +385,16 @@
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>gulp</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>gulp</executable>
                         </configuration>
                     </execution>
                 </executions>
