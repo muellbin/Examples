@@ -13,20 +13,39 @@ var l_gulp = require( "gulp" ),
 
         assets: [
             sourcedir + "index.htm",
-            sourcedir + "*.js"
+            sourcedir + "*.js",
+
+            "node_modules/bootstrap/dist/*fonts/*",
+            "node_modules/font-awesome/*fonts/*",
+            "node_modules/gentelella/vendors/bootstrap/dist/*js/bootstrap.min.js",
+            "node_modules/ng-gentelella/*gentelella/gentelella.jquery.js"
         ],
 
-        sass: [],
+        sass: [
+            "node_modules/ng-gentelella/gentelella/*.s?ss"
+        ],
 
         less: [],
 
         css: [
-            "node_modules/bootstrap/dist/css/bootstrap*(|-theme).css"
+            "node_modules/bootstrap/dist/css/bootstrap*(|-theme).css",
+
+            "node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.css",
+            "node_modules/font-awesome/css/font-awesome.css",
+            "node_modules/gentelella/vendors/nprogress/nprogress.css",
+            "node_modules/gentelella/vendors/iCheck/skins/flat/green.css",
+            "node_modules/gentelella/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
+            "node_modules/gentelella/vendors/pnotify/dist/pnotify.css",
+            "node_modules/gentelella/vendors/pnotify/dist/pnotify.buttons.css",
+            "node_modules/gentelella/vendors/pnotify/dist/pnotify.nonblock.css",
+            "node_modules/gentelella/vendors/select2/dist/css/select2.min.css"
         ],
 
         js: "",
 
-        partials: [],
+        partials: [
+            "node_modules/*ng-gentelella/gentelella/**/*.html"
+        ],
 
         js_lint: [],
 
@@ -41,34 +60,6 @@ var l_gulp = require( "gulp" ),
         build: outputdir,
 
         images: "",
-
-        admin: {
-            assets: [
-                "node_modules/bootstrap/dist/*fonts/*",
-                "node_modules/font-awesome/*fonts/*",
-                "node_modules/gentelella/vendors/bootstrap/dist/*js/bootstrap.min.js",
-                "node_modules/ng-gentelella/*gentelella/gentelella.jquery.js"
-            ],
-            sass: [
-                "node_modules/ng-gentelella/gentelella/*.s?ss"
-            ],
-            css: [
-                "node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.css",
-                "node_modules/font-awesome/css/font-awesome.css",
-                "node_modules/gentelella/vendors/nprogress/nprogress.css",
-                "node_modules/gentelella/vendors/iCheck/skins/flat/green.css",
-                "node_modules/gentelella/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
-                "node_modules/gentelella/vendors/pnotify/dist/pnotify.css",
-                "node_modules/gentelella/vendors/pnotify/dist/pnotify.buttons.css",
-                "node_modules/gentelella/vendors/pnotify/dist/pnotify.nonblock.css",
-                "node_modules/gentelella/vendors/select2/dist/css/select2.min.css"
-            ],
-            js_watch: [],
-            partials: [
-                "node_modules/*ng-gentelella/gentelella/**/*.html"
-            ],
-            build: outputdir
-        }
 
     },
 
@@ -86,12 +77,6 @@ var l_gulp = require( "gulp" ),
         clean_image_opts: function () { return taskMethods.clean_image_opts() },
         fonts: function () { return taskMethods.fonts(paths); },
         nsp: function () { return taskMethods.nsp(); },
-
-        adminAssets: function () { return taskMethods.assets(paths.admin); },
-        adminCss: function () { return taskMethods.css(paths.admin); },
-        adminSass: function () { return taskMethods.sass(paths.admin); },
-        adminConcatJs: function () { return taskMethods.concatJs(paths.admin); },
-        adminPreloadNgHtml: function () { return taskMethods.preloadNgHtml(paths.admin); }
     };
 
 
@@ -112,11 +97,7 @@ l_gulp.task("preTest", l_tasks.preTest);
 l_gulp.task("mocha", l_tasks.mocha);
 l_gulp.task("karma", l_tasks.karma);
 l_gulp.task("istanbul", ["preTest"], l_tasks.mocha);
-l_gulp.task("adminAssets", l_everytimetask, l_tasks.adminAssets);
-l_gulp.task("adminSass", l_everytimetask, l_tasks.adminSass);
-l_gulp.task("adminCss", l_everytimetask.concat(["adminSass"]), l_tasks.adminCss);
 l_gulp.task("preloadNgHtml", l_everytimetask, l_tasks.preloadNgHtml);
-l_gulp.task("adminConcatJs", l_everytimetask.concat(["preloadNgHtml"]), l_tasks.adminConcatJs);
 
 
 l_gulp.task("build", [
@@ -127,11 +108,7 @@ l_gulp.task("build", [
     "browserify",
     "concatJs",
     "images",
-    "fonts",
-    "adminAssets",
-    "adminSass",
-    "adminCss",
-    "adminConcatJs",
+    "fonts"
 ]);
 
 l_gulp.task("default", ["build"]);
