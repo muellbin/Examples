@@ -25,8 +25,8 @@ dependencies:
         - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
         - git clone https://github.com/LightJason/REST.git && cd REST && mvn -B install -DskipTests
         # see relese version https://github.com/nodesource/distributions
-        - "curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash"
-        - sudo apt-get install -y nodejs
+        - "curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -"
+        - sudo apt-get install -y nodejs build-essential
         - npm install gulp-cli -g
 
 
