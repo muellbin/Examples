@@ -1,5 +1,7 @@
 "use strict";
 
+// https://www.smashingmagazine.com/2014/06/building-with-gulp/
+
 var l_gulp = require( "gulp" ),
     taskMethods = require( "gulpfile-ninecms"),
     l_everytimetask = ["clean"],
@@ -10,8 +12,8 @@ var l_gulp = require( "gulp" ),
     paths = {
 
         assets: [
-            sourcedir + "*.js",
-            sourcedir + "index.htm"
+            sourcedir + "index.htm",
+            sourcedir + "*.js"
         ],
 
         sass: [],
@@ -24,16 +26,13 @@ var l_gulp = require( "gulp" ),
 
         js: "",
 
-        js_watch: [
-            "node_modules/jquery/dist/jquery.js",
-            "node_modules/bootstrap/dist/js/bootstrap.js"
-        ],
-
         partials: [],
 
         js_lint: [],
 
         js_cover: [],
+
+        js_watch: [],
 
         mocha: [],
 
@@ -62,54 +61,18 @@ var l_gulp = require( "gulp" ),
                 "node_modules/gentelella/vendors/pnotify/dist/pnotify.css",
                 "node_modules/gentelella/vendors/pnotify/dist/pnotify.buttons.css",
                 "node_modules/gentelella/vendors/pnotify/dist/pnotify.nonblock.css",
-                "node_modules/gentelella/vendors/select2/dist/css/select2.min.css",
+                "node_modules/gentelella/vendors/select2/dist/css/select2.min.css"
             ],
-            js_watch: [
-                "node_modules/jquery/dist/jquery.js",
-                "node_modules/angular/angular.js",
-                "node_modules/angular-route/angular-route.js",
-                "node_modules/angular-resource/angular-resource.js",
-                "node_modules/angular-animate/angular-animate.js",
-                "node_modules/angular-sanitize/angular-sanitize.js",
-                "node_modules/ng-file-upload/dist/ng-file-upload.js",
-                "node_modules/gentelella/vendors/fastclick/lib/fastclick.js",
-                "node_modules/gentelella/vendors/nprogress/nprogress.js",
-                "node_modules/gentelella/vendors/Chart.js/dist/Chart.min.js",
-                "node_modules/gentelella/vendors/gauge.js/dist/gauge.min.js",
-                "node_modules/gentelella/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js",
-                "node_modules/gentelella/vendors/iCheck/icheck.min.js",
-                "node_modules/gentelella/vendors/skycons/skycons.js",
-                "node_modules/gentelella/vendors/Flot/jquery.flot.js",
-                "node_modules/gentelella/vendors/Flot/jquery.flot.pie.js",
-                "node_modules/gentelella/vendors/Flot/jquery.flot.time.js",
-                "node_modules/gentelella/vendors/Flot/jquery.flot.stack.js",
-                "node_modules/gentelella/vendors/Flot/jquery.flot.resize.js",
-                "node_modules/gentelella/production/js/flot/jquery.flot.orderBars.js",
-                "node_modules/gentelella/production/js/flot/date.js",
-                "node_modules/gentelella/production/js/flot/jquery.flot.spline.js",
-                "node_modules/gentelella/production/js/flot/curvedLines.js",
-                "node_modules/gentelella/production/js/moment/moment.min.js",
-                "node_modules/gentelella/production/js/datepicker/daterangepicker.js",
-                "node_modules/gentelella/vendors/pnotify/dist/pnotify.js",
-                "node_modules/gentelella/vendors/pnotify/dist/pnotify.buttons.js",
-                "node_modules/gentelella/vendors/pnotify/dist/pnotify.nonblock.js",
-                "node_modules/gentelella/vendors/select2/dist/js/select2.full.js",
-
-                "node_modules/ng-gentelella/gentelella/*.module.js",
-                "node_modules/ng-gentelella/gentelella/*.config.js",
-                "node_modules/ng-gentelella/gentelella/**/*.module.js",
-                "node_modules/ng-gentelella/gentelella/**/*.component.js",
-                "node_modules/ng-gentelella/gentelella/**/*.service.js"
-            ],
+            js_watch: [],
             partials: [
                 "node_modules/*ng-gentelella/gentelella/**/*.html"
             ],
-            build: outputdir + "js/admin/"
+            build: outputdir
         }
 
     },
 
-    tasks = {
+    l_tasks = {
         clean: function () { return taskMethods.clean(paths); },
         assets: function () { return taskMethods.assets(paths); },
         css: function () { return taskMethods.css(paths); },
@@ -133,27 +96,28 @@ var l_gulp = require( "gulp" ),
 
 
 
-l_gulp.task("clean", tasks.clean);
-l_gulp.task("assets", l_everytimetask, tasks.assets);
-l_gulp.task("css", l_everytimetask.concat(["less", "sass"]), tasks.css);
-l_gulp.task("less", l_everytimetask, tasks.less);
-l_gulp.task("sass", l_everytimetask, tasks.sass);
-l_gulp.task("browserify", l_everytimetask, tasks.browserify);
-l_gulp.task("lintjs", tasks.lintjs);
-l_gulp.task("concatJs", l_everytimetask, tasks.concatJs);
-l_gulp.task("images", l_everytimetask, tasks.images);
-l_gulp.task("clean_image_opts", l_everytimetask, tasks.clean_image_opts);
-l_gulp.task("fonts", l_everytimetask, tasks.fonts);
-l_gulp.task("nsp", tasks.nsp);
-l_gulp.task("preTest", tasks.preTest);
-l_gulp.task("mocha", tasks.mocha);
-l_gulp.task("karma", tasks.karma);
-l_gulp.task("istanbul", ["preTest"], tasks.mocha);
-l_gulp.task("adminAssets", l_everytimetask, tasks.adminAssets);
-l_gulp.task("adminSass", l_everytimetask, tasks.adminSass);
-l_gulp.task("adminCss", l_everytimetask.concat(["adminSass"]), tasks.adminCss);
-l_gulp.task("preloadNgHtml", l_everytimetask, tasks.preloadNgHtml);
-l_gulp.task("adminConcatJs", l_everytimetask.concat(["preloadNgHtml"]), tasks.adminConcatJs);
+l_gulp.task("clean", l_tasks.clean);
+l_gulp.task("assets", l_everytimetask, l_tasks.assets);
+l_gulp.task("css", l_everytimetask.concat(["less", "sass"]), l_tasks.css);
+l_gulp.task("less", l_everytimetask, l_tasks.less);
+l_gulp.task("sass", l_everytimetask, l_tasks.sass);
+l_gulp.task("browserify", l_everytimetask, l_tasks.browserify);
+l_gulp.task("lintjs", l_tasks.lintjs);
+l_gulp.task("concatJs", l_everytimetask, l_tasks.concatJs);
+l_gulp.task("images", l_everytimetask, l_tasks.images);
+l_gulp.task("clean_image_opts", l_everytimetask, l_tasks.clean_image_opts);
+l_gulp.task("fonts", l_everytimetask, l_tasks.fonts);
+l_gulp.task("nsp", l_tasks.nsp);
+l_gulp.task("preTest", l_tasks.preTest);
+l_gulp.task("mocha", l_tasks.mocha);
+l_gulp.task("karma", l_tasks.karma);
+l_gulp.task("istanbul", ["preTest"], l_tasks.mocha);
+l_gulp.task("adminAssets", l_everytimetask, l_tasks.adminAssets);
+l_gulp.task("adminSass", l_everytimetask, l_tasks.adminSass);
+l_gulp.task("adminCss", l_everytimetask.concat(["adminSass"]), l_tasks.adminCss);
+l_gulp.task("preloadNgHtml", l_everytimetask, l_tasks.preloadNgHtml);
+l_gulp.task("adminConcatJs", l_everytimetask.concat(["preloadNgHtml"]), l_tasks.adminConcatJs);
+
 
 l_gulp.task("build", [
     "assets",
@@ -167,7 +131,7 @@ l_gulp.task("build", [
     "adminAssets",
     "adminSass",
     "adminCss",
-    "adminConcatJs"
+    "adminConcatJs",
 ]);
 
 l_gulp.task("default", ["build"]);
