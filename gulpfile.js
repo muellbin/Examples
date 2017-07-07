@@ -17,6 +17,10 @@ var l_gulp = require( "gulp" ),
             sourcedir + "index.htm",
             sourcedir + "*.js",
 
+            "node_modules/jquery/dist/jquery.min.js",
+
+            "node_modules/quintus/lib/*.js",
+
             "node_modules/bootstrap/dist/*fonts/*",
             "node_modules/font-awesome/*fonts/*",
             "node_modules/gentelella/vendors/bootstrap/dist/*js/bootstrap.min.js",
