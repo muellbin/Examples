@@ -85,7 +85,7 @@ public final class CSimulation
         if ( CRuntime.INSTANCE.running() )
             return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "isrunning" ) ).build();
 
-        CHTTPServer.shutdown();
+        new Thread( CHTTPServer::shutdown ).start();
         return Response.status( Response.Status.OK ).build();
     }
 
