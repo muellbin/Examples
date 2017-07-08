@@ -24,6 +24,8 @@
 package org.lightjason.trafficsimulation.runtime;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 
@@ -59,9 +61,9 @@ public final class CRuntime implements IRuntime
      */
     private AtomicReference<Function<Map<String, String>, ITask>> m_supplier = new AtomicReference<>( ( i ) -> ITask.EMPTY );
     /**
-     * map with asl codes
+     * map with agents and asl codes and visibility
      */
-    private final Map<String, String> m_asl = Collections.synchronizedMap( new TreeMap<>( String.CASE_INSENSITIVE_ORDER ) );
+    private final Map<String, Pair<String, Boolean>> m_agents = Collections.synchronizedMap( new TreeMap<>( String.CASE_INSENSITIVE_ORDER ) );
 
 
     /**
@@ -71,13 +73,17 @@ public final class CRuntime implements IRuntime
     {
         // read main asl codes
         final Set<String> l_items = Stream.of( "area", "communication", "environment", "vehicle" )
-                                          .filter( i -> !read( m_asl, CConfiguration.INSTANCE.getOrDefault( "", "agent", i, "asl" ) ) )
+                                          .filter( i -> !read(
+                                              m_agents,
+                                              CConfiguration.INSTANCE.getOrDefault( "", "agent", i, "asl" ),
+                                              CConfiguration.INSTANCE.getOrDefault( false, "agent", i, "visible" )
+                                          ) )
                                           .collect( Collectors.toSet() );
 
         // add user asl codes
         CConfiguration.INSTANCE.getOrDefault( Collections.<String>emptyList(), "agent", "user", "asl" )
                                .stream()
-                               .filter( i -> !read( m_asl, i ) )
+                               .filter( i -> !read( m_agents, i, true ) )
                                .forEach( l_items::add );
 
         if ( !l_items.isEmpty() )
@@ -89,9 +95,10 @@ public final class CRuntime implements IRuntime
      *
      * @param p_code code map
      * @param p_key key / file name
+     * @param p_visible visible agent
      * @return data can be read
      */
-    private boolean read( @Nonnull final Map<String, String> p_code, @Nonnull final String p_key )
+    private boolean read( @Nonnull final Map<String, Pair<String, Boolean>> p_code, @Nonnull final String p_key, final boolean p_visible )
     {
         if ( ( p_key.isEmpty() ) || ( p_code.containsKey( p_key ) ) )
             return false;
@@ -101,13 +108,23 @@ public final class CRuntime implements IRuntime
             final InputStream l_stream = new FileInputStream( CCommon.searchpath( p_key ) )
         )
         {
-            m_asl.put( p_key.substring( 0, p_key.lastIndexOf( '.' ) ), IOUtils.toString( l_stream, "UTF-8" ) );
+            m_agents.put( p_key.substring( 0, p_key.lastIndexOf( '.' ) ), new MutablePair<>( IOUtils.toString( l_stream, "UTF-8" ), p_visible ) );
             return true;
         }
         catch ( final IOException l_exception )
         {
             return false;
         }
+    }
+
+    /**
+     * agents map
+     *
+     * @return map with agent names and visibilites
+     */
+    public final Map<String, Pair<String, Boolean>> agents()
+    {
+        return m_agents;
     }
 
 
@@ -117,7 +134,20 @@ public final class CRuntime implements IRuntime
     {
         try
         {
-            m_task.updateAndGet( ( i ) -> i.running() ? i : m_supplier.get().apply( m_asl ) ).call();
+            m_task.updateAndGet(
+                ( i ) -> i.running()
+                         ? i
+                         : m_supplier.get().apply(
+                             Collections.unmodifiableMap(
+                                 m_agents.entrySet().stream().collect( Collectors.toMap(
+                                     Map.Entry::getKey,
+                                     j -> j.getValue().getLeft(),
+                                     ( n, m ) -> n,
+                                     () -> new TreeMap<>( String.CASE_INSENSITIVE_ORDER )
+                                 ) )
+                             )
+                         )
+            ).call();
         }
         catch ( final Exception l_exception )
         {

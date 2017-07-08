@@ -23,33 +23,31 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
-import org.lightjason.trafficsimulation.runtime.CRuntime;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.lightjason.rest.CCommon;
+
+import java.text.MessageFormat;
 
 
 /**
- * rest-api of main functionality
+ * rest-api servlet
  */
-@Path( "/main" )
-public final class CMain
+public final class CAPI extends ResourceConfig
 {
+
     /**
-     * returns a list of agents
-     *
-     * @return agent name list
+     * ctor
      */
-    @GET
-    @Path( "/execute" )
-    @Produces( MediaType.APPLICATION_JSON )
-    public Response execute()
+    public CAPI()
     {
-        CRuntime.INSTANCE.run();
-        return Response.status( Response.Status.OK ).build();
+        this.register( new CSimulation() );
+
+        this.packages(
+            true,
+            MessageFormat.format( "{0}.{1}", CCommon.PACKAGEROOT, "container" ),
+            "com.fasterxml.jackson.jaxrs.json"
+        );
     }
 
 }

@@ -24,11 +24,8 @@
 !main.
 
 +!main <-
-    generic/print( "environment" );
-    !run
+    generic/print( "environment started" )
 .
 
-+!run
-    : Cycle < 10000 <- !run
-    : Cycle >= 10000 <- simulation/shutdown
-.
+// plan to shutdown simulation execution
++!shutdown <- simulation/shutdown.

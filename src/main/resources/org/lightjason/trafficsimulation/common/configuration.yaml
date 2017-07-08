@@ -39,7 +39,6 @@ agent:
       visible: false
       asl: "vehicle.asl"
     user:
-      visible: true
       asl: ["user.asl"]
 
 

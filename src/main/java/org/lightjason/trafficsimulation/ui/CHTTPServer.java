@@ -29,11 +29,13 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.lightjason.rest.CApplication;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.ui.api.CAPI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -91,8 +93,22 @@ public final class CHTTPServer
                 MessageFormat.format( "/{0}/html", CCommon.PACKAGEROOT.replace( ".", "/" ) )
             ).toExternalForm()
         );
-        l_webapp.addServlet( new ServletHolder( new ServletContainer( m_restagent ) ), "/rest/*" );
-        l_webapp.addFilter( new FilterHolder( new CrossOriginFilter() ), "/rest/*", EnumSet.of( DispatcherType.REQUEST ) );
+
+        restapi( l_webapp, m_restagent, "/lightjason/*" );
+        restapi( l_webapp, new CAPI(), "/api/*" );
+    }
+
+    /**
+     * initialize the rest api call
+     *
+     * @param p_context web-app context
+     * @param p_resource resource
+     * @param p_path path
+     */
+    private static void restapi( final WebAppContext p_context, final ResourceConfig p_resource, final String p_path )
+    {
+        p_context.addServlet( new ServletHolder( new ServletContainer( p_resource ) ), p_path );
+        p_context.addFilter( new FilterHolder( new CrossOriginFilter() ), p_path, EnumSet.of( DispatcherType.REQUEST ) );
     }
 
 

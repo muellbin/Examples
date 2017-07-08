@@ -208,7 +208,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
                     FUNCTOR
 
                 ),
-                CConfiguration.INSTANCE.getOrDefault( false, "agent", "environment", "visible" ),
+                true,
                 Stream.of( FUNCTOR )
             );
         }

@@ -26,7 +26,6 @@ package org.lightjason.trafficsimulation.runtime;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
-import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -84,8 +83,6 @@ public class CTask implements ITask
             final Set<Callable<?>> l_elements = Collections.synchronizedSet( Stream.of( l_environment ).collect( Collectors.toSet() ) );
             while ( !l_environment.shutdown() )
                 l_elements.parallelStream().forEach( CTask::execute );
-
-            CHTTPServer.shutdown();
         } );
     }
 
@@ -120,6 +117,6 @@ public class CTask implements ITask
     @Override
     public final boolean running()
     {
-        return !m_thread.isAlive();
+        return m_thread.isAlive();
     }
 }
