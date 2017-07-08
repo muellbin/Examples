@@ -22,4 +22,9 @@
 
 jQuery(function() {
 
+    jQuery( ".simulation-shutdown" ).click(function() {
+        LightJason.ajax( "/api/simulation/shutdown" ).error(function() { alert("error"); })
+    });
+
+
 });

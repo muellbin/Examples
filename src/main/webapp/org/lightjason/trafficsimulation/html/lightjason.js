@@ -43,7 +43,6 @@ var LightJason = (function (px_modul) {
         lo_options.method = lo_options.method || "GET";
         lo_options.data   = lo_options.data   || {};
         lo_options.cache  = lo_options.cache  || false;
-        lo_options.url    = lo_options.url.startsWith("http://") ? lo_options.url : lo_options.url = "/rest" + lo_options.url;
 
         return jQuery.ajax( lo_options );
     };
