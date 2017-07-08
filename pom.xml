@@ -46,6 +46,9 @@
         <coverall.token></coverall.token>
 
         <jetty.version>9.4.6.v20170531</jetty.version>
+
+        <npm.executable>npm</npm.executable>
+        <gulp.executable>gulp</gulp.executable>
     </properties>
 
     <dependencies>
@@ -381,7 +384,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>npm</executable>
+                            <executable>${npm.executable}</executable>
                             <arguments>
                                 <argument>install</argument>
                             </arguments>
@@ -394,7 +397,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>gulp</executable>
+                            <executable>${gulp.executable}</executable>
                         </configuration>
                     </execution>
                 </executions>
@@ -471,4 +474,20 @@
 
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>platform-windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <!-- Override the executable names for Windows -->
+                <npm.executable>npm.cmd</npm.executable>
+                <gulp.executable>gulp.cmd</gulp.executable>
+            </properties>
+        </profile>
+    </profiles>
 </project>
