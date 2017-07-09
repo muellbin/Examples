@@ -1,14 +1,34 @@
 "use strict";
 
 // https://www.smashingmagazine.com/2014/06/building-with-gulp/
+// https://github.com/gulpjs/gulp/blob/master/docs/recipes/running-task-steps-per-folder.md
 
 var l_gulp = require( "gulp" ),
-    taskMethods = require( "gulpfile-ninecms"),
-    l_everytimetask = ["clean"],
-    packagedir = "org/lightjason/trafficsimulation/html/",
-    sourcedir = "src/main/webapp/" + packagedir,
-    outputdir = "target/classes/" + packagedir,
+    l_concat = require("gulp-dir-concat"),
+    l_minify = require("gulp-uglify"),
+    l_rename= require('gulp-rename'),
+    l_clean = require('gulp-clean'),
 
+    l_packagedir = "org/lightjason/trafficsimulation/html/",
+    l_sourcedir = "src/main/webappx/" + l_packagedir,
+    l_outputdir = "target/classes/" + l_packagedir,
+
+    l_config = {
+
+        mainjs: {
+            source: "**/*.js",
+            output: "script.min.js"
+        }
+
+//        maincss: {
+//            source: "**/*.css",
+//            output: "layout.min.css"
+//        }
+
+    };
+
+
+    /*
     paths = {
 
         build: outputdir,
@@ -16,8 +36,6 @@ var l_gulp = require( "gulp" ),
         assets: [
             sourcedir + "index.htm",
             sourcedir + "*.js",
-
-            "node_modules/quintus/lib/*.js",
 
             "node_modules/gentelella/build/js/custom.min.js",
 
@@ -36,7 +54,7 @@ var l_gulp = require( "gulp" ),
             "node_modules/gentelella/vendors/pnotify/dist/pnotify.css",
             "node_modules/gentelella/vendors/pnotify/dist/pnotify.buttons.css",
             "node_modules/gentelella/vendors/pnotify/dist/pnotify.nonblock.css"
-        ]
+        ],
 
     },
 
@@ -45,16 +63,25 @@ var l_gulp = require( "gulp" ),
         assets: function () { return taskMethods.assets(paths); },
         css: function () { return taskMethods.css(paths); },
     };
+    */
+
+for( var k in l_config )
+    l_gulp.task( k, function() {
+        return l_gulp.src( l_sourcedir + l_config[k].source )
+            .pipe( l_concat() )
+            .pipe( l_minify() )
+            .pipe( l_rename( l_config[k].output ) )
+            .pipe( l_gulp.dest( l_outputdir ) );
+    });
+
+l_gulp.task( "clean", function() {
+    return l_gulp.src( l_outputdir )
+        .pipe( l_clean({force: true}) );
+});
 
 
 
-l_gulp.task("clean", l_tasks.clean);
 
-l_gulp.task("assets", l_everytimetask, l_tasks.assets);
-l_gulp.task("css", l_everytimetask, l_tasks.css);
+l_gulp.task( "default", Object.keys(l_config) );
 
 
-
-l_gulp.task("build", [ "assets", "css" ]);
-
-l_gulp.task("default", ["build"]);

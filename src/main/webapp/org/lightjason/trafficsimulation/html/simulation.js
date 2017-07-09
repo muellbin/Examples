@@ -20,65 +20,74 @@
  */
 "use strict";
 
-var Q = window.Q = Quintus()
+jQuery(function() {
+
+    var Q = window.Q = Quintus()
         .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI")
-        .setup({ maximize: true })
+        .setup("screen", {
+            width: 800,
+            height: 600,
+            scaleToFit: true
+        })
         .controls()
-        .touch()
+        .touch();
 
-Q.Sprite.extend("Player",{
-  init: function(p) {
-    this._super(p, {
-      sheet: "player"
+    Q.Sprite.extend("Player", {
+        init: function (p) {
+            this._super(p, {
+                sheet: "player"
+            });
+
+            this.on("hit.sprite", function (collision) {
+                if (collision.obj.isA("Car")) {
+                    //the player hit a car!
+
+                }
+            });
+        }
     });
 
-    this.on("hit.sprite",function(collision) {
-      if(collision.obj.isA("Car")) {
-        //the player hit a car!
+    Q.Sprite.extend("Car", {
+        init: function (p) {
+            this._super(p, {
+                sheet: "car"
+            });
 
-      }
+            this.on("hit.sprite", function (collision) {
+                if (collision.obj.isA("Car")) {
+                    //A car hit another car!
+
+                }
+            });
+        }
     });
-  }
-});
 
-Q.Sprite.extend("Car",{
-  init: function(p) {
-    this._super(p, {
-      sheet: "car"
+    Q.scene("street", function (stage) {
+
+        stage.insert(new Q.TileLayer({
+            dataAsset: 'street.json',
+            sheet: 'streettiles'
+        }));
+
+        var player = stage.insert(new Q.Player({x: 20, y: 114}));
+
+        stage.add("viewport").follow(player);
+
+        stage.insert(new Q.Car({x: 300, y: 114}));
+        stage.insert(new Q.Car({x: 200, y: 144}));
+        stage.insert(new Q.Car({x: 500, y: 144}));
+
+        stage.insert(new Q.Car({x: 700, y: 80, angle: 180}));
+        stage.insert(new Q.Car({x: 800, y: 50, angle: 180}));
+
     });
 
-    this.on("hit.sprite",function(collision) {
-      if(collision.obj.isA("Car")) {
-        //A car hit another car!
+    Q.load("sprites.png, sprites.json, street.json, streettiles.png", function () {
+        Q.sheet("streettiles", "streettiles.png", {tilew: 32, tileh: 32});
 
-      }
+        Q.compileSheets("sprites.png", "sprites.json");
+
+        Q.stageScene("street");
     });
-  }
-});
 
-Q.scene("street",function(stage) {
-
-  stage.insert(new Q.TileLayer({
-                             dataAsset: 'street.json',
-                             sheet:     'streettiles' }));
-
-  var player = stage.insert(new Q.Player({ x: 20, y: 114 }));
-
-  stage.add("viewport").follow(player);
-
-  stage.insert(new Q.Car({ x: 300, y: 114 }));
-  stage.insert(new Q.Car({ x: 200, y: 144 }));
-  stage.insert(new Q.Car({ x: 500, y: 144 }));
-
-  stage.insert(new Q.Car({ x: 700, y: 80, angle: 180 }));
-  stage.insert(new Q.Car({ x: 800, y: 50, angle: 180 }));
-
-});
-
-Q.load("sprites.png, sprites.json, street.json, streettiles.png", function() {
-  Q.sheet("streettiles","streettiles.png", { tilew: 32, tileh: 32 });
-
-  Q.compileSheets("sprites.png","sprites.json");
-
-  Q.stageScene("street");
 });
