@@ -10,20 +10,43 @@ var l_gulp = require( "gulp" ),
     l_clean = require('gulp-clean'),
 
     l_packagedir = "org/lightjason/trafficsimulation/html/",
-    l_sourcedir = "src/main/webappx/" + l_packagedir,
+    l_sourcedir = "src/main/webapp/" + l_packagedir,
     l_outputdir = "target/classes/" + l_packagedir,
 
     l_config = {
 
-        mainjs: {
-            source: "**/*.js",
-            output: "script.min.js"
-        }
+        assets : {
 
-//        maincss: {
-//            source: "**/*.css",
-//            output: "layout.min.css"
-//        }
+            "html-index" : {
+                source: l_gulp.src( l_sourcedir + "index.htm" ),
+                output: l_outputdir
+            }
+
+        },
+
+
+        minify : {
+
+            "js-main" : {
+                source: l_gulp.src( l_sourcedir + "js/*.js" ),
+                output: "script.min.js"
+            },
+
+            "js-gentelella" : {
+                source: l_gulp.src([
+                    "node_modules/gentelella/vendors/jquery/dist/jquery.js",
+                    "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js",
+                    "node_modules/gentelella/build/js/custom.min.js"
+                ]),
+                output: "gentelella.min.js"
+            }
+
+//            maincss: {
+//                source: l_gulp.src( l_sourcedir + "css/*.css" ),
+//                output: "layout.min.css"
+//            }
+
+        }
 
     };
 
@@ -65,23 +88,36 @@ var l_gulp = require( "gulp" ),
     };
     */
 
-for( var k in l_config )
-    l_gulp.task( k, function() {
-        return l_gulp.src( l_sourcedir + l_config[k].source )
-            .pipe( l_concat() )
-            .pipe( l_minify() )
-            .pipe( l_rename( l_config[k].output ) )
-            .pipe( l_gulp.dest( l_outputdir ) );
-    });
 
+// minify tasks
+for( var k in l_config.minify )
+{
+    l_gulp.task( k, function () {
+        return l_config.minify[k].source
+                    .pipe( l_concat() )
+                    .pipe( l_minify() )
+                    .pipe( l_rename( l_config.minify[k].output ) )
+                    .pipe( l_gulp.dest( l_outputdir ) );
+    });
+}
+
+
+// assets tasks
+for( var k in l_config.assets )
+{
+    l_gulp.task( k, function () {
+        return l_config.assets[k].source
+                    .pipe( l_gulp.dest( l_config.assets[k].output ) );
+    });
+}
+
+
+// clean task
 l_gulp.task( "clean", function() {
     return l_gulp.src( l_outputdir )
         .pipe( l_clean({force: true}) );
 });
 
 
-
-
-l_gulp.task( "default", Object.keys(l_config) );
-
-
+// build
+l_gulp.task( "default", [].concat( Object.keys(l_config.minify) ) );
