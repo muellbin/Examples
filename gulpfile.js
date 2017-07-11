@@ -5,7 +5,8 @@
 
 var l_gulp = require( "gulp" ),
     l_concat = require("gulp-dir-concat"),
-    l_minify = require("gulp-uglify"),
+    l_minifyjs = require("gulp-uglify"),
+    l_minifycss = require('gulp-uglifycss'),
     l_rename= require('gulp-rename'),
     l_clean = require('gulp-clean'),
 
@@ -15,99 +16,113 @@ var l_gulp = require( "gulp" ),
 
     l_config = {
 
+        // assets are copied only
         assets : {
 
             "html-index" : {
-                source: l_gulp.src( l_sourcedir + "index.htm" ),
-                output: l_outputdir
+                output: l_outputdir,
+                source: l_gulp.src( l_sourcedir + "index.htm" )
+            },
+
+            "images" : {
+                output: l_outputdir + "images",
+                source: l_gulp.src( l_sourcedir + "images/*.*" )
+            },
+
+            "data" : {
+                output: l_outputdir + "data",
+                source: l_gulp.src( l_sourcedir + "data/*.json" )
             }
 
         },
 
 
-        minify : {
+        // minify javascript
+        minifyjs : {
 
-            "js-main" : {
-                source: l_gulp.src( l_sourcedir + "js/*.js" ),
-                output: "script.min.js"
+            "js-main": {
+                output: "script.min.js",
+                source: l_gulp.src(l_sourcedir + "js/*.js")
             },
 
-            "js-gentelella" : {
+            "js-gentelella": {
+                output: "gentelella.min.js",
                 source: l_gulp.src([
                     "node_modules/gentelella/vendors/jquery/dist/jquery.js",
                     "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js",
-                    "node_modules/gentelella/build/js/custom.min.js"
-                ]),
-                output: "gentelella.min.js"
+                    "node_modules/gentelella/build/js/custom.js"
+                ])
             }
 
+        },
+
+
+        // minify css
+        minifycss : {
+
 //            maincss: {
-//                source: l_gulp.src( l_sourcedir + "css/*.css" ),
-//                output: "layout.min.css"
-//            }
+//                output: "layout.min.css",
+//                source: l_gulp.src( l_sourcedir + "css/*.css" )
+//            },
+
+            "css-gentelella" : {
+                output : "gentelella.min.css",
+                source: l_gulp.src([
+                    "node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.css",
+                    "node_modules/gentelella/build/css/custom.css"
+                ])
+            }
 
         }
 
     };
 
 
-    /*
-    paths = {
+/*
+    css: [
+        "node_modules/gentelella/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
+        "node_modules/gentelella/vendors/nprogress/nprogress.css",
+        "node_modules/gentelella/vendors/iCheck/skins/flat/green.css",
+        "node_modules/gentelella/vendors/pnotify/dist/pnotify.css",
+        "node_modules/gentelella/vendors/pnotify/dist/pnotify.buttons.css",
+        "node_modules/gentelella/vendors/pnotify/dist/pnotify.nonblock.css"
+    ]
+*/
 
-        build: outputdir,
+// --- task definition ------------------------------------------------------------------------------------
 
-        assets: [
-            sourcedir + "index.htm",
-            sourcedir + "*.js",
-
-            "node_modules/gentelella/build/js/custom.min.js",
-
-            "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.min.js",
-            "node_modules/gentelella/vendors/jquery/dist/jquery.min.js"
-
-        ],
-
-        css: [
-            "node_modules/gentelella/build/css/custom.min.css",
-
-            "node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.css",
-            "node_modules/gentelella/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
-            "node_modules/gentelella/vendors/nprogress/nprogress.css",
-            "node_modules/gentelella/vendors/iCheck/skins/flat/green.css",
-            "node_modules/gentelella/vendors/pnotify/dist/pnotify.css",
-            "node_modules/gentelella/vendors/pnotify/dist/pnotify.buttons.css",
-            "node_modules/gentelella/vendors/pnotify/dist/pnotify.nonblock.css"
-        ],
-
-    },
-
-    l_tasks = {
-        clean: function () { return taskMethods.clean(paths); },
-        assets: function () { return taskMethods.assets(paths); },
-        css: function () { return taskMethods.css(paths); },
-    };
-    */
-
-
-// minify tasks
-for( const m in l_config.minify )
+// minify js tasks
+for( const js in l_config.minifyjs )
 {
-    l_gulp.task( m, function () {
-        return l_config.minify[m].source
+    l_gulp.task( js, function () {
+        return l_config.minifyjs[js].source
                     .pipe( l_concat() )
-                    .pipe( l_minify() )
-                    .pipe( l_rename( l_config.minify[m].output ) )
+                    .pipe( l_minifyjs() )
+                    .pipe( l_rename( l_config.minifyjs[js].output ) )
                     .pipe( l_gulp.dest( l_outputdir ) );
     });
 }
 
 
-// assets tasks
-for( const a in l_config.assets )
+// minify css tasks
+for( const css in l_config.minifycss )
 {
-    l_gulp.task( a, function () {
-        return l_config.assets[a].source
-                    .pipe( l_gulp.dest( l_config.assets[a].output ) );
+    l_gulp.task( css, function () {
+        return l_config.minifycss[css].source
+                       .pipe( l_concat() )
+                       .pipe( l_minifycss() )
+                       .pipe( l_rename( l_config.minifycss[css].output ) )
+                       .pipe( l_gulp.dest( l_outputdir ) );
+    });
+}
+
+
+// assets tasks
+for( const assets in l_config.assets )
+{
+    l_gulp.task( assets, function () {
+        return l_config.assets[assets].source
+                       .pipe( l_gulp.dest( l_config.assets[assets].output ) );
     });
 }
 
@@ -115,9 +130,14 @@ for( const a in l_config.assets )
 // clean task
 l_gulp.task( "clean", function() {
     return l_gulp.src( l_outputdir )
-        .pipe( l_clean({force: true}) );
+                 .pipe( l_clean({force: true}) );
 });
 
+// --------------------------------------------------------------------------------------------------------
 
 // build
-l_gulp.task( "default", [].concat( Object.keys(l_config.minify) ) );
+l_gulp.task( "default", [].concat(
+    Object.keys( l_config.minifyjs ),
+    Object.keys( l_config.minifycss ),
+    Object.keys( l_config.assets )
+) );
