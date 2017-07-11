@@ -41,19 +41,23 @@ var l_gulp = require( "gulp" ),
         minifyjs : {
 
             "js-main ": {
-                output: "script.min.js",
+                output: "js/script.min.js",
                 source: l_gulp.src(l_sourcedir + "js/*.js")
             },
 
             "js-jquery" : {
-                output: "jquery.min.js",
+                output: "js/jquery.min.js",
                 source: l_gulp.src( "node_modules/gentelella/vendors/jquery/dist/jquery.js" )
             },
 
+            "js-bootstrap" : {
+                output: "js/bootstrap.min.js",
+                source: l_gulp.src( "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js" )
+            },
+
             "js-gentelella" : {
-                output: "gentelella.min.js",
+                output: "js/gentelella.min.js",
                 source: l_gulp.src([
-                    "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js",
                     //"node_modules/gentelella/vendors/pnotify/dist/*.js",
                     //"node_modules/gentelella/vendors/iCheck/icheck.js",
                     "node_modules/gentelella/build/js/custom.js"
