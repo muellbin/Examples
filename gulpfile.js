@@ -54,6 +54,8 @@ var l_gulp = require( "gulp" ),
                 output: "gentelella.min.js",
                 source: l_gulp.src([
                     "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js",
+                    //"node_modules/gentelella/vendors/pnotify/dist/*.js",
+                    //"node_modules/gentelella/vendors/iCheck/icheck.js",
                     "node_modules/gentelella/build/js/custom.js"
                 ])
             }
@@ -73,6 +75,7 @@ var l_gulp = require( "gulp" ),
                 output : "gentelella.min.css",
                 source: l_gulp.src([
                     "node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.css",
+                    "node_modules/gentelella/vendors/pnotify/dist/*.css",
                     "node_modules/gentelella/build/css/custom.css"
                 ])
             }
