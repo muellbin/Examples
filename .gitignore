@@ -4,6 +4,7 @@
 !pom.xml
 !*.md
 !*.java
+!*.svg
 !*.asl
 !*.yaml
 !*.properties

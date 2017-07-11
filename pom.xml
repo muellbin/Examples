@@ -421,6 +421,7 @@
                         <exclude>**/*.htm</exclude>
                         <exclude>**/*.doxyfile</exclude>
                         <exclude>target/**</exclude>
+                        <exclude>node_modules/**</exclude>
                     </excludes>
                     <mapping>
                         <g4>javadoc_style</g4>

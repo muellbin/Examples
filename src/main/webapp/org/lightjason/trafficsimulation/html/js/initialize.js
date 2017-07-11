@@ -22,9 +22,45 @@
 
 jQuery(function() {
 
+    // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
         LightJason.ajax( "/api/simulation/shutdown" ).error(function() { alert("error"); })
     });
 
+
+    // set fullscreen structure
+    jQuery( "#ui-fullscreen" ).click(function() {
+        var el = document.documentElement,
+            rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+        if (typeof rfs !== "undefined" && rfs)
+            rfs.call(el);
+        else
+            if (typeof window.ActiveXObject !== "undefined")
+            {
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null)
+                    wscript.SendKeys("{F11}");
+            }
+    });
+
+
+    // test chart
+    new Chart( jQuery( "#simulation-panelty" ), {
+        type: "line",
+        data: {
+            labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,17,18,19,20],
+            datasets: [{
+                data: [12, 19, 3, 5, 2, 3, 7, 10, 98, 76, 54, 128, 55, 44, 33],
+                fill: false,
+                borderColor: "rgba(255,99,132,1)"
+            }]
+        },
+        options: {
+            legend: {
+                display: false
+            }
+        }
+    });
 
 });

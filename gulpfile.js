@@ -1,7 +1,6 @@
 "use strict";
 
-// https://www.smashingmagazine.com/2014/06/building-with-gulp/
-// https://github.com/gulpjs/gulp/blob/master/docs/recipes/running-task-steps-per-folder.md
+// http://www.flaticon.com/packs/infographics
 
 var l_gulp = require( "gulp" ),
     l_concat = require("gulp-dir-concat"),

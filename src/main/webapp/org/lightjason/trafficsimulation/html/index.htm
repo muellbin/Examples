@@ -9,7 +9,8 @@
     <link href="css/gentelella.min.css" type="text/css" rel="stylesheet" media="all">
 
     <!-- just for test -->
-    <script src='//cdn.html5quintus.com/v0.2.0/quintus-all.js'></script>
+    <script src="//cdn.html5quintus.com/v0.2.0/quintus-all.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/script.min.js"></script>
@@ -62,7 +63,7 @@
                         <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Settings">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="FullScreen">
+                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="FullScreen" id="ui-fullscreen">
                             <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
                         </a>
                         <a data-toggle="tooltip" data-placement="top" title="" href="#" data-original-title="Shutdown" class="simulation-shutdown">
@@ -84,7 +85,7 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="images/img.jpg" alt="">Simulation
+                                    <img src="images/car.svg" alt="">Simulation
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -152,6 +153,7 @@
                             </div>
                             <div class="x_content">
                                 <div class="dashboard-widget-content">
+                                    <canvas id="simulation-panelty" height="800" width="600"></canvas>
                                 </div>
                             </div>
                         </div>
