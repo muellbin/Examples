@@ -40,15 +40,19 @@ var l_gulp = require( "gulp" ),
         // minify javascript
         minifyjs : {
 
-            "js-main": {
+            "js-main ": {
                 output: "script.min.js",
                 source: l_gulp.src(l_sourcedir + "js/*.js")
             },
 
-            "js-gentelella": {
+            "js-jquery" : {
+                output: "jquery.min.js",
+                source: l_gulp.src( "node_modules/gentelella/vendors/jquery/dist/jquery.js" )
+            },
+
+            "js-gentelella" : {
                 output: "gentelella.min.js",
                 source: l_gulp.src([
-                    "node_modules/gentelella/vendors/jquery/dist/jquery.js",
                     "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js",
                     "node_modules/gentelella/build/js/custom.js"
                 ])
