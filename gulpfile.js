@@ -20,18 +20,23 @@ var l_gulp = require( "gulp" ),
         assets : {
 
             "html-index" : {
-                output: l_outputdir,
+                output: "",
                 source: l_gulp.src( l_sourcedir + "index.htm" )
             },
 
             "images" : {
-                output: l_outputdir + "images",
+                output: "images",
                 source: l_gulp.src( l_sourcedir + "images/*.*" )
             },
 
             "data" : {
-                output: l_outputdir + "data",
+                output: "data",
                 source: l_gulp.src( l_sourcedir + "data/*.json" )
+            },
+
+            "fonts-bootstrap" : {
+                output: "fonts",
+                source: l_gulp.src( "node_modules/gentelella/vendors/bootstrap/dist/fonts/*.*" )
             }
 
         },
@@ -75,10 +80,14 @@ var l_gulp = require( "gulp" ),
 //                source: l_gulp.src( l_sourcedir + "css/*.css" )
 //            },
 
+            "css-bootstrap" : {
+                output: "css/bootstrap.min.css",
+                source: l_gulp.src( "node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.css" )
+            },
+
             "css-gentelella" : {
-                output : "gentelella.min.css",
+                output: "css/gentelella.min.css",
                 source: l_gulp.src([
-                    "node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.css",
                     "node_modules/gentelella/vendors/pnotify/dist/*.css",
                     "node_modules/gentelella/build/css/custom.css"
                 ])
@@ -133,7 +142,7 @@ for( const assets in l_config.assets )
 {
     l_gulp.task( assets, function () {
         return l_config.assets[assets].source
-                       .pipe( l_gulp.dest( l_config.assets[assets].output ) );
+                       .pipe( l_gulp.dest( l_outputdir + l_config.assets[assets].output ) );
     });
 }
 
