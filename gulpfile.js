@@ -90,24 +90,24 @@ var l_gulp = require( "gulp" ),
 
 
 // minify tasks
-for( var k in l_config.minify )
+for( const m in l_config.minify )
 {
-    l_gulp.task( k, function () {
-        return l_config.minify[k].source
+    l_gulp.task( m, function () {
+        return l_config.minify[m].source
                     .pipe( l_concat() )
                     .pipe( l_minify() )
-                    .pipe( l_rename( l_config.minify[k].output ) )
+                    .pipe( l_rename( l_config.minify[m].output ) )
                     .pipe( l_gulp.dest( l_outputdir ) );
     });
 }
 
 
 // assets tasks
-for( var k in l_config.assets )
+for( const a in l_config.assets )
 {
-    l_gulp.task( k, function () {
-        return l_config.assets[k].source
-                    .pipe( l_gulp.dest( l_config.assets[k].output ) );
+    l_gulp.task( a, function () {
+        return l_config.assets[a].source
+                    .pipe( l_gulp.dest( l_config.assets[a].output ) );
     });
 }
 
