@@ -25,6 +25,7 @@ package org.lightjason.trafficsimulation.ui.api;
 
 import org.lightjason.rest.CCommon;
 import org.lightjason.trafficsimulation.runtime.CRuntime;
+import org.lightjason.trafficsimulation.runtime.CTask;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
 import javax.ws.rs.GET;
@@ -86,6 +87,23 @@ public final class CSimulation
             return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "isrunning" ) ).build();
 
         new Thread( CHTTPServer::shutdown ).start();
+        return Response.status( Response.Status.OK ).build();
+    }
+
+    /**
+     * runs a simulation task
+     *
+     * @return response
+     */
+    @GET
+    @Path( "/run" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public final Response run()
+    {
+        if ( CRuntime.INSTANCE.running() )
+            return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "isrunning" ) ).build();
+
+        CRuntime.INSTANCE.supplier( CTask::new ).run();
         return Response.status( Response.Status.OK ).build();
     }
 

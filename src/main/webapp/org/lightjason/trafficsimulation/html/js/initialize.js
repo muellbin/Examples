@@ -24,7 +24,17 @@ jQuery(function() {
 
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
-        LightJason.ajax( "/api/simulation/shutdown" ).error(function() { alert("error"); })
+        LightJason.ajax( "/api/simulation/shutdown" ).error(function(i) {
+            if ( ( i.status === 503 ) || ( i.status === 0 ) )
+                return;
+
+            alert("error");
+        })
+    });
+
+    // set simulation execution
+    jQuery( "#simulation-run" ).click(function() {
+        LightJason.ajax( "/api/simulation/run" ).error(function() { alert("error") });
     });
 
 

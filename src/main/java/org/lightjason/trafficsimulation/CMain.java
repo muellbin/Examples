@@ -105,8 +105,6 @@ public final class CMain
         // load configuration
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
 
-        CRuntime.INSTANCE.supplier( CTask::new ).run();
-
         // start http server if possible
         CHTTPServer.execute();
     }
