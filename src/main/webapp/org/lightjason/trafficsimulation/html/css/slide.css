@@ -9,3 +9,12 @@ textarea {
 a, a:hover, a:visited {
     color: #4183C4;
 }
+
+.remark-slide-number {
+    font-size: 10px;
+}
+
+.remark-code, .remark-code-line {
+    font-family: monospace;
+    background: #eee;
+}

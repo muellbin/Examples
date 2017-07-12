@@ -103,7 +103,9 @@ var l_gulp = require( "gulp" ),
 
             "js-remark" : {
                 output: "js/remark.min.js",
-                source: l_gulp.src( "node_modules/remark/out/remark.js" )
+                source: l_gulp.src([
+                    "node_modules/remark/out/remark.js"
+                ])
             },
 
             "js-codemirror" : {

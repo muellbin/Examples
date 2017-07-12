@@ -126,7 +126,8 @@ https://lightjason.github.io/knowledgebase/actions/
 
 #### Add Goal
 
-<pre class="language-agentspeak"><code class="language-agentspeak">!main.
+```
+!main.
 
 +!main <-
     generic/print("Hello World!");
@@ -137,7 +138,7 @@ https://lightjason.github.io/knowledgebase/actions/
     generic/print("Hello World! (again)", Cycle);
     !mynextgoal
 .
-</code></pre>
+```
 
 #### Delete Goal
 
