@@ -6,12 +6,14 @@
     <title >LightJason - Traffic-Simulation</title >
 
     <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+    <link href="css/codemirror.min.css" type="text/css" rel="stylesheet" media="all">
     <link href="css/font-awesome.min.css" type="text/css" rel="stylesheet" media="all">
     <link href="css/gentelella.min.css" type="text/css" rel="stylesheet" media="all">
 
     <!-- just for test -->
     <script src="//cdn.html5quintus.com/v0.2.0/quintus-all.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+    <script src="js/codemirror.min.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/script.min.js"></script>
@@ -168,6 +170,28 @@
                         <div class="x_content">
                             <div class="dashboard-widget-content">
                                 <canvas id="simulation-panelty" width="600" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+                <br />
+
+                <div class="row">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Source Code</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a><i class="fa fa-file-text-o"></i></a></li>
+                                <li><a><i class="fa fa-save"></i></a></li>
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="dashboard-widget-content">
+                                <textarea id="ui-editor"></textarea>
                             </div>
                         </div>
                     </div>

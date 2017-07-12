@@ -22,6 +22,10 @@
 
 jQuery(function() {
 
+    // set codemirror
+    var l_editor = CodeMirror.fromTextArea( document.getElementById("ui-editor"), { lineNumbers: true });
+
+
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
         LightJason.ajax( "/api/simulation/shutdown" ).error(function(i) {

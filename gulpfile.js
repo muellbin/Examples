@@ -69,7 +69,7 @@ var l_gulp = require( "gulp" ),
             "markdown-slide" : {
                 output: "slide",
                 source: l_gulp.src( l_sourcedir + "slide/*.md" )
-            },
+            }
 
         },
 
@@ -104,6 +104,11 @@ var l_gulp = require( "gulp" ),
             "js-remark" : {
                 output: "js/remark.min.js",
                 source: l_gulp.src( "node_modules/remark/out/remark.js" )
+            },
+
+            "js-codemirror" : {
+                output: "js/codemirror.min.js",
+                source: l_gulp.src( "node_modules/codemirror/lib/codemirror.js" )
             }
 
         },
@@ -128,6 +133,11 @@ var l_gulp = require( "gulp" ),
                     "node_modules/gentelella/vendors/pnotify/dist/*.css",
                     "node_modules/gentelella/build/css/custom.css"
                 ])
+            },
+
+            "css-codemirror" : {
+                output: "css/codemirror.min.css",
+                source: l_gulp.src( "node_modules/codemirror/lib/codemirror.css" )
             }
 
         }
