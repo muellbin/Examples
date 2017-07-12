@@ -69,7 +69,7 @@ var l_gulp = require( "gulp" ),
             "markdown-slide" : {
                 output: "slide",
                 source: l_gulp.src( l_sourcedir + "slide/*.md" )
-            }
+            },
 
         },
 

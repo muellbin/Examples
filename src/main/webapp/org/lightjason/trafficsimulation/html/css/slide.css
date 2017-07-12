@@ -9,7 +9,3 @@ textarea {
 a, a:hover, a:visited {
     color: #4183C4;
 }
-
-.remark-code, .remark-inline-code {
-    font-family: monospace;
-}
