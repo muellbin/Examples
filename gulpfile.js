@@ -38,7 +38,7 @@ var l_gulp = require( "gulp" ),
         // assets are copied only
         assets : {
 
-            "html-index" : {
+            "index" : {
                 output: "",
                 source: l_gulp.src( l_sourcedir + "index.htm" )
             },
@@ -53,9 +53,17 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( l_sourcedir + "data/*.json" )
             },
 
-            "fonts-bootstrap" : {
+            "fonts" : {
                 output: "fonts",
-                source: l_gulp.src( "node_modules/gentelella/vendors/bootstrap/dist/fonts/*.*" )
+                source: l_gulp.src([
+                    "node_modules/gentelella/vendors/bootstrap/dist/fonts/*.*",
+                    "node_modules/gentelella/vendors/font-awesome/fonts/*.*"
+                ])
+            },
+
+            "css" : {
+                output: "css",
+                source: l_gulp.src( "node_modules/gentelella/vendors/font-awesome/css/font-awesome.min.css" )
             }
 
         },
