@@ -32,11 +32,19 @@ jQuery(function() {
         })
     });
 
+
     // set simulation execution
     jQuery( "#simulation-run" ).click(function() {
         LightJason.ajax( "/api/simulation/run" ).error(function() { alert("error") });
     });
 
+
+    // slide view
+    jQuery( ".slide-view" ).click(function() {
+        var l_source = jQuery(this).data("slidesource");
+        if ( l_source )
+            window.open( "slide.htm", l_source ).slide = l_source;
+    });
 
     // set fullscreen structure
     jQuery( "#ui-fullscreen" ).click(function() {

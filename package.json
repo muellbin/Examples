@@ -21,7 +21,8 @@
   "dependencies": {
     "codemirror": "^5.27.4",
     "gentelella": "https://github.com/puikinsh/gentelella/archive/1.4.0.tar.gz",
-    "quintus": "^0.2.0"
+    "quintus": "^0.2.0",
+    "remark": "https://github.com/gnab/remark/archive/v0.14.0.tar.gz"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

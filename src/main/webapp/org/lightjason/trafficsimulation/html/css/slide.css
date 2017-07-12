@@ -1,0 +1,15 @@
+body {
+    font-family: sans-serif;
+}
+
+textarea {
+    display: none;
+}
+
+a, a:hover, a:visited {
+    color: #4183C4;
+}
+
+.remark-code, .remark-inline-code {
+    font-family: monospace;
+}

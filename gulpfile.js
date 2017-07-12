@@ -38,9 +38,9 @@ var l_gulp = require( "gulp" ),
         // assets are copied only
         assets : {
 
-            "index" : {
+            "html" : {
                 output: "",
-                source: l_gulp.src( l_sourcedir + "index.htm" )
+                source: l_gulp.src( l_sourcedir + "*.htm" )
             },
 
             "images" : {
@@ -64,6 +64,11 @@ var l_gulp = require( "gulp" ),
             "css" : {
                 output: "css",
                 source: l_gulp.src( "node_modules/gentelella/vendors/font-awesome/css/font-awesome.min.css" )
+            },
+
+            "markdown-slide" : {
+                output: "slide",
+                source: l_gulp.src( l_sourcedir + "slide/*.md" )
             }
 
         },
@@ -94,6 +99,11 @@ var l_gulp = require( "gulp" ),
                     //"node_modules/gentelella/vendors/iCheck/icheck.js",
                     "node_modules/gentelella/build/js/custom.js"
                 ])
+            },
+
+            "js-remark" : {
+                output: "js/remark.min.js",
+                source: l_gulp.src( "node_modules/remark/out/remark.js" )
             }
 
         },
@@ -102,10 +112,10 @@ var l_gulp = require( "gulp" ),
         // minify css
         minifycss : {
 
-//            maincss: {
-//                output: "layout.min.css",
-//                source: l_gulp.src( l_sourcedir + "css/*.css" )
-//            },
+            "css-slide" : {
+                output: "css/slide.min.css",
+                source: l_gulp.src( l_sourcedir + "css/slide.css" )
+            },
 
             "css-bootstrap" : {
                 output: "css/bootstrap.min.css",
