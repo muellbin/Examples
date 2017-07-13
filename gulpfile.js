@@ -20,7 +20,21 @@
  */
 "use strict";
 
-// http://www.flaticon.com/packs/infographics
+
+/**
+ * explantion of components
+ *
+ * asserts - contains all components which are copied only
+ * minifyjs - contains all components wich are based on JavaScript and must be minifed
+ * minifycss - contains all components which ar ebased on CSS and must be minifed
+ *
+ *
+ *
+ *
+ */
+
+
+
 
 var l_gulp = require( "gulp" ),
     l_concat = require("gulp-dir-concat"),

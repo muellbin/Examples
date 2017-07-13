@@ -109,9 +109,9 @@ public final class CSimulation
 
 
     /**
-     * returns a list of agents
+     * returns a list of agents with asl code
      *
-     * @return map of agents with code
+     * @return map of agents with asl code
      */
     @GET
     @Path( "/agents" )

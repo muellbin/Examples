@@ -9,15 +9,6 @@
     <link href="css/codemirror.min.css" type="text/css" rel="stylesheet" media="all">
     <link href="css/font-awesome.min.css" type="text/css" rel="stylesheet" media="all">
     <link href="css/gentelella.min.css" type="text/css" rel="stylesheet" media="all">
-
-    <!-- just for test -->
-    <script src="//cdn.html5quintus.com/v0.2.0/quintus-all.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
-    <script src="js/codemirror.min.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/script.min.js"></script>
-    <script src="js/gentelella.min.js"></script>
 </head>
 
 <body class="nav-md">
@@ -28,7 +19,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title">
-                        <a href="#" class="site_title"><i class="fa fa-paw"></i> <span>LightJason - Agent Traffic-Simulation</span></a>
+                        <a href="#" class="site_title"><i class="fa fa-paw"></i> <span>LightJason</span></a>
                     </div>
 
                     <div class="clearfix"></div>
@@ -36,23 +27,17 @@
 
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-                        <div class="menu_section">
+                        <div class="menu_section active">
 
                             <ul class="nav side-menu">
-                                <li class="active"><a><i class="fa fa-home"></i> Start <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu" style="display: block;">
-                                        <li><a href="">Scenario</a></li>
+                                <li class="active"><a><i class="fa fa-home"></i> Information <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
                                         <li><a href="#" class="slide-view" data-slidesource="slide/practice.md">Exercise Slides (Practice)</a></li>
                                         <li><a href="#" class="slide-view">Lecture Slides (Theory)</a></li>
                                     </ul>
                                 </li>
                                 <li><a><i class="fa fa-edit"></i> Agents <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="">Environmente</a></li>
-                                        <li><a href="">Area</a></li>
-                                        <li><a href="">Communication</a></li>
-                                        <li><a href="">Vehicle</a></li>
-                                        <li><a href="">Penalty</a></li>
+                                    <ul class="nav child_menu" id="ui-agents">
                                     </ul>
                                 </li>
                             </ul>
@@ -211,6 +196,15 @@
 
         </div>
     </div>
+
+    <!-- just for test -->
+    <script src="//cdn.html5quintus.com/v0.2.0/quintus-all.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+    <script src="js/codemirror.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/script.min.js"></script>
+    <script src="js/gentelella.min.js"></script>
 
 </body>
 </html>

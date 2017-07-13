@@ -56,6 +56,15 @@ import java.util.stream.Stream;
 public final class CHTTPServer
 {
     /**
+     * server default port
+     */
+    private static final int DEFAULTPORT = 12345;
+    /**
+     * server default host
+     */
+    private static final String DEFAULTHOST = "localhost";
+
+    /**
      * webservcer instance
      */
     private static final CHTTPServer INSTANCE = CConfiguration.INSTANCE.<Boolean>getOrDefault( false, "httpserver", "enable" ) ? new CHTTPServer() : null;
@@ -78,8 +87,8 @@ public final class CHTTPServer
 
         // server process
         m_server = new Server(
-            new InetSocketAddress( CConfiguration.INSTANCE.<String>getOrDefault( "localhost", "httpserver", "host" ),
-                                   CConfiguration.INSTANCE.<Integer>getOrDefault( 8000, "httpserver", "port" )
+            new InetSocketAddress( CConfiguration.INSTANCE.getOrDefault( DEFAULTHOST, "httpserver", "host" ),
+                                   CConfiguration.INSTANCE.<Integer>getOrDefault( DEFAULTPORT, "httpserver", "port" )
             )
         );
 
@@ -128,7 +137,7 @@ public final class CHTTPServer
             if ( ( CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "openbrowser" ) ) && ( Desktop.isDesktopSupported() ) )
                 Desktop.getDesktop().browse( new URI(
                                                  "http://" + CConfiguration.INSTANCE.<String>getOrDefault( "localhost", "httpserver", "host" )
-                                                 + ":" + CConfiguration.INSTANCE.<Integer>getOrDefault( 8000, "httpserver", "port" )
+                                                 + ":" + CConfiguration.INSTANCE.<Integer>getOrDefault( 12345, "httpserver", "port" )
                                              )
                 );
 

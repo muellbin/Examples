@@ -28,13 +28,33 @@ jQuery(function() {
 
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
-        LightJason.ajax( "/api/simulation/shutdown" ).error(function(i) {
-            if ( ( i.status === 503 ) || ( i.status === 0 ) )
-                return;
+        LightJason.ajax( "/api/simulation/shutdown" )
+                  .error(function(i) {
+                      if ( ( i.status === 503 ) || ( i.status === 0 ) )
+                          return;
 
-            alert("error");
-        })
+                          alert("error");
+                  })
     });
+
+
+    // get agent list
+    LightJason.ajax( "/api/simulation/agents" )
+        .done(function(o) {
+            var l_dom = jQuery( "#ui-agents" );
+            Object.keys(o).forEach(function(i) {
+                l_dom.append(
+                    jQuery("<li>").append(
+                        jQuery("<a>").attr( "href", "#" )
+                                     .addClass("ui-agent-source")
+                                     .text(i)
+                    )
+                );
+            });
+
+            console.log(i);
+        });
+
 
 
     // set simulation execution
