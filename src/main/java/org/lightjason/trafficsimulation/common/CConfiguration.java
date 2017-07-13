@@ -170,8 +170,8 @@ public final class CConfiguration
                 "area.asl",
                 "communication.asl",
                 "environment.asl",
-                "user.asl",
-                "vehicle.asl"
+                "defaultvehicle.asl",
+                "uservehicle.asl"
             ),
 
             ImmutablePair::new

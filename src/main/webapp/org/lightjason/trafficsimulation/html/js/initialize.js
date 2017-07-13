@@ -23,7 +23,12 @@
 jQuery(function() {
 
     // set codemirror
-    var l_editor = CodeMirror.fromTextArea( document.getElementById("ui-editor"), { lineNumbers: true });
+    var l_editor = CodeMirror.fromTextArea(
+                        document.getElementById("ui-editor"),
+                        {
+                            lineNumbers: true, sourceid: null
+                        }
+                   );
 
 
     // set shutdown button
@@ -42,18 +47,32 @@ jQuery(function() {
     LightJason.ajax( "/api/simulation/agents" )
         .done(function(o) {
             var l_dom = jQuery( "#ui-agents" );
-            Object.keys(o).forEach(function(i) {
+
+            o.forEach(function(i) {
                 l_dom.append(
                     jQuery("<li>").append(
                         jQuery("<a>").attr( "href", "#" )
+                                     .attr("data-sourceid", i)
                                      .addClass("ui-agent-source")
                                      .text(i)
                     )
                 );
             });
-
-            console.log(i);
         });
+
+
+    // bind action to load source code
+    jQuery(document).on( "click", ".ui-agent-source", function() {
+        var l_id = jQuery(this).data("sourceid");
+        LightJason.ajax( "/api/simulation/asl/get/" + l_id )
+                  .done(function(i) {
+                      l_editor.setValue( i );
+                      l_editor.options.sourceid = l_id;
+                  })
+                  .error(function() {
+                      alert("error");
+                  });
+    });
 
 
 

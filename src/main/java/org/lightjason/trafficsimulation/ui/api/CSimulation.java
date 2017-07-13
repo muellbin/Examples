@@ -23,17 +23,22 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.rest.CCommon;
 import org.lightjason.trafficsimulation.runtime.CRuntime;
 import org.lightjason.trafficsimulation.runtime.CTask;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -116,13 +121,57 @@ public final class CSimulation
     @GET
     @Path( "/agents" )
     @Produces( MediaType.APPLICATION_JSON )
-    public final Map<String, String> agents()
+    public final Set<String> agents()
     {
-        return CRuntime.INSTANCE.agents()
-                                .entrySet()
-                                .stream()
-                                .filter( i -> i.getValue().getRight() )
-                                .collect( Collectors.toMap( Map.Entry::getKey, i -> i.getValue().getLeft() ) );
+        return CRuntime.INSTANCE
+                       .agents()
+                       .entrySet()
+                       .stream()
+                       .filter( i -> i.getValue().getLeft() )
+                       .map( Map.Entry::getKey )
+                       .collect( Collectors.toSet() );
     }
 
+    /**
+     * returns asl code of an agent
+     *
+     * @param p_id identifier of the agent
+     * @return repsonse or asl code
+     */
+    @GET
+    @Path( "/asl/get/{id}" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public final Object getasl( @PathParam( "id" ) final String p_id )
+    {
+        final Pair<Boolean, String> l_data = CRuntime.INSTANCE.agents().get( p_id );
+        if ( l_data == null )
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
+        if ( !l_data.getLeft() )
+            return Response.status( Response.Status.FORBIDDEN ).build();
+
+        return l_data.getRight();
+    }
+
+
+    /**
+     * sets the asl code of an agent
+     *
+     * @param p_id identifier of the agent
+     * @param p_content source code
+     * @return response
+     */
+    @POST
+    @Path( "/asl/set/{id}" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    public final Response setasl( @PathParam( "id" ) final String p_id, final String p_content )
+    {
+        final Pair<Boolean, String> l_data = CRuntime.INSTANCE.agents().get( p_id );
+        if ( l_data == null )
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
+        if ( !l_data.getLeft() )
+            return Response.status( Response.Status.FORBIDDEN ).build();
+
+        l_data.setValue( p_content );
+        return Response.status( Response.Status.OK ).build();
+    }
 }
