@@ -136,7 +136,7 @@ public final class CCommon
             CConfiguration.INSTANCE
                           .<List<String>>getOrDefault( Collections.emptyList(), "main", "searchpath" )
                           .stream(),
-            Stream.of( CConfiguration.ASLPATH )
+            Stream.of( CConfiguration.DEfAULTASLPATH )
         )
                       .map( i -> Paths.get( i, p_filename ).normalize().toFile() )
                       .filter( i -> i.exists() && i.canRead() )

@@ -32,6 +32,8 @@ import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -68,7 +70,6 @@ public final class CMain
 
         final Options l_clioptions = new Options();
         l_clioptions.addOption( "help", false, "shows this information" );
-        l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
         l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.lightjason/trafficsimulation)" );
 
         final CommandLine l_cli;
@@ -93,12 +94,10 @@ public final class CMain
             return;
         }
 
-        if ( l_cli.hasOption( "generateconfig" ) )
-        {
-            System.out.println( CCommon.languagestring( CMain.class, "generateconfig", CConfiguration.createdefault() ) );
-            return;
-        }
+        if ( ( Files.notExists( Paths.get( CConfiguration.DEFAULTPATH ) ) ) || ( Files.notExists( Paths.get( CConfiguration.DEfAULTASLPATH ) ) ) )
+            CConfiguration.createdefault();
 
+        // --- execution ---------------------------------------------------------------------------------------------------------------------------------------
 
         // load configuration
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );

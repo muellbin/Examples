@@ -64,7 +64,7 @@ public final class CConfiguration
     /**
      * asl name
      */
-    public static final String ASLPATH = Stream.of( DEFAULTPATH, "asl" ).collect( Collectors.joining( File.separator ) );
+    public static final String DEfAULTASLPATH = Stream.of( DEFAULTPATH, "asl" ).collect( Collectors.joining( File.separator ) );
     /**
      * action set
      */
