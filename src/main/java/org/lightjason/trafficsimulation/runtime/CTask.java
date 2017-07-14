@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.runtime;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
+import org.lightjason.trafficsimulation.ui.CWebSocketHandler;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -65,6 +66,9 @@ public class CTask implements ITask
             try
             {
                 l_environment = new CEnvironment.CGenerator( Collections.unmodifiableMap( p_asl ) ).generatesingle();
+
+                //test socket
+                CWebSocketHandler.session().getRemote().sendString( "Hello Client!" );
             }
             catch ( final Exception l_exception )
             {

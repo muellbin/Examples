@@ -20,7 +20,31 @@
  */
 "use strict";
 
+var ws;
+
 jQuery(function() {
+     ws = new WebSocket( "ws://localhost:12345" );
+
+    ws.onopen = function()
+    {
+        console.log( "Websocket opened!" );
+        ws.send( "Hello Server!" );
+    };
+
+    ws.onmessage = function ( evt )
+    {
+        console.log("Message from server: " + evt.data);
+    };
+
+    ws.onclose = function()
+    {
+        console.log( "Websocket closed!" );
+    };
+
+    ws.onerror = function( err )
+    {
+        console.log( "Websocket Error: " + errerr );
+    };
 
     var Q = window.Q = Quintus()
         .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI")

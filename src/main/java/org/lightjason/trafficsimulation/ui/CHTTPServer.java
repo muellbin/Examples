@@ -24,11 +24,15 @@
 package org.lightjason.trafficsimulation.ui;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.lightjason.rest.CApplication;
@@ -85,6 +89,20 @@ public final class CHTTPServer
         // web context definition
         final WebAppContext l_webapp = new WebAppContext();
 
+        // web socket handler definition
+        final WebSocketHandler l_wshandler = new WebSocketHandler()
+        {
+            @Override
+            public void configure( final WebSocketServletFactory p_factory )
+            {
+                p_factory.register( CWebSocketHandler.class );
+            }
+        };
+
+        // handler collection
+        final HandlerCollection l_handlercollection = new HandlerCollection();
+        l_handlercollection.setHandlers( new Handler[] {l_wshandler, l_webapp} );
+
         // server process
         m_server = new Server(
             new InetSocketAddress( CConfiguration.INSTANCE.getOrDefault( DEFAULTHOST, "httpserver", "host" ),
@@ -93,7 +111,7 @@ public final class CHTTPServer
         );
 
         // set server / webapp connection
-        m_server.setHandler( l_webapp );
+        m_server.setHandler( l_handlercollection );
         l_webapp.setServer( m_server );
         l_webapp.setContextPath( "/" );
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
