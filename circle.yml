@@ -55,7 +55,7 @@ deployment:
     production:
         branch: /^(?!(master$|jar-.*$|dev-.*$)).*$/
         commands:
-            - git send origin :jar-$CIRCLE_BRANCH || true
+            - git push origin :jar-$CIRCLE_BRANCH || true
             - git brach -D jar-$CIRCLE_BRANCH || true 
             - git checkout --orphan jar-$CIRCLE_BRANCH
             - rm -Rf *
@@ -64,5 +64,5 @@ deployment:
             - echo -e '*.*\n!.gitignore\n!circle.yml\n!*.jar\n' > .gitignore   
             - git add --all .
             - git commit -m "Jar"          
-            - git send origin jar-$CIRCLE_BRANCH
+            - git push origin jar-$CIRCLE_BRANCH
             
