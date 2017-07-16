@@ -25,6 +25,7 @@ package org.lightjason.trafficsimulation.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -47,7 +49,7 @@ public interface IWebSocket extends WebSocketListener
 {
 
     /**
-     * sends a dataset to all sessions
+     * sends a dataset to sessions
      * as json dataset
      *
      * @param p_value values
@@ -55,6 +57,15 @@ public interface IWebSocket extends WebSocketListener
      */
     @Nonnull
     IWebSocket send( @Nonnull final Object... p_value );
+
+    /**
+     * sends all stream data to the session
+     *
+     * @param p_stream stream
+     * @return self reference
+     */
+    @Nonnull
+    IWebSocket send( @Nonnull final Stream<Object> p_stream );
 
 
     /**
@@ -86,7 +97,14 @@ public interface IWebSocket extends WebSocketListener
         @Override
         public final IWebSocket send( @Nonnull final Object... p_value )
         {
-            final List<Object> l_data = Arrays.stream( p_value ).collect( Collectors.toList() );
+            return this.send( Arrays.stream( p_value ) );
+        }
+
+        @Nonnull
+        @Override
+        public final IWebSocket send( @Nonnull final Stream<Object> p_stream )
+        {
+            final List<Object> l_data = p_stream.collect( Collectors.toList() );
 
             final String l_output;
             try
@@ -99,7 +117,6 @@ public interface IWebSocket extends WebSocketListener
             {
                 throw new RuntimeException( l_exception );
             }
-
 
             try
             {

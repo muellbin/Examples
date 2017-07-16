@@ -65,9 +65,6 @@ public class CTask implements ITask
             try
             {
                 l_environment = new CEnvironment.CGenerator( Collections.unmodifiableMap( p_asl ) ).generatesingle();
-
-                //test socket
-                //CAnimation.session().getRemote().sendString( "Hello Client!" );
             }
             catch ( final Exception l_exception )
             {
