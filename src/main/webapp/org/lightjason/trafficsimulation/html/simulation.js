@@ -23,12 +23,12 @@
 var ws;
 
 jQuery(function() {
-     ws = new WebSocket( "ws://localhost:12345" );
+     ws = new WebSocket( "ws://localhost:12345/animation" );
 
     ws.onopen = function()
     {
         console.log( "Websocket opened!" );
-        ws.send( "Hello Server!" );
+        ws.send( JSON.stringify( { foo : "Hello Server!" } ) );
     };
 
     ws.onmessage = function ( evt )
@@ -43,7 +43,7 @@ jQuery(function() {
 
     ws.onerror = function( err )
     {
-        console.log( "Websocket Error: " + errerr );
+        console.log( "Websocket Error: " + err );
     };
 
     var Q = window.Q = Quintus()

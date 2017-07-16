@@ -54,7 +54,10 @@ var l_gulp = require( "gulp" ),
 
             "html" : {
                 output: "",
-                source: l_gulp.src( l_sourcedir + "*.htm" )
+                source: l_gulp.src([
+                    l_sourcedir + "*.htm",
+                    l_sourcedir + "*.js"
+                ])
             },
 
             "images" : {

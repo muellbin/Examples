@@ -37,9 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.FileSystems;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +48,7 @@ import java.util.stream.Stream;
 /**
  * configuration
  */
-public final class CConfiguration
+public final class CConfiguration extends ITree.CTree
 {
     /**
      * singleton instance
@@ -73,10 +71,6 @@ public final class CConfiguration
      * default configuration file
      */
     private static final String DEFAULTCONFIG = Stream.of( DEFAULTPATH, "configuration.yaml" ).collect( Collectors.joining( File.separator ) );
-    /**
-     * map with configuration data
-     */
-    private final Map<String, Object> m_configuration = new ConcurrentHashMap<>();
 
 
     /**
@@ -85,6 +79,7 @@ public final class CConfiguration
 
     private CConfiguration()
     {
+        super( new ConcurrentHashMap<>() );
     }
 
     /**
@@ -105,8 +100,8 @@ public final class CConfiguration
             final Map<String, ?> l_result = (Map<String, Object>) new Yaml().load( l_stream );
             if ( l_result != null )
             {
-                m_configuration.clear();
-                m_configuration.putAll( l_result );
+                m_data.clear();
+                m_data.putAll( l_result );
             }
 
         }
@@ -130,8 +125,8 @@ public final class CConfiguration
         final Map<String, ?> l_result = (Map<String, Object>) new Yaml().load( p_yaml );
         if ( l_result != null )
         {
-            m_configuration.clear();
-            m_configuration.putAll( l_result );
+            m_data.clear();
+            m_data.putAll( l_result );
         }
         return this;
     }
@@ -194,56 +189,6 @@ public final class CConfiguration
                    } );
 
         return DEFAULTPATH;
-    }
-
-    /**
-     * returns a configuration value
-     *
-     * @param p_path path of the element
-     * @tparam T returning type
-     * @return value or null
-     */
-    public final <T> T get( final String... p_path )
-    {
-        return recursivedescent( m_configuration, p_path );
-    }
-
-    /**
-     * returns a configuration value or on not
-     * existing the default value
-     *
-     * @param p_default default value
-     * @param p_path path of the element
-     * @tparam T returning type
-     * @return value / default vaue
-     */
-    public final <T> T getOrDefault( final T p_default, final String... p_path )
-    {
-        final T l_result = recursivedescent( m_configuration, p_path );
-        return l_result == null
-               ? p_default
-               : l_result;
-    }
-
-
-    /**
-     * recursive descent
-     *
-     * @param p_map configuration map
-     * @param p_path path
-     * @tparam T returning type parameter
-     * @return value
-     */
-    @SuppressWarnings( "unchecked" )
-    private static <T> T recursivedescent( final Map<String, ?> p_map, final String... p_path )
-    {
-        if ( ( p_path == null ) || ( p_path.length == 0 ) )
-            throw new RuntimeException( "path need not to be empty" );
-
-        final Object l_data = p_map.get( p_path[0].toLowerCase( Locale.ROOT ) );
-        return ( p_path.length == 1 ) || ( l_data == null )
-               ? (T) l_data
-               : (T) recursivedescent( (Map<String, ?>) l_data, Arrays.copyOfRange( p_path, 1, p_path.length ) );
     }
 
 }

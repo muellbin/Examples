@@ -24,14 +24,12 @@
 package org.lightjason.trafficsimulation.ui;
 
 import org.apache.commons.lang3.tuple.Triple;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -40,6 +38,7 @@ import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.ui.api.CAPI;
+import org.lightjason.trafficsimulation.ui.api.CAnimation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,6 +54,8 @@ import java.util.stream.Stream;
  * Jersey-Jetty-HTTP server for UI
  *
  * debug: -Dorg.eclipse.jetty.servlet.LEVEL=ALL
+ * @see https://jaxenter.de/jax-rs-20-websocket-13453
+ * @see https://blog.openshift.com/how-to-build-java-websocket-applications-using-the-jsr-356-api/
  *
  */
 public final class CHTTPServer
@@ -86,23 +87,6 @@ public final class CHTTPServer
      */
     private CHTTPServer()
     {
-        // web context definition
-        final WebAppContext l_webapp = new WebAppContext();
-
-        // web socket handler definition
-        final WebSocketHandler l_wshandler = new WebSocketHandler()
-        {
-            @Override
-            public void configure( final WebSocketServletFactory p_factory )
-            {
-                p_factory.register( CWebSocketHandler.class );
-            }
-        };
-
-        // handler collection
-        final HandlerCollection l_handlercollection = new HandlerCollection();
-        l_handlercollection.setHandlers( new Handler[] {l_wshandler, l_webapp} );
-
         // server process
         m_server = new Server(
             new InetSocketAddress( CConfiguration.INSTANCE.getOrDefault( DEFAULTHOST, "httpserver", "host" ),
@@ -110,8 +94,10 @@ public final class CHTTPServer
             )
         );
 
-        // set server / webapp connection
-        m_server.setHandler( l_handlercollection );
+        // set web application
+        final WebAppContext l_webapp = new WebAppContext();
+        m_server.setHandler( l_webapp );
+
         l_webapp.setServer( m_server );
         l_webapp.setContextPath( "/" );
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
@@ -121,9 +107,14 @@ public final class CHTTPServer
             ).toExternalForm()
         );
 
+        // set rest-apis
         restapi( l_webapp, m_restagent, "/lightjason/*" );
         restapi( l_webapp, new CAPI(), "/api/*" );
+
+        // set websockets
+        websocket( l_webapp, CAnimation.class, "/animation" );
     }
+
 
     /**
      * initialize the rest api call
@@ -137,6 +128,20 @@ public final class CHTTPServer
         p_context.addServlet( new ServletHolder( new ServletContainer( p_resource ) ), p_path );
         p_context.addFilter( new FilterHolder( new CrossOriginFilter() ), p_path, EnumSet.of( DispatcherType.REQUEST ) );
     }
+
+    /**
+     * add a websocket servlet
+     *
+     * @param p_context we-app context
+     * @param p_websocketfectory websocket factory
+     * @param p_path path
+     */
+    private static void websocket( final WebAppContext p_context, final Class<?> p_websocketfectory, final String p_path )
+    {
+        p_context.addServlet( new ServletHolder( new CWebSocketSupplier( p_websocketfectory ) ), p_path );
+    }
+
+
 
 
     /**
@@ -215,6 +220,38 @@ public final class CHTTPServer
     public static <T extends IObject<?>> T register( @Nonnull final Triple<T, Boolean, Stream<String>> p_agentgroup )
     {
         return register( p_agentgroup.getLeft(), p_agentgroup.getMiddle(), p_agentgroup.getRight().toArray( String[]::new ) );
+    }
+
+
+    /**
+     * websocket handler
+     */
+    private static final class CWebSocketSupplier extends WebSocketServlet
+    {
+        /**
+         * serial id
+         */
+        private static final long serialVersionUID = 8659755712925612125L;
+        /**
+         * class reference
+         */
+        private final Class<?> m_class;
+
+        /**
+         * ctor
+         *
+         * @param p_class class
+         */
+        CWebSocketSupplier( final Class<?> p_class )
+        {
+            m_class = p_class;
+        }
+
+        @Override
+        public final void configure( final WebSocketServletFactory p_factory )
+        {
+            p_factory.register( m_class );
+        }
     }
 
 }
