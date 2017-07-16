@@ -22,10 +22,7 @@
 
 jQuery(function() {
 
-    // PNotofy
-    PNotify.prototype.options.styling = "bootstrap3";
-    PNotify.prototype.options.styling = "fontawesome";
-
+    // notify messages
     var l_message = new WebSocket( "ws://localhost:12345/message" );
     l_message.onmessage = function ( i )
     {

@@ -54,10 +54,7 @@ var l_gulp = require( "gulp" ),
 
             "html" : {
                 output: "",
-                source: l_gulp.src([
-                    l_sourcedir + "*.htm",
-                    l_sourcedir + "*.js"
-                ])
+                source: l_gulp.src( l_sourcedir + "*.htm" )
             },
 
             "images" : {
@@ -78,6 +75,11 @@ var l_gulp = require( "gulp" ),
                 ])
             },
 
+            "js" : {
+                output: "js",
+                source: l_gulp.src( l_sourcedir + "js/simulation.js" )
+            },
+
             "css" : {
                 output: "css",
                 source: l_gulp.src( "node_modules/gentelella/vendors/font-awesome/css/font-awesome.min.css" )
@@ -96,7 +98,11 @@ var l_gulp = require( "gulp" ),
 
             "js-main ": {
                 output: "js/script.min.js",
-                source: l_gulp.src(l_sourcedir + "js/*.js")
+                source: l_gulp.src([
+                    l_sourcedir + "js/global.js",
+                    l_sourcedir + "js/initialize.js",
+                    l_sourcedir + "js/lightjason.js"
+                ])
             },
 
             "js-jquery" : {
@@ -116,14 +122,12 @@ var l_gulp = require( "gulp" ),
 
             "js-gentelella" : {
                 output: "js/gentelella.min.js",
-                source: l_gulp.src( "node_modules/gentelella/build/js/custom.js" )
+                source: l_gulp.src( l_sourcedir + "js/gentelella.js" )
             },
 
             "js-remark" : {
                 output: "js/remark.min.js",
-                source: l_gulp.src([
-                    "node_modules/remark/out/remark.js"
-                ])
+                source: l_gulp.src( "node_modules/remark/out/remark.js" )
             },
 
             "js-codemirror" : {
