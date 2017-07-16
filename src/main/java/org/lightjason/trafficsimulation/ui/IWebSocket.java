@@ -125,6 +125,7 @@ public interface IWebSocket extends WebSocketListener
             {
                 // ignore error
             }
+
             return this;
         }
 

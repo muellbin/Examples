@@ -109,13 +109,14 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js" )
             },
 
+            "js-pnotify" : {
+                output: "js/pnotify.min.js",
+                source: l_gulp.src( "node_modules/gentelella/vendors/pnotify/dist/pnotify.js" )
+            },
+
             "js-gentelella" : {
                 output: "js/gentelella.min.js",
-                source: l_gulp.src([
-                    //"node_modules/gentelella/vendors/pnotify/dist/*.js",
-                    //"node_modules/gentelella/vendors/iCheck/icheck.js",
-                    "node_modules/gentelella/build/js/custom.js"
-                ])
+                source: l_gulp.src( "node_modules/gentelella/build/js/custom.js" )
             },
 
             "js-remark" : {
@@ -136,6 +137,11 @@ var l_gulp = require( "gulp" ),
         // minify css
         minifycss : {
 
+            "css-pnotify" : {
+                output: "css/pnotify.min.css",
+                source: l_gulp.src( "node_modules/gentelella/vendors/pnotify/dist/*.css" )
+            },
+
             "css-slide" : {
                 output: "css/slide.min.css",
                 source: l_gulp.src( l_sourcedir + "css/slide.css" )
@@ -148,10 +154,7 @@ var l_gulp = require( "gulp" ),
 
             "css-gentelella" : {
                 output: "css/gentelella.min.css",
-                source: l_gulp.src([
-                    "node_modules/gentelella/vendors/pnotify/dist/*.css",
-                    "node_modules/gentelella/build/css/custom.css"
-                ])
+                source: l_gulp.src( "node_modules/gentelella/build/css/custom.css" )
             },
 
             "css-codemirror" : {
@@ -163,17 +166,6 @@ var l_gulp = require( "gulp" ),
 
     };
 
-
-/*
-    css: [
-        "node_modules/gentelella/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
-        "node_modules/gentelella/vendors/nprogress/nprogress.css",
-        "node_modules/gentelella/vendors/iCheck/skins/flat/green.css",
-        "node_modules/gentelella/vendors/pnotify/dist/pnotify.css",
-        "node_modules/gentelella/vendors/pnotify/dist/pnotify.buttons.css",
-        "node_modules/gentelella/vendors/pnotify/dist/pnotify.nonblock.css"
-    ]
-*/
 
 // --- task definition ------------------------------------------------------------------------------------
 

@@ -21,7 +21,10 @@
 
 # main definition
 main:
-  searchpath: []
+    searchpath: []
+    messagedelay:
+      default: 2500
+      agentprint: 1500
 
 
 # agent definition (asl is relative to search path)

@@ -22,6 +22,24 @@
 
 jQuery(function() {
 
+    // PNotofy
+    PNotify.prototype.options.styling = "bootstrap3";
+    PNotify.prototype.options.styling = "fontawesome";
+
+    var l_message = new WebSocket( "ws://localhost:12345/message" );
+    l_message.onmessage = function ( i )
+    {
+        var lo = JSON.parse( i.data );
+        new PNotify({
+            title: lo.title,
+            text: lo.text,
+            type: lo.type,
+            delay: lo.delay,
+            animate_speed: "fast"
+        })
+    };
+
+
     // set codemirror
     var l_editor = CodeMirror.fromTextArea(
                         document.getElementById("ui-editor"),
@@ -38,6 +56,7 @@ jQuery(function() {
                       if ( ( i.status === 503 ) || ( i.status === 0 ) )
                           return;
 
+                      console.log( i );
                           alert("error");
                   })
     });

@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.runtime;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
+import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -68,8 +69,11 @@ public class CTask implements ITask
             }
             catch ( final Exception l_exception )
             {
-                System.out.println( l_exception );
-                LOGGER.warning( l_exception.getLocalizedMessage() );
+                CMessage.CInstance.INSTANCE.write(
+                    CMessage.EType.ERROR,
+                    "Environment",
+                    l_exception.getLocalizedMessage()
+                );
                 return;
             }
 
@@ -80,9 +84,21 @@ public class CTask implements ITask
             }
 
             // execute objects
+            CMessage.CInstance.INSTANCE.write(
+                CMessage.EType.SUCCESS,
+                "Environment",
+                "Simulation starts-up"
+            );
+
             final Set<Callable<?>> l_elements = Collections.synchronizedSet( Stream.of( l_environment ).collect( Collectors.toSet() ) );
             while ( !l_environment.shutdown() )
                 l_elements.parallelStream().forEach( CTask::execute );
+
+            CMessage.CInstance.INSTANCE.write(
+                CMessage.EType.SUCCESS,
+                "Environment",
+                "Simulation shutsdown"
+            );
         } );
     }
 
