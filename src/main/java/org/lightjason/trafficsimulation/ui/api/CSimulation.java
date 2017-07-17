@@ -48,22 +48,6 @@ import java.util.stream.Collectors;
 @Path( "/simulation" )
 public final class CSimulation
 {
-    /**
-     * returns execute a simulation run
-     *
-     * @return agent name list
-     */
-    @GET
-    @Path( "/execute" )
-    @Produces( MediaType.APPLICATION_JSON )
-    public final Response execute()
-    {
-        if ( CRuntime.INSTANCE.running() )
-            return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "isrunning" ) ).build();
-
-        CRuntime.INSTANCE.run();
-        return Response.status( Response.Status.OK ).build();
-    }
 
     /**
      * simulation is running
@@ -92,7 +76,7 @@ public final class CSimulation
             return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "isrunning" ) ).build();
 
         new Thread( CHTTPServer::shutdown ).start();
-        return Response.status( Response.Status.OK ).build();
+        return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "shutdown" ) ).build();
     }
 
     /**
@@ -147,7 +131,7 @@ public final class CSimulation
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
         if ( !l_data.getLeft() )
-            return Response.status( Response.Status.FORBIDDEN ).build();
+            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
 
         return l_data.getRight();
     }
@@ -169,9 +153,9 @@ public final class CSimulation
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
         if ( !l_data.getLeft() )
-            return Response.status( Response.Status.FORBIDDEN ).build();
+            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
 
         l_data.setValue( p_content );
-        return Response.status( Response.Status.OK ).build();
+        return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentchanged", p_id ) ).build();
     }
 }

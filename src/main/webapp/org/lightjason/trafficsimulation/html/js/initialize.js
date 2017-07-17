@@ -342,9 +342,10 @@ function codemirrorsave( pc_id, pc_source )
         url: "/api/simulation/asl/set/" + pc_id,
         data: pc_source,
         dataType: "text",
-        method: "POST"
+        method: "POST",
+        headers: { "Content-Type": "text/plain" }
     })
-    .success(function() { notifymessage({ title: "Agent [" + pc_id + "]", text: "ASL script has been saved", type: "info" }); })
+    .success(function(i) { notifymessage({ title: "Agent", text: i, type: "info" }); })
     .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
 
@@ -397,11 +398,13 @@ $(document).ready(function() {
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
         LightJason.ajax( "/api/simulation/shutdown" )
+            .success(function() { notifymessage({ title: i.statusText, text: i.responseText, type: "info" }); })
             .error(function(i) {
                 if ( ( i.status === 503 ) || ( i.status === 0 ) )
                     return;
                 notifymessage({ title: i.statusText, text: i.responseText, type: "error" });
             })
+
     });
 
 
