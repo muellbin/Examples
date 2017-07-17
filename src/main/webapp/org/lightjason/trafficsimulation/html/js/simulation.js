@@ -20,10 +20,10 @@
  */
 "use strict";
 
-var ws;
 
 jQuery(function() {
-     ws = new WebSocket( "ws://localhost:12345/animation" );
+
+    var ws = new WebSocket( "ws://localhost:12345/animation" );
 
     ws.onopen = function()
     {
@@ -34,6 +34,13 @@ jQuery(function() {
     ws.onmessage = function ( evt )
     {
         console.log("Message from server: " + evt.data);
+        var l_data = JSON.parse( evt.data );
+        switch( l_data.operation )
+        {
+            case ( "initializegrid" ):
+                initialize( l_data.width, l_data.height, l_data.cellsize );
+                break;
+        }
     };
 
     ws.onclose = function()
@@ -46,17 +53,21 @@ jQuery(function() {
         console.log( "Websocket Error: " + err );
     };
 
-    var Q = window.Q = Quintus()
+
+
+});
+
+function initialize( width, height, cellsize )
+{
+    var l_quintus = window.m_quintus = Quintus()
         .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI")
         .setup("screen", {
-            width: 800,
-            height: 600,
             scaleToFit: true
         })
         .controls()
         .touch();
 
-    Q.Sprite.extend("Player", {
+    l_quintus.Sprite.extend("Player", {
         init: function (p) {
             this._super(p, {
                 sheet: "player"
@@ -71,7 +82,7 @@ jQuery(function() {
         }
     });
 
-    Q.Sprite.extend("Car", {
+    l_quintus.Sprite.extend("Car", {
         init: function (p) {
             this._super(p, {
                 sheet: "car"
@@ -86,32 +97,51 @@ jQuery(function() {
         }
     });
 
-    Q.scene("street", function (stage) {
+    l_quintus.scene("street", function (stage) {
+        var l_tilelayer = new l_quintus.TileLayer ( {
+            tileW: cellsize,
+            tileH: cellsize,
+            blockTileW: width,
+            blockTileH: height,
+            type: l_quintus.SPRITE_NONE,
+            sheet: "streettiles"
+        } );
+        l_tilelayer.p.tiles =  streettiles( width, height );
+        stage.insert( l_tilelayer );
 
-        stage.insert(new Q.TileLayer({
-            dataAsset: 'street.json',
-            sheet: 'streettiles'
-        }));
+        var player = stage.insert(new l_quintus.Player({x: 20, y: 114}));
 
-        var player = stage.insert(new Q.Player({x: 20, y: 114}));
+        //stage.add("viewport").follow(player);
 
-        stage.add("viewport").follow(player);
+        stage.insert(new l_quintus.Car({x: 300, y: 114}));
+        stage.insert(new l_quintus.Car({x: 200, y: 144}));
+        stage.insert(new l_quintus.Car({x: 500, y: 144}));
 
-        stage.insert(new Q.Car({x: 300, y: 114}));
-        stage.insert(new Q.Car({x: 200, y: 144}));
-        stage.insert(new Q.Car({x: 500, y: 144}));
-
-        stage.insert(new Q.Car({x: 700, y: 80, angle: 180}));
-        stage.insert(new Q.Car({x: 800, y: 50, angle: 180}));
+        stage.insert(new l_quintus.Car({x: 700, y: 80, angle: 180}));
+        stage.insert(new l_quintus.Car({x: 800, y: 50, angle: 180}));
 
     });
 
-    Q.load("sprites.png, sprites.json, street.json, streettiles.png", function () {
-        Q.sheet("streettiles", "streettiles.png", {tilew: 32, tileh: 32});
+    l_quintus.load("sprites.png, sprites.json, streettiles.png", function () {
+        l_quintus.sheet("streettiles", "streettiles.png", {tilew: cellsize, tileh: cellsize});
 
-        Q.compileSheets("sprites.png", "sprites.json");
+        l_quintus.compileSheets("sprites.png", "sprites.json");
 
-        Q.stageScene("street");
+        l_quintus.stageScene("street");
     });
+}
 
-});
+function streettiles( width, height )
+{
+    var l_matrix = [
+        [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+        [ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+        [ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+        [ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+        [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    ];
+    return l_matrix;
+
+
+}
