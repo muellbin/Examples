@@ -114,6 +114,11 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( "node_modules/gentelella/vendors/jquery/dist/jquery.js" )
             },
 
+            "js-jquery-fullscreen" : {
+                output: "js/jquery.fullscreen.min.js",
+                source: l_gulp.src( "node_modules/jquery.full.screen/jquery.full.screen.js" )
+            },
+
             "js-bootstrap" : {
                 output: "js/bootstrap.min.js",
                 source: l_gulp.src( "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js" )

@@ -21,6 +21,7 @@
   "dependencies": {
     "codemirror": "^5.27.4",
     "gentelella": "https://github.com/puikinsh/gentelella/archive/1.4.0.tar.gz",
+    "jquery.full.screen": "^0.1.1",
     "quintus": "^0.2.0",
     "remark": "https://github.com/gnab/remark/archive/v0.14.0.tar.gz"
   },
