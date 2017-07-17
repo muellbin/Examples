@@ -32,8 +32,6 @@ import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 

@@ -60,13 +60,13 @@ public final class CConfiguration extends ITree.CTree
      */
     public static final String DEFAULTPATH = Paths.get( System.getProperty( "user.home" ), ".lightjason", "trafficsimulation" ).toString();
     /**
-     * asl sub directory
-     */
-    private static final String ASLDIRECTORY = "asl";
-    /**
      * action set
      */
     public static final Set<IAction> ACTIONS = Collections.unmodifiableSet( CCommon.actionsFromPackage().collect( Collectors.toSet() ) );
+    /**
+     * asl sub directory
+     */
+    private static final String ASLDIRECTORY = "asl";
     /**
      * loading path
      */
