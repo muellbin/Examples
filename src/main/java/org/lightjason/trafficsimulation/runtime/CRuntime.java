@@ -106,7 +106,7 @@ public final class CRuntime implements IRuntime
 
         try
         (
-            final InputStream l_stream = new FileInputStream( CCommon.searchpath( p_key ) )
+            final InputStream l_stream = new FileInputStream( CConfiguration.INSTANCE.aslfile( p_key ) )
         )
         {
             m_agents.put( p_key.substring( 0, p_key.lastIndexOf( '.' ) ), new MutablePair<>( p_visible, IOUtils.toString( l_stream, "UTF-8" ) ) );

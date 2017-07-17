@@ -21,7 +21,6 @@
 
 # main definition
 main:
-    searchpath: []
     messagedelay:
       default: 2500
       agentprint: 1500

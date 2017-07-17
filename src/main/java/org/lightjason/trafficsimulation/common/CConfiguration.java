@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -57,20 +58,19 @@ public final class CConfiguration extends ITree.CTree
     /**
      * default configuration path
      */
-    public static final String DEFAULTPATH = Stream.of( System.getProperty( "user.home" ), ".lightjason", "trafficsimulation" )
-                                                   .collect( Collectors.joining( File.separator ) );
+    public static final String DEFAULTPATH = Paths.get( System.getProperty( "user.home" ), ".lightjason", "trafficsimulation" ).toString();
     /**
-     * asl name
+     * asl sub directory
      */
-    public static final String DEfAULTASLPATH = Stream.of( DEFAULTPATH, "asl" ).collect( Collectors.joining( File.separator ) );
+    private static final String ASLDIRECTORY = "asl";
     /**
      * action set
      */
     public static final Set<IAction> ACTIONS = Collections.unmodifiableSet( CCommon.actionsFromPackage().collect( Collectors.toSet() ) );
     /**
-     * default configuration file
+     * loading path
      */
-    private static final String DEFAULTCONFIG = Stream.of( DEFAULTPATH, "configuration.yaml" ).collect( Collectors.joining( File.separator ) );
+    private String m_path = "";
 
 
     /**
@@ -90,11 +90,12 @@ public final class CConfiguration extends ITree.CTree
     @SuppressWarnings( "unchecked" )
     public final CConfiguration loadfile( final String p_path )
     {
+        m_path = orDefaultConfig( p_path );
 
         try
-            (
-                    final InputStream l_stream = new FileInputStream( orDefaultConfig( p_path ) );
-            )
+        (
+            final InputStream l_stream = new FileInputStream( Paths.get( m_path, "configuration.yaml" ).toFile()  )
+        )
         {
 
             final Map<String, ?> l_result = (Map<String, Object>) new Yaml().load( l_stream );
@@ -132,6 +133,17 @@ public final class CConfiguration extends ITree.CTree
     }
 
     /**
+     * returns the file with the configuration path
+     *
+     * @param p_name file name
+     * @return filename (except extension)
+     */
+    public final String aslfile( final String p_name )
+    {
+        return Paths.get( m_path, ASLDIRECTORY, p_name ).toString();
+    }
+
+    /**
      * set default path
      *
      * @param p_config path or null / empty
@@ -139,25 +151,29 @@ public final class CConfiguration extends ITree.CTree
      */
     private static String orDefaultConfig( final String p_config )
     {
-        return ( p_config == null ) || ( p_config.isEmpty() ) ? DEFAULTCONFIG : p_config;
+        return ( p_config == null ) || ( p_config.isEmpty() ) ? DEFAULTPATH : p_config;
     }
 
     /**
      * creates the default configuration
      *
+     * @param p_path base path
      * @return full path
      * @throws IOException on any io error
      */
-    public static String createdefault() throws IOException
+    public static String createdefault( final String p_path ) throws IOException
     {
+        if ( new File( p_path ).exists() )
+            return p_path;
+
         StreamUtils.zip(
             Stream.of(
                 "",
-                "asl",
-                "asl",
-                "asl",
-                "asl",
-                "asl"
+                ASLDIRECTORY,
+                ASLDIRECTORY,
+                ASLDIRECTORY,
+                ASLDIRECTORY,
+                ASLDIRECTORY
             ),
 
             Stream.of(
@@ -172,14 +188,14 @@ public final class CConfiguration extends ITree.CTree
             ImmutablePair::new
 
         )
-                   .peek( i -> new File( DEFAULTPATH + File.separator + i.getLeft() ).mkdirs() )
+                   .peek( i -> Paths.get( p_path, i.getLeft() ).toFile().mkdirs() )
                    .forEach( i ->
                    {
                        try
                        {
                            FileUtils.copyInputStreamToFile(
                                CConfiguration.class.getResourceAsStream( i.getRight() ),
-                               FileSystems.getDefault().getPath( DEFAULTPATH, i.getLeft(), i.getRight() ).toFile()
+                               FileSystems.getDefault().getPath( p_path, i.getLeft(), i.getRight() ).toFile()
                            );
                        }
                        catch ( final IOException l_exception )
@@ -188,7 +204,7 @@ public final class CConfiguration extends ITree.CTree
                        }
                    } );
 
-        return DEFAULTPATH;
+        return p_path;
     }
 
 }

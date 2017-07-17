@@ -124,26 +124,6 @@ public final class CCommon
         return PROPERTIES;
     }
 
-    /**
-     * returns a file from the search path
-     *
-     * @param p_filename filename
-     * @return file instance
-     */
-    public static File searchpath( final String p_filename )
-    {
-        return Stream.concat(
-            CConfiguration.INSTANCE
-                          .<List<String>>getOrDefault( Collections.emptyList(), "main", "searchpath" )
-                          .stream(),
-            Stream.of( CConfiguration.DEfAULTASLPATH )
-        )
-                      .map( i -> Paths.get( i, p_filename ).normalize().toFile() )
-                      .filter( i -> i.exists() && i.canRead() )
-                      .findFirst()
-                      .orElseThrow( () -> new RuntimeException( CCommon.languagestring( CCommon.class, "filenotfound", p_filename ) ) );
-
-    }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -94,13 +94,11 @@ public final class CMain
             return;
         }
 
-        if ( ( Files.notExists( Paths.get( CConfiguration.DEFAULTPATH ) ) ) || ( Files.notExists( Paths.get( CConfiguration.DEfAULTASLPATH ) ) ) )
-            CConfiguration.createdefault();
 
         // --- execution ---------------------------------------------------------------------------------------------------------------------------------------
 
-        // load configuration
-        CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
+        // load configuration and generate default if not exists
+        CConfiguration.INSTANCE.loadfile( CConfiguration.createdefault( l_cli.getOptionValue( "config", CConfiguration.DEFAULTPATH ) ) );
 
         // start http server if possible
         CHTTPServer.execute();
