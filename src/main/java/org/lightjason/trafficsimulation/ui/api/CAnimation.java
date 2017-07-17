@@ -28,7 +28,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jetty.websocket.api.Session;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
