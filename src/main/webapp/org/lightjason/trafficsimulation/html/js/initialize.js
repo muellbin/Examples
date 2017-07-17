@@ -345,7 +345,7 @@ function codemirrorsave( pc_id, pc_source )
         method: "POST",
         headers: { "Content-Type": "text/plain" }
     })
-    .success(function(i) { notifymessage({ title: "Agent", text: i, type: "info" }); })
+    .done(function(i) { console.log(i); notifymessage({ title: "Agent", text: i, type: "info" }); })
     .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
 
@@ -398,7 +398,6 @@ $(document).ready(function() {
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
         LightJason.ajax( "/api/simulation/shutdown" )
-            .success(function() { notifymessage({ title: i.statusText, text: i.responseText, type: "info" }); })
             .error(function(i) {
                 if ( ( i.status === 503 ) || ( i.status === 0 ) )
                     return;
