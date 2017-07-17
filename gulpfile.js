@@ -57,16 +57,6 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( l_sourcedir + "*.htm" )
             },
 
-            "images" : {
-                output: "images",
-                source: l_gulp.src( l_sourcedir + "images/*.*" )
-            },
-
-            "data" : {
-                output: "data",
-                source: l_gulp.src( l_sourcedir + "data/*.json" )
-            },
-
             "fonts" : {
                 output: "fonts",
                 source: l_gulp.src([
@@ -85,9 +75,23 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( "node_modules/gentelella/vendors/font-awesome/css/font-awesome.min.css" )
             },
 
+
+
             "markdown-slide" : {
                 output: "slide",
                 source: l_gulp.src( l_sourcedir + "slide/*.md" )
+            },
+
+
+
+            "images" : {
+                output: "images",
+                source: l_gulp.src( l_sourcedir + "images/*.*" )
+            },
+
+            "data" : {
+                output: "data",
+                source: l_gulp.src( l_sourcedir + "data/*.json" )
             }
 
         },
@@ -100,8 +104,8 @@ var l_gulp = require( "gulp" ),
                 output: "js/script.min.js",
                 source: l_gulp.src([
                     l_sourcedir + "js/global.js",
-                    l_sourcedir + "js/initialize.js",
-                    l_sourcedir + "js/lightjason.js"
+                    l_sourcedir + "js/lightjason.js",
+                    l_sourcedir + "js/initialize.js"
                 ])
             },
 
@@ -120,19 +124,16 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( "node_modules/gentelella/vendors/pnotify/dist/pnotify.js" )
             },
 
-            "js-gentelella" : {
-                output: "js/gentelella.min.js",
-                source: l_gulp.src( l_sourcedir + "js/gentelella.js" )
+            "js-codemirror" : {
+                output: "js/codemirror.min.js",
+                source: l_gulp.src( "node_modules/codemirror/lib/codemirror.js" )
             },
+
+
 
             "js-remark" : {
                 output: "js/remark.min.js",
                 source: l_gulp.src( "node_modules/remark/out/remark.js" )
-            },
-
-            "js-codemirror" : {
-                output: "js/codemirror.min.js",
-                source: l_gulp.src( "node_modules/codemirror/lib/codemirror.js" )
             }
 
         },
@@ -140,16 +141,6 @@ var l_gulp = require( "gulp" ),
 
         // minify css
         minifycss : {
-
-            "css-pnotify" : {
-                output: "css/pnotify.min.css",
-                source: l_gulp.src( "node_modules/gentelella/vendors/pnotify/dist/*.css" )
-            },
-
-            "css-slide" : {
-                output: "css/slide.min.css",
-                source: l_gulp.src( l_sourcedir + "css/slide.css" )
-            },
 
             "css-bootstrap" : {
                 output: "css/bootstrap.min.css",
@@ -161,9 +152,19 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( "node_modules/gentelella/build/css/custom.css" )
             },
 
-            "css-codemirror" : {
-                output: "css/codemirror.min.css",
-                source: l_gulp.src( "node_modules/codemirror/lib/codemirror.css" )
+            "css-main" : {
+                output: "css/layout.min.css",
+                source: l_gulp.src([
+                    "node_modules/gentelella/vendors/pnotify/dist/*.css",
+                    "node_modules/codemirror/lib/codemirror.css"
+                ])
+            },
+
+
+
+            "css-slide" : {
+                output: "css/slide.min.css",
+                source: l_gulp.src( l_sourcedir + "css/slide.css" )
             }
 
         }
