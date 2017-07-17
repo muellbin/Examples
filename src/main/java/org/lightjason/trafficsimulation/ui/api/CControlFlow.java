@@ -42,7 +42,8 @@ public final class CControlFlow extends IWebSocket.IBaseWebSocket
      */
     protected CControlFlow( final BiConsumer<ITree, IWebSocket> p_messageconsumer )
     {
-        super( ( i, j ) -> {
+        super( ( i, j ) ->
+        {
 
         } );
     }
