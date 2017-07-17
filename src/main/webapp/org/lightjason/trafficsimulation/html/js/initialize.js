@@ -306,7 +306,7 @@ function init_autosize() {
 /**
  * PNotify
  */
-function init_PNotify() {
+function init_pnotify() {
 
     if( typeof (PNotify) === 'undefined'){ return; }
     //console.log('init_PNotify');
@@ -327,6 +327,31 @@ function notifymessage( px_options )
 }
 
 
+/**
+ * codemirror save function
+ *
+ * @param pc_id id
+ * @param pc_source source code
+ */
+function codemirrorsave( pc_id, pc_source )
+{
+    if (!pc_id)
+        return;
+
+    LightJason.ajax({
+        url: "/api/simulation/asl/set/" + pc_id,
+        data: pc_source,
+        dataType: "text",
+        method: "POST"
+    })
+    .success(function() { notifymessage({ title: "Agent [" + pc_id + "]", text: "ASL script has been saved", type: "info" }); })
+    .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+}
+
+CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); };
+
+
+
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
@@ -335,7 +360,7 @@ function notifymessage( px_options )
 $(document).ready(function() {
 
     init_sidebar();
-    init_PNotify();
+    init_pnotify();
     init_autosize();
 
 
@@ -358,9 +383,15 @@ $(document).ready(function() {
     var l_editor = CodeMirror.fromTextArea(
         document.getElementById("ui-editor"),
         {
-            lineNumbers: true, sourceid: null
+            lineNumbers: true,
+            matchBrackets: true,
+            mode: "text/plain",
+            indentUnit: 4,
+            sourceid: null
         }
     );
+
+    l_editor.on( "blur", function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); } );
 
 
     // set shutdown button
