@@ -104,14 +104,14 @@
                                 <h2>Simulation Environment</h2>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li><a><i class="fa fa-refresh"></i></a></li>
-                                    <li><a><i class="fa fa-save"></i></a></li>
+                                    <li><a id="ui-savesimulation"><i class="fa fa-save"></i></a></li>
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                                 </ul>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
                                 <div class="dashboard-widget-content">
-                                    <canvas id="screen" width="800px" height="300px"></canvas>
+                                    <canvas id="simulation-screen" width="800px" height="300px"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -123,7 +123,7 @@
                                 <h2>Penality History</h2>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li><a><i class="fa fa-refresh"></i></a></li>
-                                    <li><a><i class="fa fa-save"></i></a></li>
+                                    <li><a id="ui-savepanelty"><i class="fa fa-save"></i></a></li>
                                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                                 </ul>
                                 <div class="clearfix"></div>
@@ -149,7 +149,7 @@
                             <h2>Source Code</h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li><a><i class="fa fa-file-text-o"></i></a></li>
-                                <li><a><i class="fa fa-save"></i></a></li>
+                                <li><a id="ui-savesource"><i class="fa fa-save"></i></a></li>
                                 <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                             </ul>
                             <div class="clearfix"></div>
@@ -185,6 +185,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/pnotify.min.js"></script>
     <script src="js/codemirror.min.js"></script>
+    <script src="js/FileSaver.min.js"></script>
     <script src="js/simulation.js"></script>
     <script src="js/script.min.js"></script>
 

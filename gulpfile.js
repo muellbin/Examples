@@ -65,9 +65,15 @@ var l_gulp = require( "gulp" ),
                 ])
             },
 
-            "js" : {
+            "js-simulation" : {
                 output: "js",
                 source: l_gulp.src( l_sourcedir + "js/simulation.js" )
+            },
+
+            "js-filesaver" : {
+                output: "js",
+                source: l_gulp.src( "node_modules/file-saver/FileSaver.min.js" )
+
             },
 
             "css" : {

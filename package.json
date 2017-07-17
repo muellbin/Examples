@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "codemirror": "^5.27.4",
+    "file-saver": "https://github.com/eligrey/FileSaver.js/archive/1.3.3.tar.gz",
     "gentelella": "https://github.com/puikinsh/gentelella/archive/1.4.0.tar.gz",
     "jquery.full.screen": "^0.1.1",
     "quintus": "^0.2.0",

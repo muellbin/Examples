@@ -395,6 +395,28 @@ $(document).ready(function() {
     l_editor.on( "blur", function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); } );
 
 
+    // save code editor
+    jQuery( "#ui-savesource" ).click(function() {
+        saveAs( new Blob( [l_editor.getValue()], {type: "text/plain;charset=utf-8"}), "agent.asl" );
+    });
+
+
+    // save panelty image
+    jQuery( "#ui-savepanelty" ).click(function() {
+        jQuery( "#simulation-panelty" ).get(0).toBlob(function( po_blob ) {
+            saveAs( po_blob, "panelty.png" );
+        });
+    });
+
+
+    // save simulation image
+    jQuery( "#ui-savesimulation" ).click(function() {
+        jQuery( "#simulation-screen" ).get(0).toBlob(function( po_blob ) {
+            saveAs( po_blob, "simulation.png" );
+        });
+    });
+
+
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
         LightJason.ajax( "/api/simulation/shutdown" )

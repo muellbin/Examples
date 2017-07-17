@@ -23,8 +23,7 @@
 
 jQuery(function() {
 
-    var ws = new WebSocket( "ws://localhost:12345/animation" );
-
+    var ws = LightJason.websocket( "/animation" )
     ws.onopen = function()
     {
         console.log( "Websocket opened!" );
@@ -61,7 +60,7 @@ function initialize( width, height, cellsize )
 {
     var l_quintus = window.m_quintus = Quintus()
         .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI")
-        .setup("screen", {
+        .setup("simulation-screen", {
             scaleToFit: true
         })
         .controls()
