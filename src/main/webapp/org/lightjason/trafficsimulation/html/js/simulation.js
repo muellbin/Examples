@@ -98,11 +98,16 @@ function initialize( width, height, cellsize )
     });
 
     l_quintus.scene("street", function (stage) {
-
-        stage.insert(new l_quintus.TileLayer({
-            dataAsset: 'street.json',
-            sheet: 'streettiles'
-        }));
+        var l_tilelayer = new l_quintus.TileLayer ( {
+            tileW: cellsize,
+            tileH: cellsize,
+            blockTileW: width,
+            blockTileH: height,
+            type: l_quintus.SPRITE_NONE,
+            sheet: "streettiles"
+        } );
+        l_tilelayer.p.tiles =  streettiles( width, height );
+        stage.insert( l_tilelayer );
 
         var player = stage.insert(new l_quintus.Player({x: 20, y: 114}));
 
@@ -117,11 +122,26 @@ function initialize( width, height, cellsize )
 
     });
 
-    l_quintus.load("sprites.png, sprites.json, street.json, streettiles.png", function () {
+    l_quintus.load("sprites.png, sprites.json, streettiles.png", function () {
         l_quintus.sheet("streettiles", "streettiles.png", {tilew: cellsize, tileh: cellsize});
 
         l_quintus.compileSheets("sprites.png", "sprites.json");
 
         l_quintus.stageScene("street");
     });
+}
+
+function streettiles( width, height )
+{
+    var l_matrix = [
+        [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+        [ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+        [ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+        [ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+        [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    ];
+    return l_matrix;
+
+
 }
