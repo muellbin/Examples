@@ -152,12 +152,14 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( "node_modules/gentelella/build/css/custom.css" )
             },
 
+            "css-pnotify" : {
+                output: "css/pnotify.min.css",
+                source: l_gulp.src( "node_modules/gentelella/vendors/pnotify/dist/*.css" )
+            },
+
             "css-main" : {
-                output: "css/layout.min.css",
-                source: l_gulp.src([
-                    "node_modules/gentelella/vendors/pnotify/dist/*.css",
-                    "node_modules/codemirror/lib/codemirror.css"
-                ])
+                output: "css/codemirror.min.css",
+                source: l_gulp.src( "node_modules/codemirror/lib/codemirror.css" )
             },
 
 
