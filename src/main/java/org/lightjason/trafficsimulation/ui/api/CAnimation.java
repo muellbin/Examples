@@ -23,14 +23,28 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
+import com.codepoetics.protonpack.StreamUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.eclipse.jetty.websocket.api.Session;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
+
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
- * websocket class
+ * websocket for animation
  */
 public final class CAnimation extends IWebSocket.IBaseWebSocket
 {
+    /**
+     * current websocket connections
+     */
+    private static final Set<CAnimation> CONNECTIONS = new CopyOnWriteArraySet<>();
 
     /**
      * ctor
@@ -39,10 +53,60 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
     {
         super( ( i, j ) ->
         {
-            System.out.println( i );
-            j.send( "fooo" );
+            CInstance.INSTANCE.initializegrid( 20, 6, 32 );
         } );
-        System.out.println( "ctor called" );
+    }
+
+
+    @Override
+    public final void onWebSocketConnect( final Session p_session )
+    {
+        CONNECTIONS.add( this );
+        super.onWebSocketConnect( p_session );
+    }
+
+    @Override
+    public final void onWebSocketClose( final int p_statuscode, final String p_reason )
+    {
+        CONNECTIONS.remove( this );
+        super.onWebSocketClose( p_statuscode, p_reason );
+    }
+
+    /**
+     * singleton instance of all websocket connections
+     */
+    public static final class CInstance
+    {
+        /**
+         * singleton instance
+         */
+        public static final CInstance INSTANCE = new CInstance();
+
+        private CInstance()
+        {
+        }
+
+        /**
+         * initialize grid
+         *
+         * @param p_width width
+         * @param p_height heigth
+         * @param p_cellsize cellsize
+         * @return animation instance
+         */
+        public final CInstance initializegrid( final int p_width, final int p_height, final int p_cellsize )
+        {
+            final Map<Object, Object> l_data = StreamUtils.zip(
+                Stream.of( "operation", "width", "height", "cellsize" ),
+                Stream.of( "initializegrid", p_width, p_height, p_cellsize ),
+                ImmutablePair::new
+            ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
+
+            CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
+            return this;
+        }
+
+
     }
 
 }
