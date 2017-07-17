@@ -71,7 +71,7 @@ public class CTask implements ITask
             {
                 CMessage.CInstance.INSTANCE.write(
                     CMessage.EType.ERROR,
-                    "Environment",
+                    CCommon.languagestring( this, "environment" ),
                     l_exception.getLocalizedMessage()
                 );
                 return;
@@ -86,8 +86,8 @@ public class CTask implements ITask
             // execute objects
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,
-                "Environment",
-                "Simulation starts-up"
+                CCommon.languagestring( this, "environment" ),
+                CCommon.languagestring( this, "simulationstart" )
             );
 
             final Set<Callable<?>> l_elements = Collections.synchronizedSet( Stream.of( l_environment ).collect( Collectors.toSet() ) );
@@ -96,8 +96,8 @@ public class CTask implements ITask
 
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,
-                "Environment",
-                "Simulation shutsdown"
+                CCommon.languagestring( this, "environment" ),
+                CCommon.languagestring( this, "simulationstop" )
             );
         } );
     }
