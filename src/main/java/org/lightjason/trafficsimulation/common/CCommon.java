@@ -249,9 +249,12 @@ public final class CCommon
      */
     private static String languagelabel( final Class<?> p_class, final String p_label )
     {
-        return ( p_class.getCanonicalName().toLowerCase( Locale.ROOT ) + "." + p_label.toLowerCase( Locale.ROOT ) ).replaceAll( "[^a-zA-Z0-9_\\.]+", "" )
-                                                                                                                   .replace(
-                                                                                                                       PACKAGEROOT + ".", "" );
+        return (
+            p_class.getCanonicalName().toLowerCase( Locale.ROOT )
+            + "."
+            + p_label.toLowerCase( Locale.ROOT )
+        ).replaceAll( "[^a-zA-Z0-9_\\.]+", "" )
+        .replace( PACKAGEROOT + ".", "" );
     }
 
 

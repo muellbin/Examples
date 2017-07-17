@@ -24,7 +24,7 @@
 package org.lightjason.trafficsimulation.ui.api;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.lightjason.rest.CCommon;
+import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.runtime.CRuntime;
 import org.lightjason.trafficsimulation.runtime.CTask;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;

@@ -55,6 +55,7 @@
     jQuery.fn[sr] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
 
 })(jQuery,'smartresize');
+
 /**
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -71,11 +72,11 @@ var CURRENT_URL = window.location.href.split('#')[0].split('?')[0],
     $NAV_MENU = $('.nav_menu'),
     $FOOTER = $('footer');
 
-
-
-// Sidebar
+/**
+ * Sidebar
+ */
 function init_sidebar() {
-// TODO: This is some kind of easy fix, maybe we can improve this
+    // TODO: This is some kind of easy fix, maybe we can improve this
     var setContentHeight = function () {
         // reset height
         $RIGHT_COL.css('min-height', $(window).height());
@@ -121,7 +122,7 @@ function init_sidebar() {
         }
     });
 
-// toggle small or large menu
+    // toggle small or large menu
     $MENU_TOGGLE.on('click', function() {
         //console.log('clicked - menu toggle');
 
@@ -163,14 +164,15 @@ function init_sidebar() {
         });
     }
 };
-// /Sidebar
 
 var randNum = function() {
     return (Math.floor(Math.random() * (1 + 40 - 20))) + 20;
 };
 
 
-// Panel toolbox
+/**
+ * Panel toolbox
+ */
 $(document).ready(function() {
     $('.collapse-link').on('click', function() {
         var $BOX_PANEL = $(this).closest('.x_panel'),
@@ -196,23 +198,26 @@ $(document).ready(function() {
         $BOX_PANEL.remove();
     });
 });
-// /Panel toolbox
 
-// Tooltip
+/**
+ *  Tooltip
+ */
 $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip({
         container: 'body'
     });
 });
-// /Tooltip
 
-// Progressbar
+/**
+ * Progressbar
+ */
 if ($(".progress .progress-bar")[0]) {
     $('.progress .progress-bar').progressbar();
 }
-// /Progressbar
 
-// Switchery
+/**
+ * Switchery
+ */
 $(document).ready(function() {
     if ($(".js-switch")[0]) {
         var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
@@ -223,10 +228,10 @@ $(document).ready(function() {
         });
     }
 });
-// /Switchery
 
-
-// Accordion
+/**
+ * Accordion
+ */
 $(document).ready(function() {
     $(".expand").on("click", function () {
         $(this).next().slideToggle(200);
@@ -240,7 +245,9 @@ $(document).ready(function() {
     });
 });
 
-// NProgress
+/**
+ * NProgress
+ */
 if (typeof NProgress != 'undefined') {
     $(document).ready(function () {
         NProgress.start();
@@ -250,7 +257,6 @@ if (typeof NProgress != 'undefined') {
         NProgress.done();
     });
 }
-
 
 //hover and retain popover when on popover content
 var originalLeave = $.fn.popover.Constructor.prototype.leave;
@@ -284,25 +290,22 @@ $('body').popover({
     }
 });
 
-
 function gd(year, month, day) {
     return new Date(year, month - 1, day).getTime();
 }
 
-/* AUTOSIZE */
-
+/**
+ * AUTOSIZE
+ */
 function init_autosize() {
-
     if(typeof $.fn.autosize !== 'undefined'){
-
         autosize($('.resizable_textarea'));
-
     }
-
 }
 
-/* PNotify */
-
+/**
+ * PNotify
+ */
 function init_PNotify() {
 
     if( typeof (PNotify) === 'undefined'){ return; }
@@ -313,7 +316,22 @@ function init_PNotify() {
 
 }
 
+/**
+ * creates a notify-message
+ *
+ * @param px_options object, text, title and type must be set
+ */
+function notifymessage( px_options )
+{
+    new PNotify( jQuery.extend( true, { delay: 2500, animate_speed: "fast" }, px_options ) );
+}
 
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
+ * document-ready execution
+ */
 $(document).ready(function() {
 
     init_sidebar();
@@ -322,18 +340,18 @@ $(document).ready(function() {
 
 
     // notify messages
-    var l_message = new WebSocket( "ws://localhost:12345/message" );
-    l_message.onmessage = function ( i )
-    {
-        var lo = JSON.parse( i.data );
-        new PNotify({
-            title: lo.title,
-            text: lo.text,
-            type: lo.type,
-            delay: lo.delay,
-            animate_speed: "fast"
-        })
-    };
+    LightJason.websocket( "/message" )
+              .onmessage = function ( i )
+              {
+                  var lo = JSON.parse( i.data );
+                  new PNotify({
+                      title: lo.title,
+                      text: lo.text,
+                      type: lo.type,
+                      delay: lo.delay,
+                      animate_speed: "fast"
+                  })
+              };
 
 
     // set codemirror
@@ -351,9 +369,7 @@ $(document).ready(function() {
             .error(function(i) {
                 if ( ( i.status === 503 ) || ( i.status === 0 ) )
                     return;
-
-                console.log( i );
-                alert("error");
+                notifymessage({ title: i.statusText, text: i.responseText, type: "error" });
             })
     });
 
@@ -384,16 +400,15 @@ $(document).ready(function() {
                 l_editor.setValue( i );
                 l_editor.options.sourceid = l_id;
             })
-            .error(function() {
-                alert("error");
-            });
+            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
 
 
     // set simulation execution
     jQuery( "#simulation-run" ).click(function() {
-        LightJason.ajax( "/api/simulation/run" ).error(function() { alert("error") });
+        LightJason.ajax( "/api/simulation/run" )
+                  .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
 

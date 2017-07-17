@@ -273,11 +273,6 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
-            <!--
-            <resource>
-                <directory>src/main/webapp</directory>
-            </resource>
-            -->
         </resources>
 
         <!-- using build plugins -->

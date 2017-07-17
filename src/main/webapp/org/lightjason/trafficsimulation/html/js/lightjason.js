@@ -32,7 +32,7 @@ var LightJason = (function (px_modul) {
      * redefined jQuery ajax request, with equal option fields
      * @see http://api.jquery.com/jquery.ajax/
 
-     * @param px_options Ajax request object or URL
+     * @param px_options Ajax request object or URL relative to server
      * @return jQuery Ajax object
      **/
     px_modul.ajax = function( px_options )
@@ -50,9 +50,21 @@ var LightJason = (function (px_modul) {
 
 
     // --- websocket -------------------------------------------------------------------------------------------------------------------------------------------
+    /**
+     * create a websocket
+     *
+     * @param pc_url url
+     * @returns websocket
+     */
     px_modul.websocket = function( pc_url )
     {
-
+        return new WebSocket(
+            ( pc_url.indexOf('://') > 0 ) || ( pc_url.indexOf('//') === 0 )
+            ? pc_url
+            : window.location.protocol !== "https:"
+              ? "ws://" + location.hostname + (location.port ? ":" + location.port : "") + pc_url
+              : "wss://" + location.hostname + (location.port ? ":" + location.port : "") + pc_url
+        );
     };
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
