@@ -108,20 +108,19 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
 
         /**
          * generate vehicle
-         * @param p_vehicletype vehicle type
          * @param p_vehicle vehicle
          * @return animation insctance
          */
-        public CInstance generatevehicle( final String p_vehicletype, final IVehicle p_vehicle )
+        public IVehicle generatevehicle( final IVehicle p_vehicle )
         {
             final Map<Object, Object> l_data = StreamUtils.zip(
                 Stream.of( "operation", "vehicletype", "vehicle" ),
-                Stream.of( "generatevehicle", p_vehicletype, p_vehicle ),
+                Stream.of( "generatevehicle", p_vehicle.id(), p_vehicle ),
                 ImmutablePair::new
             ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
 
             CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
-            return this;
+            return p_vehicle;
         }
 
 

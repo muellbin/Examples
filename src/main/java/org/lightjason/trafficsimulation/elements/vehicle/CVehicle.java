@@ -35,6 +35,7 @@ import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
+import org.lightjason.trafficsimulation.ui.api.CAnimation;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -116,6 +117,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_environment = p_environment;
         m_userdefinied = p_userdefinied;
         m_position = p_position;
+        CAnimation.CInstance.INSTANCE.generatevehicle( this );
     }
 
     @Override
