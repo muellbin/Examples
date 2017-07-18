@@ -23,9 +23,14 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
+import cern.colt.matrix.impl.DenseDoubleMatrix1D;
+import org.apache.commons.io.IOUtils;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
+import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
+import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
+import org.lightjason.trafficsimulation.ui.api.CAnimation;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
@@ -89,6 +94,23 @@ public class CTask implements ITask
                 CCommon.languagestring( this, "environment" ),
                 CCommon.languagestring( this, "simulationstart" )
             );
+
+
+            //test generating vehicle
+            try
+            {
+                final IVehicle l_uservehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "uservehicle" ), "UTF-8" ), l_environment, true, false )
+                    .generatesingle( new DenseDoubleMatrix1D( new double[]{1, 2} ) );
+                final IVehicle l_defaultvehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
+                    .generatesingle( new DenseDoubleMatrix1D( new double[]{6, 2} ) );
+
+                CAnimation.CInstance.INSTANCE.generatevehicle( "uservehicle", l_uservehicle );
+                CAnimation.CInstance.INSTANCE.generatevehicle( "defaultvehicle", l_defaultvehicle );
+            }
+            catch ( final Exception l_exception )
+            {
+                l_exception.printStackTrace();
+            }
 
             final Set<Callable<?>> l_elements = Collections.synchronizedSet( Stream.of( l_environment ).collect( Collectors.toSet() ) );
             while ( !l_environment.shutdown() )

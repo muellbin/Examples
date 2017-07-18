@@ -224,12 +224,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         private final IEnvironment m_environment;
 
         /**
+         * generator
+         *
          * @param p_stream stream
          * @param p_environment environment reference
          * @param p_uiaccessiable generated cars are ui-accessable
          * @throws Exception on any error
          */
-        protected CGenerator( @Nonnull final InputStream p_stream, @Nonnull final IEnvironment p_environment,
+        public CGenerator( @Nonnull final InputStream p_stream, @Nonnull final IEnvironment p_environment,
                               final boolean p_uiaccessiable, final boolean p_userdefinied ) throws Exception
         {
             super( p_stream, CVehicle.class );
@@ -259,7 +261,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 new CVehicle(
                         m_configuration,
                         MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
-                        null,
+                        (DoubleMatrix1D) p_data[0],
                         m_environment,
                         1,
                         1,

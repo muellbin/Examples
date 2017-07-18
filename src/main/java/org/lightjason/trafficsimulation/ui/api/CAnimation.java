@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.ui.api;
 import com.codepoetics.protonpack.StreamUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jetty.websocket.api.Session;
+import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
 
 import java.util.Map;
@@ -98,6 +99,24 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
             final Map<Object, Object> l_data = StreamUtils.zip(
                 Stream.of( "operation", "width", "height", "cellsize" ),
                 Stream.of( "initializegrid", p_width, p_height, p_cellsize ),
+                ImmutablePair::new
+            ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
+
+            CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
+            return this;
+        }
+
+        /**
+         * generate vehicle
+         * @param p_vehicletype vehicle type
+         * @param p_vehicle vehicle
+         * @return animation insctance
+         */
+        public CInstance generatevehicle( final String p_vehicletype, final IVehicle p_vehicle )
+        {
+            final Map<Object, Object> l_data = StreamUtils.zip(
+                Stream.of( "operation", "vehicletype", "vehicle" ),
+                Stream.of( "generatevehicle", p_vehicletype, p_vehicle ),
                 ImmutablePair::new
             ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
 

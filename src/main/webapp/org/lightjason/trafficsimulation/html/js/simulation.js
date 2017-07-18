@@ -36,8 +36,12 @@ jQuery(function() {
         var l_data = JSON.parse( evt.data );
         switch( l_data.operation )
         {
-            case ( "initializegrid" ):
+            case "initializegrid":
                 initialize( l_data.width, l_data.height, l_data.cellsize );
+                break;
+
+            case "generatevehicle":
+                generatevehicle( l_data.vehicletype, l_data.vehicle );
                 break;
         }
     };
@@ -146,6 +150,18 @@ function streettiles( width, height )
     }
     l_matrix.push( l_footway );
     return l_matrix;
+}
 
+function generatevehicle( vehicletype, vehicle )
+{
+    switch ( vehicletype )
+    {
+        case "uservehicle":
+            console.log( vehicle );
+            break;
 
+        case "defaultvehicle":
+            console.log( vehicle );
+            break;
+    }
 }
