@@ -100,9 +100,9 @@ public class CTask implements ITask
             try
             {
                 final IVehicle l_uservehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "uservehicle" ), "UTF-8" ), l_environment, true, false )
-                    .generatesingle( new DenseDoubleMatrix1D( new double[]{1, 2} ) );
+                    .generatesingle( new DenseDoubleMatrix1D( new double[]{1, 3} ) );
                 final IVehicle l_defaultvehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
-                    .generatesingle( new DenseDoubleMatrix1D( new double[]{6, 2} ) );
+                    .generatesingle( new DenseDoubleMatrix1D( new double[]{6, 3} ) );
 
                 CAnimation.CInstance.INSTANCE.generatevehicle( "uservehicle", l_uservehicle );
                 CAnimation.CInstance.INSTANCE.generatevehicle( "defaultvehicle", l_defaultvehicle );

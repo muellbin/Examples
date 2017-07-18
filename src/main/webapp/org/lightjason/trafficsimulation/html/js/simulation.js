@@ -22,8 +22,8 @@
 
 
 jQuery(function() {
-
-    var ws = LightJason.websocket( "/animation" )
+    window.simulation = new Object();
+    var ws = LightJason.websocket( "/animation" );
     ws.onopen = function()
     {
         console.log( "Websocket opened!" );
@@ -62,7 +62,10 @@ jQuery(function() {
 
 function initialize( width, height, cellsize )
 {
-    var l_quintus = window.m_quintus = Quintus()
+    window.simulation.width = width;
+    window.simulation.height = height;
+    window.simulation.cellsize = cellsize;
+    var l_quintus = window.quintus = Quintus()
         .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI")
         .setup("simulation-screen", {
             scaleToFit: true
@@ -112,17 +115,6 @@ function initialize( width, height, cellsize )
         l_tilelayer.p.tiles =  streettiles( width, height );
         stage.insert( l_tilelayer );
 
-        var player = stage.insert(new l_quintus.Player({x: 20, y: 114}));
-
-        //stage.add("viewport").follow(player);
-
-        stage.insert(new l_quintus.Car({x: 300, y: 114}));
-        stage.insert(new l_quintus.Car({x: 200, y: 144}));
-        stage.insert(new l_quintus.Car({x: 500, y: 144}));
-
-        stage.insert(new l_quintus.Car({x: 700, y: 80, angle: 180}));
-        stage.insert(new l_quintus.Car({x: 800, y: 50, angle: 180}));
-
     });
 
     l_quintus.load("sprites.png, sprites.json, streettiles.png", function () {
@@ -156,12 +148,22 @@ function generatevehicle( vehicletype, vehicle )
 {
     switch ( vehicletype )
     {
+        //TODO: change x, y to vehicle position
         case "uservehicle":
             console.log( vehicle );
+            var l_uservehicle = window.simulation.uservehicle = new window.quintus.Player( {x: 1 * window.simulation.cellsize, y: 3 * window.simulation.cellsize + window.simulation.cellsize / 2} );
+            window.quintus.stages[0].insert( l_uservehicle );
+            //stage.add("viewport").follow(player);
             break;
 
         case "defaultvehicle":
             console.log( vehicle );
+            var l_defaultvehicle = window.simulation.l_defaultvehicle1 = new window.quintus.Car( {x: 6 * window.simulation.cellsize, y: 3 * window.simulation.cellsize + window.simulation.cellsize / 2} );
+            //TODO: opposite car
+            //if(opposite car) l_defaultvehicle.p.angel = 180;
+            //TODO: change 1 to vehicle name
+            window.simulation.l_defaultvehicle1 = l_defaultvehicle;
+            window.quintus.stages[0].insert( l_defaultvehicle );
             break;
     }
 }
