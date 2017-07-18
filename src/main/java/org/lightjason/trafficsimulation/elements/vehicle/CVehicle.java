@@ -117,7 +117,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_environment = p_environment;
         m_userdefinied = p_userdefinied;
         m_position = p_position;
-        CAnimation.CInstance.INSTANCE.generatevehicle( this );
+
+        CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.CREATE, this );
     }
 
     @Override
@@ -130,6 +131,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     protected final Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object )
     {
         return Stream.empty();
+    }
+
+    @Override
+    public final IVehicle call() throws Exception
+    {
+        super.call();
+        CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.EXECUTE, this );
+        return this;
     }
 
     /**

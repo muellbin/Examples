@@ -24,7 +24,8 @@
 !main.
 
 +!main <-
-    generic/print( "environment started" )
+    generic/print( "environment started" );
+    simulation/initialize( 100, 4 )
 .
 
 // plan to shutdown simulation execution

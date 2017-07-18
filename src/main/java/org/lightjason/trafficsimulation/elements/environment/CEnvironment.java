@@ -40,6 +40,7 @@ import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
+import org.lightjason.trafficsimulation.ui.api.CAnimation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -92,7 +93,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final DoubleMatrix1D position()
     {
-        return new DenseDoubleMatrix1D( new double[]{m_grid.get().columns(), m_grid.get().rows()} );
+        return new DenseDoubleMatrix1D( new double[]{m_grid.get().rows(), m_grid.get().columns()} );
     }
 
     @Override
@@ -118,11 +119,13 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "simulation/initialize" )
     private void simulationinitialize( final Number p_width, final Number p_height )
     {
-        if ( m_grid.get() != null )
+        if ( m_grid.get().size() != 0 )
             throw new RuntimeException( "world is initialized" );
 
         m_grid.set( new SparseObjectMatrix2D( p_width.intValue(), p_height.intValue() ) );
         m_areas.clear();
+
+        CAnimation.CInstance.INSTANCE.environment( CAnimation.CInstance.EStatus.CREATE, this );
     }
 
     /**
@@ -133,6 +136,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     private void simulationshutdown()
     {
         m_shutdown.set( true );
+        CAnimation.CInstance.INSTANCE.environment( CAnimation.CInstance.EStatus.REMOVE, this );
     }
 
     /**

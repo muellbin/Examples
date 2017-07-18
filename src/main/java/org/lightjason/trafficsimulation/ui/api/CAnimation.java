@@ -26,9 +26,11 @@ package org.lightjason.trafficsimulation.ui.api;
 import com.codepoetics.protonpack.StreamUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jetty.websocket.api.Session;
+import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -53,7 +55,7 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
     {
         super( ( i, j ) ->
         {
-            CInstance.INSTANCE.initializegrid( 40, 4, 32 );
+
         } );
     }
 
@@ -82,45 +84,66 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
          */
         public static final CInstance INSTANCE = new CInstance();
 
+        /**
+         * ctor
+         */
         private CInstance()
         {
         }
 
         /**
-         * initialize grid
+         * initialize environment
          *
-         * @param p_width width
-         * @param p_height heigth
-         * @param p_cellsize cellsize
-         * @return animation instance
+         * @param p_status status
+         * @param p_environment environment
+         * @return environment instance
          */
-        public final CInstance initializegrid( final int p_width, final int p_height, final int p_cellsize )
+        public final IEnvironment environment( final EStatus p_status, final IEnvironment p_environment )
         {
             final Map<Object, Object> l_data = StreamUtils.zip(
-                Stream.of( "operation", "width", "height", "cellsize" ),
-                Stream.of( "initializegrid", p_width, p_height, p_cellsize ),
+                Stream.of( "status", "id", "length", "lanes" ),
+                Stream.of( p_status.toString(), p_environment.id(), p_environment.position().get( 0 ), p_environment.position().get( 1 ) ),
                 ImmutablePair::new
             ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
 
             CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
-            return this;
+            return p_environment;
         }
 
         /**
          * generate vehicle
+         *
+         * @param p_status status
          * @param p_vehicle vehicle
-         * @return animation insctance
+         * @return vehicle instance
          */
-        public IVehicle generatevehicle( final IVehicle p_vehicle )
+        public IVehicle vehicle( final EStatus p_status, final IVehicle p_vehicle )
         {
             final Map<Object, Object> l_data = StreamUtils.zip(
-                Stream.of( "operation", "vehicletype", "vehicle" ),
-                Stream.of( "generatevehicle", p_vehicle.id(), p_vehicle ),
+                Stream.of( "status", "id", "userdefinied", "x", "y" ),
+                Stream.of( p_status.toString(), p_vehicle.id(), p_vehicle.user(), p_vehicle.position().get( 0 ), p_vehicle.position().get( 1 ) ),
                 ImmutablePair::new
             ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
 
             CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
             return p_vehicle;
+        }
+
+
+        /**
+         * status of the object
+         */
+        public enum EStatus
+        {
+            CREATE,
+            EXECUTE,
+            REMOVE;
+
+            @Override
+            public final String toString()
+            {
+                return super.toString().toLowerCase( Locale.ROOT );
+            }
         }
 
 

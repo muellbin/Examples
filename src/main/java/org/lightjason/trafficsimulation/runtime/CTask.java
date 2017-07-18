@@ -29,7 +29,6 @@ import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
-import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
@@ -98,9 +97,9 @@ public class CTask implements ITask
             //test generating vehicle
             try
             {
-                final IVehicle l_uservehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "uservehicle" ), "UTF-8" ), l_environment, true, false )
+                new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "uservehicle" ), "UTF-8" ), l_environment, true, false )
                     .generatesingle( new DenseDoubleMatrix1D( new double[]{1, 3} ) );
-                final IVehicle l_defaultvehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
+                new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
                     .generatesingle( new DenseDoubleMatrix1D( new double[]{6, 3} ) );
             }
             catch ( final Exception l_exception )
