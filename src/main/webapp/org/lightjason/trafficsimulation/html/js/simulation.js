@@ -132,14 +132,19 @@ function initialize( width, height, cellsize )
 
 function streettiles( width, height )
 {
-    var l_matrix = [
-        [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
-        [ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
-        [ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
-        [ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
-        [ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-    ];
+    var l_matrix = [];
+    var l_footway = Array.apply( null, Array( width ) ).map( function() {return 1} );
+    var l_rightlane = Array.apply( null, Array( width ) ).map( function() {return 2} );
+    var l_leftlane = Array.apply( null, Array( width ) ).map( function() {return 3} );
+    l_matrix.push( l_footway );
+    for ( var i = 1; i <= height; i++ )
+    {
+        if ( i % 2 == 0 )
+            l_matrix.push( l_rightlane );
+        else
+            l_matrix.push( l_leftlane );
+    }
+    l_matrix.push( l_footway );
     return l_matrix;
 
 

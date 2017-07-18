@@ -52,7 +52,7 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
     {
         super( ( i, j ) ->
         {
-            CInstance.INSTANCE.initializegrid( 20, 6, 32 );
+            CInstance.INSTANCE.initializegrid( 40, 4, 32 );
         } );
     }
 
