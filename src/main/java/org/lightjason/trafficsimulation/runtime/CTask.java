@@ -99,7 +99,7 @@ public class CTask implements ITask
             {
                 new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "uservehicle" ), "UTF-8" ), l_environment, true, false )
                     .generatesingle( new DenseDoubleMatrix1D( new double[]{1, 3} ) );
-                new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
+                new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, true )
                     .generatesingle( new DenseDoubleMatrix1D( new double[]{6, 3} ) );
             }
             catch ( final Exception l_exception )
