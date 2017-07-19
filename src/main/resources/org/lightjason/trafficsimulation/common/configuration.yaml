@@ -30,18 +30,12 @@ main:
 agent:
     environment:
       visible: false
-      asl: "environment.asl"
     communication:
       visible: false
-      asl: "communication.asl"
     area:
       visible: false
-      asl: "area.asl"
     defaultvehicle:
       visible: false
-      asl: "defaultvehicle.asl"
-    uservehicle:
-      asl: ["uservehicle.asl"]
 
 
 # HTTP server binding for UI

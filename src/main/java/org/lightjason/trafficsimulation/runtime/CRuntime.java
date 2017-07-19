@@ -23,6 +23,7 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -30,17 +31,20 @@ import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -71,51 +75,80 @@ public final class CRuntime implements IRuntime
      */
     private CRuntime()
     {
-        // read main asl codes
-        final Set<String> l_items = Stream.of( "area", "communication", "environment", "defaultvehicle" )
-                                          .filter( i -> !read(
-                                              m_agents,
-                                              CConfiguration.INSTANCE.getOrDefault( "", "agent", i, "asl" ),
-                                              CConfiguration.INSTANCE.getOrDefault( false, "agent", i, "visible" )
-                                          ) )
-                                          .collect( Collectors.toSet() );
+        try
+        {
+            Files.walk( Paths.get( CConfiguration.INSTANCE.path() ) )
+                 .filter( Files::isRegularFile )
+                 .filter( i -> i.toFile().getName().endsWith( CConfiguration.ASLEXTENSION ) )
+                 .forEach( i -> this.read( i.toFile() ) );
+        }
+        catch ( final IOException l_exception )
+        {
+            throw new UncheckedIOException( l_exception );
+        }
 
-        // add user asl codes
-        CConfiguration.INSTANCE.getOrDefault( Collections.<String>emptyList(), "agent", "uservehicle", "asl" )
-                               .stream()
-                               .filter( i -> !read( m_agents, i, true ) )
-                               .forEach( l_items::add );
-
-        if ( !l_items.isEmpty() )
-            throw new RuntimeException( CCommon.languagestring( this, "agentnotfound", l_items ) );
+        // check nessessary agents
+        CConfiguration.defaultagents()
+                      .filter( i -> !m_agents.containsKey( i ) )
+                      .findAny()
+                      .ifPresent( i ->
+                      {
+                          throw new RuntimeException( CCommon.languagestring( this, "agentnotfound", i ) );
+                      } );
     }
 
 
     /**
      * read agetn data
      *
-     * @param p_code code map
-     * @param p_key key / file name
-     * @param p_visible visible agent
+     * @param p_file agent file
      * @return data can be read
      */
-    private boolean read( @Nonnull final Map<String, Pair<Boolean, String>> p_code, @Nonnull final String p_key, final boolean p_visible )
+    private void read( @Nonnull final File p_file )
     {
-        if ( ( p_key.isEmpty() ) || ( p_code.containsKey( p_key ) ) )
-            return false;
-
+        final String l_id = p_file.getName().replace( CConfiguration.ASLEXTENSION, "" );
         try
         (
-            final InputStream l_stream = new FileInputStream( CConfiguration.INSTANCE.aslfile( p_key ) )
+            final InputStream l_stream = new FileInputStream( p_file )
         )
         {
-            m_agents.put( p_key.substring( 0, p_key.lastIndexOf( '.' ) ), new MutablePair<>( p_visible, IOUtils.toString( l_stream, "UTF-8" ) ) );
-            return true;
+            m_agents.put(
+                l_id,
+                new MutablePair<>(
+                    CConfiguration.INSTANCE.getOrDefault( true, "agent", l_id, "visible" ),
+                    IOUtils.toString( l_stream, "UTF-8" )
+                )
+            );
         }
         catch ( final IOException l_exception )
         {
-            return false;
+            // ignore errors
         }
+    }
+
+
+    @Override
+    public final IRuntime save()
+    {
+        m_agents.entrySet()
+                .parallelStream()
+                .forEach( i ->
+                {
+                    try
+                    {
+                        FileUtils.writeStringToFile(
+                            Paths.get( CConfiguration.INSTANCE.path(), i.getKey().toLowerCase( Locale.ROOT ) + CConfiguration.ASLEXTENSION ).toFile(),
+                            i.getValue().getRight(),
+                            "UTF-8"
+                        );
+                    }
+                    catch ( final IOException l_exception )
+                    {
+                        throw new UncheckedIOException( l_exception );
+                    }
+                } );
+
+        return this;
     }
 
 

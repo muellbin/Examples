@@ -24,9 +24,7 @@
 package org.lightjason.trafficsimulation.common;
 
 
-import com.codepoetics.protonpack.StreamUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.common.CCommon;
 import org.yaml.snakeyaml.Yaml;
@@ -66,7 +64,7 @@ public final class CConfiguration extends ITree.CTree
     /**
      * asl sub directory
      */
-    private static final String ASLDIRECTORY = "asl";
+    public static final String ASLEXTENSION = ".asl";
     /**
      * loading path
      */
@@ -80,6 +78,16 @@ public final class CConfiguration extends ITree.CTree
     private CConfiguration()
     {
         super( new ConcurrentHashMap<>() );
+    }
+
+    /**
+     * returns the configuration path
+     *
+     * @return configuration path
+     */
+    public final String path()
+    {
+        return m_path;
     }
 
     /**
@@ -133,17 +141,6 @@ public final class CConfiguration extends ITree.CTree
     }
 
     /**
-     * returns the file with the configuration path
-     *
-     * @param p_name file name
-     * @return filename (except extension)
-     */
-    public final String aslfile( final String p_name )
-    {
-        return Paths.get( m_path, ASLDIRECTORY, p_name ).toString();
-    }
-
-    /**
      * set default path
      *
      * @param p_config path or null / empty
@@ -152,6 +149,16 @@ public final class CConfiguration extends ITree.CTree
     private static String orDefaultConfig( final String p_config )
     {
         return ( p_config == null ) || ( p_config.isEmpty() ) ? DEFAULTPATH : p_config;
+    }
+
+    /**
+     * returns a stream of default agent names
+     *
+     * @return name stream (without file extension)
+     */
+    public static Stream<String> defaultagents()
+    {
+        return Stream.of( "area", "communication", "environment", "defaultvehicle", "uservehicle" );
     }
 
     /**
@@ -166,43 +173,25 @@ public final class CConfiguration extends ITree.CTree
         if ( new File( p_path ).exists() )
             return p_path;
 
-        StreamUtils.zip(
-            Stream.of(
-                "",
-                ASLDIRECTORY,
-                ASLDIRECTORY,
-                ASLDIRECTORY,
-                ASLDIRECTORY,
-                ASLDIRECTORY
-            ),
-
-            Stream.of(
-                "configuration.yaml",
-                "area.asl",
-                "communication.asl",
-                "environment.asl",
-                "defaultvehicle.asl",
-                "uservehicle.asl"
-            ),
-
-            ImmutablePair::new
-
+        Paths.get( p_path ).toFile().mkdirs();
+        Stream.concat(
+            Stream.of( "configuration.yaml" ),
+            defaultagents().map( i -> i + ASLEXTENSION )
         )
-                   .peek( i -> Paths.get( p_path, i.getLeft() ).toFile().mkdirs() )
-                   .forEach( i ->
-                   {
-                       try
-                       {
-                           FileUtils.copyInputStreamToFile(
-                               CConfiguration.class.getResourceAsStream( i.getRight() ),
-                               FileSystems.getDefault().getPath( p_path, i.getLeft(), i.getRight() ).toFile()
-                           );
-                       }
-                       catch ( final IOException l_exception )
-                       {
-                           throw new UncheckedIOException( l_exception );
-                       }
-                   } );
+            .forEach( i ->
+            {
+                try
+                {
+                    FileUtils.copyInputStreamToFile(
+                        CConfiguration.class.getResourceAsStream( i ),
+                        FileSystems.getDefault().getPath( p_path, i ).toFile()
+                    );
+                }
+                catch ( final IOException l_exception )
+                {
+                    throw new UncheckedIOException( l_exception );
+                }
+            } );
 
         return p_path;
     }

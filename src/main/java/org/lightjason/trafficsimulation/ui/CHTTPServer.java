@@ -37,6 +37,7 @@ import org.lightjason.rest.CApplication;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.runtime.CRuntime;
 import org.lightjason.trafficsimulation.ui.api.CAPI;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
@@ -182,6 +183,7 @@ public final class CHTTPServer
         if ( INSTANCE == null )
             return;
 
+        CRuntime.INSTANCE.save();
         try
         {
             INSTANCE.m_server.stop();

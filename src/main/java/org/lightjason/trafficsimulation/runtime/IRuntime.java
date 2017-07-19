@@ -49,4 +49,11 @@ public interface IRuntime extends Runnable
      */
     boolean running();
 
+    /**
+     * saves all data
+     *
+     * @return self reference
+     */
+    IRuntime save();
+
 }
