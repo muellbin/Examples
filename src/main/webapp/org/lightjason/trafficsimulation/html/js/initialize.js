@@ -388,6 +388,13 @@ $(document).ready(function() {
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
+    jQuery( ".ui-languagelabeldata" ).each(function(k, e) {
+        var lo = jQuery(e);
+        LightJason.ajax( "/api/simulation/language/" + lo.data( "languagelabel" ) )
+            .success(function(t) { lo.attr( "data-" + lo.data( "languagelabelid" ), t ); })
+            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
+
 
     // set codemirror
     var l_editor = CodeMirror.fromTextArea(
