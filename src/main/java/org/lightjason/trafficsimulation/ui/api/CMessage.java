@@ -131,7 +131,7 @@ public final class CMessage extends IWebSocket.IBaseWebSocket
                 Stream.of( "delay", "type", "title", "text" ),
                 Stream.of( p_delay, p_type.toString().toLowerCase( Locale.ROOT ), p_title, p_message ),
                 ImmutablePair::new
-            ).collect( Collectors.toMap( i -> i.getLeft(), i -> i.getRight() ) );
+            ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
 
             CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
             return this;

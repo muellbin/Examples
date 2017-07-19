@@ -143,7 +143,7 @@ function init_sidebar() {
     $SIDEBAR_MENU.find('a[href="' + CURRENT_URL + '"]').parent('li').addClass('current-page');
 
     $SIDEBAR_MENU.find('a').filter(function () {
-        return this.href == CURRENT_URL;
+        return this.href === CURRENT_URL;
     }).parent('li').addClass('current-page').parents('ul').slideDown(function() {
         setContentHeight();
     }).parent().addClass('active');
@@ -237,7 +237,7 @@ $(document).ready(function() {
         $(this).next().slideToggle(200);
         $expand = $(this).find(">:first-child");
 
-        if ($expand.text() == "+") {
+        if ($expand.text() === "+") {
             $expand.text("-");
         } else {
             $expand.text("+");
@@ -345,7 +345,7 @@ function codemirrorsave( pc_id, pc_source )
         method: "POST",
         headers: { "Content-Type": "text/plain" }
     })
-    .done(function(i) { console.log(i); notifymessage({ title: "Agent", text: i, type: "info" }); })
+    .success(function(i) { console.log(i); notifymessage({ title: "Agent", text: i, type: "info" }); })
     .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
 
@@ -378,6 +378,15 @@ $(document).ready(function() {
                       animate_speed: "fast"
                   })
               };
+
+
+    // get language labels
+    jQuery( ".ui-languagelabel" ).each(function(k, e) {
+        var lo = jQuery(e);
+        LightJason.ajax( "/api/simulation/language/" + lo.data( "languagelabel" ) )
+        .success(function(t) { lo.html(t); })
+        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
 
 
     // set codemirror
@@ -431,7 +440,7 @@ $(document).ready(function() {
 
     // get agent list
     LightJason.ajax( "/api/simulation/agents" )
-        .done(function(o) {
+        .success(function(o) {
             var l_dom = jQuery( "#ui-agents" );
 
             o.forEach(function(i) {
@@ -451,7 +460,7 @@ $(document).ready(function() {
     jQuery(document).on( "click", ".ui-agent-source", function() {
         var l_id = jQuery(this).data("sourceid");
         LightJason.ajax( "/api/simulation/asl/get/" + l_id )
-            .done(function(i) {
+            .success(function(i) {
                 l_editor.setValue( i );
                 l_editor.options.sourceid = l_id;
             })

@@ -31,13 +31,13 @@
                         <div class="menu_section active">
 
                             <ul class="nav side-menu">
-                                <li class="active"><a><i class="fa fa-home"></i> Information <span class="fa fa-chevron-down"></span></a>
+                                <li class="active"><a><i class="fa fa-home"></i> <span class="ui-languagelabel" data-languagelabel="information">Information</span> <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="#" class="slide-view" data-slidesource="slide/practice.md">Exercise Slides (Practice)</a></li>
-                                        <li><a href="#" class="slide-view" data-slidesource="slide/lecture.md">Lecture Slides (Theory)</a></li>
+                                        <li><a href="#" class="slide-view ui-languagelabel" data-slidesource="slide/practice.md" data-languagelabel="slideexercise">Exercise Slides (Practice)</a></li>
+                                        <li><a href="#" class="slide-view ui-languagelabel" data-slidesource="slide/lecture.md" data-languagelabel="slidelecture">Lecture Slides (Theory)</a></li>
                                     </ul>
                                 </li>
-                                <li><a><i class="fa fa-edit"></i> Agents <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-edit"></i> <span class="ui-languagelabel" data-languagelabel="agents">Agents</span> <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" id="ui-agents">
                                     </ul>
                                 </li>
@@ -80,8 +80,8 @@
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                    <li><a href="#">Help</a></li>
-                                    <li><a href="#" class="simulation-shutdown"><i class="fa fa-sign-out pull-right"></i> Shutdown</a></li>
+                                    <li><a href="#" class="ui-languagelabel" data-languagelabel="help">Help</a></li>
+                                    <li><a href="#" class="simulation-shutdown ui-languagelabel" data-languagelabel="shutdown"><i class="fa fa-sign-out pull-right"></i> Shutdown</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -101,7 +101,7 @@
                     <div class="col-md-8">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Simulation Environment</h2>
+                                <h2 class="ui-languagelabel" data-languagelabel="environment">Simulation Environment</h2>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li><a><i class="fa fa-refresh"></i></a></li>
                                     <li><a id="ui-savesimulation"><i class="fa fa-save"></i></a></li>
@@ -120,7 +120,7 @@
                     <div class="col-md-4">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2>Penality History</h2>
+                                <h2 class="ui-languagelabel" data-languagelabel="penalty">Penalty History</h2>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li><a><i class="fa fa-refresh"></i></a></li>
                                     <li><a id="ui-savepanelty"><i class="fa fa-save"></i></a></li>
@@ -146,7 +146,7 @@
                 <div class="row">
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Source Code</h2>
+                            <h2 class="ui-languagelabel" data-languagelabel="editor">Agent Source Code</h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li><a><i class="fa fa-file-text-o"></i></a></li>
                                 <li><a id="ui-savesource"><i class="fa fa-save"></i></a></li>
@@ -168,7 +168,7 @@
             <!-- footer content -->
             <footer>
                 <div class="pull-right">
-                    <a href="http://lightjason.org" target="_blank">LightJason &mdash; Microscopic Multi-agent based Traffic-Simulation</a>
+                    <a href="http://lightjason.org" target="_blank" class="ui-languagelabel" data-languagelabel="title">LightJason &mdash; Microscopic Multi-agent based Traffic-Simulation</a>
                 </div>
                 <div class="clearfix"></div>
             </footer>

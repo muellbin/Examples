@@ -28,7 +28,12 @@ import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -268,15 +273,15 @@ public final class TestCLanguageLabels extends IBaseTest
                                                                                                       .allMatch( l -> false )
                                                                           )
                                                                           .collect( Collectors.toSet() );
-                assertTrue(
-                    MessageFormat.format(
-                        "the following {1,choice,1#key|1<keys} in language [{0}] {1,choice,1#is|1<are} not existing within the source code:\n{2}",
-                        k,
-                        l_ignoredpropertyitems.size(),
-                        StringUtils.join( l_ignoredpropertyitems, ", " )
-                    ),
-                    l_ignoredpropertyitems.isEmpty()
-                );
+                if ( !l_ignoredpropertyitems.isEmpty() )
+                    System.err.println(
+                        MessageFormat.format(
+                            "the following {1,choice,1#key|1<keys} in language [{0}] {1,choice,1#is|1<are} not existing within the source code:\n{2}",
+                            k,
+                            l_ignoredpropertyitems.size(),
+                            StringUtils.join( l_ignoredpropertyitems, ", " )
+                        )
+                    );
             }
             catch ( final IOException l_exception )
             {
@@ -328,6 +333,14 @@ public final class TestCLanguageLabels extends IBaseTest
          * label set
          */
         private Set<String> m_label = new HashSet<>();
+        /**
+         * field variable names
+         */
+        private final Set<String> m_fields = new HashSet<>();
+        /**
+         * local variables
+         */
+        private final Set<String> m_variables = new HashSet<>();
 
         /**
          * returns the translated labels
@@ -340,27 +353,28 @@ public final class TestCLanguageLabels extends IBaseTest
         }
 
         @Override
-        public void visit( final PackageDeclaration p_package, final Object p_arg )
+        public final void visit( final PackageDeclaration p_package, final Object p_arg )
         {
             m_package = p_package.getName().toString();
             super.visit( p_package, p_arg );
         }
 
         @Override
-        public void visit( final ClassOrInterfaceDeclaration p_class, final Object p_arg )
+        public final void visit( final ClassOrInterfaceDeclaration p_class, final Object p_arg )
         {
+            m_fields.clear();
+            m_variables.clear();
             if ( m_outerclass.isEmpty() )
                 m_outerclass = p_class.getName().toString();
             else
                 m_innerclass = p_class.getName().toString();
 
             super.visit( p_class, p_arg );
-
             m_innerclass = "";
         }
 
         @Override
-        public void visit( final EnumDeclaration p_enum, final Object p_arg )
+        public final void visit( final EnumDeclaration p_enum, final Object p_arg )
         {
             if ( m_outerclass.isEmpty() )
                 m_outerclass = p_enum.getName().toString();
@@ -373,13 +387,47 @@ public final class TestCLanguageLabels extends IBaseTest
         }
 
         @Override
-        public void visit( final MethodCallExpr p_methodcall, final Object p_arg )
+        public final void visit( final MethodCallExpr p_methodcall, final Object p_arg )
         {
+            super.visit( p_methodcall, p_arg );
+
             final String l_label = this.label( p_methodcall.toString() );
             if ( !l_label.isEmpty() )
                 m_label.add( l_label );
+        }
 
-            super.visit( p_methodcall, p_arg );
+        @Override
+        public final void visit( final FieldDeclaration p_field, final Object p_arg )
+        {
+            p_field.getVariables().forEach( i -> m_fields.add( i.getName().asString() ) );
+            super.visit( p_field, p_arg );
+        }
+
+        @Override
+        public final void visit( final VariableDeclarator p_variable, final Object p_arg )
+        {
+            m_variables.add( p_variable.getName().asString() );
+            super.visit( p_variable, p_arg );
+        }
+
+        @Override
+        public void visit( final Parameter p_parameter, final Object p_arg )
+        {
+            m_variables.add( p_parameter.getName().asString() );
+            super.visit( p_parameter, p_arg );
+        }
+
+        @Override
+        public void visit( final ExpressionStmt p_statement, final Object p_arg )
+        {
+            p_statement.getExpression()
+                       .getChildNodes()
+                       .stream()
+                       .flatMap( i -> i.getChildNodes().stream() )
+                       .filter( i -> i.getMetaModel().getType().equals( SimpleName.class ) )
+                       .forEach( i -> m_variables.add( i.toString() ) );
+
+            super.visit( p_statement, p_arg );
         }
 
         /**
@@ -401,6 +449,8 @@ public final class TestCLanguageLabels extends IBaseTest
             l_return[0] = l_split[0].replace( TRANSLATEMETHODNAME, "" ).replace( "(", "" ).trim();
             // label name
             l_return[1] = l_split[1].replace( ")", "" ).replace( "\"", "" ).split( ";" )[0].trim().toLowerCase( Locale.ROOT );
+            if ( Stream.concat( m_fields.stream(), m_variables.stream() ).parallel().anyMatch( i -> l_return[1].contains( i ) ) )
+                return "";
 
             return (
                 "this".equals( l_return[0] )

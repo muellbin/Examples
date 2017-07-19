@@ -31,12 +31,14 @@ import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -158,4 +160,35 @@ public final class CSimulation
         l_data.setValue( p_content );
         return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentchanged", p_id ) ).build();
     }
+
+    /**
+     * returns the language labels of the ui
+     *
+     * @param p_label labels as comma seperated list
+     * @return response
+     */
+    @GET
+    @Path( "/language/{label}" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public final Object language( @PathParam( "label" ) final String p_label )
+    {
+        if ( p_label.isEmpty() )
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "labelempty" ) ).build();
+
+        final String l_label = p_label.trim().toLowerCase( Locale.ROOT );
+        try
+        {
+            final String l_translation = CCommon.languagestring( this, "ui_" + l_label );
+            if ( l_translation.isEmpty() )
+                throw new NotFoundException( CCommon.languagestring( this, "languagelabelnotfound", l_label ) );
+
+            return l_translation;
+        }
+        catch ( final NotFoundException l_exception )
+        {
+            return Response.status( Response.Status.NOT_FOUND ).entity( l_exception.getLocalizedMessage() ).build();
+        }
+    }
+
+
 }
