@@ -25,6 +25,7 @@ package org.lightjason.trafficsimulation.elements.environment;
 
 import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
 
@@ -42,13 +43,22 @@ public interface IEnvironment extends IObject<IEnvironment>
     boolean shutdown();
 
     /**
-     * sets on object inside the grid
+     * sets avehicle inside the grid
      *
-     * @param p_object object
+     * @param p_vehicle vehicle
      * @param p_position position
      * @return input object or other objects which blocks the position
      */
     @Nonnull
-    IObject<?> set( @Nonnull final IObject<?> p_object, @Nonnull final DoubleMatrix1D p_position );
+    IVehicle set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position );
+
+    /**
+     * moves a vehicle inside the environment
+     *
+     * @param p_vehicle vehicle
+     * @return input vehicle on successful moving or other vehicle which collides
+     */
+    @Nonnull
+    IVehicle move( @Nonnull IVehicle p_vehicle );
 
 }

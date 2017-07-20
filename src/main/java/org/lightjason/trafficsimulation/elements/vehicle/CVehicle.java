@@ -276,7 +276,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             return new ImmutableTriple<>(
                 new CVehicle(
                         m_configuration,
-                        MessageFormat.format( "{0}_{1}", FUNCTOR, COUNTER.getAndIncrement() ),
+                        MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
                         (DoubleMatrix1D) p_data[0],
                         m_environment,
                         1,

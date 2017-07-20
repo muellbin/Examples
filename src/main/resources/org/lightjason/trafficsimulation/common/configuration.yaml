@@ -46,5 +46,5 @@ httpserver:
 
 # simulation units
 units:
-    cellsize_in_meter: 1.5
+    cellsize_in_meter: 3.5
     time_in_minutes: 1.25

@@ -26,10 +26,12 @@ jQuery(function() {
     window.simulation.vehicles = {};
 
     var l_quintus = window.quintus = Quintus()
-        .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI")
+        .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI, Audio")
         .setup("simulation-screen", {
-            scaleToFit: true
+            scaleToFit: true,
+            audioSupported: [ "mp3" ]
         })
+        .enableSound()
         .controls()
         .touch();
 
@@ -64,7 +66,7 @@ jQuery(function() {
     l_quintus.stageScene("street", 0);
     l_quintus.stageScene("vehicles", 1);
 
-    l_quintus.load("sprites.png, sprites.json, streettiles.png", function () {
+    l_quintus.load("axelf.mp3, sprites.png, sprites.json, streettiles.png", function () {
         l_quintus.sheet("streettiles", "streettiles.png", {tilew: 32, tileh: 32});
         l_quintus.compileSheets("sprites.png", "sprites.json");
         l_quintus.stageScene("street");
@@ -95,6 +97,7 @@ jQuery(function() {
         {
             case "initializegrid":
                 initialize( l_data.width, l_data.height, l_data.cellsize );
+
                 break;
 
             case "generatevehicle":
@@ -114,6 +117,7 @@ jQuery(function() {
     };
 });
 
+
 class Environment
 {
     static create( p_data )
@@ -130,6 +134,7 @@ class Environment
         } );
         l_tilelayer.p.tiles =  this.streettiles( lanes, length );
         window.quintus.stages[0].insert( l_tilelayer );
+        window.quintus.audio.play("axelf.mp3", { loop: true });
     }
 
     static execute( p_data )

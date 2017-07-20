@@ -35,7 +35,7 @@ public interface IVehicle extends IObject<IVehicle>
 {
 
     /**
-     * get current speed
+     * get current speed in km/h
      *
      * @return current speed
      */

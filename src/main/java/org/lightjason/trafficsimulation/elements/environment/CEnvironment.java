@@ -36,6 +36,7 @@ import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.IArea;
@@ -49,6 +50,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -104,9 +106,35 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
     @Nonnull
     @Override
-    public final IObject<?> set( @Nonnull final IObject<?> p_object, @Nonnull final DoubleMatrix1D p_position )
+    public final synchronized IVehicle set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
     {
-        return p_object;
+        return p_vehicle;
+    }
+
+    @Nonnull
+    @Override
+    public final synchronized IVehicle move( @Nonnull final IVehicle p_vehicle )
+    {
+        /*
+        final int l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 0 ), p_vehicle.speed() ).intValue();
+        IntStream.range( 1, l_target )
+                 .parallel()
+
+
+
+
+        // check of the target position is free, if not return object, which blocks the cell
+        final IVehicle l_object = (IElement) m_grid.getQuick( (int) l_position.getQuick( 0 ), (int) l_position.getQuick( 1 ) );
+        if ( l_object != null )
+            return l_object;
+
+        // cell is free, move the position and return updated object
+        m_positions.set( (int) p_element.position().get( 0 ), (int) p_element.position().get( 1 ), null );
+        m_positions.set( (int) l_position.getQuick( 0 ), (int) l_position.getQuick( 1 ), p_element );
+        p_element.position().setQuick( 0, l_position.getQuick( 0 ) );
+        p_element.position().setQuick( 1, l_position.getQuick( 1 ) );
+        */
+        return p_vehicle;
     }
 
     @Override
@@ -115,14 +143,23 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return Stream.empty();
     }
 
+    /**
+     * action to initialize the simulation
+     *
+     * @param p_length length of the street in kilometer
+     * @param p_lanes number of lanes
+     */
     @IAgentActionFilter
     @IAgentActionName( name = "simulation/initialize" )
-    private void simulationinitialize( final Number p_width, final Number p_height )
+    private void simulationinitialize( final Number p_length, final Number p_lanes )
     {
         if ( m_grid.get().size() != 0 )
             throw new RuntimeException( "world is initialized" );
 
-        m_grid.set( new SparseObjectMatrix2D( p_width.intValue(), p_height.intValue() ) );
+        m_grid.set( new SparseObjectMatrix2D(
+            CUnit.INSTANCE.kilometertocell( p_lanes ).intValue(),
+            p_lanes.intValue()
+        ) );
         m_areas.clear();
 
         CAnimation.CInstance.INSTANCE.environment( CAnimation.CInstance.EStatus.CREATE, this );

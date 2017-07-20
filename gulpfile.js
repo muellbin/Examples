@@ -97,7 +97,12 @@ var l_gulp = require( "gulp" ),
 
             "data" : {
                 output: "data",
-                source: l_gulp.src( l_sourcedir + "data/*.json" )
+                source: l_gulp.src([ l_sourcedir + "data/*.json", l_sourcedir + "data/*.mp3" ])
+            },
+
+            "audio" : {
+                output: "audio",
+                source: l_gulp.src( l_sourcedir + "audio/*.mp3" )
             }
 
         },
