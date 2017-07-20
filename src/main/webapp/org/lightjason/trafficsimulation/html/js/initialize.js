@@ -411,12 +411,6 @@ $(document).ready(function() {
     l_editor.on( "blur", function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); } );
 
 
-    // save code editor
-    jQuery( "#ui-savesource" ).click(function() {
-        saveAs( new Blob( [l_editor.getValue()], {type: "text/plain;charset=utf-8"}), "agent.asl" );
-    });
-
-
     // save panelty image
     jQuery( "#ui-savepanelty" ).click(function() {
         jQuery( "#simulation-panelty" ).get(0).toBlob(function( po_blob ) {
@@ -470,9 +464,14 @@ $(document).ready(function() {
             .success(function(i) {
                 l_editor.setValue( i );
                 l_editor.options.sourceid = l_id;
+
+                var lo = jQuery( "#ui-editorheader" );
+                lo.html( lo.html().split("<")[0] + " <small>" + l_id + "</small>" );
             })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
+
+
 
 
 

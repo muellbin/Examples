@@ -23,6 +23,7 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.runtime.CRuntime;
@@ -116,6 +117,25 @@ public final class CSimulation
                        .filter( i -> i.getValue().getLeft() )
                        .map( Map.Entry::getKey )
                        .collect( Collectors.toSet() );
+    }
+
+    /**
+     * creates a new agent
+     *
+     * @param p_id name
+     * @return response
+     */
+    @GET
+    @Path( "/asl/create/{id}" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public final Object createasl( @PathParam( "id" ) final String p_id )
+    {
+        final Pair<Boolean, String> l_data = CRuntime.INSTANCE.agents().get( p_id );
+        if ( l_data != null )
+            return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "agentexists", p_id ) ).build();
+
+        CRuntime.INSTANCE.agents().put( p_id.toLowerCase( Locale.ROOT ), new MutablePair<>( true, "" ) );
+        return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentcreate", p_id ) ).build();
     }
 
     /**
