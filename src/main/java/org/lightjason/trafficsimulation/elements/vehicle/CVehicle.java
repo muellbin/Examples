@@ -137,6 +137,11 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final IVehicle call() throws Exception
     {
         super.call();
+
+        // just for test
+        m_position.set( 0, m_position.get( 0 ) + m_speed.doubleValue() / 32 );
+        System.out.println( MessageFormat.format( "id: {0}, position: [{1}, {2}], speed: {3}", id(), m_position.get( 0 ), m_position.get( 1 ), m_speed.get() ) );
+
         CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.EXECUTE, this );
         return this;
     }
@@ -164,7 +169,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         if ( m_speed.get() - m_decelerate < 0 )
             throw new RuntimeException( MessageFormat.format( "cannot decrement speed: {0}", this ) );
 
-        m_speed.addAndGet( m_decelerate );
+        m_speed.set( m_speed.get() - m_decelerate );
     }
 
     /**
@@ -271,12 +276,12 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             return new ImmutableTriple<>(
                 new CVehicle(
                         m_configuration,
-                        MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
+                        MessageFormat.format( "{0}_{1}", FUNCTOR, COUNTER.getAndIncrement() ),
                         (DoubleMatrix1D) p_data[0],
                         m_environment,
                         1,
                         1,
-                        200,
+                        3,
                         m_userdefinied
                 ),
                 m_visible,

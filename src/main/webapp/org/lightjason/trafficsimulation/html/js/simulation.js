@@ -22,7 +22,54 @@
 
 
 jQuery(function() {
-    window.simulation = new Object();
+    window.simulation = {};
+    window.simulation.vehicles = {};
+
+    var l_quintus = window.quintus = Quintus()
+        .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI")
+        .setup("simulation-screen", {
+            scaleToFit: true
+        })
+        .controls()
+        .touch();
+
+    l_quintus.Sprite.extend("Player", {
+        init: function (p) {
+            this._super(p, {
+                sheet: "player"
+            });
+            this.on("hit.sprite", function (collision) {
+                if (collision.obj.isA("Car")) {
+                    //the player hit a car!
+
+                }
+            });
+        }
+    });
+
+    l_quintus.Sprite.extend("Car", {
+        init: function (p) {
+            this._super(p, {
+                sheet: "car"
+            });
+            this.on("hit.sprite", function (collision) {
+                if (collision.obj.isA("Car")) {
+                    //A car hit another car!
+
+                }
+            });
+        }
+    });
+
+    l_quintus.stageScene("street", 0);
+    l_quintus.stageScene("vehicles", 1);
+
+    l_quintus.load("sprites.png, sprites.json, streettiles.png", function () {
+        l_quintus.sheet("streettiles", "streettiles.png", {tilew: 32, tileh: 32});
+        l_quintus.compileSheets("sprites.png", "sprites.json");
+        l_quintus.stageScene("street");
+    });
+
     var ws = LightJason.websocket( "/animation" );
     ws.onopen = function()
     {
@@ -32,8 +79,18 @@ jQuery(function() {
 
     ws.onmessage = function ( evt )
     {
-        console.log("Message from server: " + evt.data);
+        //console.log("Message from server: " + evt.data);
         var l_data = JSON.parse( evt.data );
+        switch( true )
+        {
+        	case /vehicle/.test( l_data.id ):
+                Vehicle[l_data.status]( l_data );
+                break;
+         	case /environment/.test( l_data.id ):
+                Environment[l_data.status]( l_data );
+                break;
+
+        }
         switch( l_data.operation )
         {
             case "initializegrid":
@@ -55,115 +112,72 @@ jQuery(function() {
     {
         console.log( "Websocket Error: " + err );
     };
-
-
-
 });
 
-function initialize( width, height, cellsize )
+class Environment
 {
-    window.simulation.width = width;
-    window.simulation.height = height;
-    window.simulation.cellsize = cellsize;
-    var l_quintus = window.quintus = Quintus()
-        .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI")
-        .setup("simulation-screen", {
-            scaleToFit: true
-        })
-        .controls()
-        .touch();
-
-    l_quintus.Sprite.extend("Player", {
-        init: function (p) {
-            this._super(p, {
-                sheet: "player"
-            });
-
-            this.on("hit.sprite", function (collision) {
-                if (collision.obj.isA("Car")) {
-                    //the player hit a car!
-
-                }
-            });
-        }
-    });
-
-    l_quintus.Sprite.extend("Car", {
-        init: function (p) {
-            this._super(p, {
-                sheet: "car"
-            });
-
-            this.on("hit.sprite", function (collision) {
-                if (collision.obj.isA("Car")) {
-                    //A car hit another car!
-
-                }
-            });
-        }
-    });
-
-    l_quintus.scene("street", function (stage) {
-        var l_tilelayer = new l_quintus.TileLayer ( {
-            tileW: cellsize,
-            tileH: cellsize,
-            blockTileW: width,
-            blockTileH: height,
-            type: l_quintus.SPRITE_NONE,
+    static create( p_data )
+    {
+        var lanes = window.simulation.lanes = p_data.lanes;
+        var length = window.simulation.length = p_data.length;
+        var l_tilelayer = new window.quintus.TileLayer ( {
+            tileW: 32,
+            tileH: 32,
+            blockTileW: length,
+            blockTileH: lanes + 2,
+            type: window.quintus.SPRITE_NONE,
             sheet: "streettiles"
         } );
-        l_tilelayer.p.tiles =  streettiles( width, height );
-        stage.insert( l_tilelayer );
-
-    });
-
-    l_quintus.load("sprites.png, sprites.json, streettiles.png", function () {
-        l_quintus.sheet("streettiles", "streettiles.png", {tilew: cellsize, tileh: cellsize});
-
-        l_quintus.compileSheets("sprites.png", "sprites.json");
-
-        l_quintus.stageScene("street");
-    });
-}
-
-function streettiles( width, height )
-{
-    var l_matrix = [];
-    var l_footway = Array.apply( null, Array( width ) ).map( function() {return 1} );
-    var l_rightlane = Array.apply( null, Array( width ) ).map( function() {return 2} );
-    var l_leftlane = Array.apply( null, Array( width ) ).map( function() {return 3} );
-    l_matrix.push( l_footway );
-    for ( var i = 1; i <= height; i++ )
-    {
-        if ( i % 2 == 0 )
-            l_matrix.push( l_rightlane );
-        else
-            l_matrix.push( l_leftlane );
+        l_tilelayer.p.tiles =  this.streettiles( lanes, length );
+        window.quintus.stages[0].insert( l_tilelayer );
     }
-    l_matrix.push( l_footway );
-    return l_matrix;
+
+    static execute( p_data )
+    {
+    }
+
+    static streettiles( lanes, length )
+    {
+        var l_matrix = [];
+        var l_footway = Array.apply( null, Array( length ) ).map( function() {return 1} );
+        var l_rightlane = Array.apply( null, Array( length ) ).map( function() {return 2} );
+        var l_leftlane = Array.apply( null, Array( length ) ).map( function() {return 3} );
+        l_matrix.push( l_footway );
+        for ( var i = 1; i <= lanes; i++ )
+        {
+            if ( i % 2 == 0 )
+                l_matrix.push( l_rightlane );
+            else
+                l_matrix.push( l_leftlane );
+        }
+        l_matrix.push( l_footway );
+        return l_matrix;
+    }
 }
 
-function generatevehicle( vehicletype, vehicle )
+class Vehicle
 {
-    switch ( vehicletype )
+    static create( p_data )
     {
-        //TODO: change x, y to vehicle position
-        case "uservehicle":
-            console.log( vehicle );
-            var l_uservehicle = window.simulation.uservehicle = new window.quintus.Player( {x: 1 * window.simulation.cellsize, y: 3 * window.simulation.cellsize + window.simulation.cellsize / 2} );
-            window.quintus.stages[0].insert( l_uservehicle );
-            //stage.add("viewport").follow(player);
-            break;
-
-        case "defaultvehicle":
-            console.log( vehicle );
-            var l_defaultvehicle = window.simulation.l_defaultvehicle1 = new window.quintus.Car( {x: 6 * window.simulation.cellsize, y: 3 * window.simulation.cellsize + window.simulation.cellsize / 2} );
-            //TODO: opposite car
+        if( p_data.userdefinied )
+        {
+            var l_uservehicle = window.simulation.vehicles[p_data.id] = new window.quintus.Player( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
+            window.quintus.stages[1].insert( l_uservehicle );
+            window.quintus.stages[0].add("viewport").follow( l_uservehicle );
+            window.quintus.stages[1].add("viewport").follow( l_uservehicle );
+        }
+        else
+        {
+            var l_defaultvehicle = window.simulation.vehicles[p_data.id] = new window.quintus.Car( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
+            //TODO: opposite vehicle
             //if(opposite car) l_defaultvehicle.p.angel = 180;
-            //TODO: change 1 to vehicle name
-            window.simulation.l_defaultvehicle1 = l_defaultvehicle;
-            window.quintus.stages[0].insert( l_defaultvehicle );
-            break;
+            window.quintus.stages[1].insert( l_defaultvehicle );
+        }
+    }
+
+    static execute( p_data )
+    {
+        window.simulation.vehicles[p_data.id].p.x = p_data.x * 32;
+        window.simulation.vehicles[p_data.id].p.y = p_data.y * 32 + 16;
     }
 }

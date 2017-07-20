@@ -29,10 +29,12 @@ import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
+import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -93,14 +95,15 @@ public class CTask implements ITask
                 CCommon.languagestring( this, "simulationstart" )
             );
 
+            final Set<IVehicle> l_vehicles = new HashSet<>();
 
             //test generating vehicle
             try
             {
-                new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "uservehicle" ), "UTF-8" ), l_environment, true, false )
-                    .generatesingle( new DenseDoubleMatrix1D( new double[]{1, 3} ) );
-                new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, true )
-                    .generatesingle( new DenseDoubleMatrix1D( new double[]{6, 3} ) );
+                l_vehicles.add( new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "uservehicle" ), "UTF-8" ), l_environment, true, true )
+                    .generatesingle( new DenseDoubleMatrix1D( new double[]{1, 3} ) ) );
+                l_vehicles.add( new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
+                    .generatesingle( new DenseDoubleMatrix1D( new double[]{6, 3} ) ) );
             }
             catch ( final Exception l_exception )
             {
@@ -113,7 +116,7 @@ public class CTask implements ITask
 
 
             // environment loop
-            final Set<Callable<?>> l_elements = Collections.synchronizedSet( Stream.of( l_environment ).collect( Collectors.toSet() ) );
+            final Set<Callable<?>> l_elements = Collections.synchronizedSet( Stream.concat( Stream.of( l_environment ),  l_vehicles.stream() ).collect( Collectors.toSet() ) );
             while ( !l_environment.shutdown() )
                 l_elements.parallelStream().forEach( CTask::execute );
 
