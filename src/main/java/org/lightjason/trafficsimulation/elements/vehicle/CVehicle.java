@@ -31,7 +31,10 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
@@ -138,9 +141,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     {
         super.call();
 
-        // just for test
-        m_position.set( 0, m_position.get( 0 ) + m_speed.doubleValue() / 32 );
-        System.out.println( MessageFormat.format( "id: {0}, position: [{1}, {2}], speed: {3}", id(), m_position.get( 0 ), m_position.get( 1 ), m_speed.get() ) );
+        // give environment the data if it is a user car
+        if ( ( !m_environment.move( this ) ) && m_userdefinied )
+            m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
 
         CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.EXECUTE, this );
         return this;

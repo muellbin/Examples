@@ -35,7 +35,10 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -50,6 +53,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -105,35 +109,41 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
     @Nonnull
     @Override
-    public final synchronized IVehicle set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
+    public final synchronized boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
     {
-        return p_vehicle;
+        final IVehicle l_vehicle = (IVehicle) m_grid.get().getQuick( (int) p_position.get( 0 ), (int) p_position.get( 1 ) );
+        if ( l_vehicle != null )
+            return false;
+
+        m_grid.get().set( (int) p_position.get( 0 ), (int) p_position.get( 1 ), p_vehicle );
+        p_vehicle.position().setQuick( 0, p_position.get( 0 ) );
+        p_vehicle.position().setQuick( 1, p_position.get( 1 ) );
+        return true;
     }
 
     @Nonnull
     @Override
-    public final synchronized IVehicle move( @Nonnull final IVehicle p_vehicle )
+    public final synchronized boolean move( @Nonnull final IVehicle p_vehicle )
     {
-        /*
         final int l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 0 ), p_vehicle.speed() ).intValue();
-        IntStream.range( 1, l_target )
-                 .parallel()
 
+        if ( IntStream.rangeClosed( 1, l_target )
+                      .parallel()
+                      .filter( i -> m_grid.get().getQuick( i, (int) p_vehicle.position().get( 1 ) ) != null )
+                      .findAny()
+                      .isPresent()
+        )
+            return false;
 
+        if ( l_target > m_grid.get().columns() )
+        {
+            this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
+            return true;
+        }
 
-
-        // check of the target position is free, if not return object, which blocks the cell
-        final IVehicle l_object = (IElement) m_grid.getQuick( (int) l_position.getQuick( 0 ), (int) l_position.getQuick( 1 ) );
-        if ( l_object != null )
-            return l_object;
-
-        // cell is free, move the position and return updated object
-        m_positions.set( (int) p_element.position().get( 0 ), (int) p_element.position().get( 1 ), null );
-        m_positions.set( (int) l_position.getQuick( 0 ), (int) l_position.getQuick( 1 ), p_element );
-        p_element.position().setQuick( 0, l_position.getQuick( 0 ) );
-        p_element.position().setQuick( 1, l_position.getQuick( 1 ) );
-        */
-        return p_vehicle;
+        m_grid.get().setQuick( l_target, (int) p_vehicle.position().get( 1 ), p_vehicle );
+        p_vehicle.position().setQuick( 0, l_target );
+        return true;
     }
 
     @Override

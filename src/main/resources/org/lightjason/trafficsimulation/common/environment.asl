@@ -30,3 +30,6 @@
 
 // plan to shutdown simulation execution
 +!shutdown <- simulation/shutdown.
+
+// plan on collision execution
++!collision <- simulation/shutdown.

@@ -47,18 +47,18 @@ public interface IEnvironment extends IObject<IEnvironment>
      *
      * @param p_vehicle vehicle
      * @param p_position position
-     * @return input object or other objects which blocks the position
+     * @return set can be done
      */
     @Nonnull
-    IVehicle set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position );
+    boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position );
 
     /**
      * moves a vehicle inside the environment
      *
      * @param p_vehicle vehicle
-     * @return input vehicle on successful moving or other vehicle which collides
+     * @return move can be done
      */
     @Nonnull
-    IVehicle move( @Nonnull IVehicle p_vehicle );
+    boolean move( @Nonnull IVehicle p_vehicle );
 
 }
