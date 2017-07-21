@@ -412,6 +412,8 @@ $(document).ready(function() {
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
+
+    // translation structure
     jQuery( ".ui-languagelabeldata" ).each(function(k, e) {
         var lo = jQuery(e);
         LightJason.ajax( "/api/simulation/language/" + lo.data( "languagelabel" ) )
@@ -451,11 +453,10 @@ $(document).ready(function() {
     });
 
 
-    // save simulation image
-    jQuery( "#ui-savesimulation" ).click(function() {
-        jQuery( "#simulation-screen" ).get(0).toBlob(function( po_blob ) {
-            saveAs( po_blob, "simulation.png" );
-        });
+    // set simulation execution
+    jQuery( "#simulation-run" ).click(function() {
+        LightJason.ajax( "/api/simulation/run" )
+            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
 
@@ -465,6 +466,15 @@ $(document).ready(function() {
             .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
+
+
+    // save simulation image
+    jQuery( "#ui-savesimulation" ).click(function() {
+        jQuery( "#simulation-screen" ).get(0).toBlob(function( po_blob ) {
+            saveAs( po_blob, "simulation.png" );
+        });
+    });
+
 
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
@@ -492,16 +502,6 @@ $(document).ready(function() {
     });
 
 
-
-
-
-    // set simulation execution
-    jQuery( "#simulation-run" ).click(function() {
-        LightJason.ajax( "/api/simulation/run" )
-                  .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-    });
-
-
     // slide view
     jQuery( ".slide-view" ).click(function() {
         var l_source = jQuery(this).data("slidesource");
@@ -509,11 +509,13 @@ $(document).ready(function() {
             window.open( "slide.htm", l_source ).slide = l_source;
     });
 
+
     // set fullscreen structure
     jQuery( "#ui-fullscreen" ).fullscreen();
 
 
     // test chart
+    // https://canvasjs.com/docs/charts/basics-of-creating-html5-chart/updating-chart-options/
     new Chart( jQuery( "#simulation-panelty" ), {
         type: "line",
         data: {
