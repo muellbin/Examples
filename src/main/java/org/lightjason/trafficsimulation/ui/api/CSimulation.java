@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.ui.api;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
+import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.runtime.CRuntime;
 import org.lightjason.trafficsimulation.runtime.CTask;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
@@ -127,7 +128,7 @@ public final class CSimulation
      */
     @GET
     @Path( "/asl/create/{id}" )
-    @Produces( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.TEXT_PLAIN )
     public final Object createasl( @PathParam( "id" ) final String p_id )
     {
         final Pair<Boolean, String> l_data = CRuntime.INSTANCE.agents().get( p_id );
@@ -156,6 +157,27 @@ public final class CSimulation
             return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
 
         return l_data.getRight();
+    }
+
+    /**
+     * removes asl code of an agent
+     *
+     * @param p_id identifier of the agent
+     * @return response
+     */
+    @GET
+    @Path( "/asl/remove/{id}" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public final Object removeasl( @PathParam( "id" ) final String p_id )
+    {
+        final Pair<Boolean, String> l_data = CRuntime.INSTANCE.agents().get( p_id );
+        if ( l_data == null )
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
+        if ( ( !l_data.getLeft() ) || ( CConfiguration.defaultagents().anyMatch( p_id::equals ) ) )
+            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
+
+        CRuntime.INSTANCE.agents().remove( p_id.toLowerCase( Locale.ROOT ) );
+        return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentremove", p_id ) ).build();
     }
 
 

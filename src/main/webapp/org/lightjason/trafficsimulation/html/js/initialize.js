@@ -345,9 +345,32 @@ function codemirrorsave( pc_id, pc_source )
         method: "POST",
         headers: { "Content-Type": "text/plain" }
     })
-    .success(function(i) { console.log(i); notifymessage({ title: "Agent", text: i, type: "info" }); })
+    .success(function(i) { notifymessage({ title: "Agent", text: i, type: "info" }); })
     .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
+
+/**
+ * builds the agent menu list
+ */
+function agentlist()
+{
+    LightJason.ajax( "/api/simulation/agents" )
+        .success(function(o) {
+            var l_dom = jQuery( "#ui-agents" ).empty();
+
+            o.forEach(function(i) {
+                l_dom.append(
+                    jQuery("<li>").append(
+                        jQuery("<a>").attr( "href", "#" )
+                            .attr("data-sourceid", i)
+                            .addClass("ui-agent-source")
+                            .text(i)
+                    )
+                );
+            });
+        });
+}
+
 
 CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); };
 
@@ -363,6 +386,7 @@ $(document).ready(function() {
     init_sidebar();
     init_pnotify();
     init_autosize();
+    agentlist();
 
 
     // notify messages
@@ -419,6 +443,14 @@ $(document).ready(function() {
     });
 
 
+    jQuery( "#ui-deleteagent" ).click(function() {
+        LightJason.ajax( "/api/simulation/asl/remove/" + l_editor.options.sourceid )
+            .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); })
+            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+
+    });
+
+
     // save simulation image
     jQuery( "#ui-savesimulation" ).click(function() {
         jQuery( "#simulation-screen" ).get(0).toBlob(function( po_blob ) {
@@ -426,6 +458,13 @@ $(document).ready(function() {
         });
     });
 
+
+    // creates an agent
+    jQuery( "#simulation-createagent" ).click(function() {
+        LightJason.ajax( "/api/simulation/asl/create/" + jQuery( "#simulation-agentname" ).val() )
+            .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); })
+            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
 
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
@@ -435,26 +474,7 @@ $(document).ready(function() {
                     return;
                 notifymessage({ title: i.statusText, text: i.responseText, type: "error" });
             })
-
     });
-
-
-    // get agent list
-    LightJason.ajax( "/api/simulation/agents" )
-        .success(function(o) {
-            var l_dom = jQuery( "#ui-agents" );
-
-            o.forEach(function(i) {
-                l_dom.append(
-                    jQuery("<li>").append(
-                        jQuery("<a>").attr( "href", "#" )
-                            .attr("data-sourceid", i)
-                            .addClass("ui-agent-source")
-                            .text(i)
-                    )
-                );
-            });
-        });
 
 
     // bind action to load source code
