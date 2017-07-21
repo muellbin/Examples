@@ -17,7 +17,7 @@
 !src/main/webapp/**/*.js
 !src/main/webapp/**/*.json
 !src/main/webapp/**/*.png
-!src/test/resources/**/*.mp3
+!src/test/webapp/**/*.mp3
 
 !src/site/*.doxyfile
 !src/site/*.htm*
