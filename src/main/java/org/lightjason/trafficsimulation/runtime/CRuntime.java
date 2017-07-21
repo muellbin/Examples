@@ -106,7 +106,7 @@ public final class CRuntime implements IRuntime
      */
     private void read( @Nonnull final File p_file )
     {
-        final String l_id = p_file.getName().replace( CConfiguration.ASLEXTENSION, "" );
+        final String l_id = filetoagent( p_file );
         try
         (
             final InputStream l_stream = new FileInputStream( p_file )
@@ -126,10 +126,23 @@ public final class CRuntime implements IRuntime
         }
     }
 
+    /**
+     * formats the file to an agent name
+     *
+     * @param p_file file
+     * @return agent name
+     */
+    @Nonnull
+    private static String filetoagent( @Nonnull final File p_file )
+    {
+        return p_file.getName().replace( CConfiguration.ASLEXTENSION, "" );
+    }
+
 
     @Override
     public final IRuntime save()
     {
+        // update existing agents
         m_agents.entrySet()
                 .parallelStream()
                 .forEach( i ->
@@ -147,6 +160,30 @@ public final class CRuntime implements IRuntime
                         throw new UncheckedIOException( l_exception );
                     }
                 } );
+
+        // remove all unused agents
+        try
+        {
+            Files.walk( Paths.get( CConfiguration.INSTANCE.path() ) )
+                 .filter( Files::isRegularFile )
+                 .filter( i -> i.toFile().getName().endsWith( CConfiguration.ASLEXTENSION ) )
+                 .filter( i -> !m_agents.containsKey( filetoagent( i.toFile() ) ) )
+                 .forEach( i ->
+                 {
+                     try
+                     {
+                         Files.delete( i );
+                     }
+                     catch ( final IOException l_exception )
+                     {
+                         // ignore io exception
+                     }
+                 } );
+        }
+        catch ( final IOException l_exception )
+        {
+            // ignore io exception
+        }
 
         return this;
     }

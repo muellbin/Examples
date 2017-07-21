@@ -97,7 +97,7 @@
                 <div class="row tile_count"></div>
                 <!-- /top tiles -->
 
-                <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;" id="simulation-description">
+                <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="simulation-description">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
 
@@ -109,6 +109,36 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default ui-languagelabel" data-languagelabel="close" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="ui-agentcreate">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                                <h4 class="modal-title ui-languagelabel" data-languagelabel="agentcreate">Creating Agent</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal form-label-left">
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3" for="simulation-agentname">Agent Name
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input type="text" id="simulation-agentname" required="required" class="form-control col-md-7">
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default ui-languagelabel" data-languagelabel="close" data-dismiss="modal">Close</button>
+                                <button type="button" id="simulation-createagent" class="btn btn-success ui-languagelabel" data-languagelabel="create" data-dismiss="modal">Submit</button>
                             </div>
 
                         </div>
@@ -167,7 +197,7 @@
                         <div class="x_title">
                             <h2 class="ui-languagelabel" data-languagelabel="editor" id="ui-editorheader">Agent Source Code</h2>
                             <ul class="nav navbar-right panel_toolbox">
-                                <li><a id="ui-newagent"><i class="fa fa-file-text-o"></i></a></li>
+                                <li><a class="btn-link" data-toggle="modal" data-target="#ui-agentcreate"><i class="fa fa-file-text-o"></i></a></li>
                                 <li><a id="ui-deleteagent"><i class="fa fa-trash-o"></i></a></li>
                                 <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                             </ul>
