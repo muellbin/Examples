@@ -156,7 +156,7 @@ jQuery(function() {
 
     ws.onmessage = function ( evt )
     {
-        console.log("Message from server: " + evt.data);
+        //console.log("Message from server: " + evt.data);
         var l_data = JSON.parse( evt.data );
         objects[l_data.type][l_data.status]( l_data );
     };

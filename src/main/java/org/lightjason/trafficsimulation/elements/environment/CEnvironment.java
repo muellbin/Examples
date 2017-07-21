@@ -111,11 +111,11 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final synchronized boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
     {
-        final IVehicle l_vehicle = (IVehicle) m_grid.get().getQuick( (int) p_position.get( 0 ), (int) p_position.get( 1 ) );
+        final IVehicle l_vehicle = (IVehicle) m_grid.get().getQuick( (int) p_position.get( 1 ), (int) p_position.get( 0 ) );
         if ( l_vehicle != null )
             return false;
 
-        m_grid.get().set( (int) p_position.get( 0 ), (int) p_position.get( 1 ), p_vehicle );
+        m_grid.get().set( (int) p_position.get( 1 ), (int) p_position.get( 0 ), p_vehicle );
         p_vehicle.position().setQuick( 0, p_position.get( 0 ) );
         p_vehicle.position().setQuick( 1, p_position.get( 1 ) );
         return true;
@@ -125,11 +125,14 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final synchronized boolean move( @Nonnull final IVehicle p_vehicle )
     {
-        final int l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 0 ), p_vehicle.speed() ).intValue();
+        if ( m_grid.get().size() == 0 )
+            return true;
 
-        if ( IntStream.rangeClosed( 1, l_target )
+        final double l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 0 ), p_vehicle.speed() ).doubleValue();
+
+        if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 0 ) + 1, (int) l_target )
                       .parallel()
-                      .filter( i -> m_grid.get().getQuick( i, (int) p_vehicle.position().get( 1 ) ) != null )
+                      .filter( i -> m_grid.get().getQuick( (int) p_vehicle.position().get( 1 ), i ) != null )
                       .findAny()
                       .isPresent()
         )
@@ -141,7 +144,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             return true;
         }
 
-        m_grid.get().setQuick( l_target, (int) p_vehicle.position().get( 1 ), p_vehicle );
+        m_grid.get().setQuick( (int) p_vehicle.position().get( 1 ), (int) l_target, p_vehicle );
         p_vehicle.position().setQuick( 0, l_target );
         return true;
     }
@@ -166,8 +169,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             throw new RuntimeException( "world is initialized" );
 
         m_grid.set( new SparseObjectMatrix2D(
-            CUnit.INSTANCE.kilometertocell( p_lanes ).intValue(),
-            p_lanes.intValue()
+            p_lanes.intValue(),
+            CUnit.INSTANCE.kilometertocell( p_length ).intValue()
         ) );
         m_areas.clear();
 

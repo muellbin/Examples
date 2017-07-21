@@ -102,7 +102,7 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
         {
             final Map<Object, Object> l_data = StreamUtils.zip(
                 Stream.of( "type", "status", "id", "length", "lanes" ),
-                Stream.of( "environment", p_status.toString(), p_environment.id(), p_environment.position().get( 0 ), p_environment.position().get( 1 ) ),
+                Stream.of( "environment", p_status.toString(), p_environment.id(), p_environment.position().get( 1 ), p_environment.position().get( 0 ) ),
                 ImmutablePair::new
             ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
 
