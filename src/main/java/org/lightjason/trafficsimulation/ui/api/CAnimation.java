@@ -101,8 +101,8 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
         public final IEnvironment environment( final EStatus p_status, final IEnvironment p_environment )
         {
             final Map<Object, Object> l_data = StreamUtils.zip(
-                Stream.of( "status", "id", "length", "lanes" ),
-                Stream.of( p_status.toString(), p_environment.id(), p_environment.position().get( 0 ), p_environment.position().get( 1 ) ),
+                Stream.of( "type", "status", "id", "length", "lanes" ),
+                Stream.of( "environment", p_status.toString(), p_environment.id(), p_environment.position().get( 0 ), p_environment.position().get( 1 ) ),
                 ImmutablePair::new
             ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
 
@@ -120,8 +120,8 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
         public IVehicle vehicle( final EStatus p_status, final IVehicle p_vehicle )
         {
             final Map<Object, Object> l_data = StreamUtils.zip(
-                Stream.of( "status", "id", "userdefinied", "x", "y" ),
-                Stream.of( p_status.toString(), p_vehicle.id(), p_vehicle.user(), p_vehicle.position().get( 0 ), p_vehicle.position().get( 1 ) ),
+                Stream.of( "type", "status", "id", "userdefinied", "x", "y" ),
+                Stream.of( "vehicle", p_status.toString(), p_vehicle.id(), p_vehicle.user(), p_vehicle.position().get( 0 ), p_vehicle.position().get( 1 ) ),
                 ImmutablePair::new
             ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
 

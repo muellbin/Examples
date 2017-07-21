@@ -22,10 +22,9 @@
 
 
 jQuery(function() {
-    window.simulation = {};
-    window.simulation.vehicles = {};
+    var vehicles = {};
 
-    var l_quintus = window.quintus = Quintus()
+    var l_quintus = Quintus()
         .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI, Audio")
         .setup("simulation-screen", {
             scaleToFit: true,
@@ -72,76 +71,7 @@ jQuery(function() {
         l_quintus.stageScene("street");
     });
 
-    var ws = LightJason.websocket( "/animation" );
-    ws.onopen = function()
-    {
-        console.log( "Websocket opened!" );
-        ws.send( JSON.stringify( { foo : "Hello Server!" } ) );
-    };
-
-    ws.onmessage = function ( evt )
-    {
-        //console.log("Message from server: " + evt.data);
-        var l_data = JSON.parse( evt.data );
-        switch( true )
-        {
-        	case /vehicle/.test( l_data.id ):
-                Vehicle[l_data.status]( l_data );
-                break;
-         	case /environment/.test( l_data.id ):
-                Environment[l_data.status]( l_data );
-                break;
-
-        }
-        switch( l_data.operation )
-        {
-            case "initializegrid":
-                initialize( l_data.width, l_data.height, l_data.cellsize );
-
-                break;
-
-            case "generatevehicle":
-                generatevehicle( l_data.vehicletype, l_data.vehicle );
-                break;
-        }
-    };
-
-    ws.onclose = function()
-    {
-        console.log( "Websocket closed!" );
-    };
-
-    ws.onerror = function( err )
-    {
-        console.log( "Websocket Error: " + err );
-    };
-});
-
-
-class Environment
-{
-    static create( p_data )
-    {
-        var lanes = window.simulation.lanes = p_data.lanes;
-        var length = window.simulation.length = p_data.length;
-        var l_tilelayer = new window.quintus.TileLayer ( {
-            tileW: 32,
-            tileH: 32,
-            blockTileW: length,
-            blockTileH: lanes + 2,
-            type: window.quintus.SPRITE_NONE,
-            sheet: "streettiles"
-        } );
-        l_tilelayer.p.tiles =  this.streettiles( lanes, length );
-        window.quintus.stages[0].insert( l_tilelayer );
-        window.quintus.audio.play("axelf.mp3", { loop: true });
-    }
-
-    static execute( p_data )
-    {
-    }
-
-    static streettiles( lanes, length )
+    var streettiles = function( lanes, length )
     {
         var l_matrix = [];
         var l_footway = Array.apply( null, Array( length ) ).map( function() {return 1} );
@@ -158,31 +88,86 @@ class Environment
         l_matrix.push( l_footway );
         return l_matrix;
     }
-}
 
-class Vehicle
-{
-    static create( p_data )
+    var objects =
     {
-        if( p_data.userdefinied )
+        vehicle:
         {
-            var l_uservehicle = window.simulation.vehicles[p_data.id] = new window.quintus.Player( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
-            window.quintus.stages[1].insert( l_uservehicle );
-            window.quintus.stages[0].add("viewport").follow( l_uservehicle );
-            window.quintus.stages[1].add("viewport").follow( l_uservehicle );
-        }
-        else
+            create: function( p_data )
+            {
+                if( p_data.userdefinied )
+                {
+                    var l_uservehicle = vehicles[p_data.id] = new l_quintus.Player( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
+                    l_quintus.stages[1].insert( l_uservehicle );
+                    l_quintus.stages[0].add("viewport").follow( l_uservehicle );
+                    l_quintus.stages[1].add("viewport").follow( l_uservehicle );
+                }
+                else
+                {
+                    var l_defaultvehicle = vehicles[p_data.id] = new l_quintus.Car( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
+                    //TODO: opposite vehicle
+                    //if(opposite car) l_defaultvehicle.p.angel = 180;
+                    l_quintus.stages[1].insert( l_defaultvehicle );
+                }
+            },
+            execute: function( p_data )
+            {
+                vehicles[p_data.id].p.x = p_data.x * 32;
+                vehicles[p_data.id].p.y = p_data.y * 32 + 16;
+            },
+            remove: function( p_data )
+            {
+            }
+        },
+        environment:
         {
-            var l_defaultvehicle = window.simulation.vehicles[p_data.id] = new window.quintus.Car( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
-            //TODO: opposite vehicle
-            //if(opposite car) l_defaultvehicle.p.angel = 180;
-            window.quintus.stages[1].insert( l_defaultvehicle );
+            create: function( p_data )
+            {
+                var lanes = p_data.lanes;
+                var length = p_data.length;
+                var l_tilelayer = new l_quintus.TileLayer ( {
+                    tileW: 32,
+                    tileH: 32,
+                    blockTileW: length,
+                    blockTileH: lanes + 2,
+                    type: l_quintus.SPRITE_NONE,
+                    sheet: "streettiles"
+                } );
+                l_tilelayer.p.tiles =  streettiles( lanes, length );
+                l_quintus.stages[0].insert( l_tilelayer );
+                l_quintus.audio.play( "axelf.mp3", { loop: true } );
+            },
+            execute: function( p_data )
+            {
+            },
+            remove: function( p_data )
+            {
+            }
         }
     }
 
-    static execute( p_data )
+    var ws = LightJason.websocket( "/animation" );
+
+    ws.onopen = function()
     {
-        window.simulation.vehicles[p_data.id].p.x = p_data.x * 32;
-        window.simulation.vehicles[p_data.id].p.y = p_data.y * 32 + 16;
-    }
-}
+        console.log( "Websocket opened!" );
+        ws.send( JSON.stringify( { foo : "Hello Server!" } ) );
+    };
+
+    ws.onmessage = function ( evt )
+    {
+        console.log("Message from server: " + evt.data);
+        var l_data = JSON.parse( evt.data );
+        objects[l_data.type][l_data.status]( l_data );
+    };
+
+    ws.onclose = function()
+    {
+        console.log( "Websocket closed!" );
+    };
+
+    ws.onerror = function( err )
+    {
+        console.log( "Websocket Error: " + err );
+    };
+});
