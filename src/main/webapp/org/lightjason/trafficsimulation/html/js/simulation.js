@@ -125,16 +125,26 @@ jQuery(function() {
             {
                 var lanes = p_data.lanes;
                 var length = p_data.length;
-                var l_tilelayer = new l_quintus.TileLayer ( {
-                    tileW: 32,
-                    tileH: 32,
-                    blockTileW: length,
-                    blockTileH: lanes + 2,
-                    type: l_quintus.SPRITE_NONE,
-                    sheet: "streettiles"
-                } );
-                l_tilelayer.p.tiles =  streettiles( lanes, length );
-                l_quintus.stages[0].insert( l_tilelayer );
+                var maxcellinlayer = 1000;
+                var layercount = length / maxcellinlayer;
+                for (var i = 0; i < layercount; i++) {
+                    var layerlength = ( i == parseInt( layercount, 10 ) ) ? ( length - i * maxcellinlayer ) : maxcellinlayer;
+                    var l_tilelayer = new l_quintus.TileLayer ( {
+                        tileW: 32,
+                        tileH: 32,
+                        blockTileW: layerlength,
+                        blockTileH: lanes + 2,
+                        type: l_quintus.SPRITE_NONE,
+                        sheet: "streettiles"
+                    } );
+                    l_tilelayer.p.tiles = streettiles( lanes, layerlength );
+                    l_quintus.stages[0].insert( l_tilelayer );
+                	if(i > 0)
+                	{
+                        l_quintus.stages[0].items[l_quintus.stages[0].items.length - 1].p.x = i * maxcellinlayer  * 16;
+                	}
+                }
+
                 l_quintus.audio.play( "axelf.mp3", { loop: true } );
             },
             execute: function( p_data )
