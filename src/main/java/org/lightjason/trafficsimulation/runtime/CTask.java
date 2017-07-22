@@ -35,7 +35,6 @@ import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;

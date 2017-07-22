@@ -152,7 +152,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         super.call();
 
         // give environment the data if it is a user car
-        if ( ( !m_environment.move( this ) ) )
+        if ( !m_environment.move( this ) )
             if ( m_userdefinied )
                 m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
             else
