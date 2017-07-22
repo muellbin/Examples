@@ -83,7 +83,7 @@ public final class CUnit
      */
     public final Number accelerationtospeed( final Number p_acceleration )
     {
-        return p_acceleration.doubleValue() * MSINKMH * m_timestep;
+        return p_acceleration.doubleValue() * m_timestep * KMHINMS;
     }
 
     /**

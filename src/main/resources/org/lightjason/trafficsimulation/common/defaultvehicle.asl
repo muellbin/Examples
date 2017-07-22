@@ -25,8 +25,8 @@
 
 +!drive <-
     accelerate;
-    !drive;
-    !linger
+    //!linger
+    !drive
 .
 
 -!drive <-
@@ -47,6 +47,6 @@
     goback
 .
 
-+!collide(X) <-
-    generic/print(X)
++!collision <-
+    decelerate
 .

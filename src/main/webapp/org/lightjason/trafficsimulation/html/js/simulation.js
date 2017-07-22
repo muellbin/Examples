@@ -112,6 +112,8 @@ jQuery(function() {
             },
             execute: function( p_data )
             {
+                console.log( p_data );
+
                 vehicles[p_data.id].p.x = p_data.x * 32;
                 vehicles[p_data.id].p.y = p_data.y * 32 + 16;
             },

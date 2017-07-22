@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.runtime;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import org.apache.commons.io.IOUtils;
 import org.lightjason.trafficsimulation.common.CCommon;
+import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
@@ -52,6 +53,10 @@ public class CTask implements ITask
      * logger
      */
     private static final Logger LOGGER = CCommon.logger( ITask.class );
+    /**
+     * simulation speed
+     */
+    private final int m_simulationspeed = CConfiguration.INSTANCE.getOrDefault( 1000, "main", "simulationspeed" );
     /**
      * thread
      */
@@ -95,30 +100,34 @@ public class CTask implements ITask
                 CCommon.languagestring( this, "simulationstart" )
             );
 
-            final Set<IVehicle> l_vehicles = new HashSet<>();
+            // environment loop
+            final Set<Callable<?>> l_elements = Stream.of( l_environment ).collect( Collectors.toSet() );
 
-            //test generating vehicle
+            // ---- @todo test ------
             try
             {
-                l_vehicles.add( new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "uservehicle" ), "UTF-8" ), l_environment, true, true )
-                    .generatesingle( new DenseDoubleMatrix1D( new double[]{1, 3} ) ) );
-                //l_vehicles.add( new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
-                //    .generatesingle( new DenseDoubleMatrix1D( new double[]{6, 3} ) ) );
+                final IVehicle l_vehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
+                    .generatesingle();
+                l_elements.add( l_vehicle );
+                l_environment.set( l_vehicle, new DenseDoubleMatrix1D( new double[]{0, 1} ) );
             }
             catch ( final Exception l_exception )
             {
-                CMessage.CInstance.INSTANCE.write(
-                    CMessage.EType.ERROR,
-                    CCommon.languagestring( this, "environment" ),
-                    l_exception.getLocalizedMessage()
-                );
             }
+            // ----------------------
 
-
-            // environment loop
-            final Set<Callable<?>> l_elements = Collections.synchronizedSet( Stream.concat( Stream.of( l_environment ),  l_vehicles.stream() ).collect( Collectors.toSet() ) );
             while ( !l_environment.shutdown() )
+            {
                 l_elements.parallelStream().forEach( CTask::execute );
+                try
+                {
+                    Thread.sleep( m_simulationspeed );
+                }
+                catch ( final InterruptedException l_exception )
+                {
+                    break;
+                }
+            }
 
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,

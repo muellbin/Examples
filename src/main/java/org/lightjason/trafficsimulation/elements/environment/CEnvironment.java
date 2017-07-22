@@ -111,11 +111,11 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final synchronized boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
     {
-        final IVehicle l_vehicle = (IVehicle) m_grid.get().getQuick( (int) p_position.get( 1 ), (int) p_position.get( 0 ) );
+        final IVehicle l_vehicle = (IVehicle) m_grid.get().getQuick( (int) p_position.get( 0 ), (int) p_position.get( 1 ) );
         if ( l_vehicle != null )
             return false;
 
-        m_grid.get().set( (int) p_position.get( 1 ), (int) p_position.get( 0 ), p_vehicle );
+        m_grid.get().set( (int) p_position.get( 0 ), (int) p_position.get( 1 ), p_vehicle );
         p_vehicle.position().setQuick( 0, p_position.get( 0 ) );
         p_vehicle.position().setQuick( 1, p_position.get( 1 ) );
         return true;
@@ -125,27 +125,23 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final synchronized boolean move( @Nonnull final IVehicle p_vehicle )
     {
-        if ( m_grid.get().size() == 0 )
-            return true;
-
-        final double l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 0 ), p_vehicle.speed() ).doubleValue();
-
-        if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 0 ) + 1, (int) l_target )
+        final double l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 1 ), p_vehicle.speed() ).doubleValue();
+        if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 1 ) + 1, Math.min( (int) l_target, m_grid.get().columns() ) )
                       .parallel()
-                      .filter( i -> m_grid.get().getQuick( (int) p_vehicle.position().get( 1 ), i ) != null )
+                      .filter( i -> m_grid.get().getQuick( (int) p_vehicle.position().get( 0 ), i ) != null )
                       .findAny()
                       .isPresent()
         )
             return false;
 
-        if ( l_target > m_grid.get().columns() )
+        if ( ( l_target > m_grid.get().columns() ) && ( p_vehicle.user() ) )
         {
             this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
             return true;
         }
 
-        m_grid.get().setQuick( (int) p_vehicle.position().get( 1 ), (int) l_target, p_vehicle );
-        p_vehicle.position().setQuick( 0, l_target );
+        m_grid.get().setQuick( (int) p_vehicle.position().get( 0 ), (int) l_target, p_vehicle );
+        p_vehicle.position().setQuick( 1, l_target );
         return true;
     }
 

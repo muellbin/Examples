@@ -24,6 +24,7 @@
 package org.lightjason.trafficsimulation.elements.vehicle;
 
 import cern.colt.matrix.DoubleMatrix1D;
+import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import com.google.common.util.concurrent.AtomicDouble;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -35,6 +36,7 @@ import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
@@ -45,6 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
@@ -73,11 +76,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     private final IEnvironment m_environment;
     /**
-     * accelerate speed
+     * accelerate speed in m/sec^
+     * @warning must be in (0, infinity)
      */
+    @Nonnegative
     private final double m_accelerate;
     /**
-     * decelerate speed
+     * decelerate speed in m/sec^
+     * @warning must be in (infinity, 0)
      */
     private final double m_decelerate;
     /**
@@ -85,7 +91,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     private final double m_maximumspeed;
     /**
-     * current speed
+     * current speed in km/h
      */
     private final AtomicDouble m_speed = new AtomicDouble();
     /**
@@ -93,33 +99,37 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     private final AtomicDouble m_panelize = new AtomicDouble();
     /*
-     * current position
+     * current position on lane / cell position
      */
-    private final DoubleMatrix1D m_position;
+    private final DoubleMatrix1D m_position = new DenseDoubleMatrix1D( new double[]{0, 0} );
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
      * @param p_id name of the object
-     * @param p_position initial position
      * @param p_accelerate accelerate speed
      * @param p_decelerate decelerate speed
+     *
+     * @todo remove fixed values
      */
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration,
                       @Nonnull final String p_id,
-                      @Nonnull final DoubleMatrix1D p_position, @Nonnull final IEnvironment p_environment,
+                      @Nonnull final IEnvironment p_environment,
                       @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate, @Nonnegative final double p_maximumspeed,
                       final boolean p_userdefinied
     )
     {
         super( p_configuration, FUNCTOR, p_id );
-        m_accelerate = p_accelerate;
-        m_decelerate = p_decelerate;
+        //m_accelerate = p_accelerate;
+        //m_decelerate = p_decelerate;
         m_maximumspeed = p_maximumspeed;
         m_environment = p_environment;
         m_userdefinied = p_userdefinied;
-        m_position = p_position;
+
+        m_accelerate = 15;
+        m_decelerate = 25;
+        m_speed.set( 20 );
 
         CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.CREATE, this );
     }
@@ -142,9 +152,13 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         super.call();
 
         // give environment the data if it is a user car
-        if ( ( !m_environment.move( this ) ) && m_userdefinied )
-            m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
+        if ( ( !m_environment.move( this ) ) )
+            if ( m_userdefinied )
+                m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
+            else
+                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
 
+        System.out.println( m_position );
         CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.EXECUTE, this );
         return this;
     }
@@ -159,7 +173,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         if ( m_speed.get() + m_accelerate > m_maximumspeed )
             throw new RuntimeException( MessageFormat.format( "cannot increment speed: {0}", this ) );
 
-        m_speed.addAndGet( m_accelerate );
+        m_speed.addAndGet( m_accelerate + CUnit.INSTANCE.accelerationtospeed( m_accelerate ).doubleValue() );
     }
 
     /**
@@ -172,7 +186,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         if ( m_speed.get() - m_decelerate < 0 )
             throw new RuntimeException( MessageFormat.format( "cannot decrement speed: {0}", this ) );
 
-        m_speed.set( m_speed.get() - m_decelerate );
+        m_speed.set( m_speed.get() + CUnit.INSTANCE.accelerationtospeed( m_decelerate ).doubleValue() );
     }
 
     /**
@@ -222,6 +236,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
     /**
      * generator
+     * @see https://en.wikipedia.org/wiki/Orders_of_magnitude_(acceleration)
      */
     public static final class CGenerator extends IBaseGenerator<IVehicle> implements Callable<IVehicle>
     {
@@ -241,6 +256,11 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          * environment
          */
         private final IEnvironment m_environment;
+        /**
+         * random instance
+         */
+        private final Random m_random = new Random();
+
 
         /**
          * generator
@@ -280,11 +300,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 new CVehicle(
                         m_configuration,
                         MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
-                        (DoubleMatrix1D) p_data[0],
                         m_environment,
                         1,
                         1,
-                        3,
+                        m_random.nextInt( 150 ) + 100,
                         m_userdefinied
                 ),
                 m_visible,

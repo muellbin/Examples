@@ -21,6 +21,7 @@
 
 # main definition
 main:
+    simulationspeed: 100
     messagedelay:
       default: 2500
       agentprint: 1500
