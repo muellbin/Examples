@@ -55,7 +55,7 @@ public class CTask implements ITask
     /**
      * simulation speed
      */
-    private final int m_simulationspeed = CConfiguration.INSTANCE.getOrDefault( 1000, "main", "simulationspeed" );
+    private final int m_simulationspeed = CConfiguration.INSTANCE.getOrDefault( 100, "main", "simulationspeed" );
     /**
      * thread
      */
