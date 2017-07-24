@@ -105,13 +105,14 @@ public class CTask implements ITask
             // ---- @todo test ------
             try
             {
-                final IVehicle l_vehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, false )
+                final IVehicle l_vehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, true )
                     .generatesingle();
                 l_elements.add( l_vehicle );
-                l_environment.set( l_vehicle, new DenseDoubleMatrix1D( new double[]{0, 1} ) );
+                //l_environment.set( l_vehicle, new DenseDoubleMatrix1D( new double[]{3, 1} ) );
             }
             catch ( final Exception l_exception )
             {
+                l_exception.printStackTrace();
             }
             // ----------------------
 
