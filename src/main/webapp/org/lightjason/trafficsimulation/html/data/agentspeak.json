@@ -1,37 +1,39 @@
 {
-  "RegExpID"                          : "RE::",
+  "RegExpID"                       : "RE::",
 
-  "Style"                             : {
+  "Style"                          : {
 
     "comment"                      : "comment"
-    ,"atom"                         : "atom"
-    ,"keyword"                      : "keyword"
-    ,"builtin"                      : "builtin"
-    ,"operator"                     : "operator"
-    ,"identifier"                   : "variable"
-    ,"number"                       : "number"
-    ,"string"                       : "string"
+    ,"atom"                        : "atom"
+    ,"keyword"                     : "keyword"
+    ,"action"                      : "special"
+    ,"builtin"                     : "builtin"
+    ,"operator"                    : "meta"
+    ,"identifier"                  : "variable"
+    ,"number"                      : "number"
+    ,"string"                      : "string"
 
   },
 
-  "Lex"                               : {
+  "Lex"                            : {
 
     "comment"                      : { "type": "comment", "tokens": [ [  "//",  null ], [  "/*",   "*/" ] ]}
-    ,"identifier"                   : "RE::/[A-Z$][A-Za-z0-9$]*/"
-    ,"number"                       : [ "RE::/[\\+\\-]?\\d+\\.\\d+/", "RE::/[\\+\\-]?\\d+/" ]
-    ,"string"                       : { "type": "escaped-block", "escape":"\\", "tokens": [ "RE::/(['\"])/", 1 ] }
-    ,"operator"                     : { "tokens":["+", "-", "++", "--", "%", ">>", "<<", "*", "/", "^", "||", "&&", "!", "~",
-                                        ">", "<", "<=", ">=", "!=", "=..", "=", "==", "+=", "-=", "*=", "/=", "<-", ":-", "@" ]}
-    ,"delimiter"                    : { "tokens":[ "(", ")", "[", "]", "{", "}", ",", "=", ";", ".", "?", ":", "+=", "-=", "*=",
-                                        "/=", "++", "--", "<<", ">>", "<-", ":-" ]}
-    ,"atom"                         : { "autocomplete": true, "tokens": [ "atomic", "constant", "parallel" ]}
-    ,"keyword"                      : { "autocomplete":true, "tokens":[ "true", "false", "success", "fail", "pi", "euler", "gravity",
-                                        "avogadro", "boltzmann", "electron", "proton", "neutron", "lightspeed", "infinity" ]}
-    ,"builtin"                      : { "autocomplete":true, "tokens": [] }
+    ,"action"                      : "RE::/[a-z$][A-Za-z0-9\\/\\-$]*/"
+    ,"identifier"                  : "RE::/[A-Z$][A-Za-z0-9$]*/"
+    ,"number"                      : [ "RE::/[\\+\\-]?\\d+\\.\\d+/", "RE::/[\\+\\-]?\\d+/" ]
+    ,"string"                      : { "type": "escaped-block", "escape":"\\", "tokens": [ "RE::/(['\"])/", 1 ] }
+    ,"operator"                    : { "tokens":["+", "-", "++", "--", "%", ">>", "<<", "*", "/", "^", "||", "&&", "!", "~",
+                                       ">", "<", "<=", ">=", "!=", "=..", "=", "==", "+=", "-=", "*=", "/=", "<-", ":-", "@" ]}
+    ,"delimiter"                   : { "tokens":[ "(", ")", "[", "]", "{", "}", ",", "=", ";", ".", "?", ":", "+=", "-=", "*=",
+                                       "/=", "++", "--", "<<", ">>", "<-", ":-" ]}
+    ,"atom"                        : { "autocomplete": true, "tokens": [ "atomic", "constant", "parallel" ]}
+    ,"keyword"                     : { "autocomplete":true, "tokens":[ "true", "false", "success", "fail", "pi", "euler", "gravity",
+                                       "avogadro", "boltzmann", "electron", "proton", "neutron", "lightspeed", "infinity" ]}
+    ,"builtin"                     : { "autocomplete":true, "tokens": [] }
 
   },
 
-  "Syntax"                            : { "agentspeak"  : "comment | operator | identifier | keyword | atom | builtin | number | string" },
-  "Parser"                            : [ ["agentspeak"] ]
+  "Syntax"                         : { "agentspeak"  : "comment | operator | identifier | keyword | atom | builtin | action | number | string" },
+  "Parser"                         : [ [ "agentspeak"] ]
 
 }
