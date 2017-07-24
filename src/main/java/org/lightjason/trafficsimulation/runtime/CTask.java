@@ -23,7 +23,6 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
-import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import org.apache.commons.io.IOUtils;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
