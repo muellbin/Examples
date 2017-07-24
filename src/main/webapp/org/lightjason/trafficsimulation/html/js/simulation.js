@@ -23,7 +23,8 @@
 
 jQuery(function() {
     var vehicles = {};
-
+    document.getElementById('simulation-screen').width = jQuery("#simulation-dashboard").width();
+    document.getElementById('simulation-screen').height = jQuery("#simulation-dashboard").height();
     var l_quintus = Quintus()
         .include("Sprites, Scenes, Input, 2D, Anim, Touch, UI, Audio")
         .setup("simulation-screen", {
@@ -112,7 +113,7 @@ jQuery(function() {
             },
             execute: function( p_data )
             {
-                console.log( p_data );
+                //console.log( p_data );
 
                 vehicles[p_data.id].p.x = p_data.x * 32;
                 vehicles[p_data.id].p.y = p_data.y * 32 + 16;
