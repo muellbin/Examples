@@ -35,29 +35,27 @@ jQuery(function() {
         .controls()
         .touch();
 
-    l_quintus.Sprite.extend("Player", {
+    l_quintus.Sprite.extend("UserVehicle", {
         init: function (p) {
             this._super(p, {
-                sheet: "player"
+                sheet: "uservehicle"
             });
             this.on("hit.sprite", function (collision) {
-                if (collision.obj.isA("Car")) {
-                    //the player hit a car!
-
+                if (collision.obj.isA("DefaultVehicle")) {
+                    //the user vehicle hit a default vehicle!
                 }
             });
         }
     });
 
-    l_quintus.Sprite.extend("Car", {
+    l_quintus.Sprite.extend("DefaultVehicle", {
         init: function (p) {
             this._super(p, {
-                sheet: "car"
+                sheet: "defaultvehicle"
             });
             this.on("hit.sprite", function (collision) {
-                if (collision.obj.isA("Car")) {
-                    //A car hit another car!
-
+                if (collision.obj.isA("DefaultVehicle")) {
+                    //A default vehicle hit another default vehicle!
                 }
             });
         }
@@ -98,16 +96,16 @@ jQuery(function() {
             {
                 if( p_data.userdefinied )
                 {
-                    var l_uservehicle = vehicles[p_data.id] = new l_quintus.Player( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
+                    var l_uservehicle = vehicles[p_data.id] = new l_quintus.UserVehicle( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
                     l_quintus.stages[1].insert( l_uservehicle );
                     l_quintus.stages[0].add("viewport").follow( l_uservehicle );
                     l_quintus.stages[1].add("viewport").follow( l_uservehicle );
                 }
                 else
                 {
-                    var l_defaultvehicle = vehicles[p_data.id] = new l_quintus.Car( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
+                    var l_defaultvehicle = vehicles[p_data.id] = new l_quintus.DefaultVehicle( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
                     //TODO: opposite vehicle
-                    //if(opposite car) l_defaultvehicle.p.angel = 180;
+                    //if(opposite vehicle) l_defaultvehicle.p.angel = 180;
                     l_quintus.stages[1].insert( l_defaultvehicle );
                 }
             },
