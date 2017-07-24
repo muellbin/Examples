@@ -1,68 +1,65 @@
 {
-"RegExpID"                          : "RE::",
+  "RegExpID"                          : "RE::",
 
-"Style"                             : {
+  "Style"                             : {
 
-     "comment"                      : "comment"
-    ,"atom"                         : "atom"
-    ,"keyword"                      : "keyword"
-    ,"this"                         : "keyword"
-    ,"builtin"                      : "builtin"
-    ,"operator"                     : "operator"
-    ,"identifier"                   : "variable"
-    ,"property"                     : "attribute"
-    ,"number"                       : "number"
-    ,"string"                       : "string"
-    ,"regex"                        : "string-2"
+    "comment"                      : "comment"
+  ,"atom"                         : "atom"
+  ,"keyword"                      : "keyword"
+  ,"this"                         : "keyword"
+  ,"builtin"                      : "builtin"
+  ,"operator"                     : "operator"
+  ,"identifier"                   : "variable"
+  ,"property"                     : "attribute"
+  ,"number"                       : "number"
+  ,"string"                       : "string"
+  ,"regex"                        : "string-2"
 
-},
+  },
 
-"Lex"                               : {
+  "Lex"                               : {
 
-     "comment"                      : {"type":"comment","tokens":[
-                                    [  "//",  null ],
-                                    [  "/*",   "*/" ]
-                                    ]}
-    ,"identifier"                   : "RE::/[((A-Z)|_)$][A-Za-z0-9$]*/"
-    ,"property"                     : "RE::/[a-z$][_A-Za-z0-9\\-$]*/"
-    ,"number"                       : [
-                                    "RE::/[\\+\\-]?\\d+\\.\\d+/",
-                                    "RE::/[\\+\\-]?\\d+/"
-                                    ]
-    ,"string"                       : {"type":"escaped-block","escape":"\\","tokens":
-                                    [ "RE::/(['\"])/", 1 ]
-                                    }
-    ,"regex"                        : {"type":"escaped-block","escape":"\\","tokens":
-                                    [ "/",    "RE::#/[gimy]{0,4}#" ]
-                                    }
-    ,"operator"                     : {"tokens":[
-                                    "+", "-", "++", "--", "%", ">>", "<<",
-                                    "*", "/", "^", "||", "&&", "!", "~",
-                                    ">", "<", "<=", ">=", "!=", "=..",
-                                    "=", "==", "+=", "-=", "*=", "/=", "<-", ":-"
-                                    ]}
-    ,"delimiter"                    : {"tokens":[
-                                    "(", ")", "[", "]", "{", "}", ",", "=", ";", ".", "?", ":",
-                                    "+=", "-=", "*=", "/=", "++", "--", "<<", ">>", "<-", ":-"
-                                    ]}
-    ,"atom"                         : {"autocomplete":true,"tokens":[
-                                    "atomic", "constant", "parallel"
-                                    ]}
-    ,"keyword"                      : {"autocomplete":true,"tokens":[
-                                    "true", "false", "success", "fail",
-                                    "pi", "euler", "gravity", "avogadro", "boltzmann",
-                                    "electron", "proton", "neutron", "lightspeed", "infinity"
-                                    ]}
-    ,"builtin"                      : {"autocomplete":true,"tokens":[]}
+    "comment"                      : {"type":"comment","tokens":[
+      [  "//",  null ],
+      [  "/*",   "*/" ]
+    ]}
+  ,"identifier"                   : "RE::/[((A-Z)|_)$][A-Za-z0-9$]*/"
+  ,"property"                     : "RE::/[a-z$][A-Za-z0-9_\\/\\-$]*/"
+  ,"number"                       : [
+      "RE::/[\\+\\-]?\\d+\\.\\d+/",
+      "RE::/[\\+\\-]?\\d+/"
+    ]
+  ,"string"                       : {"type":"escaped-block","escape":"\\","tokens":
+    [ "RE::/(['\"])/", 1 ]
+    }
+  ,"operator"                     : {"tokens":[
+      "+", "-", "++", "--", "%", ">>", "<<",
+      "*", "/", "^", "||", "&&", "!", "~",
+      ">", "<", "<=", ">=", "!=", "=..",
+      "=", "==", "+=", "-=", "*=", "/=", "<-", ":-"
+    ]}
+  ,"delimiter"                    : {"tokens":[
+      "(", ")", "[", "]", "{", "}", ",", "=", ";", ".", "?", ":",
+      "+=", "-=", "*=", "/=", "++", "--", "<<", ">>", "<-", ":-"
+    ]}
+  ,"atom"                         : {"autocomplete":true,"tokens":[
+      "atomic", "constant", "parallel"
+    ]}
+  ,"keyword"                      : {"autocomplete":true,"tokens":[
+      "true", "false", "success", "fail",
+      "pi", "euler", "gravity", "avogadro", "boltzmann",
+      "electron", "proton", "neutron", "lightspeed", "infinity"
+    ]}
+  ,"builtin"                      : {"autocomplete":true,"tokens":[]}
 
-},
+  },
 
-"Syntax"                            : {
+  "Syntax"                            : {
 
     "js"                            : "comment | number | string | regex | keyword | operator | atom | '}' | ')' | builtin | identifier"
 
-},
+  },
 
-"Parser"                            : [ ["js"] ]
+  "Parser"                            : [ ["js"] ]
 
 }

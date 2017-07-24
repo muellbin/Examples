@@ -181,7 +181,7 @@ var l_gulp = require( "gulp" ),
 
             "css-codemirrortheme" : {
                 output: "css/codemirrortheme.min.css",
-                source: l_gulp.src( "node_modules/codemirror/theme/eclipse.css" )
+                source: l_gulp.src( "node_modules/codemirror/theme/neat.css" )
             },
 
 

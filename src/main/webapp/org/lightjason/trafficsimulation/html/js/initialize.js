@@ -436,45 +436,20 @@ jQuery(function() {
 
             l_mode.supportCodeFolding = true;
             l_mode.supportCodeMatching = true;
-            l_mode.matcher.options = {maxHighlightLineLength:1000};
-            //l_mode.supportGrammarAnnotations = true;
-            //CodeMirror.registerHelper("lint", "js", l_mode.validator);
             l_mode.supportAutoCompletion = true;
-            //l_mode.autocompleter.options = {prefixMatch:true, caseInsensitiveMatch:false};
-            //l_mode.autocompleter.options = {prefixMatch:true, caseInsensitiveMatch:false, inContext:true};
+            l_mode.matcher.options = {maxHighlightLineLength:1000};
             l_mode.autocompleter.options = {prefixMatch:true, caseInsensitiveMatch:false, inContext:true|false, dynamic:true};
 
             CodeMirror.defineMode("agentspeak", l_mode);
             CodeMirror.registerHelper("fold", l_mode.foldType, l_mode.folder);
-            //CodeMirror.registerHelper("lint", "js", function( code ) {
-            //    return l_mode ? l_mode.validator( code ) : [];
-            //});
-            /*
-            CodeMirror.defineOption("grammar-mode-match", false, function( cm, val, old ) {
-                if ( old && old !== CodeMirror.Init )
-                {
-                    cm.off( "cursorActivity", l_mode.matcher );
-                    l_mode.matcher.clear( cm );
-                }
-                if ( val )
-                {
-                    cm.on( "cursorActivity", l_mode.matcher );
-                    l_mode.matcher( cm );
-                }
-            });
-            */
-            CodeMirror.commands['my_autocompletion'] = function( cm ) {
-                CodeMirror.showHint(cm, l_mode.autocompleter, {prefixMatch:true, caseInsensitiveMatch:false, inContext:true|false, dynamic:true});
-            };
-
-
 
             l_editor = CodeMirror.fromTextArea(
                 document.getElementById("ui-editor"),
                 {
                     sourceid: null,
-                    theme: "eclipse",
+                    theme: "neat",
                     mode: "agentspeak",
+                    autofocus: true,
                     lineNumbers: true,
                     matchBrackets: true,
                     indentUnit: 4,
@@ -483,7 +458,6 @@ jQuery(function() {
                     lint: false,
                     //"grammar-mode-match": false,
                     foldGutter: true,
-                    extraKeys: {"Ctrl-Space": "my_autocompletion", "Ctrl-L": "toggleComment"},
                     gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"]
                 }
             );
