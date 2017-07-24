@@ -437,8 +437,8 @@ jQuery(function() {
             l_mode.supportCodeFolding = true;
             l_mode.supportCodeMatching = true;
             l_mode.supportAutoCompletion = true;
-            l_mode.matcher.options = {maxHighlightLineLength:1000};
-            l_mode.autocompleter.options = {prefixMatch:true, caseInsensitiveMatch:false, inContext:true|false, dynamic:true};
+            l_mode.matcher.options = { maxHighlightLineLength: 1000 };
+            l_mode.autocompleter.options = { prefixMatch: true, caseInsensitiveMatch: false, inContext:true, dynamic:true };
 
             CodeMirror.defineMode("agentspeak", l_mode);
             CodeMirror.registerHelper("fold", l_mode.foldType, l_mode.folder);
@@ -455,10 +455,7 @@ jQuery(function() {
                     indentUnit: 4,
                     indentWithTabs: false,
                     matching: true,
-                    lint: false,
-                    //"grammar-mode-match": false,
-                    foldGutter: true,
-                    gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+                    lint: false
                 }
             );
 
