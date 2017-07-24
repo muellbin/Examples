@@ -40,6 +40,7 @@ import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.runtime.CRuntime;
 import org.lightjason.trafficsimulation.ui.api.CAPI;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
+import org.lightjason.trafficsimulation.ui.api.CData;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
@@ -116,6 +117,7 @@ public final class CHTTPServer
         // set websockets
         websocket( l_webapp, CAnimation.class, "/animation" );
         websocket( l_webapp, CMessage.class, "/message" );
+        websocket( l_webapp, CData.class, "/data" );
     }
 
 
