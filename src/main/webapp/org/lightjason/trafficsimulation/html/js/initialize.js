@@ -433,17 +433,22 @@ jQuery(function() {
             lineNumbers: true,
             matchBrackets: true,
             indentUnit: 4,
+            indentWithTabs: false,
             lint: false,
-            foldGutter: true,
-            gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             extraKeys: {"Ctrl-Space": "autocomplete_grammar", "Ctrl-L": "toggleComment"}
         }
     );
 
     l_editor.on( "blur", function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); } );
 
-    jQuery.getJSON( "/data/agentspeak.json", function(data) {
-        console.log(data);
+    jQuery.getJSON( "/data/agentspeak.json", function(i) {
+        jQuery.getJSON( "/data/action.json", function(j) {
+
+            i.Lex.builtin.tokens =  Object.keys(j).map(function(n) { return n.split("/"); }).flatten().unique();
+
+            console.log(i);
+            //console.log( CodeMirrorGrammar.pre_process( i ) );
+        });
     } );
 
 

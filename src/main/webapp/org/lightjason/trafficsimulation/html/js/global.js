@@ -130,11 +130,25 @@ Array.prototype.convert = Array.prototype.convert || function( px_value ) {
 
 
 /**
- * uniquefy the array
+ * uniquify the array
  **/
 Array.prototype.unique = Array.prototype.unique || function( px_value ) {
         return function(){ return this.filter( px_value) }
     }(function( a, b, c ) { return c.indexOf(a,b+1) < 0 });
+
+/**
+ * flatts an nested array
+ */
+Array.prototype.flatten = Array.prototype.flatten || function() {
+    var la_result = [];
+    this.forEach(function(i) {
+        if (Array.isArray(i))
+            la_result = la_result.concat( i.flatten() );
+        else
+            la_result.push(i);
+    });
+    return la_result;
+};
 
 
 /**

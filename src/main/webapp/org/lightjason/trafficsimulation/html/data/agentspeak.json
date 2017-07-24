@@ -1,12 +1,8 @@
-// a partial javascript grammar in simple JSON format
 {
-        
-// prefix ID for regular expressions used in the grammar
 "RegExpID"                          : "RE::",
-    
-// Style model
+
 "Style"                             : {
-    
+
      "comment"                      : "comment"
     ,"atom"                         : "atom"
     ,"keyword"                      : "keyword"
@@ -18,38 +14,29 @@
     ,"number"                       : "number"
     ,"string"                       : "string"
     ,"regex"                        : "string-2"
-    
+
 },
 
-// Lexical model
 "Lex"                               : {
-    
+
      "comment"                      : {"type":"comment","tokens":[
-                                    // line comment
-                                    // start, end delims  (null matches end-of-line)
                                     [  "//",  null ],
-                                    // block comments
-                                    // start,  end    delims
                                     [  "/*",   "*/" ]
                                     ]}
     ,"identifier"                   : "RE::/[((A-Z)|_)$][A-Za-z0-9$]*/"
     ,"property"                     : "RE::/[a-z$][_A-Za-z0-9\\-$]*/"
     ,"number"                       : [
-                                    // floats
                                     "RE::/[\\+\\-]?\\d+\\.\\d+/",
-                                    // integer
                                     "RE::/[\\+\\-]?\\d+/"
                                     ]
     ,"string"                       : {"type":"escaped-block","escape":"\\","tokens":
-                                    // start, end of string (can be the matched regex group ie. 1 )
                                     [ "RE::/(['\"])/", 1 ]
                                     }
     ,"regex"                        : {"type":"escaped-block","escape":"\\","tokens":
-                                    // javascript literal regular expressions can be parsed similar to strings
                                     [ "/",    "RE::#/[gimy]{0,4}#" ]
                                     }
     ,"operator"                     : {"tokens":[
-                                    "+", "-", "++", "--", "%", ">>", "<<", 
+                                    "+", "-", "++", "--", "%", ">>", "<<",
                                     "*", "/", "^", "||", "&&", "!", "~",
                                     ">", "<", "<=", ">=", "!=", "=..",
                                     "=", "==", "+=", "-=", "*=", "/=", "<-", ":-"
@@ -61,26 +48,22 @@
     ,"atom"                         : {"autocomplete":true,"tokens":[
                                     "atomic", "constant", "parallel"
                                     ]}
-    ,"keyword"                      : {"autocomplete":true,"tokens":[ 
+    ,"keyword"                      : {"autocomplete":true,"tokens":[
                                     "true", "false", "success", "fail",
                                     "pi", "euler", "gravity", "avogadro", "boltzmann",
                                     "electron", "proton", "neutron", "lightspeed", "infinity"
                                     ]}
-    ,"builtin"                      : {"autocomplete":true,"tokens":[ 
-									"generic", "print"
-                                    ]}
+    ,"builtin"                      : {"autocomplete":true,"tokens":[]}
 
 },
 
-// Syntax model (optional)
 "Syntax"                            : {
-    
+
     "dot_property"                  : {"sequence":["/", "property"]}
     ,"js"                           : "comment | number | string | regex | keyword | operator | atom | (('}' | ')' | builtin | identifier | dot_property) dot_property*)"
 
 },
 
-// what to parse and in what order
 "Parser"                            : [ ["js"] ]
 
 }
