@@ -186,28 +186,11 @@ jQuery(function() {
     }
 
     /** define the animation websocket */
-    var ws = LightJason.websocket( "/animation" );
-
-    ws.onopen = function()
-    {
-        console.log( "Websocket opened!" );
-        ws.send( JSON.stringify( { foo : "Hello Server!" } ) );
-    };
-
-    ws.onmessage = function ( evt )
-    {
-        //console.log("Message from server: " + evt.data);
-        var l_data = JSON.parse( evt.data );
-        objects[l_data.type][l_data.status]( l_data );
-    };
-
-    ws.onclose = function()
-    {
-        console.log( "Websocket closed!" );
-    };
-
-    ws.onerror = function( err )
-    {
-        console.log( "Websocket Error: " + err );
-    };
+    LightJason.websocket( "/animation" )
+        .onmessage = function ( evt )
+        {
+            //console.log("Message from server: " + evt.data);
+            var l_data = JSON.parse( evt.data );
+            objects[l_data.type][l_data.status]( l_data );
+        };
 });

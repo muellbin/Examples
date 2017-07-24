@@ -20,7 +20,6 @@
  */
 
 "use strict";
-
 /**
  * Resize function without multiple trigger
  *
@@ -531,12 +530,12 @@ jQuery(function() {
 
     // test chart
     // https://canvasjs.com/docs/charts/basics-of-creating-html5-chart/updating-chart-options/
-    new Chart( jQuery( "#simulation-panelty" ), {
+    var chart = new Chart( jQuery( "#simulation-panelty" ), {
         type: "line",
         data: {
-            labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15,17,18,19,20],
+            labels: [0],
             datasets: [{
-                data: [12, 19, 3, 5, 2, 3, 7, 10, 98, 76, 54, 128, 55, 44, 33],
+                data: [0],
                 fill: false,
                 borderColor: "rgba(255,99,132,1)"
             }]
@@ -547,6 +546,29 @@ jQuery(function() {
             }
         }
     });
+
+    var chartlabel = 1;
+    var dataobject =
+    {
+        penalty: function( p_data )
+        {
+            chart.data.labels.push( chartlabel );
+            chart.data.datasets.forEach(function(dataset) {
+                dataset.data.push( p_data );
+            });
+            chart.update();
+            chartlabel++;
+        }
+    }
+
+    // notify messages
+    LightJason.websocket( "/data" )
+              .onmessage = function ( i )
+              {
+                  var l_data = JSON.parse( i.data );
+                  console.log(l_data);
+                  dataobject[l_data.type](l_data.data);
+              };
 
 });
 
