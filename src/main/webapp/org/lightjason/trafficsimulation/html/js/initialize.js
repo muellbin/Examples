@@ -423,30 +423,72 @@ jQuery(function() {
 
 
     // set codemirror
+    var l_editor = null;
+
+    // read codemirror grammer and builtin calls
     // http://foo123.github.io/examples/codemirror-grammar/
-    var l_editor = CodeMirror.fromTextArea(
-        document.getElementById("ui-editor"),
-        {
-            sourceid: null,
-            mode: "text/plain",
-            lineNumbers: true,
-            matchBrackets: true,
-            indentUnit: 4,
-            indentWithTabs: false,
-            lint: false,
-            extraKeys: {"Ctrl-Space": "autocomplete_grammar", "Ctrl-L": "toggleComment"}
-        }
-    );
-
-    l_editor.on( "blur", function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); } );
-
+    // https://github.com/foo123/codemirror-grammar/blob/master/README.md
     jQuery.getJSON( "/data/agentspeak.json", function(i) {
         jQuery.getJSON( "/data/action.json", function(j) {
 
-            i.Lex.builtin.tokens =  Object.keys(j).map(function(n) { return n.split("/"); }).flatten().unique();
+            i.Lex.builtin.tokens = Object.keys(j);
+            var l_mode = CodeMirrorGrammar.getMode( i );
 
-            console.log(i);
-            //console.log( CodeMirrorGrammar.pre_process( i ) );
+            l_mode.supportCodeFolding = true;
+            l_mode.supportCodeMatching = true;
+            l_mode.matcher.options = {maxHighlightLineLength:1000};
+            //l_mode.supportGrammarAnnotations = true;
+            //CodeMirror.registerHelper("lint", "js", l_mode.validator);
+            l_mode.supportAutoCompletion = true;
+            //l_mode.autocompleter.options = {prefixMatch:true, caseInsensitiveMatch:false};
+            //l_mode.autocompleter.options = {prefixMatch:true, caseInsensitiveMatch:false, inContext:true};
+            l_mode.autocompleter.options = {prefixMatch:true, caseInsensitiveMatch:false, inContext:true|false, dynamic:true};
+
+            CodeMirror.defineMode("agentspeak", l_mode);
+            CodeMirror.registerHelper("fold", l_mode.foldType, l_mode.folder);
+            //CodeMirror.registerHelper("lint", "js", function( code ) {
+            //    return l_mode ? l_mode.validator( code ) : [];
+            //});
+            /*
+            CodeMirror.defineOption("grammar-mode-match", false, function( cm, val, old ) {
+                if ( old && old !== CodeMirror.Init )
+                {
+                    cm.off( "cursorActivity", l_mode.matcher );
+                    l_mode.matcher.clear( cm );
+                }
+                if ( val )
+                {
+                    cm.on( "cursorActivity", l_mode.matcher );
+                    l_mode.matcher( cm );
+                }
+            });
+            */
+            CodeMirror.commands['my_autocompletion'] = function( cm ) {
+                CodeMirror.showHint(cm, l_mode.autocompleter, {prefixMatch:true, caseInsensitiveMatch:false, inContext:true|false, dynamic:true});
+            };
+
+
+
+            l_editor = CodeMirror.fromTextArea(
+                document.getElementById("ui-editor"),
+                {
+                    sourceid: null,
+                    theme: "eclipse",
+                    mode: "agentspeak",
+                    lineNumbers: true,
+                    matchBrackets: true,
+                    indentUnit: 4,
+                    indentWithTabs: false,
+                    matching: true,
+                    lint: false,
+                    //"grammar-mode-match": false,
+                    foldGutter: true,
+                    extraKeys: {"Ctrl-Space": "my_autocompletion", "Ctrl-L": "toggleComment"},
+                    gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+                }
+            );
+
+            l_editor.on( "blur", function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); } );
         });
     } );
 

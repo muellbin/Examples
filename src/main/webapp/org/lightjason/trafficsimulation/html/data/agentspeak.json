@@ -59,8 +59,7 @@
 
 "Syntax"                            : {
 
-    "dot_property"                  : {"sequence":["/", "property"]}
-    ,"js"                           : "comment | number | string | regex | keyword | operator | atom | (('}' | ')' | builtin | identifier | dot_property) dot_property*)"
+    "js"                            : "comment | number | string | regex | keyword | operator | atom | '}' | ')' | builtin | identifier"
 
 },
 

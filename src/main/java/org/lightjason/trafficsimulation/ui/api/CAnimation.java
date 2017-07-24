@@ -120,7 +120,7 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
         public IVehicle vehicle( final EStatus p_status, final IVehicle p_vehicle )
         {
             final Map<Object, Object> l_data = StreamUtils.zip(
-                Stream.of( "type", "status", "id", "userdefinied", "y", "x" ),
+                Stream.of( "type", "status", "id", "userdefinied", "y", "" ),
                 Stream.of( "vehicle", p_status.toString(), p_vehicle.id(), p_vehicle.user(), p_vehicle.position().get( 0 ), p_vehicle.position().get( 1 ) ),
                 ImmutablePair::new
             ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );

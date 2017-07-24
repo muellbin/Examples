@@ -179,6 +179,11 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src( "node_modules/codemirror/lib/codemirror.css" )
             },
 
+            "css-codemirrortheme" : {
+                output: "css/codemirrortheme.min.css",
+                source: l_gulp.src( "node_modules/codemirror/theme/eclipse.css" )
+            },
+
 
 
             "css-slide" : {
