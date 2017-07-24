@@ -155,6 +155,7 @@ jQuery(function() {
             },
             remove: function( p_data )
             {
+                l_quintus.audio.stop();
             }
         }
     }
