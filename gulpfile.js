@@ -60,8 +60,8 @@ var l_gulp = require( "gulp" ),
             "fonts" : {
                 output: "fonts",
                 source: l_gulp.src([
-                    "node_modules/gentelella/vendors/bootstrap/dist/fonts/*.*",
-                    "node_modules/gentelella/vendors/font-awesome/fonts/*.*"
+                    "node_modules/bootstrap/dist/fonts/*.*",
+                    "node_modules/font-awesome/fonts/*.*"
                 ])
             },
 
@@ -78,7 +78,7 @@ var l_gulp = require( "gulp" ),
 
             "css" : {
                 output: "css",
-                source: l_gulp.src( "node_modules/gentelella/vendors/font-awesome/css/font-awesome.min.css" )
+                source: l_gulp.src( "node_modules/font-awesome/css/font-awesome.min.css" )
             },
 
 
@@ -116,13 +116,14 @@ var l_gulp = require( "gulp" ),
                 source: l_gulp.src([
                     l_sourcedir + "js/global.js",
                     l_sourcedir + "js/lightjason.js",
-                    l_sourcedir + "js/initialize.js"
+                    l_sourcedir + "js/initialize.js",
+                    l_sourcedir + "js/codemirror_grammar.js"
                 ])
             },
 
             "js-jquery" : {
                 output: "js/jquery.min.js",
-                source: l_gulp.src( "node_modules/gentelella/vendors/jquery/dist/jquery.js" )
+                source: l_gulp.src( "node_modules/jquery/dist/jquery.js" )
             },
 
             "js-jquery-fullscreen" : {
@@ -132,12 +133,12 @@ var l_gulp = require( "gulp" ),
 
             "js-bootstrap" : {
                 output: "js/bootstrap.min.js",
-                source: l_gulp.src( "node_modules/gentelella/vendors/bootstrap/dist/js/bootstrap.js" )
+                source: l_gulp.src( "node_modules/bootstrap/dist/js/bootstrap.js" )
             },
 
             "js-pnotify" : {
                 output: "js/pnotify.min.js",
-                source: l_gulp.src( "node_modules/gentelella/vendors/pnotify/dist/pnotify.js" )
+                source: l_gulp.src( "node_modules/pnotify/dist/pnotify.js" )
             },
 
             "js-codemirror" : {
@@ -160,7 +161,7 @@ var l_gulp = require( "gulp" ),
 
             "css-bootstrap" : {
                 output: "css/bootstrap.min.css",
-                source: l_gulp.src( "node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.css" )
+                source: l_gulp.src( "node_modules/bootstrap/dist/css/bootstrap.css" )
             },
 
             "css-gentelella" : {
@@ -170,7 +171,7 @@ var l_gulp = require( "gulp" ),
 
             "css-pnotify" : {
                 output: "css/pnotify.min.css",
-                source: l_gulp.src( "node_modules/gentelella/vendors/pnotify/dist/*.css" )
+                source: l_gulp.src( "node_modules/pnotify/dist/*.css" )
             },
 
             "css-main" : {

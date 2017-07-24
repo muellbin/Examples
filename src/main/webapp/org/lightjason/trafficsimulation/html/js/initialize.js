@@ -19,6 +19,7 @@
  * ######################################################################################
  */
 
+"use strict";
 
 /**
  * Resize function without multiple trigger
@@ -235,7 +236,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $(".expand").on("click", function () {
         $(this).next().slideToggle(200);
-        $expand = $(this).find(">:first-child");
+        $.expand = $(this).find(">:first-child");
 
         if ($expand.text() === "+") {
             $expand.text("-");
@@ -381,7 +382,7 @@ CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.g
 /**
  * document-ready execution
  */
-$(document).ready(function() {
+jQuery(function() {
 
     init_sidebar();
     init_pnotify();
@@ -423,18 +424,27 @@ $(document).ready(function() {
 
 
     // set codemirror
+    // http://foo123.github.io/examples/codemirror-grammar/
     var l_editor = CodeMirror.fromTextArea(
         document.getElementById("ui-editor"),
         {
+            sourceid: null,
+            mode: "text/plain",
             lineNumbers: true,
             matchBrackets: true,
-            mode: "text/plain",
             indentUnit: 4,
-            sourceid: null
+            lint: false,
+            foldGutter: true,
+            gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            extraKeys: {"Ctrl-Space": "autocomplete_grammar", "Ctrl-L": "toggleComment"}
         }
     );
 
     l_editor.on( "blur", function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); } );
+
+    jQuery.getJSON( "/data/agentspeak.json", function(data) {
+        console.log(data);
+    } );
 
 
     // save panelty image
