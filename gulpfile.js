@@ -36,164 +36,151 @@
 
 
 
-var l_gulp = require( "gulp" ),
-    l_concat = require("gulp-dir-concat"),
-    l_minifyjs = require("gulp-uglify"),
-    l_minifycss = require('gulp-uglifycss'),
-    l_rename= require('gulp-rename'),
-    l_clean = require('gulp-clean'),
+const l_gulp = require( "gulp" ),
+      l_concat = require("gulp-dir-concat"),
+      l_concatcss = require("gulp-concat-css"),
+      l_minifyjs = require("gulp-uglify"),
+      l_minifycss = require('gulp-uglifycss'),
+      l_rename= require('gulp-rename'),
+      l_clean = require('gulp-clean'),
 
-    l_packagedir = "org/lightjason/trafficsimulation/html/",
-    l_sourcedir = "src/main/webapp/" + l_packagedir,
-    l_outputdir = "target/classes/" + l_packagedir,
+      l_packagedir = "org/lightjason/trafficsimulation/html/",
+      l_sourcedir = "src/main/webapp/" + l_packagedir,
+      l_outputdir = "target/classes/" + l_packagedir,
 
-    l_config = {
+      l_config = {
 
-        // assets are copied only
-        assets : {
+          // assets are copied only
+          assets : {
 
-            "html" : {
-                output: "",
-                source: l_gulp.src( l_sourcedir + "*.htm" )
-            },
+              "html" : {
+                  output: "",
+                  source: l_gulp.src( l_sourcedir + "*.htm" )
+              },
 
-            "fonts" : {
-                output: "fonts",
-                source: l_gulp.src([
-                    "node_modules/bootstrap/dist/fonts/*.*",
-                    "node_modules/font-awesome/fonts/*.*"
-                ])
-            },
+              "fonts" : {
+                  output: "fonts",
+                  source: l_gulp.src([
+                      "node_modules/bootstrap/dist/fonts/*.*",
+                      "node_modules/font-awesome/fonts/*.*"
+                  ])
+              },
 
-            "js-simulation" : {
-                output: "js",
-                source: l_gulp.src( l_sourcedir + "js/simulation.js" )
-            },
+              "js-simulation" : {
+                  output: "js",
+                  source: l_gulp.src( l_sourcedir + "js/simulation.js" )
+              },
 
-            "js-filesaver" : {
-                output: "js",
-                source: l_gulp.src( "node_modules/file-saver/FileSaver.min.js" )
+              "js-filesaver" : {
+                  output: "js",
+                  source: l_gulp.src( "node_modules/file-saver/FileSaver.min.js" )
 
-            },
+              },
 
-            "css" : {
-                output: "css",
-                source: l_gulp.src( "node_modules/font-awesome/css/font-awesome.min.css" )
-            },
-
-
-
-            "markdown-slide" : {
-                output: "slide",
-                source: l_gulp.src( l_sourcedir + "slide/*.md" )
-            },
+              "css-fontawesome" : {
+                  output: "css",
+                  source: l_gulp.src( "node_modules/font-awesome/css/font-awesome.min.css" )
+              },
 
 
 
-            "images" : {
-                output: "images",
-                source: l_gulp.src( l_sourcedir + "images/*.*" )
-            },
-
-            "data" : {
-                output: "data",
-                source: l_gulp.src([ l_sourcedir + "data/*.json", l_sourcedir + "data/*.mp3" ])
-            },
-
-            "audio" : {
-                output: "audio",
-                source: l_gulp.src( l_sourcedir + "audio/*.mp3" )
-            }
-
-        },
-
-
-        // minify javascript
-        minifyjs : {
-
-            "js-main ": {
-                output: "js/script.min.js",
-                source: l_gulp.src([
-                    l_sourcedir + "js/global.js",
-                    l_sourcedir + "js/lightjason.js",
-                    l_sourcedir + "js/initialize.js",
-                    l_sourcedir + "js/codemirror_grammar.js"
-                ])
-            },
-
-            "js-jquery" : {
-                output: "js/jquery.min.js",
-                source: l_gulp.src( "node_modules/jquery/dist/jquery.js" )
-            },
-
-            "js-jquery-fullscreen" : {
-                output: "js/jquery.fullscreen.min.js",
-                source: l_gulp.src( "node_modules/jquery.full.screen/jquery.full.screen.js" )
-            },
-
-            "js-bootstrap" : {
-                output: "js/bootstrap.min.js",
-                source: l_gulp.src( "node_modules/bootstrap/dist/js/bootstrap.js" )
-            },
-
-            "js-pnotify" : {
-                output: "js/pnotify.min.js",
-                source: l_gulp.src( "node_modules/pnotify/dist/pnotify.js" )
-            },
-
-            "js-codemirror" : {
-                output: "js/codemirror.min.js",
-                source: l_gulp.src( "node_modules/codemirror/lib/codemirror.js" )
-            },
+              "markdown-slide" : {
+                  output: "slide",
+                  source: l_gulp.src( l_sourcedir + "slide/*.md" )
+              },
 
 
 
-            "js-remark" : {
-                output: "js/remark.min.js",
-                source: l_gulp.src( "node_modules/remark/out/remark.js" )
-            }
+              "images" : {
+                  output: "images",
+                  source: l_gulp.src( l_sourcedir + "images/*.*" )
+              },
 
-        },
+              "data" : {
+                  output: "data",
+                  source: l_gulp.src([ l_sourcedir + "data/*.json", l_sourcedir + "data/*.mp3" ])
+              },
 
+              "audio" : {
+                  output: "audio",
+                  source: l_gulp.src( l_sourcedir + "audio/*.mp3" )
+              }
 
-        // minify css
-        minifycss : {
-
-            "css-bootstrap" : {
-                output: "css/bootstrap.min.css",
-                source: l_gulp.src( "node_modules/bootstrap/dist/css/bootstrap.css" )
-            },
-
-            "css-gentelella" : {
-                output: "css/gentelella.min.css",
-                source: l_gulp.src( "node_modules/gentelella/build/css/custom.css" )
-            },
-
-            "css-pnotify" : {
-                output: "css/pnotify.min.css",
-                source: l_gulp.src( "node_modules/pnotify/dist/*.css" )
-            },
-
-            "css-main" : {
-                output: "css/codemirror.min.css",
-                source: l_gulp.src( "node_modules/codemirror/lib/codemirror.css" )
-            },
-
-            "css-codemirrortheme" : {
-                output: "css/codemirrortheme.min.css",
-                source: l_gulp.src( "node_modules/codemirror/theme/neat.css" )
-            },
+          },
 
 
+          // minify javascript
+          minifyjs : {
 
-            "css-slide" : {
-                output: "css/slide.min.css",
-                source: l_gulp.src( l_sourcedir + "css/slide.css" )
-            }
+              "js-main ": {
+                  output: "js/script.min.js",
+                  source: l_gulp.src([
+                      l_sourcedir + "js/global.js",
+                      l_sourcedir + "js/lightjason.js",
+                      l_sourcedir + "js/initialize.js",
+                      l_sourcedir + "js/codemirror_grammar.js"
+                  ])
+              },
 
-        }
+              "js-jquery" : {
+                  output: "js/jquery.min.js",
+                  source: l_gulp.src( "node_modules/jquery/dist/jquery.js" )
+              },
 
-    };
+              "js-jquery-fullscreen" : {
+                  output: "js/jquery.fullscreen.min.js",
+                  source: l_gulp.src( "node_modules/jquery.full.screen/jquery.full.screen.js" )
+              },
+
+              "js-bootstrap" : {
+                  output: "js/bootstrap.min.js",
+                  source: l_gulp.src( "node_modules/bootstrap/dist/js/bootstrap.js" )
+              },
+
+              "js-pnotify" : {
+                  output: "js/pnotify.min.js",
+                  source: l_gulp.src( "node_modules/pnotify/dist/pnotify.js" )
+              },
+
+              "js-codemirror" : {
+                  output: "js/codemirror.min.js",
+                  source: l_gulp.src( "node_modules/codemirror/lib/codemirror.js" )
+              },
+
+
+
+              "js-remark" : {
+                  output: "js/remark.min.js",
+                  source: l_gulp.src( "node_modules/remark/out/remark.js" )
+              }
+
+          },
+
+
+          // minify css
+          minifycss : {
+
+              "css-layout" : {
+                  output: "css/layout.min.css",
+                  source: l_gulp.src([
+                      "node_modules/bootstrap/dist/css/bootstrap.css",
+                      "node_modules/gentelella/build/css/custom.css",
+                      "node_modules/pnotify/dist/*.css",
+                      "node_modules/codemirror/lib/codemirror.css",
+                      "node_modules/codemirror/theme/neat.css"
+                  ])
+              },
+
+
+
+              "css-slide" : {
+                  output: "css/slide.min.css",
+                  source: l_gulp.src( l_sourcedir + "css/slide.css" )
+              }
+
+          }
+
+      };
 
 
 // --- task definition ------------------------------------------------------------------------------------
@@ -216,9 +203,8 @@ for( const css in l_config.minifycss )
 {
     l_gulp.task( css, function () {
         return l_config.minifycss[css].source
-                       .pipe( l_concat() )
+                       .pipe( l_concatcss( l_config.minifycss[css].output ) )
                        .pipe( l_minifycss() )
-                       .pipe( l_rename( l_config.minifycss[css].output ) )
                        .pipe( l_gulp.dest( l_outputdir ) );
     });
 }
