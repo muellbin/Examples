@@ -25,24 +25,20 @@
  * explantion of components
  *
  * asserts - contains all components which are copied only
- * minifyjs - contains all components wich are based on JavaScript and must be minifed
- * minifycss - contains all components which ar ebased on CSS and must be minifed
- *
- *
- *
+ * minifyjs - contains all components wich are based on JavaScript and will be minifed
+ * minifycss - contains all components which ar ebased on CSS and will be minifed
  *
  */
 
-
-
-
+const MINIFY = true;
 const l_gulp = require( "gulp" ),
-      l_concat = require("gulp-dir-concat"),
-      l_concatcss = require("gulp-concat-css"),
-      l_minifyjs = require("gulp-uglify"),
-      l_minifycss = require('gulp-uglifycss'),
-      l_rename= require('gulp-rename'),
-      l_clean = require('gulp-clean'),
+      l_empty = require( "gulp-empty-pipe" ),
+      l_concat = require( "gulp-dir-concat"),
+      l_concatcss = require( "gulp-concat-css"),
+      l_minifyjs = require( "gulp-uglify"),
+      l_minifycss = require( "gulp-uglifycss" ),
+      l_rename= require( "gulp-rename" ),
+      l_clean = require( "gulp-clean" ),
 
       l_packagedir = "org/lightjason/trafficsimulation/html/",
       l_sourcedir = "src/main/webapp/" + l_packagedir,
@@ -191,7 +187,7 @@ for( const js in l_config.minifyjs )
     l_gulp.task( js, function () {
         return l_config.minifyjs[js].source
                     .pipe( l_concat() )
-                    .pipe( l_minifyjs() )
+                    .pipe( MINIFY ? l_minifyjs() : l_empty() )
                     .pipe( l_rename( l_config.minifyjs[js].output ) )
                     .pipe( l_gulp.dest( l_outputdir ) );
     });
@@ -204,7 +200,7 @@ for( const css in l_config.minifycss )
     l_gulp.task( css, function () {
         return l_config.minifycss[css].source
                        .pipe( l_concatcss( l_config.minifycss[css].output ) )
-                       .pipe( l_minifycss() )
+                       .pipe( MINIFY ? l_minifycss() : l_empty() )
                        .pipe( l_gulp.dest( l_outputdir ) );
     });
 }
