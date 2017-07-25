@@ -434,6 +434,7 @@ jQuery(function() {
     jQuery.getJSON( "/data/agentspeak.json", function(grammar) {
         jQuery.getJSON( "/data/action.json", function(actions) {
 
+            // syntax highlighting
             grammar.Lex.builtin.tokens = Object.keys(actions);
             var l_mode = CodeMirrorGrammar.getMode( grammar );
 
@@ -447,7 +448,7 @@ jQuery(function() {
             CodeMirror.registerHelper("fold", l_mode.foldType, l_mode.folder);
 
 
-
+            // autocomplete
             CodeMirror.registerHelper("hint", "anyword", function(editor, options) {
 
                 var l_nospace = options && options.nospace || /\s/g,
@@ -462,16 +463,36 @@ jQuery(function() {
                 for( var i=l_start; (i >= 0) && ( !l_nospace.test( l_line.charAt( i ) ) ); i-- )
                     l_start = i;
 
+                // check on seach if it starts with ? or ! for getting plans otherwise actions
                 var l_search = l_line.slice( l_start, l_end + 1 );
+                var l_return = [];
+                if ( l_start !== l_end )
+                {
+                    if ((l_search.startsWith("!")) || (l_search.startsWith("?")))
+                        editor.getValue().match( /\+!.*<-|$/gu )
+                                         .map(function(i) { return i.replace("!", "").replace("+", "").replace("<-", "").trim(); })
+                                         .filter(function(i) { return i; })
+                                         .forEach(function(i) { l_return.push(i); });
+                    else
+                    {
+                        grammar.Lex.builtin.tokens
+                               .filter(function (i) { return i.startsWith(l_search); })
+                               .forEach(function(i) { l_return.push(i); });
+                        grammar.Lex.keyword.tokens
+                               .filter(function (i) { return i.startsWith(l_search); })
+                               .forEach(function(i) { l_return.push(i); });
+                    }
+                }
+
                 return {
-                    list: l_start === l_end ? [] : grammar.Lex.builtin.tokens.filter(function(i) { return i.startsWith( l_search ); }),
+                    list: l_return,
                     from: CodeMirror.Pos( l_current.line, l_start ),
                     to: CodeMirror.Pos( l_current.line, l_end )
                 };
             });
 
 
-
+            // codemirror initialization
             l_editor = CodeMirror.fromTextArea(
                 document.getElementById("ui-editor"),
                 {
