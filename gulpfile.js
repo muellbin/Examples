@@ -33,11 +33,10 @@
 const MINIFY = true;
 const l_gulp = require( "gulp" ),
       l_empty = require( "gulp-empty-pipe" ),
-      l_concat = require( "gulp-dir-concat"),
+      l_concatjs = require( "gulp-concat"),
       l_concatcss = require( "gulp-concat-css"),
       l_minifyjs = require( "gulp-uglify"),
       l_minifycss = require( "gulp-uglifycss" ),
-      l_rename= require( "gulp-rename" ),
       l_clean = require( "gulp-clean" ),
 
       l_packagedir = "org/lightjason/trafficsimulation/html/",
@@ -46,7 +45,7 @@ const l_gulp = require( "gulp" ),
 
       l_config = {
 
-          // assets are copied only
+          // assets
           assets : {
 
               "html" : {
@@ -62,30 +61,15 @@ const l_gulp = require( "gulp" ),
                   ])
               },
 
-              "js-simulation" : {
-                  output: "js",
-                  source: l_gulp.src( l_sourcedir + "js/simulation.js" )
-              },
-
-              "js-filesaver" : {
-                  output: "js",
-                  source: l_gulp.src( "node_modules/file-saver/FileSaver.min.js" )
-
-              },
-
               "css-fontawesome" : {
                   output: "css",
                   source: l_gulp.src( "node_modules/font-awesome/css/font-awesome.min.css" )
               },
 
-
-
               "markdown-slide" : {
                   output: "slide",
                   source: l_gulp.src( l_sourcedir + "slide/*.md" )
               },
-
-
 
               "images" : {
                   output: "images",
@@ -94,7 +78,7 @@ const l_gulp = require( "gulp" ),
 
               "data" : {
                   output: "data",
-                  source: l_gulp.src([ l_sourcedir + "data/*.json", l_sourcedir + "data/*.mp3" ])
+                  source: l_gulp.src( l_sourcedir + "data/*.json" )
               },
 
               "audio" : {
@@ -105,7 +89,7 @@ const l_gulp = require( "gulp" ),
           },
 
 
-          // minify javascript
+          // javascript
           minifyjs : {
 
               "js-main ": {
@@ -114,36 +98,22 @@ const l_gulp = require( "gulp" ),
                       l_sourcedir + "js/global.js",
                       l_sourcedir + "js/lightjason.js",
                       l_sourcedir + "js/initialize.js",
-                      l_sourcedir + "js/codemirror_grammar.js"
+                      l_sourcedir + "js/simulation.js"
                   ])
               },
 
               "js-jquery" : {
-                  output: "js/jquery.min.js",
-                  source: l_gulp.src( "node_modules/jquery/dist/jquery.js" )
+                  output: "js/library.min.js",
+                  source: l_gulp.src([
+                      "node_modules/jquery/dist/jquery.js",
+                      "node_modules/bootstrap/dist/js/bootstrap.js",
+                      "node_modules/jquery.full.screen/jquery.full.screen.js",
+                      "node_modules/pnotify/dist/pnotify.js",
+                      "node_modules/file-saver/FileSaver.min.js",
+                      "node_modules/codemirror/lib/codemirror.js",
+                      l_sourcedir + "js/codemirror_grammar.js",
+                  ])
               },
-
-              "js-jquery-fullscreen" : {
-                  output: "js/jquery.fullscreen.min.js",
-                  source: l_gulp.src( "node_modules/jquery.full.screen/jquery.full.screen.js" )
-              },
-
-              "js-bootstrap" : {
-                  output: "js/bootstrap.min.js",
-                  source: l_gulp.src( "node_modules/bootstrap/dist/js/bootstrap.js" )
-              },
-
-              "js-pnotify" : {
-                  output: "js/pnotify.min.js",
-                  source: l_gulp.src( "node_modules/pnotify/dist/pnotify.js" )
-              },
-
-              "js-codemirror" : {
-                  output: "js/codemirror.min.js",
-                  source: l_gulp.src( "node_modules/codemirror/lib/codemirror.js" )
-              },
-
-
 
               "js-remark" : {
                   output: "js/remark.min.js",
@@ -153,7 +123,7 @@ const l_gulp = require( "gulp" ),
           },
 
 
-          // minify css
+          // css
           minifycss : {
 
               "css-layout" : {
@@ -166,8 +136,6 @@ const l_gulp = require( "gulp" ),
                       "node_modules/codemirror/theme/neat.css"
                   ])
               },
-
-
 
               "css-slide" : {
                   output: "css/slide.min.css",
@@ -186,9 +154,8 @@ for( const js in l_config.minifyjs )
 {
     l_gulp.task( js, function () {
         return l_config.minifyjs[js].source
-                    .pipe( l_concat() )
+                    .pipe( l_concatjs( l_config.minifyjs[js].output ) )
                     .pipe( MINIFY ? l_minifyjs() : l_empty() )
-                    .pipe( l_rename( l_config.minifyjs[js].output ) )
                     .pipe( l_gulp.dest( l_outputdir ) );
     });
 }
