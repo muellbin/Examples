@@ -25,6 +25,7 @@ package org.lightjason.trafficsimulation.runtime;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
@@ -63,7 +64,7 @@ public final class CRuntime implements IRuntime
     /**
      * supplier of tasks
      */
-    private AtomicReference<Function<Map<String, String>, ITask>> m_supplier = new AtomicReference<>( ( i ) -> ITask.EMPTY );
+    private AtomicReference<Function<Map<String, Pair<Boolean, String>>, ITask>> m_supplier = new AtomicReference<>( ( i ) -> ITask.EMPTY );
     /**
      * map with agents and asl codes and visibility
      */
@@ -99,7 +100,7 @@ public final class CRuntime implements IRuntime
 
 
     /**
-     * read agetn data
+     * read agent data
      *
      * @param p_file agent file
      * @return data can be read
@@ -212,7 +213,7 @@ public final class CRuntime implements IRuntime
                              Collections.unmodifiableMap(
                                  m_agents.entrySet().stream().collect( Collectors.toMap(
                                      Map.Entry::getKey,
-                                     j -> j.getValue().getRight(),
+                                     j -> new ImmutablePair<>( j.getValue().getLeft(), j.getValue().getRight() ),
                                      ( n, m ) -> n,
                                      () -> new TreeMap<>( String.CASE_INSENSITIVE_ORDER )
                                  ) )
@@ -228,7 +229,7 @@ public final class CRuntime implements IRuntime
 
 
     @Override
-    public final IRuntime supplier( @Nonnull final Function<Map<String, String>, ITask> p_supplier )
+    public final IRuntime supplier( @Nonnull final Function<Map<String, Pair<Boolean, String>>, ITask> p_supplier )
     {
         m_supplier.set( p_supplier );
         return this;

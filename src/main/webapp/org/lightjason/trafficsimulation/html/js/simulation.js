@@ -27,8 +27,9 @@ jQuery(function() {
     var vehicles = {};
 
     // fit simulation size to its container
-    document.getElementById('simulation-screen').width = jQuery("#simulation-dashboard").width();
-    document.getElementById('simulation-screen').height = jQuery("#simulation-dashboard").height();
+    var lo = jQuery("#simulation-dashboard");
+    document.getElementById('simulation-screen').width = lo.width();
+    document.getElementById('simulation-screen').height = lo.height();
 
     /**
      * Quintus object (Simulation UI)
@@ -155,7 +156,7 @@ jQuery(function() {
                 var maxcellinlayer = 1000;
                 var layercount = length / maxcellinlayer;
                 for (var i = 0; i < layercount; i++) {
-                    var layerlength = ( i == parseInt( layercount, 10 ) ) ? ( length - i * maxcellinlayer ) : maxcellinlayer;
+                    var layerlength = ( i === parseInt( layercount, 10 ) ) ? ( length - i * maxcellinlayer ) : maxcellinlayer;
                     var l_tilelayer = new l_quintus.TileLayer ( {
                         tileW: 32,
                         tileH: 32,

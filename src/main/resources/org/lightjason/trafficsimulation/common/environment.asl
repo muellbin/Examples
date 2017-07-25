@@ -23,9 +23,17 @@
 
 !main.
 
+// initialize
 +!main <-
-    generic/print( "environment started" );
-    simulation/initialize( 100, 4 )
+    simulation/initialize( 100, 4 );
+    vehicle/user
+    //!loop
+.
+
+// simulation loop
++!loop <-
+    vehicle/default( 1 );
+    !loop
 .
 
 // plan to shutdown simulation execution

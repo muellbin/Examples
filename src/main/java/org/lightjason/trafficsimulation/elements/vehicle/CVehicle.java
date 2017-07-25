@@ -93,7 +93,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     /**
      * current speed in km/h
      */
-    private final AtomicDouble m_speed = new AtomicDouble();
+    private final AtomicDouble m_speed = new AtomicDouble( );
     /**
      * panelize value
      */
@@ -149,14 +149,17 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IVehicle call() throws Exception
     {
-        super.call();
+        // @bug agent execution deactivated
+        //super.call();
 
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
+        {
             if ( m_userdefinied )
                 m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
             else
                 this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
+        }
 
         System.out.println( m_position );
         CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.EXECUTE, this );
@@ -253,10 +256,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          */
         private final boolean m_userdefinied;
         /**
-         * environment
-         */
-        private final IEnvironment m_environment;
-        /**
          * random instance
          */
         private final Random m_random = new Random();
@@ -266,16 +265,13 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          * generator
          *
          * @param p_stream stream
-         * @param p_environment environment reference
          * @param p_uiaccessiable generated cars are ui-accessable
          * @throws Exception on any error
          */
-        public CGenerator( @Nonnull final InputStream p_stream, @Nonnull final IEnvironment p_environment,
-                              final boolean p_uiaccessiable, final boolean p_userdefinied ) throws Exception
+        public CGenerator( @Nonnull final InputStream p_stream, final boolean p_uiaccessiable, final boolean p_userdefinied ) throws Exception
         {
             super( p_stream, CVehicle.class );
             m_visible = p_uiaccessiable;
-            m_environment = p_environment;
             m_userdefinied = p_userdefinied;
         }
 
@@ -294,13 +290,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
         @Nullable
         @Override
+        @SuppressWarnings( "unchecked" )
         protected final Triple<IVehicle, Boolean, Stream<String>> generate( @Nullable final Object... p_data )
         {
             return new ImmutableTriple<>(
                 new CVehicle(
                         m_configuration,
                         MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
-                        m_environment,
+                        (IEnvironment) p_data[0],
                         1,
                         1,
                         m_random.nextInt( 150 ) + 100,

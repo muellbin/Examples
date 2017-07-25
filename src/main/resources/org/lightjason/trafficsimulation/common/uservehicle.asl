@@ -25,8 +25,8 @@
 
 +!drive <-
     accelerate;
-    !drive;
-    !linger
+    //!linger
+    !drive
 .
 
 -!drive <-

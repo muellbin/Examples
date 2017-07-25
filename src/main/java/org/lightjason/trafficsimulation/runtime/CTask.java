@@ -24,23 +24,21 @@
 package org.lightjason.trafficsimulation.runtime;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
-import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.ui.api.CData;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -66,15 +64,39 @@ public class CTask implements ITask
      *
      * @param p_asl asl map
      */
-    public CTask( @Nonnull final Map<String, String> p_asl )
+    public CTask( @Nonnull final Map<String, Pair<Boolean, String>> p_asl )
     {
         m_thread = new Thread( () ->
         {
             final IEnvironment l_environment;
+            final Set<Callable<?>> l_elements = new CopyOnWriteArraySet<>();
 
+
+            // --- initialize generators ---
             try
             {
-                l_environment = new CEnvironment.CGenerator( Collections.unmodifiableMap( p_asl ) ).generatesingle();
+
+                final Pair<Boolean, String> l_defaultvehicledata = p_asl.get( "defaultvehicle" );
+                final Pair<Boolean, String> l_uservehicledata = p_asl.get( "uservehicle" );
+
+                l_environment = new CEnvironment.CGenerator( p_asl.get( "environment" ).getRight() ).generatesingle(
+
+                    l_elements,
+
+                    new CVehicle.CGenerator(
+                        IOUtils.toInputStream( l_defaultvehicledata.getRight(), "UTF-8" ),
+                        l_defaultvehicledata.getLeft(),
+                        false
+                    ),
+
+                    new CVehicle.CGenerator(
+                        IOUtils.toInputStream( l_uservehicledata.getRight(), "UTF-8" ),
+                        l_uservehicledata.getLeft(),
+                        true
+                    )
+
+                );
+
             }
             catch ( final Exception l_exception )
             {
@@ -92,30 +114,16 @@ public class CTask implements ITask
                 return;
             }
 
-            // execute objects
+
+            // --- execute objects ---
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,
                 CCommon.languagestring( this, "environment" ),
                 CCommon.languagestring( this, "simulationstart" )
             );
 
-            // environment loop
-            final Set<Callable<?>> l_elements = Stream.of( l_environment ).collect( Collectors.toSet() );
 
-            // ---- @todo test ------
-            try
-            {
-                final IVehicle l_vehicle = new CVehicle.CGenerator( IOUtils.toInputStream( p_asl.get( "defaultvehicle" ), "UTF-8" ), l_environment, true, true )
-                    .generatesingle();
-                l_elements.add( l_vehicle );
-                //l_environment.set( l_vehicle, new DenseDoubleMatrix1D( new double[]{3, 1} ) );
-            }
-            catch ( final Exception l_exception )
-            {
-                l_exception.printStackTrace();
-            }
-            // ----------------------
-
+            l_elements.add( l_environment );
             while ( !l_environment.shutdown() )
             {
                 l_elements.parallelStream().forEach( CTask::execute );
@@ -134,6 +142,7 @@ public class CTask implements ITask
                 CCommon.languagestring( this, "environment" ),
                 CCommon.languagestring( this, "simulationstop" )
             );
+
 
             // test sending penalty data
             CData.CInstance.INSTANCE.penalty( 3.5 );

@@ -23,6 +23,8 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,7 +42,7 @@ public interface IRuntime extends Runnable
      * @param p_supplier task supplier
      * @return self reference
      */
-    IRuntime supplier( @Nonnull final Function<Map<String, String>, ITask> p_supplier );
+    IRuntime supplier( @Nonnull final Function<Map<String, Pair<Boolean, String>>, ITask> p_supplier );
 
     /**
      * task is running

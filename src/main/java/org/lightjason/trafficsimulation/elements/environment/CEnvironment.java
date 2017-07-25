@@ -30,7 +30,6 @@ import cern.colt.matrix.impl.SparseObjectMatrix2D;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.commons.math3.distribution.AbstractRealDistribution;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
@@ -39,6 +38,7 @@ import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -48,8 +48,8 @@ import org.lightjason.trafficsimulation.ui.api.CAnimation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -83,16 +83,36 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * grid
      */
     private final AtomicReference<ObjectMatrix2D> m_grid = new AtomicReference<>( new SparseObjectMatrix2D( 0, 0 ) );
+    /**
+     * defualt vehicle generator
+     */
+    private final IVehicle.IGenerator<IVehicle> m_defaultvehicle;
+    /**
+     * user vehicle generator
+     */
+    private final IVehicle.IGenerator<IVehicle> m_uservehicle;
+    /**
+     * set elements
+     */
+    private final Set<Callable<?>> m_elements;
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
      * @param p_id name of the object
+     * @param p_elements objects
+     * @param p_defaultvehicle default vehicle generator
+     * @param p_uservehicle user vehicle generator
      */
-    private CEnvironment( @Nonnull final IAgentConfiguration<IEnvironment> p_configuration, @Nonnull final String p_id )
+    private CEnvironment( @Nonnull final IAgentConfiguration<IEnvironment> p_configuration, @Nonnull final String p_id,
+                          @Nonnull final Set<Callable<?>> p_elements,
+                          @Nonnull final IVehicle.IGenerator<IVehicle> p_defaultvehicle, @Nonnull final IVehicle.IGenerator<IVehicle> p_uservehicle )
     {
         super( p_configuration, FUNCTOR, p_id );
+        m_defaultvehicle = p_defaultvehicle;
+        m_uservehicle = p_uservehicle;
+        m_elements = p_elements;
     }
 
     @Override
@@ -205,26 +225,27 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     /**
      * creates a vehicle generator
      *
-     * @param p_distribution distribution
+     * @param p_number number of vehicles
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "vehicle/create" )
-    private void createvehiclegenerator( @Nonnull final AbstractRealDistribution p_distribution )
+    @IAgentActionName( name = "vehicle/default" )
+    private void defaultvehicle( @Nonnull final Number p_number )
     {
-
+        m_defaultvehicle.generatemultiple( p_number.intValue(), this )
+                        .peek( i -> this.set( i, i.position() ) )
+                        .forEach( m_elements::add );
     }
 
     /**
-     * checks if an object element is a vehicle
-     *
-     * @param p_object any object
-     * @return is vehicle
+     * creates a vehicle generator
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "element/isvehicle" )
-    private boolean isvehicle( @Nonnull final IObject<?> p_object )
+    @IAgentActionName( name = "vehicle/user" )
+    private void uservehicle()
     {
-        return p_object instanceof IVehicle;
+        final IVehicle l_vehicle = m_uservehicle.generatesingle( this );
+        this.set( l_vehicle, l_vehicle.position() );
+        m_elements.add( l_vehicle );
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -234,16 +255,15 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     public static final class CGenerator extends IBaseGenerator<IEnvironment>
     {
-
         /**
          * ctor
          *
-         * @param p_asl map with asl codes
+         * @param p_asl asl source
          * @throws Exception on any error
          */
-        public CGenerator( @Nonnull final Map<String, String> p_asl ) throws Exception
+        public CGenerator( @Nonnull final String p_asl ) throws Exception
         {
-            super( IOUtils.toInputStream( p_asl.get( "environment" ), "UTF-8" ), CEnvironment.class );
+            super( IOUtils.toInputStream( p_asl, "UTF-8" ), CEnvironment.class );
         }
 
         @Override
@@ -253,13 +273,19 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         }
 
         @Override
+        @SuppressWarnings( "unchecked" )
         protected final Triple<IEnvironment, Boolean, Stream<String>> generate( @Nullable final Object... p_data )
         {
+            if ( ( p_data == null ) || ( p_data.length < 3 ) )
+                throw new RuntimeException( CCommon.languagestring( this, "parametercount" ) );
+
             return new ImmutableTriple<>(
                 new CEnvironment(
                     m_configuration,
-                    FUNCTOR
-
+                    FUNCTOR,
+                    (Set<Callable<?>>) p_data[0],
+                    (IVehicle.IGenerator) p_data[1],
+                    (IVehicle.IGenerator) p_data[2]
                 ),
                 true,
                 Stream.of( FUNCTOR )
