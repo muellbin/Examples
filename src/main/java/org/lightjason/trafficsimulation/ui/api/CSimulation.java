@@ -23,6 +23,7 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
+import com.google.common.hash.Hasher;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
@@ -199,8 +200,13 @@ public final class CSimulation
         if ( !l_data.getLeft() )
             return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
 
-        l_data.setValue( p_content );
-        return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentchanged", p_id ) ).build();
+        if ( !l_data.getValue().equals( p_content ) )
+        {
+            l_data.setValue( p_content );
+            return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentchanged", p_id ) ).build();
+        }
+
+        return Response.status( Response.Status.OK ).build();
     }
 
     /**
@@ -231,6 +237,5 @@ public final class CSimulation
             return Response.status( Response.Status.NOT_FOUND ).entity( l_exception.getLocalizedMessage() ).build();
         }
     }
-
 
 }

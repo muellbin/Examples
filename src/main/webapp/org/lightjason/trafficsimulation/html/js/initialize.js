@@ -341,7 +341,7 @@ function codemirrorsave( pc_id, pc_source )
         method: "POST",
         headers: { "Content-Type": "text/plain" }
     })
-    .success(function(i) { notifymessage({ title: "Agent", text: i, type: "info" }); })
+    .success(function(i) { if (i) notifymessage({ title: "Agent", text: i, type: "info" }); })
     .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
 
@@ -442,16 +442,16 @@ jQuery(function() {
             // autocomplete
             CodeMirror.registerHelper("hint", "anyword", function(editor, options) {
 
-                var l_nospace = options && options.nospace || /\s/g,
+                var l_spacer = options && options.spacer || /\s/gu,
                     l_current = editor.getCursor(),
                     l_line = editor.getLine( l_current.line ),
                     l_start = l_current.ch,
                     l_end = l_start;
 
-                for( var i=l_start; (i < l_line.length) && ( !l_nospace.test( l_line.charAt( i ) ) ); i++ )
+                for( var i=l_start; (i < l_line.length) && ( !l_spacer.test( l_line.charAt( i ) ) ); i++ )
                     l_end = i;
 
-                for( var i=l_start; (i >= 0) && ( !l_nospace.test( l_line.charAt( i ) ) ); i-- )
+                for( var i=l_start; (i >= 0) && ( !l_spacer.test( l_line.charAt( i ) ) ); i-- )
                     l_start = i;
 
                 // check on seach if it starts with ? or ! for getting plans otherwise actions
@@ -476,7 +476,7 @@ jQuery(function() {
                 }
 
                 return {
-                    list: l_return,
+                    list: l_return.sort(),
                     from: CodeMirror.Pos( l_current.line, l_start ),
                     to: CodeMirror.Pos( l_current.line, l_end )
                 };
