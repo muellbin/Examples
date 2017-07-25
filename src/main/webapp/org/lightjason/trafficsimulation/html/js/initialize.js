@@ -93,7 +93,6 @@ function init_sidebar() {
     };
 
     $SIDEBAR_MENU.find('a').on('click', function(ev) {
-        //console.log('clicked - sidebar_menu');
         var $li = $(this).parent();
 
         if ($li.is('.active')) {
@@ -124,8 +123,6 @@ function init_sidebar() {
 
     // toggle small or large menu
     $MENU_TOGGLE.on('click', function() {
-        //console.log('clicked - menu toggle');
-
         if ($BODY.hasClass('nav-md')) {
             $SIDEBAR_MENU.find('li.active ul').hide();
             $SIDEBAR_MENU.find('li.active').addClass('active-sm').removeClass('active');
@@ -309,7 +306,6 @@ function init_autosize() {
 function init_pnotify() {
 
     if( typeof (PNotify) === 'undefined'){ return; }
-    //console.log('init_PNotify');
 
     PNotify.prototype.options.styling = "bootstrap3";
     PNotify.prototype.options.styling = "fontawesome";
@@ -630,7 +626,6 @@ jQuery(function() {
               .onmessage = function ( i )
               {
                   var l_data = JSON.parse( i.data );
-                  console.log(l_data);
                   dataobject[l_data.type](l_data.data);
               };
 
