@@ -371,10 +371,6 @@ function agentlist()
 CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); };
 
 
-
-
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
@@ -421,12 +417,11 @@ jQuery(function() {
     });
 
 
-    // set codemirror
+    // codemirror instance
     var l_editor = null;
 
-    // read codemirror grammer and builtin calls
-    // http://foo123.github.io/examples/codemirror-grammar/
-    // https://github.com/foo123/codemirror-grammar/blob/master/README.md
+    // read codemirror grammer and build autocompletion & syntax highlight
+    // @see http://foo123.github.io/examples/codemirror-grammar/
     jQuery.getJSON( "/data/agentspeak.json", function(grammar) {
         jQuery.getJSON( "/data/action.json", function(actions) {
 
