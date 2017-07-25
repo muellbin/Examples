@@ -376,6 +376,9 @@ CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.g
 
 
 
+
+
+
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
@@ -428,11 +431,11 @@ jQuery(function() {
     // read codemirror grammer and builtin calls
     // http://foo123.github.io/examples/codemirror-grammar/
     // https://github.com/foo123/codemirror-grammar/blob/master/README.md
-    jQuery.getJSON( "/data/agentspeak.json", function(i) {
-        jQuery.getJSON( "/data/action.json", function(j) {
+    jQuery.getJSON( "/data/agentspeak.json", function(grammar) {
+        jQuery.getJSON( "/data/action.json", function(actions) {
 
-            i.Lex.builtin.tokens = Object.keys(j);
-            var l_mode = CodeMirrorGrammar.getMode( i );
+            grammar.Lex.builtin.tokens = Object.keys(actions);
+            var l_mode = CodeMirrorGrammar.getMode( grammar );
 
             l_mode.supportCodeFolding = true;
             l_mode.supportCodeMatching = true;
@@ -442,6 +445,32 @@ jQuery(function() {
 
             CodeMirror.defineMode("agentspeak", l_mode);
             CodeMirror.registerHelper("fold", l_mode.foldType, l_mode.folder);
+
+
+
+            CodeMirror.registerHelper("hint", "anyword", function(editor, options) {
+
+                var l_nospace = options && options.nospace || /\s/g,
+                    l_current = editor.getCursor(),
+                    l_line = editor.getLine( l_current.line ),
+                    l_start = l_current.ch,
+                    l_end = l_start;
+
+                for( var i=l_start; (i < l_line.length) && ( !l_nospace.test( l_line.charAt( i ) ) ); i++ )
+                    l_end = i;
+
+                for( var i=l_start; (i >= 0) && ( !l_nospace.test( l_line.charAt( i ) ) ); i-- )
+                    l_start = i;
+
+                var l_search = l_line.slice( l_start, l_end + 1 );
+                return {
+                    list: l_start === l_end ? [] : grammar.Lex.builtin.tokens.filter(function(i) { return i.startsWith( l_search ); }),
+                    from: CodeMirror.Pos( l_current.line, l_start ),
+                    to: CodeMirror.Pos( l_current.line, l_end )
+                };
+            });
+
+
 
             l_editor = CodeMirror.fromTextArea(
                 document.getElementById("ui-editor"),
@@ -455,7 +484,8 @@ jQuery(function() {
                     indentUnit: 4,
                     indentWithTabs: false,
                     matching: true,
-                    lint: false
+                    lint: false,
+                    extraKeys: {"Ctrl-Enter": "autocomplete"}
                 }
             );
 

@@ -112,6 +112,8 @@ const l_gulp = require( "gulp" ),
                       "node_modules/file-saver/FileSaver.min.js",
                       "node_modules/remark/out/remark.js",
                       "node_modules/codemirror/lib/codemirror.js",
+                      "node_modules/codemirror/addon/hint/show-hint.js",
+                      "node_modules/codemirror/addon/hint/anyword-hint.js",
                       l_sourcedir + "js/codemirror_grammar.js",
                   ])
               }
@@ -129,6 +131,7 @@ const l_gulp = require( "gulp" ),
                       "node_modules/gentelella/build/css/custom.css",
                       "node_modules/pnotify/dist/*.css",
                       "node_modules/codemirror/lib/codemirror.css",
+                      "node_modules/codemirror/addon/hint/show-hint.css",
                       "node_modules/codemirror/theme/neat.css"
                   ])
               },
