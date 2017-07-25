@@ -10,11 +10,11 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"]],displayMath:[["$$","$$"]],processEscapes:!0,processEnvironments:!1,skipTags:["script","noscript","style","textarea","pre","code"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["autoload-all.js"]}}})</script>
     <script src="js/remark.min.js"></script>
-    <script src="js/jquery.min.js"></script>
+    <script src="js/library.min.js"></script>
 </head>
 
 <body>
-<textarea id="slide"></textarea>
-<script>remark.create({ sourceUrl: window.slide, source: "slide" });</script>
+<textarea id="slides"></textarea>
+<script>remark.create({ sourceUrl: "slides/" + new URL(window.location.href).searchParams.get("slides") + ".md", source: "slides" });</script>
 </body>
 </html>

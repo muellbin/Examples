@@ -533,7 +533,7 @@ jQuery(function() {
     jQuery( ".slide-view" ).click(function() {
         var l_source = jQuery(this).data("slidesource");
         if ( l_source )
-            window.open( "slide.htm", l_source ).slide = l_source;
+            window.open( "slide.htm?slides=" + encodeURIComponent( l_source ), l_source );
     });
 
 

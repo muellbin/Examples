@@ -66,9 +66,9 @@ const l_gulp = require( "gulp" ),
                   source: l_gulp.src( "node_modules/font-awesome/css/font-awesome.min.css" )
               },
 
-              "markdown-slide" : {
-                  output: "slide",
-                  source: l_gulp.src( l_sourcedir + "slide/*.md" )
+              "markdown-slides" : {
+                  output: "slides",
+                  source: l_gulp.src( l_sourcedir + "slides/*.md" )
               },
 
               "images" : {
