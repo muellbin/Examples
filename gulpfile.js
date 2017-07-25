@@ -93,7 +93,7 @@ const l_gulp = require( "gulp" ),
           minifyjs : {
 
               "js-main ": {
-                  output: "js/script.min.js",
+                  output: "js/index.min.js",
                   source: l_gulp.src([
                       l_sourcedir + "js/global.js",
                       l_sourcedir + "js/lightjason.js",
@@ -110,14 +110,10 @@ const l_gulp = require( "gulp" ),
                       "node_modules/jquery.full.screen/jquery.full.screen.js",
                       "node_modules/pnotify/dist/pnotify.js",
                       "node_modules/file-saver/FileSaver.min.js",
+                      "node_modules/remark/out/remark.js",
                       "node_modules/codemirror/lib/codemirror.js",
                       l_sourcedir + "js/codemirror_grammar.js",
                   ])
-              },
-
-              "js-remark" : {
-                  output: "js/remark.min.js",
-                  source: l_gulp.src( "node_modules/remark/out/remark.js" )
               }
 
           },
