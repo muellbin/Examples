@@ -32,12 +32,15 @@
 
 const MINIFY = true;
 const l_gulp = require( "gulp" ),
+      l_clean = require( "gulp-clean" ),
       l_empty = require( "gulp-empty-pipe" ),
+
       l_concatjs = require( "gulp-concat"),
       l_concatcss = require( "gulp-concat-css"),
+
+      l_minifyhtml = require("gulp-htmlmin"),
       l_minifyjs = require( "gulp-uglify"),
       l_minifycss = require( "gulp-uglifycss" ),
-      l_clean = require( "gulp-clean" ),
 
       l_packagedir = "org/lightjason/trafficsimulation/html/",
       l_sourcedir = "src/main/webapp/" + l_packagedir,
@@ -47,11 +50,6 @@ const l_gulp = require( "gulp" ),
 
           // assets
           assets : {
-
-              "html" : {
-                  output: "",
-                  source: l_gulp.src( l_sourcedir + "*.htm" )
-              },
 
               "fonts" : {
                   output: "fonts",
@@ -84,6 +82,17 @@ const l_gulp = require( "gulp" ),
               "audio" : {
                   output: "audio",
                   source: l_gulp.src( l_sourcedir + "audio/*.mp3" )
+              }
+
+          },
+
+
+          // html
+          minifyhtml : {
+
+              "html-main" : {
+                  output: "",
+                  source: l_gulp.src( l_sourcedir + "*.htm" )
               }
 
           },
@@ -172,6 +181,31 @@ for( const css in l_config.minifycss )
 }
 
 
+// minify html tasks
+for( const html in l_config.minifyhtml )
+{
+    l_gulp.task( html, function () {
+        return l_config.minifyhtml[html].source
+            .pipe( MINIFY ? l_minifyhtml({
+                caseSensitive: true,
+                collapseBooleanAttributes: true,
+                collapseWhitespace: true,
+                decodeEntities: true,
+                html5: true,
+                minifyCSS: true,
+                minifyJS: true,
+                removeComments: true,
+                removeRedundantAttributes: true,
+                removeScriptTypeAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                trimCustomFragments: true,
+                useShortDoctype: true
+            }) : l_empty() )
+            .pipe( l_gulp.dest( l_outputdir ) );
+    });
+}
+
+
 // assets tasks
 for( const assets in l_config.assets )
 {
@@ -194,5 +228,6 @@ l_gulp.task( "clean", function() {
 l_gulp.task( "default", [].concat(
     Object.keys( l_config.minifyjs ),
     Object.keys( l_config.minifycss ),
+    Object.keys( l_config.minifyhtml ),
     Object.keys( l_config.assets )
 ) );
