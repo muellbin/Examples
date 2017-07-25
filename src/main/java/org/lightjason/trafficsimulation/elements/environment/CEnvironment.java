@@ -27,7 +27,9 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.ObjectMatrix2D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.impl.SparseObjectMatrix2D;
+import com.codepoetics.protonpack.StreamUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
@@ -48,11 +50,13 @@ import org.lightjason.trafficsimulation.ui.api.CAnimation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -150,8 +154,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         {
             return true;
         }
-        final double l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 1 ), p_vehicle.speed() ).doubleValue();
-        if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 1 ) + 1, Math.min( (int) l_target, m_grid.get().columns() ) )
+        final int l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 1 ), p_vehicle.speed() ).intValue();
+        if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 1 ) + 1, Math.min( l_target, m_grid.get().columns() ) )
                       .parallel()
                       .filter( i -> m_grid.get().getQuick( (int) p_vehicle.position().get( 0 ), i ) != null )
                       .findAny()
@@ -159,15 +163,25 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         )
             return false;
 
-        if ( ( l_target > m_grid.get().columns() ) && ( p_vehicle.user() ) )
+        if ( ( l_target > m_grid.get().columns() ) && ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) ) )
         {
             this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
             return true;
         }
 
-        m_grid.get().setQuick( (int) p_vehicle.position().get( 0 ), (int) l_target, p_vehicle );
+        m_grid.get().setQuick( (int) p_vehicle.position().get( 0 ), l_target, p_vehicle );
         p_vehicle.position().setQuick( 1, l_target );
         return true;
+    }
+
+    @Override
+    public final Map<String, Object> map( @Nonnull final EStatus p_status )
+    {
+        return StreamUtils.zip(
+            Stream.of( "type", "status", "id", "length", "lanes" ),
+            Stream.of( FUNCTOR, p_status.toString(), this.id(), this.position().get( 1 ), this.position().get( 0 ) ),
+            ImmutablePair::new
+        ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
     }
 
     @Override
@@ -195,7 +209,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         ) );
         m_areas.clear();
 
-        CAnimation.CInstance.INSTANCE.environment( CAnimation.CInstance.EStatus.CREATE, this );
+        CAnimation.CInstance.INSTANCE.send( EStatus.CREATE, this );
     }
 
     /**
@@ -206,7 +220,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     private void simulationshutdown()
     {
         m_shutdown.set( true );
-        CAnimation.CInstance.INSTANCE.environment( CAnimation.CInstance.EStatus.REMOVE, this );
+        CAnimation.CInstance.INSTANCE.send( EStatus.REMOVE, this );
     }
 
     /**

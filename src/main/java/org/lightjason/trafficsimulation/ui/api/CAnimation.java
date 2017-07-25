@@ -23,19 +23,14 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
-import com.codepoetics.protonpack.StreamUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jetty.websocket.api.Session;
-import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
-import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
+import org.lightjason.trafficsimulation.elements.IMap;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
 
-import java.util.Locale;
+import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -92,60 +87,17 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
         }
 
         /**
-         * initialize environment
+         * sends an object
          *
-         * @param p_status status
-         * @param p_environment environment
-         * @return environment instance
+         * @param p_status status of the object
+         * @param p_object object
          */
-        public final IEnvironment environment( final EStatus p_status, final IEnvironment p_environment )
+        public final void send( @Nonnull final IMap.EStatus p_status, final IMap p_object )
         {
-            final Map<Object, Object> l_data = StreamUtils.zip(
-                Stream.of( "type", "status", "id", "length", "lanes" ),
-                Stream.of( "environment", p_status.toString(), p_environment.id(), p_environment.position().get( 1 ), p_environment.position().get( 0 ) ),
-                ImmutablePair::new
-            ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
-
-            CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
-            return p_environment;
+            final Map<String, Object> l_data = p_object.map( p_status );
+            if ( !l_data.isEmpty() )
+                CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
         }
-
-        /**
-         * generate vehicle
-         *
-         * @param p_status status
-         * @param p_vehicle vehicle
-         * @return vehicle instance
-         */
-        public IVehicle vehicle( final EStatus p_status, final IVehicle p_vehicle )
-        {
-            final Map<Object, Object> l_data = StreamUtils.zip(
-                Stream.of( "type", "status", "id", "userdefinied", "y", "" ),
-                Stream.of( "vehicle", p_status.toString(), p_vehicle.id(), p_vehicle.user(), p_vehicle.position().get( 0 ), p_vehicle.position().get( 1 ) ),
-                ImmutablePair::new
-            ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
-
-            CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
-            return p_vehicle;
-        }
-
-
-        /**
-         * status of the object
-         */
-        public enum EStatus
-        {
-            CREATE,
-            EXECUTE,
-            REMOVE;
-
-            @Override
-            public final String toString()
-            {
-                return super.toString().toLowerCase( Locale.ROOT );
-            }
-        }
-
 
     }
 

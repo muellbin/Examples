@@ -25,7 +25,9 @@ package org.lightjason.trafficsimulation.elements.vehicle;
 
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
+import com.codepoetics.protonpack.StreamUtils;
 import com.google.common.util.concurrent.AtomicDouble;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
@@ -47,9 +49,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -68,9 +72,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     private static final String FUNCTOR = "vehicle";
     /**
-     * user definied vehicle
+     * vehicle type
      */
-    private final boolean m_userdefinied;
+    private final ETYpe m_type;
     /**
      * environment
      */
@@ -117,7 +121,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                       @Nonnull final String p_id,
                       @Nonnull final IEnvironment p_environment,
                       @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate, @Nonnegative final double p_maximumspeed,
-                      final boolean p_userdefinied
+                      @Nonnull final ETYpe p_type
     )
     {
         super( p_configuration, FUNCTOR, p_id );
@@ -125,19 +129,29 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         //m_decelerate = p_decelerate;
         m_maximumspeed = p_maximumspeed;
         m_environment = p_environment;
-        m_userdefinied = p_userdefinied;
+        m_type = p_type;
 
         m_accelerate = 15;
         m_decelerate = 25;
         m_speed.set( 20 );
 
-        CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.CREATE, this );
+        CAnimation.CInstance.INSTANCE.send( EStatus.CREATE, this );
     }
 
     @Override
     public final DoubleMatrix1D position()
     {
         return m_position;
+    }
+
+    @Override
+    public final Map<String, Object> map( @Nonnull final EStatus p_status )
+    {
+        return StreamUtils.zip(
+            Stream.of( "type", "status", "id", "y", "x" ),
+            Stream.of( this.type().toString(), p_status.toString(), this.id(), this.position().get( 0 ), this.position().get( 1 ) ),
+            ImmutablePair::new
+        ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
     }
 
     @Override
@@ -155,14 +169,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
         {
-            if ( m_userdefinied )
+            if ( m_type.equals( ETYpe.USERVEHICLE ) )
                 m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
             else
                 this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
         }
 
-        System.out.println( m_position );
-        CAnimation.CInstance.INSTANCE.vehicle( CAnimation.CInstance.EStatus.EXECUTE, this );
+        //System.out.println( m_position );
+        CAnimation.CInstance.INSTANCE.send( EStatus.EXECUTE, this );
         return this;
     }
 
@@ -230,9 +244,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     }
 
     @Override
-    public final boolean user()
+    public final ETYpe type()
     {
-        return m_userdefinied;
+        return m_type;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -252,9 +266,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          */
         private final boolean m_visible;
         /**
-         * user-definied vehicle
+         * vehicle type
          */
-        private final boolean m_userdefinied;
+        private final ETYpe m_type;
         /**
          * random instance
          */
@@ -268,11 +282,11 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          * @param p_uiaccessiable generated cars are ui-accessable
          * @throws Exception on any error
          */
-        public CGenerator( @Nonnull final InputStream p_stream, final boolean p_uiaccessiable, final boolean p_userdefinied ) throws Exception
+        public CGenerator( @Nonnull final InputStream p_stream, final boolean p_uiaccessiable, final ETYpe p_type ) throws Exception
         {
             super( p_stream, CVehicle.class );
             m_visible = p_uiaccessiable;
-            m_userdefinied = p_userdefinied;
+            m_type = p_type;
         }
 
         @Override
@@ -301,10 +315,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                         1,
                         1,
                         m_random.nextInt( 150 ) + 100,
-                        m_userdefinied
+                        m_type
                 ),
                 m_visible,
-                Stream.of( "vehicle" )
+                Stream.of( FUNCTOR )
             );
         }
     }

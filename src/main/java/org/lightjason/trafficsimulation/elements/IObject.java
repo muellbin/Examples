@@ -34,7 +34,7 @@ import org.lightjason.agentspeak.generator.IAgentGenerator;
  *
  * @tparam T domain specific type
  */
-public interface IObject<T extends IAgent<?>> extends IPerceiveable, IAgent<T>
+public interface IObject<T extends IAgent<?>> extends IMap, IPerceiveable, IAgent<T>
 {
 
     /**
@@ -49,6 +49,8 @@ public interface IObject<T extends IAgent<?>> extends IPerceiveable, IAgent<T>
      * @return position
      */
     DoubleMatrix1D position();
+
+
 
     /**
      * generator interface

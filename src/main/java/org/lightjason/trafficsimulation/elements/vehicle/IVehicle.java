@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.elements.vehicle;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnull;
+import java.util.Locale;
 
 
 /**
@@ -57,10 +58,25 @@ public interface IVehicle extends IObject<IVehicle>
     double penalty();
 
     /**
-     * vehicle is user-definied
+     * vehicle type
      *
-     * @return user-defined object
+     * @return vehicle type
      */
-    boolean user();
+    ETYpe type();
+
+    /**
+     * type definition
+     */
+    enum ETYpe
+    {
+        USERVEHICLE,
+        DEFAULTVEHICLE;
+
+        @Override
+        public final String toString()
+        {
+            return super.toString().toLowerCase( Locale.ROOT );
+        }
+    }
 
 }

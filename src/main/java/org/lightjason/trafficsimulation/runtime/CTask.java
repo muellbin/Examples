@@ -30,6 +30,7 @@ import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
+import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.ui.api.CData;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
@@ -86,13 +87,13 @@ public class CTask implements ITask
                     new CVehicle.CGenerator(
                         IOUtils.toInputStream( l_defaultvehicledata.getRight(), "UTF-8" ),
                         l_defaultvehicledata.getLeft(),
-                        false
+                        IVehicle.ETYpe.DEFAULTVEHICLE
                     ),
 
                     new CVehicle.CGenerator(
                         IOUtils.toInputStream( l_uservehicledata.getRight(), "UTF-8" ),
                         l_uservehicledata.getLeft(),
-                        true
+                        IVehicle.ETYpe.USERVEHICLE
                     )
 
                 );

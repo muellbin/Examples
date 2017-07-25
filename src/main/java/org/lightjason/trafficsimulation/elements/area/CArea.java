@@ -45,7 +45,9 @@ import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
@@ -124,6 +126,12 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     public final DoubleMatrix1D position()
     {
         return m_position;
+    }
+
+    @Override
+    public final Map<String, Object> map( @Nonnull final EStatus p_status )
+    {
+        return Collections.emptyMap();
     }
 
     @Override

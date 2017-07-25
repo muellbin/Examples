@@ -49,7 +49,7 @@ public interface IWebSocket extends WebSocketListener
 
     /**
      * sends a dataset to sessions
-     * as json dataset
+     * as map dataset
      *
      * @param p_value values
      * @return self reference

@@ -21,33 +21,39 @@
  * @endcond
  */
 
-package org.lightjason.trafficsimulation.ui.api;
+package org.lightjason.trafficsimulation.elements;
 
-
-import org.glassfish.jersey.server.ResourceConfig;
-import org.lightjason.rest.CCommon;
-
-import java.text.MessageFormat;
+import javax.annotation.Nonnull;
+import java.util.Locale;
+import java.util.Map;
 
 
 /**
- * rest-api servlet
+ * interface to define the object as key-value pair
  */
-public final class CAPI extends ResourceConfig
+public interface IMap
 {
 
     /**
-     * ctor
+     * creates for the object a map / yaml definition
+     * @return map representation with status
      */
-    public CAPI()
+    Map<String, Object> map( @Nonnull final EStatus p_status );
+
+
+    /**
+     * status of the object
+     */
+    enum EStatus
     {
-        this.register( new CSimulation() );
+        CREATE,
+        EXECUTE,
+        REMOVE;
 
-        this.packages(
-            true,
-            MessageFormat.format( "{0}.{1}", CCommon.PACKAGEROOT, "container" ),
-            "com.fasterxml.jackson.jaxrs.map"
-        );
+        @Override
+        public final String toString()
+        {
+            return super.toString().toLowerCase( Locale.ROOT );
+        }
     }
-
 }
