@@ -29,7 +29,8 @@
     "jquery.full.screen": "^0.1.1",
     "pnotify": "^3.2.0",
     "quintus": "^0.2.0",
-    "remark": "https://github.com/gnab/remark/archive/v0.14.0.tar.gz"
+    "remark": "https://github.com/gnab/remark/archive/v0.14.0.tar.gz",
+    "switchery": "https://github.com/abpetkov/switchery/archive/0.8.2.tar.gz"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

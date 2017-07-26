@@ -167,94 +167,6 @@ var randNum = function() {
 };
 
 
-/**
- * Panel toolbox
- */
-$(document).ready(function() {
-    $('.collapse-link').on('click', function() {
-        var $BOX_PANEL = $(this).closest('.x_panel'),
-            $ICON = $(this).find('i'),
-            $BOX_CONTENT = $BOX_PANEL.find('.x_content');
-
-        // fix for some div with hardcoded fix class
-        if ($BOX_PANEL.attr('style')) {
-            $BOX_CONTENT.slideToggle(200, function(){
-                $BOX_PANEL.removeAttr('style');
-            });
-        } else {
-            $BOX_CONTENT.slideToggle(200);
-            $BOX_PANEL.css('height', 'auto');
-        }
-
-        $ICON.toggleClass('fa-chevron-up fa-chevron-down');
-    });
-
-    $('.close-link').click(function () {
-        var $BOX_PANEL = $(this).closest('.x_panel');
-
-        $BOX_PANEL.remove();
-    });
-});
-
-/**
- *  Tooltip
- */
-$(document).ready(function() {
-    $('[data-toggle="tooltip"]').tooltip({
-        container: 'body'
-    });
-});
-
-/**
- * Progressbar
- */
-if ($(".progress .progress-bar")[0]) {
-    $('.progress .progress-bar').progressbar();
-}
-
-/**
- * Switchery
- */
-$(document).ready(function() {
-    if ($(".js-switch")[0]) {
-        var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
-        elems.forEach(function (html) {
-            var switchery = new Switchery(html, {
-                color: '#26B99A'
-            });
-        });
-    }
-});
-
-/**
- * Accordion
- */
-$(document).ready(function() {
-    $(".expand").on("click", function () {
-        $(this).next().slideToggle(200);
-        $.expand = $(this).find(">:first-child");
-
-        if ($expand.text() === "+") {
-            $expand.text("-");
-        } else {
-            $expand.text("+");
-        }
-    });
-});
-
-/**
- * NProgress
- */
-if (typeof NProgress !== 'undefined') {
-    $(document).ready(function () {
-        NProgress.start();
-    });
-
-    $(window).load(function () {
-        NProgress.done();
-    });
-}
-
 //hover and retain popover when on popover content
 var originalLeave = $.fn.popover.Constructor.prototype.leave;
 $.fn.popover.Constructor.prototype.leave = function(obj) {
@@ -278,7 +190,7 @@ $.fn.popover.Constructor.prototype.leave = function(obj) {
     }
 };
 
-$('body').popover({
+$BODY.popover({
     selector: '[data-popover]',
     trigger: 'click hover',
     delay: {
@@ -316,7 +228,6 @@ function init_pnotify() {
  * KNOB
  */
 function init_knob() {
-
     if( typeof ($.fn.knob) === 'undefined'){ return; }
 
     $(".knob").knob({
@@ -405,9 +316,7 @@ function init_knob() {
         }
     });
 
-};
-
-
+}
 
 /**
  * creates a notify-message
@@ -475,12 +384,62 @@ CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.g
  */
 jQuery(function() {
 
+    // --- main initialize -------------------------------------------------------------------------------------------------------------------------------------
+
     init_sidebar();
     init_pnotify();
     init_knob();
     init_autosize();
     agentlist();
 
+
+
+    // --- initialize components -------------------------------------------------------------------------------------------------------------------------------
+
+    // panel toolbox
+    jQuery('.close-link').click(function () { jQuery(this).closest('.x_panel').remove(); });
+    jQuery('.collapse-link').on('click', function() {
+        var $BOX_PANEL = $(this).closest('.x_panel'),
+            $ICON = $(this).find('i'),
+            $BOX_CONTENT = $BOX_PANEL.find('.x_content');
+
+        // fix for some div with hardcoded fix class
+        if ($BOX_PANEL.attr('style')) {
+            $BOX_CONTENT.slideToggle(200, function(){
+                $BOX_PANEL.removeAttr('style');
+            });
+        } else {
+            $BOX_CONTENT.slideToggle(200);
+            $BOX_PANEL.css('height', 'auto');
+        }
+
+        $ICON.toggleClass('fa-chevron-up fa-chevron-down');
+    });
+
+
+    // tooltip
+    jQuery('[data-toggle="tooltip"]').tooltip({ container: 'body' });
+
+
+    // switchery
+    jQuery(".js-switch").each(function(i,e) { var s = new Switchery( e, { color: "#26B99A" } ); });
+
+
+    // accordion
+    jQuery(".expand").on("click", function () {
+        jQuery(this).next().slideToggle(200);
+        $.expand = $(this).find(">:first-child");
+
+        if ($expand.text() === "+") {
+            $expand.text("-");
+        } else {
+            $expand.text("+");
+        }
+    });
+
+
+
+    // --- initialize data -------------------------------------------------------------------------------------------------------------------------------------
 
     // notify messages
     LightJason.websocket( "/message" )

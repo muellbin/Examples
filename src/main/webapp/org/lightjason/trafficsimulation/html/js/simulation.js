@@ -101,7 +101,8 @@ jQuery(function() {
                         l_quintus.stages[0].items[l_quintus.stages[0].items.length - 1].p.x = i * maxcellinlayer  * 16;
                 }
 
-                l_quintus.audio.play( "axelf.mp3", { loop: true } );
+                if ( jQuery( "#simulation-music" ).is(":checked") )
+                    l_quintus.audio.play( "axelf.mp3", { loop: true } );
             },
 
             remove: function( p_data )
