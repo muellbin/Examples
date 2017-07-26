@@ -151,9 +151,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     {
         //ToDO: must be better
         if ( m_grid.get().size() == 0 )
-        {
             return true;
-        }
+
         final int l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 1 ), p_vehicle.speed() ).intValue();
         if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 1 ) + 1, Math.min( l_target, m_grid.get().columns() ) )
                       .parallel()

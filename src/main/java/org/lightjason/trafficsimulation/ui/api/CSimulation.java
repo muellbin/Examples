@@ -216,11 +216,11 @@ public final class CSimulation
      */
     @GET
     @Path( "/time/set/{value}" )
-    @Produces( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.TEXT_PLAIN )
     public final Response settime( @PathParam( "value" ) final int p_time )
     {
         if ( p_time < 1 )
-            return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "timeerror" ) ).build();
+            return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "timeerror", p_time ) ).build();
 
         CRuntime.INSTANCE.time().set( p_time );
         return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "simulationtime", p_time ) ).build();

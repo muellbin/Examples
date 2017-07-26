@@ -21,7 +21,7 @@
 
 # main definition
 main:
-    simulationspeed: 100
+    simulationspeed: 250
     messagedelay:
       default: 2500
       agentprint: 1500
@@ -48,4 +48,4 @@ httpserver:
 # simulation units
 units:
     cellsize_in_meter: 3.5
-    time_in_minutes: 1.25
+    time_in_minutes: 1

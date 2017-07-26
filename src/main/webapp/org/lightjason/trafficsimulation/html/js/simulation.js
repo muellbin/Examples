@@ -31,7 +31,7 @@ jQuery(function() {
      * @see http://www.html5quintus.com/
      */
     var l_quintus = Quintus()
-        .include("Sprites, Scenes, 2D, Audio")
+        .include("Audio, Sprites, Scenes, 2D")
         .setup("simulation-screen", {
             scaleToFit: true,
             audioSupported: [ "mp3" ]
@@ -53,53 +53,10 @@ jQuery(function() {
 
 
 
-    /** main functions of different elements */
-    var objectfunctions =
-    {
-        defaultvehicle:
-        {
-            create: function( p_data )
-            {
-                // create a default vehicle
-                var l_defaultvehicle = vehicles[p_data.id] = new l_quintus.defaultvehicle( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
-                // @todo opposite vehicle
-                //if(opposite vehicle) l_defaultvehicle.p.angel = 180;
-                l_quintus.stages[1].insert( l_defaultvehicle );
-            },
+    /** element functions */
+    var objectfunctions = {
 
-            // @todo refactor
-            execute: function( p_data )
-            {
-                // move the vehicles in the new positions
-                vehicles[p_data.id].p.x = p_data.x * 32;
-                vehicles[p_data.id].p.y = p_data.y * 32 + 16;
-            }
-        },
-
-
-        uservehicle:
-        {
-            create: function( p_data )
-            {
-                vehicles[p_data.id] = new l_quintus.uservehicle( {x: p_data.x * 32, y: p_data.y * 32 + 16} );
-                l_quintus.stages[1].insert( vehicles[p_data.id] );
-
-                // the camera follows the user vehicle
-                l_quintus.stages[0].add("viewport").follow( vehicles[p_data.id] );
-                l_quintus.stages[1].add("viewport").follow( vehicles[p_data.id] );
-            },
-
-            execute: function( p_data )
-            {
-                // move the vehicles in the new positions
-                vehicles[p_data.id].p.x = p_data.x * 32;
-                vehicles[p_data.id].p.y = p_data.y * 32 + 16;
-            }
-        },
-
-
-        environment:
-        {
+        environment: {
             create: function( p_data )
             {
                 /**
@@ -121,8 +78,7 @@ jQuery(function() {
                     l_matrix.push( l_footway );
 
                     return l_matrix;
-                }
-
+                };
 
 
                 // a tilelayer in quintus can have the maximum size of 32768. (1024 cell * 32 pixcel)
@@ -141,7 +97,7 @@ jQuery(function() {
                     } );
                     l_tilelayer.p.tiles = streettiles( p_data.lanes, layerlength );
                     l_quintus.stages[0].insert( l_tilelayer );
-                	if (i > 0)
+                    if (i > 0)
                         l_quintus.stages[0].items[l_quintus.stages[0].items.length - 1].p.x = i * maxcellinlayer  * 16;
                 }
 
@@ -153,8 +109,41 @@ jQuery(function() {
                 l_quintus.audio.stop();
                 //ToDo: after shut down, all vehicles should be deleted
             }
+        },
+
+
+        defaultvehicle: {
+            create: function (p_data) {
+                // create a default vehicle
+                var l_defaultvehicle = vehicles[p_data.id] = new l_quintus.defaultvehicle({x: p_data.x * 32, y: p_data.y * 32 + 16});
+                // @todo opposite vehicle
+                //if(opposite vehicle) l_defaultvehicle.p.angel = 180;
+                l_quintus.stages[1].insert(l_defaultvehicle);
+            },
+
+            // @todo refactor
+            execute: function (p_data) {
+                // move the vehicles in the new positions
+                vehicles[p_data.id].p.x = p_data.x * 32;
+                vehicles[p_data.id].p.y = p_data.y * 32 + 16;
+            }
+        },
+
+
+        uservehicle: {
+            create: function (p_data) {
+                vehicles[p_data.id] = new l_quintus.uservehicle({x: p_data.x * 32, y: p_data.y * 32 + 16});
+                l_quintus.stages[1].insert(vehicles[p_data.id]);
+
+                // the camera follows the user vehicle
+                l_quintus.stages[0].add("viewport").follow(vehicles[p_data.id]);
+                l_quintus.stages[1].add("viewport").follow(vehicles[p_data.id]);
+            }
         }
     };
+
+    // set function references
+    objectfunctions.uservehicle.execute = objectfunctions.defaultvehicle.execute;
 
 
     /** define the animation websocket */

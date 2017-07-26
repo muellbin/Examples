@@ -245,7 +245,7 @@ $(document).ready(function() {
 /**
  * NProgress
  */
-if (typeof NProgress != 'undefined') {
+if (typeof NProgress !== 'undefined') {
     $(document).ready(function () {
         NProgress.start();
     });
@@ -320,6 +320,8 @@ function init_knob() {
     if( typeof ($.fn.knob) === 'undefined'){ return; }
 
     $(".knob").knob({
+        change: function(i) { this.$.trigger({ type: "change", value: i }); },
+
         draw: function() {
 
             // "tron" case
@@ -436,7 +438,7 @@ function codemirrorsave( pc_id, pc_source )
         method: "POST",
         headers: { "Content-Type": "text/plain" }
     })
-    .success(function(i) { if (i) notifymessage({ title: "Agent", text: i, type: "info" }); })
+    .success(function(i) { if (i) notifymessage({ title: "Agent", text: i, type: "success" }); })
     .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
 
@@ -608,11 +610,11 @@ jQuery(function() {
               .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
     // set simulation speed
-    jQuery("#simulation-speed").change(function(v) {
-        console.log(v);
-        //LightJason.ajax( "/api/simulation/time/set/" + v )
-                  //.success(function(i) { console.log(i); })
-                  //.error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    jQuery("#simulation-speed").change(function(e) {
+        if (e.value)
+            LightJason.ajax( "/api/simulation/time/set/" + Math.round( e.value ) )
+                      .success(function(i) { notifymessage({ title: "Simulation", text: i, type: "success" }); })
+                      .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
 
