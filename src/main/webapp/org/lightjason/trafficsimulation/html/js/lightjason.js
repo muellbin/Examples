@@ -42,7 +42,7 @@ var LightJason = (function (px_modul) {
         var lo_options      = classof(px_options, "string") ? { "url" : px_options } : jQuery.extend( true, {}, px_options );
         lo_options.method   = lo_options.method   || "GET";
         lo_options.data     = lo_options.data     || {};
-        lo_options.cache    = lo_options.cache    || false;
+        lo_options.cache    = lo_options.cache    || true;
 
         return jQuery.ajax( lo_options );
     };

@@ -69,6 +69,11 @@ const l_gulp = require( "gulp" ),
                   source: l_gulp.src( l_sourcedir + "slides/*.md" )
               },
 
+              "markdown-documents" : {
+                  output: "docs",
+                  source: l_gulp.src( l_sourcedir + "docs/*.md" )
+              },
+
               "images" : {
                   output: "images",
                   source: l_gulp.src( l_sourcedir + "images/*.*" )
@@ -122,6 +127,7 @@ const l_gulp = require( "gulp" ),
                       "node_modules/switchery/dist/switchery.js",
                       "node_modules/file-saver/FileSaver.min.js",
                       "node_modules/remark/out/remark.js",
+                      "node_modules/showdown/dist/showdown.js",
                       "node_modules/codemirror/lib/codemirror.js",
                       "node_modules/codemirror/addon/hint/show-hint.js",
                       "node_modules/codemirror/addon/hint/anyword-hint.js",

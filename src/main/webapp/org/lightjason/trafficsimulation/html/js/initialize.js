@@ -456,21 +456,37 @@ jQuery(function() {
               };
 
 
-    // get language labels
+    // get language labels for html content
     jQuery( ".ui-languagelabel" ).each(function(k, e) {
         var lo = jQuery(e);
-        LightJason.ajax( "/api/simulation/language/" + lo.data( "languagelabel" ) )
+        LightJason.ajax( "/api/simulation/language/label/" + lo.data( "languagelabel" ) )
         .success(function(t) { lo.html(t); })
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
 
-    // translation structure
+    // get language labels of data attributes
     jQuery( ".ui-languagelabeldata" ).each(function(k, e) {
         var lo = jQuery(e);
-        LightJason.ajax( "/api/simulation/language/" + lo.data( "languagelabel" ) )
+        LightJason.ajax( "/api/simulation/language/label/" + lo.data( "languagelabel" ) )
             .success(function(t) { lo.attr( "data-" + lo.data( "languagelabelid" ), t ); })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
+
+
+    // get language document
+    var l_markdown = new showdown.Converter();
+
+    jQuery( ".ui-languagedocs" ).each(function(k, e) {
+        var lo = jQuery(e);
+
+        LightJason.ajax( "/api/simulation/language/current" )
+                  .success(function(l) {
+                      jQuery.get( "/docs/" + lo.data( "languagedoc" ) + "." + l + ".md" , "text" )
+                          .done(function(d) { lo.html( l_markdown.makeHtml(d) ); })
+                          .fail(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+                  })
+                  .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
 

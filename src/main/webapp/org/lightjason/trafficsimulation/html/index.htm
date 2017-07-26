@@ -48,9 +48,9 @@
                             <ul class="nav side-menu">
                                 <li><a><i class="fa fa-home"></i> <span class="ui-languagelabel" data-languagelabel="information">Information</span> <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="#" class="btn-link ui-languagelabel" data-languagelabel="scenariodescription" data-toggle="modal" data-target="#simulation-description">Scenario</a></li>
-                                        <li><a href="#" class="slide-view ui-languagelabel" data-slidesource="practice" data-languagelabel="slideexercise">Exercise Slides (Practice)</a></li>
-                                        <li><a href="#" class="slide-view ui-languagelabel" data-slidesource="lecture" data-languagelabel="slidelecture">Lecture Slides (Theory)</a></li>
+                                        <li><a class="btn-link ui-languagelabel" data-languagelabel="scenariodescription" data-toggle="modal" data-target="#simulation-description">Scenario</a></li>
+                                        <li><a class="slide-view ui-languagelabel" data-slidesource="practice" data-languagelabel="slideexercise">Exercise Slides (Practice)</a></li>
+                                        <li><a class="slide-view ui-languagelabel" data-slidesource="lecture" data-languagelabel="slidelecture">Lecture Slides (Theory)</a></li>
                                     </ul>
                                 </li>
                                 <li><a><i class="fa fa-edit"></i> <span class="ui-languagelabel" data-languagelabel="agents">Agents</span> <span class="fa fa-chevron-down"></span></a>
@@ -99,8 +99,8 @@
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                    <li><a href="#" class="ui-languagelabel" data-languagelabel="help">Help</a></li>
-                                    <li><a href="#" class="simulation-shutdown ui-languagelabel" data-languagelabel="shutdown"><i class="fa fa-sign-out pull-right"></i> Shutdown</a></li>
+                                    <li><a class="ui-languagelabel" data-languagelabel="help" data-toggle="modal" data-target="#simulation-help">Help</a></li>
+                                    <li><a class="simulation-shutdown ui-languagelabel" data-languagelabel="shutdown"><i class="fa fa-sign-out pull-right"></i> Shutdown</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -158,7 +158,7 @@
                                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
                                 <h4 class="modal-title ui-languagelabel" data-languagelabel="descriptiontitle">Simulation Description</h4>
                             </div>
-                            <div class="modal-body ui-languagelabel" data-languagelabel="descriptioncontent">
+                            <div class="modal-body ui-languagedocs" data-languagedoc="scenario">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default ui-languagelabel" data-languagelabel="close" data-dismiss="modal">Close</button>
@@ -168,6 +168,27 @@
                     </div>
                 </div>
                 <!--- /window simulation description (modal) -->
+
+
+                <!--- window help (modal) -->
+                <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="simulation-help">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                                <h4 class="modal-title ui-languagelabel" data-languagelabel="help">Help</h4>
+                            </div>
+                            <div class="modal-body ui-languagedocs" data-languagedoc="help">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default ui-languagelabel" data-languagelabel="close" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!--- /window help (modal) -->
 
 
                 <!-- window agent creating name (modal) -->

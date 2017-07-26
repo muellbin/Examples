@@ -246,7 +246,7 @@ public final class CSimulation
      * @return response
      */
     @GET
-    @Path( "/language/{label}" )
+    @Path( "/language/label/{label}" )
     @Produces( MediaType.TEXT_PLAIN )
     public final Object language( @PathParam( "label" ) final String p_label )
     {
@@ -266,6 +266,19 @@ public final class CSimulation
         {
             return Response.status( Response.Status.NOT_FOUND ).entity( l_exception.getLocalizedMessage() ).build();
         }
+    }
+
+    /**
+     * returns the current language
+     *
+     * @return language code
+     */
+    @GET
+    @Path( "/language/current" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public final String currentlanguage()
+    {
+        return CCommon.languagebundle().getLocale().getISO3Language();
     }
 
 }
