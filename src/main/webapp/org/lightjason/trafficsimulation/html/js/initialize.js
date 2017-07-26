@@ -313,6 +313,101 @@ function init_pnotify() {
 }
 
 /**
+ * KNOB
+ */
+function init_knob() {
+
+    if( typeof ($.fn.knob) === 'undefined'){ return; }
+
+    $(".knob").knob({
+        draw: function() {
+
+            // "tron" case
+            if (this.$.data('skin') === 'tron') {
+
+                this.cursorExt = 0.3;
+
+                var a = this.arc(this.cv) // Arc
+                    ,
+                    pa // Previous arc
+                    , r = 1;
+
+                this.g.lineWidth = this.lineWidth;
+
+                if (this.o.displayPrevious) {
+                    pa = this.arc(this.v);
+                    this.g.beginPath();
+                    this.g.strokeStyle = this.pColor;
+                    this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
+                    this.g.stroke();
+                }
+
+                this.g.beginPath();
+                this.g.strokeStyle = r ? this.o.fgColor : this.fgColor;
+                this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, a.s, a.e, a.d);
+                this.g.stroke();
+
+                this.g.lineWidth = 2;
+                this.g.beginPath();
+                this.g.strokeStyle = this.o.fgColor;
+                this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
+                this.g.stroke();
+
+                return false;
+            }
+        }
+
+    });
+
+    // Example of infinite knob, iPod click wheel
+    var v, up = 0,
+        down = 0,
+        i = 0,
+        $idir = $("div.idir"),
+        $ival = $("div.ival"),
+        incr = function() {
+            i++;
+            $idir.show().html("+").fadeOut();
+            $ival.html(i);
+        },
+        decr = function() {
+            i--;
+            $idir.show().html("-").fadeOut();
+            $ival.html(i);
+        };
+    $("input.infinite").knob({
+        min: 0,
+        max: 20,
+        stopper: false,
+        change: function() {
+            if (v > this.cv) {
+                if (up) {
+                    decr();
+                    up = 0;
+                } else {
+                    up = 1;
+                    down = 0;
+                }
+            } else {
+                if (v < this.cv) {
+                    if (down) {
+                        incr();
+                        down = 0;
+                    } else {
+                        down = 1;
+                        up = 0;
+                    }
+                }
+            }
+            v = this.cv;
+        }
+    });
+
+};
+
+
+
+/**
  * creates a notify-message
  *
  * @param px_options object, text, title and type must be set
@@ -380,6 +475,7 @@ jQuery(function() {
 
     init_sidebar();
     init_pnotify();
+    init_knob();
     init_autosize();
     agentlist();
 
@@ -506,19 +602,25 @@ jQuery(function() {
     } );
 
 
+    // initialize simulation speed
+    LightJason.ajax( "/api/simulation/time/get" )
+              .success(function(i) { jQuery("#simulation-speed").val(i).trigger( "change" ); })
+              .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+
+    // set simulation speed
+    jQuery("#simulation-speed").change(function(v) {
+        console.log(v);
+        //LightJason.ajax( "/api/simulation/time/set/" + v )
+                  //.success(function(i) { console.log(i); })
+                  //.error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
+
+
     // save panelty image
     jQuery( "#ui-savepanelty" ).click(function() {
         jQuery( "#simulation-panelty" ).get(0).toBlob(function( po_blob ) {
             saveAs( po_blob, "panelty.png" );
         });
-    });
-
-
-    jQuery( "#ui-deleteagent" ).click(function() {
-        LightJason.ajax( "/api/simulation/asl/remove/" + l_editor.options.sourceid )
-            .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); })
-            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-
     });
 
 
@@ -534,6 +636,15 @@ jQuery(function() {
         LightJason.ajax( "/api/simulation/asl/create/" + jQuery( "#simulation-agentname" ).val() )
             .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
+
+
+    // delete agent
+    jQuery( "#ui-deleteagent" ).click(function() {
+        LightJason.ajax( "/api/simulation/asl/remove/" + l_editor.options.sourceid )
+            .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); })
+            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+
     });
 
 

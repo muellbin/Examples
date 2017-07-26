@@ -26,7 +26,6 @@ package org.lightjason.trafficsimulation.runtime;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
-import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
@@ -51,10 +50,6 @@ public class CTask implements ITask
      * logger
      */
     private static final Logger LOGGER = CCommon.logger( ITask.class );
-    /**
-     * simulation speed
-     */
-    private final int m_simulationspeed = CConfiguration.INSTANCE.getOrDefault( 100, "main", "simulationspeed" );
     /**
      * thread
      */
@@ -130,7 +125,7 @@ public class CTask implements ITask
                 l_elements.parallelStream().forEach( CTask::execute );
                 try
                 {
-                    Thread.sleep( m_simulationspeed );
+                    Thread.sleep( CRuntime.INSTANCE.time().get() );
                 }
                 catch ( final InterruptedException l_exception )
                 {

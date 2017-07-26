@@ -27,6 +27,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 
@@ -57,5 +58,12 @@ public interface IRuntime extends Runnable
      * @return self reference
      */
     IRuntime save();
+
+    /**
+     * get time reference
+     *
+     * @return time
+     */
+    AtomicInteger time();
 
 }

@@ -209,6 +209,37 @@ public final class CSimulation
     }
 
     /**
+     * sets the simulation time
+     *
+     * @param p_time simulation time
+     * @return response
+     */
+    @GET
+    @Path( "/time/set/{value}" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public final Response settime( @PathParam( "value" ) final int p_time )
+    {
+        if ( p_time < 1 )
+            return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "timeerror" ) ).build();
+
+        CRuntime.INSTANCE.time().set( p_time );
+        return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "simulationtime", p_time ) ).build();
+    }
+
+    /**
+     * gets the simulation time
+     *
+     * @return response
+     */
+    @GET
+    @Path( "/time/get" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public final Integer gettime()
+    {
+        return CRuntime.INSTANCE.time().get();
+    }
+
+    /**
      * returns the language labels of the ui
      *
      * @param p_label labels as comma seperated list

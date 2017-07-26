@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -69,6 +70,10 @@ public final class CRuntime implements IRuntime
      * map with agents and asl codes and visibility
      */
     private final Map<String, Pair<Boolean, String>> m_agents = Collections.synchronizedMap( new TreeMap<>( String.CASE_INSENSITIVE_ORDER ) );
+    /**
+     * thread-sleep time
+     */
+    private final AtomicInteger m_threadsleeptime = new AtomicInteger( CConfiguration.INSTANCE.getOrDefault( 100, "main", "simulationspeed" ) );
 
 
     /**
@@ -189,6 +194,12 @@ public final class CRuntime implements IRuntime
         return this;
     }
 
+    @Override
+    public final AtomicInteger time()
+    {
+        return m_threadsleeptime;
+    }
+
 
     /**
      * agents map
@@ -234,6 +245,8 @@ public final class CRuntime implements IRuntime
         m_supplier.set( p_supplier );
         return this;
     }
+
+
 
 
     @Override
