@@ -119,7 +119,7 @@ const l_gulp = require( "gulp" ),
               },
 
               "js-library" : {
-                  dependency: "browserify-quintus",
+                  //dependency: "browserify-quintus",
                   output: "js/library.min.js",
                   source: l_gulp.src([
 
@@ -140,7 +140,7 @@ const l_gulp = require( "gulp" ),
                       "node_modules/codemirror/addon/hint/anyword-hint.js",
                       l_sourcedir + "js/codemirror_grammar.js",
 
-                      l_outputdir + "js/quintus.bundle.js"
+                      "node_modules/Quintus/lib/*.js"
                   ])
               }
 
@@ -149,13 +149,13 @@ const l_gulp = require( "gulp" ),
 
           // browserify
           browserify : {
-
+              /*
               "browserify-quintus" : {
                   bundle: "Quintus",
                   output: "js/quintus.bundle.js",
                   source: "node_modules/quintus/index.js"
               }
-
+              */
           },
 
 
