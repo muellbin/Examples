@@ -134,6 +134,7 @@ const l_gulp = require( "gulp" ),
                       "node_modules/file-saver/FileSaver.min.js",
                       "node_modules/remark/out/remark.js",
                       "node_modules/showdown/dist/showdown.js",
+                      "node_modules/chart.js/dist/Chart.bundle.js",
 
                       "node_modules/codemirror/lib/codemirror.js",
                       "node_modules/codemirror/addon/hint/show-hint.js",
