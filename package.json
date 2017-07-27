@@ -35,15 +35,17 @@
     "switchery": "https://github.com/abpetkov/switchery/archive/0.8.2.tar.gz"
   },
   "devDependencies": {
+    "browserify": "^14.4.0",
     "gulp": "^3.9.1",
-    "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
     "gulp-concat-css": "^2.3.0",
     "gulp-dir-concat": "0.0.1",
     "gulp-empty-pipe": "^5.0.0",
     "gulp-htmlmin": "^3.0.0",
+    "gulp-rename": "^1.2.2",
     "gulp-uglify": "^3.0.0",
-    "gulp-uglifycss": "^1.0.8"
+    "gulp-uglifycss": "^1.0.8",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

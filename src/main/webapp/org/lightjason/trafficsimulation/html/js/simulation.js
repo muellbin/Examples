@@ -32,10 +32,7 @@ jQuery(function() {
      */
     var l_quintus = Quintus()
         .include("Audio, Sprites, Scenes, 2D")
-        .setup("simulation-screen", {
-            scaleToFit: true,
-            audioSupported: [ "mp3" ]
-        })
+        .setup("simulation-screen", { audioSupported: [ "mp3" ] })
         .enableSound();
 
     // initialize objects

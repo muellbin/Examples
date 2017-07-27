@@ -34,7 +34,8 @@ const MINIFY = true;
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),
       l_empty = require( "gulp-empty-pipe" ),
-      l_browserify = require( "gulp-browserify" ),
+      l_vinyl = require( "vinyl-source-stream" ),
+      l_browserify = require( "browserify" ),
 
       l_concatjs = require( "gulp-concat"),
       l_concatcss = require( "gulp-concat-css"),
@@ -118,6 +119,7 @@ const l_gulp = require( "gulp" ),
               },
 
               "js-library" : {
+                  dependency: "browserify-quintus",
                   output: "js/library.min.js",
                   source: l_gulp.src([
 
@@ -136,11 +138,22 @@ const l_gulp = require( "gulp" ),
                       "node_modules/codemirror/lib/codemirror.js",
                       "node_modules/codemirror/addon/hint/show-hint.js",
                       "node_modules/codemirror/addon/hint/anyword-hint.js",
-                      l_sourcedir + "js/codemirror_grammar.js"
+                      l_sourcedir + "js/codemirror_grammar.js",
 
-                      //"node_modules/Quintus/lib/*.js"
-
+                      l_outputdir + "js/quintus.bundle.js"
                   ])
+              }
+
+          },
+
+
+          // browserify
+          browserify : {
+
+              "browserify-quintus" : {
+                  bundle: "Quintus",
+                  output: "js/quintus.bundle.js",
+                  source: "node_modules/quintus/index.js"
               }
 
           },
@@ -176,14 +189,39 @@ const l_gulp = require( "gulp" ),
 
 // --- task definition ------------------------------------------------------------------------------------
 
+// https://egghead.io/lessons/javascript-gulp-and-browserify-initial-setup
+// https://www.npmjs.com/package/vinyl-source-stream
+// https://wehavefaces.net/gulp-browserify-the-gulp-y-way-bb359b3f9623
+// https://www.viget.com/articles/gulp-browserify-starter-faq
+// http://9elements.com/io/external-bundles-with-browserify-and-gulp/
+// https://fettblog.eu/gulp-browserify-multiple-bundles/
+
+// http://schickling.me/synchronous-tasks-gulp/
+
 // minify js tasks
 for( const js in l_config.minifyjs )
 {
-    l_gulp.task( js, function () {
-        return l_config.minifyjs[js].source
-                    .pipe( l_concatjs( l_config.minifyjs[js].output ) )
-                    .pipe( MINIFY ? l_minifyjs() : l_empty() )
-                    .pipe( l_gulp.dest( l_outputdir ) );
+    l_gulp.task( js,
+        l_config.minifyjs[js].dependency ? [].concat( l_config.minifyjs[js].dependency ) : [],
+        function () {
+            return l_config.minifyjs[js].source
+                           .pipe( l_concatjs( l_config.minifyjs[js].output ) )
+                           .pipe( MINIFY ? l_minifyjs() : l_empty() )
+                           .pipe( l_gulp.dest( l_outputdir ) );
+    });
+}
+
+
+// browserify
+for( const br in l_config.browserify )
+{
+    l_gulp.task( br,
+        l_config.browserify[br].dependency ? [].concat( l_config.browserify[br].dependency ) : [],
+        function () {
+            return l_browserify( l_config.browserify[br].source, { standalone: l_config.browserify[br].bundle })
+                   .bundle()
+                   .pipe( l_vinyl( l_config.browserify[br].output ) )
+                   .pipe( l_gulp.dest( l_outputdir ) );
     });
 }
 
@@ -191,11 +229,13 @@ for( const js in l_config.minifyjs )
 // minify css tasks
 for( const css in l_config.minifycss )
 {
-    l_gulp.task( css, function () {
-        return l_config.minifycss[css].source
-                       .pipe( l_concatcss( l_config.minifycss[css].output ) )
-                       .pipe( MINIFY ? l_minifycss() : l_empty() )
-                       .pipe( l_gulp.dest( l_outputdir ) );
+    l_gulp.task( css,
+        l_config.minifycss[css].dependency ? [].concat( l_config.minifycss[css].dependency ) : [],
+        function () {
+            return l_config.minifycss[css].source
+                           .pipe( l_concatcss( l_config.minifycss[css].output ) )
+                           .pipe( MINIFY ? l_minifycss() : l_empty() )
+                           .pipe( l_gulp.dest( l_outputdir ) );
     });
 }
 
@@ -203,24 +243,26 @@ for( const css in l_config.minifycss )
 // minify html tasks
 for( const html in l_config.minifyhtml )
 {
-    l_gulp.task( html, function () {
-        return l_config.minifyhtml[html].source
-            .pipe( MINIFY ? l_minifyhtml({
-                caseSensitive: true,
-                collapseBooleanAttributes: true,
-                collapseWhitespace: true,
-                decodeEntities: true,
-                html5: true,
-                minifyCSS: true,
-                minifyJS: true,
-                removeComments: true,
-                removeRedundantAttributes: true,
-                removeScriptTypeAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                trimCustomFragments: true,
-                useShortDoctype: true
-            }) : l_empty() )
-            .pipe( l_gulp.dest( l_outputdir ) );
+    l_gulp.task( html,
+        l_config.minifyhtml[html].dependency ? [].concat( l_config.minifyhtml[html].dependency ) : [],
+        function () {
+            return l_config.minifyhtml[html].source
+                .pipe( MINIFY ? l_minifyhtml({
+                    caseSensitive: true,
+                    collapseBooleanAttributes: true,
+                    collapseWhitespace: true,
+                    decodeEntities: true,
+                    html5: true,
+                    minifyCSS: true,
+                    minifyJS: true,
+                    removeComments: true,
+                    removeRedundantAttributes: true,
+                    removeScriptTypeAttributes: true,
+                    removeStyleLinkTypeAttributes: true,
+                    trimCustomFragments: true,
+                    useShortDoctype: true
+                }) : l_empty() )
+                .pipe( l_gulp.dest( l_outputdir ) );
     });
 }
 
@@ -228,9 +270,11 @@ for( const html in l_config.minifyhtml )
 // assets tasks
 for( const assets in l_config.assets )
 {
-    l_gulp.task( assets, function () {
-        return l_config.assets[assets].source
-                       .pipe( l_gulp.dest( l_outputdir + l_config.assets[assets].output ) );
+    l_gulp.task( assets,
+        l_config.assets[assets].dependency ? [].concat( l_config.assets[assets].dependency ) : [],
+        function () {
+            return l_config.assets[assets].source
+                           .pipe( l_gulp.dest( l_outputdir + l_config.assets[assets].output ) );
     });
 }
 
@@ -248,5 +292,6 @@ l_gulp.task( "default", [].concat(
     Object.keys( l_config.minifyjs ),
     Object.keys( l_config.minifycss ),
     Object.keys( l_config.minifyhtml ),
-    Object.keys( l_config.assets )
+    Object.keys( l_config.assets ),
+    Object.keys( l_config.browserify )
 ) );
