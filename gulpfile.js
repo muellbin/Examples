@@ -89,6 +89,16 @@ const l_gulp = require( "gulp" ),
               "audio" : {
                   output: "audio",
                   source: l_gulp.src( l_sourcedir + "audio/*.mp3" )
+              },
+
+              "mathjax-jax" : {
+                output: "jax",
+                source: l_gulp.src( "node_modules/mathjax/unpacked/jax/**/*.*" )
+              },
+
+              "mathjax-extensions" : {
+                  output: "extensions",
+                  source: l_gulp.src( "node_modules/mathjax/unpacked/extensions/**/*.*" )
               }
 
           },
@@ -135,6 +145,11 @@ const l_gulp = require( "gulp" ),
                       "node_modules/remark/out/remark.js",
                       "node_modules/showdown/dist/showdown.js",
                       "node_modules/chart.js/dist/Chart.bundle.js",
+
+                      "node_modules/mathjax/unpacked/MathJax.js",
+                      "node_modules/mathjax/unpacked/config/TeX-AMS-MML_HTMLorMML.js",
+                      //"node_modules/mathjax/unpacked/config/**/*.js",
+                      //"node_modules/mathjax/unpacked/localization/**/*.js",
 
                       "node_modules/codemirror/lib/codemirror.js",
                       "node_modules/codemirror/addon/hint/show-hint.js",
