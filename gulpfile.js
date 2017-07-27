@@ -34,6 +34,7 @@ const MINIFY = true;
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),
       l_empty = require( "gulp-empty-pipe" ),
+      l_browserify = require( "gulp-browserify" ),
 
       l_concatjs = require( "gulp-concat"),
       l_concatcss = require( "gulp-concat-css"),
@@ -135,9 +136,9 @@ const l_gulp = require( "gulp" ),
                       "node_modules/codemirror/lib/codemirror.js",
                       "node_modules/codemirror/addon/hint/show-hint.js",
                       "node_modules/codemirror/addon/hint/anyword-hint.js",
-                      l_sourcedir + "js/codemirror_grammar.js",
+                      l_sourcedir + "js/codemirror_grammar.js"
 
-                      "node_modules/Quintus/lib/*.js"
+                      //"node_modules/Quintus/lib/*.js"
 
                   ])
               }
