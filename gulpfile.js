@@ -116,22 +116,29 @@ const l_gulp = require( "gulp" ),
                   ])
               },
 
-              "js-jquery" : {
+              "js-library" : {
                   output: "js/library.min.js",
                   source: l_gulp.src([
+
                       "node_modules/jquery/dist/jquery.js",
                       "node_modules/bootstrap/dist/js/bootstrap.js",
+
                       "node_modules/jquery.full.screen/jquery.full.screen.js",
                       "node_modules/jquery-knob/js/jquery.knob.js",
                       "node_modules/pnotify/dist/pnotify.js",
                       "node_modules/switchery/dist/switchery.js",
+
                       "node_modules/file-saver/FileSaver.min.js",
                       "node_modules/remark/out/remark.js",
                       "node_modules/showdown/dist/showdown.js",
+
                       "node_modules/codemirror/lib/codemirror.js",
                       "node_modules/codemirror/addon/hint/show-hint.js",
                       "node_modules/codemirror/addon/hint/anyword-hint.js",
                       l_sourcedir + "js/codemirror_grammar.js",
+
+                      "node_modules/Quintus/lib/*.js"
+
                   ])
               }
 
@@ -141,13 +148,15 @@ const l_gulp = require( "gulp" ),
           // css
           minifycss : {
 
-              "css-layout" : {
+              "css-library" : {
                   output: "css/layout.min.css",
                   source: l_gulp.src([
                       "node_modules/bootstrap/dist/css/bootstrap.css",
                       "node_modules/gentelella/build/css/custom.css",
+
                       "node_modules/pnotify/dist/*.css",
                       "node_modules/switchery/dist/switchery.css",
+
                       "node_modules/codemirror/lib/codemirror.css",
                       "node_modules/codemirror/addon/hint/show-hint.css",
                       "node_modules/codemirror/theme/neat.css"

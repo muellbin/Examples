@@ -19,6 +19,7 @@
     "url": "https://github.com/LightJason/Examples/issues"
   },
   "dependencies": {
+    "Quintus": "https://github.com/cykod/Quintus/archive/v0.1.5.tar.gz",
     "bootstrap": "^3.3.7",
     "codemirror": "^5.27.4",
     "file-saver": "https://github.com/eligrey/FileSaver.js/archive/1.3.3.tar.gz",
