@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.runtime;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
+import org.lightjason.trafficsimulation.elements.area.CArea;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
@@ -75,30 +76,37 @@ public class CTask implements ITask
                 final Pair<Boolean, String> l_defaultvehicledata = p_asl.get( "defaultvehicle" );
                 final Pair<Boolean, String> l_uservehicledata = p_asl.get( "uservehicle" );
 
-                l_environment = new CEnvironment.CGenerator( p_asl.get( "environment" ).getRight() ).generatesingle(
+                l_environment = new CEnvironment.CGenerator( p_asl.get( "environment" ).getRight() )
+                                                .resetcount()
+                                                .generatesingle(
 
-                    l_elements,
+                                                    l_elements,
 
-                    new CVehicle.CGenerator(
-                        IOUtils.toInputStream( l_defaultvehicledata.getRight(), "UTF-8" ),
-                        l_defaultvehicledata.getLeft(),
-                        IVehicle.ETYpe.DEFAULTVEHICLE
-                    ),
+                                                    new CVehicle.CGenerator(
+                                                        IOUtils.toInputStream( l_defaultvehicledata.getRight(), "UTF-8" ),
+                                                        l_defaultvehicledata.getLeft(),
+                                                        IVehicle.ETYpe.DEFAULTVEHICLE
+                                                    ).resetcount(),
 
-                    new CVehicle.CGenerator(
-                        IOUtils.toInputStream( l_uservehicledata.getRight(), "UTF-8" ),
-                        l_uservehicledata.getLeft(),
-                        IVehicle.ETYpe.USERVEHICLE
-                    )
+                                                    new CVehicle.CGenerator(
+                                                        IOUtils.toInputStream( l_uservehicledata.getRight(), "UTF-8" ),
+                                                        l_uservehicledata.getLeft(),
+                                                        IVehicle.ETYpe.USERVEHICLE
+                                                    ).resetcount(),
 
-                );
+                                                    new CArea.CGenerator( IOUtils.toInputStream( p_asl.get( "area" ).getRight(), "UTF-8" ) )
+                                                             .resetcount()
+
+                                                    //new CArea.CGenerator( IOUtils.toInputStream( p_asl.get( "communication" ).getRight(), "UTF-8" ) )
+
+                                                );
 
             }
             catch ( final Exception l_exception )
             {
                 CMessage.CInstance.INSTANCE.write(
                     CMessage.EType.ERROR,
-                    CCommon.languagestring( this, "environment" ),
+                    CCommon.languagestring( this, "initialize" ),
                     l_exception.getLocalizedMessage()
                 );
                 return;
@@ -114,7 +122,7 @@ public class CTask implements ITask
             // --- execute objects ---
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,
-                CCommon.languagestring( this, "environment" ),
+                CCommon.languagestring( this, "initialize" ),
                 CCommon.languagestring( this, "simulationstart" )
             );
 
@@ -135,7 +143,7 @@ public class CTask implements ITask
 
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,
-                CCommon.languagestring( this, "environment" ),
+                CCommon.languagestring( this, "shutdown" ),
                 CCommon.languagestring( this, "simulationstop" )
             );
 

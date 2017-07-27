@@ -77,7 +77,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     private final Double m_allowedspeed;
     /**
-     * current position
+     * current position (lane start, lane end, position on the lane start, position on the lane end)
      */
     private final DoubleMatrix1D m_position;
 
@@ -118,8 +118,8 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     @Override
     public final boolean inside( final IObject<?> p_object )
     {
-        return ( m_position.get( 0 ) <= p_object.position().get( 0 ) ) && ( m_position.get( 1 ) <= p_object.position().get( 1 ) )
-            && ( m_position.get( 3 ) >= p_object.position().get( 0 ) ) && ( m_position.get( 4 ) >= p_object.position().get( 1 ) );
+        return ( m_position.get( 0 ) <= p_object.position().get( 0 ) ) && ( p_object.position().get( 0 ) <= m_position.get( 1 ) )
+            && ( m_position.get( 2 ) <= p_object.position().get( 1 ) ) && ( p_object.position().get( 1 ) <= m_position.get( 3 ) );
     }
 
     @Override

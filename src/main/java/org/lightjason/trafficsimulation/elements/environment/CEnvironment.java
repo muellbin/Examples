@@ -80,25 +80,34 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     private final AtomicBoolean m_shutdown = new AtomicBoolean();
     /**
-     * hastset with areas
+     * set elements
      */
-    private final Set<IArea> m_areas = new CopyOnWriteArraySet<>();
+    private final Set<Callable<?>> m_elements;
     /**
      * grid
      */
     private final AtomicReference<ObjectMatrix2D> m_grid = new AtomicReference<>( new SparseObjectMatrix2D( 0, 0 ) );
     /**
-     * defualt vehicle generator
+     * set with areas
      */
-    private final IVehicle.IGenerator<IVehicle> m_defaultvehicle;
+    private final Set<IArea> m_areas = new CopyOnWriteArraySet<>();
+    /**
+     * area generator
+     */
+    private final IArea.IGenerator<IArea> m_generatorarea;
     /**
      * user vehicle generator
      */
-    private final IVehicle.IGenerator<IVehicle> m_uservehicle;
+    private final IVehicle.IGenerator<IVehicle> m_generatoruservehicle;
     /**
-     * set elements
+     * default vehicle generator
      */
-    private final Set<Callable<?>> m_elements;
+    private final IVehicle.IGenerator<IVehicle> m_generatordefaultvehicle;
+    /**
+     * user vehicle execution flag
+     */
+    private final AtomicBoolean m_uservehicleuse = new AtomicBoolean();
+
 
     /**
      * ctor
@@ -106,17 +115,21 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * @param p_configuration agent configuration
      * @param p_id name of the object
      * @param p_elements objects
-     * @param p_defaultvehicle default vehicle generator
-     * @param p_uservehicle user vehicle generator
+     * @param p_generatordefaultvehicle default vehicle generator
+     * @param p_generatoruservehicle user vehicle generator
      */
     private CEnvironment( @Nonnull final IAgentConfiguration<IEnvironment> p_configuration, @Nonnull final String p_id,
                           @Nonnull final Set<Callable<?>> p_elements,
-                          @Nonnull final IVehicle.IGenerator<IVehicle> p_defaultvehicle, @Nonnull final IVehicle.IGenerator<IVehicle> p_uservehicle )
+                          @Nonnull final IVehicle.IGenerator<IVehicle> p_generatordefaultvehicle,
+                          @Nonnull final IVehicle.IGenerator<IVehicle> p_generatoruservehicle,
+                          @Nonnull final IArea.IGenerator<IArea> p_generatorarea
+    )
     {
         super( p_configuration, FUNCTOR, p_id );
-        m_defaultvehicle = p_defaultvehicle;
-        m_uservehicle = p_uservehicle;
         m_elements = p_elements;
+        m_generatorarea = p_generatorarea;
+        m_generatoruservehicle = p_generatoruservehicle;
+        m_generatordefaultvehicle = p_generatordefaultvehicle;
     }
 
     @Override
@@ -202,11 +215,11 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         if ( m_grid.get().size() != 0 )
             throw new RuntimeException( "world is initialized" );
 
+        m_areas.clear();
         m_grid.set( new SparseObjectMatrix2D(
             p_lanes.intValue(),
             CUnit.INSTANCE.kilometertocell( p_length ).intValue()
         ) );
-        m_areas.clear();
 
         CAnimation.CInstance.INSTANCE.send( EStatus.CREATE, this );
     }
@@ -224,15 +237,21 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
     /**
      * creates an area
-     * @param p_xlowerbound x-value left-lower bound
-     * @param p_ylowerbound y-value left-lower bound
-     * @param p_xupperbound x-value right-upper bound
-     * @param p_yupperbound y-value right-upper bound
+     * @param p_positionfrom position start on the lane (inclusive)
+     * @param p_positionto position end on the lane (inclusive)
+     * @param p_lanefrom lane start (inclusive)
+     * @param p_laneto lane end (inclusive)
+     * @param p_maximumspeed maximum allowed speed
      */
     @IAgentActionFilter
     @IAgentActionName( name = "area/create" )
-    private void areacreate( final Number p_xlowerbound, final Number p_ylowerbound, final Number p_xupperbound, final Number p_yupperbound )
+    private void areacreate( final Number p_positionfrom, final Number p_positionto, final Number p_lanefrom, final Number p_laneto, final Number p_maximumspeed )
     {
+        final IArea l_area = m_generatorarea.generatesingle( new DenseDoubleMatrix1D(
+            new double[]{p_lanefrom.doubleValue(), p_laneto.doubleValue(), p_positionfrom.doubleValue(), p_positionto.doubleValue()}
+        ), p_maximumspeed );
+        m_areas.add( l_area );
+        m_elements.add( l_area );
     }
 
     /**
@@ -244,9 +263,9 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "vehicle/default" )
     private void defaultvehicle( @Nonnull final Number p_number )
     {
-        m_defaultvehicle.generatemultiple( p_number.intValue(), this )
-                        .peek( i -> this.set( i, i.position() ) )
-                        .forEach( m_elements::add );
+        m_generatordefaultvehicle.generatemultiple( p_number.intValue(), this )
+                                 .peek( i -> this.set( i, i.position() ) )
+                                 .forEach( m_elements::add );
     }
 
     /**
@@ -256,7 +275,10 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "vehicle/user" )
     private void uservehicle()
     {
-        final IVehicle l_vehicle = m_uservehicle.generatesingle( this );
+        if ( !m_uservehicleuse.compareAndSet( false, true ) )
+            throw new RuntimeException( "user vehicle has be created" );
+
+        final IVehicle l_vehicle = m_generatoruservehicle.generatesingle( this );
         this.set( l_vehicle, l_vehicle.position() );
         m_elements.add( l_vehicle );
     }
@@ -297,8 +319,9 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
                     m_configuration,
                     FUNCTOR,
                     (Set<Callable<?>>) p_data[0],
-                    (IVehicle.IGenerator) p_data[1],
-                    (IVehicle.IGenerator) p_data[2]
+                    (IVehicle.IGenerator<IVehicle>) p_data[1],
+                    (IVehicle.IGenerator<IVehicle>) p_data[2],
+                    (IArea.IGenerator<IArea>) p_data[3]
                 ),
                 true,
                 Stream.of( FUNCTOR )
