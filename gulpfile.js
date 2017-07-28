@@ -129,7 +129,6 @@ const l_gulp = require( "gulp" ),
               },
 
               "js-library" : {
-                  //dependency: "browserify-quintus",
                   output: "js/library.min.js",
                   source: l_gulp.src([
 
@@ -148,13 +147,19 @@ const l_gulp = require( "gulp" ),
 
                       "node_modules/mathjax/unpacked/MathJax.js",
                       "node_modules/mathjax/unpacked/config/TeX-AMS-MML_HTMLorMML.js",
-                      //"node_modules/mathjax/unpacked/config/**/*.js",
-                      //"node_modules/mathjax/unpacked/localization/**/*.js",
 
                       "node_modules/codemirror/lib/codemirror.js",
                       "node_modules/codemirror/addon/hint/show-hint.js",
                       "node_modules/codemirror/addon/hint/anyword-hint.js",
                       l_sourcedir + "js/codemirror_grammar.js",
+
+                      /*
+                      "node_modules/prismjs/prism.js",
+                      "node_modules/prismjs/components/prism-clike.js",
+                      "node_modules/prismjs/components/prism-java.js",
+                      "node_modules/prismjs/components/prism-prolog.js",
+                      l_sourcedir + "js/prism-agentspeak.js",
+                      */
 
                       "node_modules/Quintus/lib/*.js"
                   ])
@@ -166,10 +171,11 @@ const l_gulp = require( "gulp" ),
           // browserify
           browserify : {
               /*
-              "browserify-quintus" : {
-                  bundle: "Quintus",
-                  output: "js/quintus.bundle.js",
-                  source: "node_modules/quintus/index.js"
+              "browserify-any" : {
+                  dependcy: <any other task dependency>
+                  bundle: "<bundle name>",
+                  output: "<output file>",
+                  source: "<application source>"
               }
               */
           },
@@ -186,6 +192,7 @@ const l_gulp = require( "gulp" ),
 
                       "node_modules/pnotify/dist/*.css",
                       "node_modules/switchery/dist/switchery.css",
+                      //"node_modules/prismjs/themes/prism-coy.css",
 
                       "node_modules/codemirror/lib/codemirror.css",
                       "node_modules/codemirror/addon/hint/show-hint.css",

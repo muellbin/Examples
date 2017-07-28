@@ -75,7 +75,7 @@ public final class CHTTPServer
     /**
      * webservcer instance
      */
-    private static final CHTTPServer INSTANCE = CConfiguration.INSTANCE.<Boolean>getOrDefault( false, "httpserver", "enable" ) ? new CHTTPServer() : null;
+    private static final CHTTPServer INSTANCE = new CHTTPServer();
     /**
      * server instance
      */
@@ -92,8 +92,8 @@ public final class CHTTPServer
     {
         // server process
         m_server = new Server(
-            new InetSocketAddress( CConfiguration.INSTANCE.getOrDefault( DEFAULTHOST, "httpserver", "host" ),
-                                   CConfiguration.INSTANCE.<Integer>getOrDefault( DEFAULTPORT, "httpserver", "port" )
+            new InetSocketAddress( CConfiguration.INSTANCE.getOrDefault( DEFAULTHOST, "ui", "host" ),
+                                   CConfiguration.INSTANCE.<Integer>getOrDefault( DEFAULTPORT, "ui", "port" )
             )
         );
 
@@ -162,10 +162,10 @@ public final class CHTTPServer
             INSTANCE.m_server.start();
 
             // open browser if possible
-            if ( ( CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "openbrowser" ) ) && ( Desktop.isDesktopSupported() ) )
+            if ( ( CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "ui", "openbrowser" ) ) && ( Desktop.isDesktopSupported() ) )
                 Desktop.getDesktop().browse( new URI(
-                                                 "http://" + CConfiguration.INSTANCE.<String>getOrDefault( "localhost", "httpserver", "host" )
-                                                 + ":" + CConfiguration.INSTANCE.<Integer>getOrDefault( 12345, "httpserver", "port" )
+                                                 "http://" + CConfiguration.INSTANCE.<String>getOrDefault( "localhost", "ui", "host" )
+                                                 + ":" + CConfiguration.INSTANCE.<Integer>getOrDefault( 12345, "ui", "port" )
                                              )
                 );
 

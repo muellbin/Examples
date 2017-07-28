@@ -1,5 +1,5 @@
 body {
-    font-family: sans-serif;
+    font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
 }
 
 textarea {
@@ -10,11 +10,52 @@ a, a:hover, a:visited {
     color: #4183C4;
 }
 
-.remark-slide-number {
-    font-size: 10px;
+.remark-slide-container {
+    transition: opacity 1s ease-out;
+    opacity: 0;
 }
 
-.remark-code, .remark-code-line {
-    font-family: monospace;
-    background: #eee;
+.remark-visible {
+    transition: opacity 1s ease-out;
+    opacity: 1;
+}
+
+.remark-code {
+    border: 1px solid #a8a8a8;
+}
+
+.remark-slide-number {
+    font-size: 60%;
+}
+
+.footnote {
+    position: absolute;
+    bottom: 1em;
+    font-size: 60%;
+}
+
+h5 {
+    font-weight: normal;
+    display: list-item;
+    list-style-position: inside;
+}
+
+.importent {
+    color: darkred;
+}
+
+img[src$='#centering'], .centering {
+    display: block;
+    padding: 5px;
+    margin: 0 auto;
+    width: 95%;
+    max-width: 95%;
+}
+
+img[src$='#floatleft'] {
+    float: left;
+}
+
+img[src$='#floatright'] {
+    float: right;
 }

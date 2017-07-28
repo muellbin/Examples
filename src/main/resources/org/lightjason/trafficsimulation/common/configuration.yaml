@@ -40,8 +40,8 @@ agent:
 
 
 # HTTP server binding for UI
-httpserver:
-    enable: true
+ui:
+    openbrowser: true
     port: 12345
     host: localhost
 
