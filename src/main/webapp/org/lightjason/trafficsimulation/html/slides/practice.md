@@ -33,10 +33,12 @@ Agent-Orientated programming with AgentSpeak(L++)
 	* uses the [belief-desire-intention (BDI)](https://en.wikipedia.org/wiki/Belief%E2%80%93desire%E2%80%93intention_model) architecture 
 	* execution mechanisum is [Procedural reasoning system (PRS)](https://en.wikipedia.org/wiki/Procedural_reasoning_system)
 	* data is described in _symbols and facts_ with is used in a [logical programming language](https://en.wikipedia.org/wiki/Logic_programming)
-* We extend these basic models to _AgentSpeak(L++)_
+* We have extended this concept and the Java implemention  [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hübner to our .important[AgentSpeak(L++)] 
 	* clean and strict syntax with state-of-the-art features
 	* append the PRS with concurrency mechanism
+	* using a [REST-API](https://en.wikipedia.org/wiki/Representational_state_transfer) to get a flexible system independed controlling
 	* boost-up the execution mechanism up to approximatly 2.6 Mio agents on a desktop computer
+	* additional support for cloud computing with [Hadoop](https://en.wikipedia.org/wiki/Apache_Hadoop)
 
 
 ---
@@ -108,6 +110,22 @@ Variables are special term to store data during runtime, there are two kinds of 
 
 ---
 ## AOP - Events, Plan, Goals
+
+##### Plans are like _static methods_ or _functions_ in an imperative programming language, but has got a execution condition and boolean return value
+```java
+public static boolean dosomething( int x )
+{
+	if (x < 1)
+    	return false;
+        
+    System.out.println( "I do a first thing" );
+    System.out.println( "I do a second thing" );
+    return true;
+}
+```
+
+##### The plan condition is _optional_
+
 
 
 ---
