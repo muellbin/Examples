@@ -361,6 +361,35 @@ function codemirrorsave( pc_id, pc_source )
 }
 
 /**
+ * sets the asl name into ui
+ *
+ * @param pc_value value
+ */
+function aslname( pc_value )
+{
+    var lo = jQuery( "#ui-editorheader" );
+    lo.html( lo.html().split("<")[0] + " <small>" + pc_value + "</small>" );
+}
+
+/**
+ * loads an asl script into the editor
+ *
+ * @param pc_id agent id
+ * @param po_editor editor instance
+ */
+function loadagent( pc_id, po_editor )
+{
+    LightJason.ajax( "/api/simulation/asl/get/" + pc_id )
+        .success(function(i) {
+            po_editor.setValue( i );
+            po_editor.options.sourceid = pc_id;
+            aslname( pc_id );
+
+        })
+        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+}
+
+/**
  * builds the agent menu list
  */
 function agentlist()
@@ -625,8 +654,9 @@ jQuery(function() {
 
     // creates an agent
     jQuery( "#simulation-createagent" ).click(function() {
-        LightJason.ajax( "/api/simulation/asl/create/" + jQuery( "#simulation-agentname" ).val() )
-            .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); })
+        var lc_id = jQuery( "#simulation-agentname" ).val();
+        LightJason.ajax( "/api/simulation/asl/create/" + lc_id )
+            .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); loadagent( lc_id, l_editor ); })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
@@ -634,9 +664,19 @@ jQuery(function() {
     // delete agent
     jQuery( "#ui-deleteagent" ).click(function() {
         LightJason.ajax( "/api/simulation/asl/remove/" + l_editor.options.sourceid )
-            .success(function(i) { notifymessage({ title: "Agent", text: i, type: "success" }); agentlist(); })
+            .success(function(i) { 
+                notifymessage({ title: "Agent", text: i, type: "success" }); 
+                l_editor.setValue("");
+                l_editor.options.sourceid = undefined;
+                agentlist();
+                aslname( "" );
+            })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
 
+    // bind action to load asl source
+    jQuery(document).on( "click", ".ui-agent-source", function() {
+        loadagent( jQuery(this).data("sourceid"), l_editor );
     });
 
 
@@ -658,22 +698,6 @@ jQuery(function() {
             })
     });
 
-
-    // bind action to load source code
-    jQuery(document).on( "click", ".ui-agent-source", function() {
-        var l_id = jQuery(this).data("sourceid");
-        LightJason.ajax( "/api/simulation/asl/get/" + l_id )
-            .success(function(i) {
-                l_editor.setValue( i );
-                l_editor.options.sourceid = l_id;
-
-                var lo = jQuery( "#ui-editorheader" );
-                lo.html( lo.html().split("<")[0] + " <small>" + l_id + "</small>" );
-            })
-            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-    });
-
-
     // slide view
     jQuery( ".slide-view" ).click(function() {
         var l_source = jQuery(this).data("slidesource");
@@ -683,7 +707,7 @@ jQuery(function() {
 
 
     // set fullscreen structure
-    jQuery( "#ui-fullscreen" ).fullscreen();
+    jQuery( ".ui-fullscreen" ).fullscreen();
 
 
 
@@ -761,8 +785,9 @@ jQuery(function() {
 
             remove: function( p_data )
             {
-                //ToDo: after shut down, all vehicles should be deleted
                 l_music.stop();
+                Object.values( l_objects ).forEach(function(i) { i.destroy(); });
+                l_engine.destroy();
             }
         },
 
