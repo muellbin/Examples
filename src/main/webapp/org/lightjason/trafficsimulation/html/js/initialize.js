@@ -385,6 +385,22 @@ function agentlist()
 
 CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); };
 
+MathJax.Hub.Config({
+    tex2jax:{
+        inlineMath: [["$","$"]],
+        displayMath: [["$$","$$"]],
+        processEscapes: !0,
+        processEnvironments: !1,
+        skipTags: ["script","noscript","style","textarea","pre","code"],
+        TeX: {
+            equationNumbers: {
+                autoNumber:"AMS"
+            },
+            extensions: ["autoload-all.js"]
+        }
+    }
+});
+
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
