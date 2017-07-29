@@ -20,6 +20,7 @@
  */
 
 "use strict";
+
 /**
  * Resize function without multiple trigger
  *
@@ -55,6 +56,10 @@
     jQuery.fn[sr] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
 
 })(jQuery,'smartresize');
+
+
+
+// --- gentelella functions ------------------------------------------------------------------------------------------------------------------------------------
 
 /**
  * To change this license header, choose License Headers in Project Properties.
@@ -318,6 +323,10 @@ function init_knob() {
 
 }
 
+
+
+// --- function definition -------------------------------------------------------------------------------------------------------------------------------------
+
 /**
  * creates a notify-message
  *
@@ -392,6 +401,13 @@ jQuery(function() {
     init_autosize();
     agentlist();
 
+    var l_markdown = new showdown.Converter(),
+        l_screen = jQuery("#simulation-screen"),
+        l_editor = null,
+        l_music = null,
+        l_engine = null;
+
+
 
 
     // --- initialize main components --------------------------------------------------------------------------------------------------------------------------
@@ -426,7 +442,7 @@ jQuery(function() {
 
 
 
-    // --- initialize function & execution  --------------------------------------------------------------------------------------------------------------------
+    // --- initialize ui function & execution  -----------------------------------------------------------------------------------------------------------------
 
     // notify messages
     LightJason.websocket( "/message" )
@@ -441,6 +457,12 @@ jQuery(function() {
                       animate_speed: "fast"
                   })
               };
+
+
+    // initialize simulation speed
+    LightJason.ajax( "/api/simulation/time/get" )
+        .success(function(i) { jQuery("#simulation-speed").val(i).trigger( "change" ); })
+        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
 
     // get language labels for html content
@@ -462,8 +484,6 @@ jQuery(function() {
 
 
     // get language document
-    var l_markdown = new showdown.Converter();
-
     jQuery( ".ui-languagedocs" ).each(function(k, e) {
         var lo = jQuery(e);
 
@@ -476,9 +496,6 @@ jQuery(function() {
                   .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
-
-    // codemirror instance
-    var l_editor = null;
 
     // read codemirror grammer and build autocompletion & syntax highlight
     // @see http://foo123.github.io/examples/codemirror-grammar/
@@ -565,11 +582,6 @@ jQuery(function() {
         });
     } );
 
-
-    // initialize simulation speed
-    LightJason.ajax( "/api/simulation/time/get" )
-              .success(function(i) { jQuery("#simulation-speed").val(i).trigger( "change" ); })
-              .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
     // set simulation speed
     jQuery("#simulation-speed").change(function(e) {
@@ -658,7 +670,157 @@ jQuery(function() {
     jQuery( "#ui-fullscreen" ).fullscreen();
 
 
-    // test chart
+
+    // --- animation engine ------------------------------------------------------------------------------------------------------------------------------------
+
+    /** element functions */
+    var l_objects = {};
+    var objectfunctions = {
+
+        environment: {
+            create: function( p_data )
+            {
+                var height = p_data.lanes + 2;
+                var width = p_data.length;
+
+                var streettiles = function( width, height )
+                {
+                    var l_matrix = [];
+                    var i = 1;
+                    for ( var j = 1; j <= width; j++ )
+                        l_matrix.push( 2 );
+                    while( i <= height - 2 )
+                    {
+                        for ( var j = 1; j <= width; j++ )
+                            l_matrix.push( i % 2 === 0  ? 3 : 4 );
+                        i++;
+                    }
+                    for ( var j = 1; j <= width; j++ )
+                        l_matrix.push( 2 );
+                    return l_matrix;
+                };
+
+                var tiles =
+                    {
+                        "height":height,
+                        "layers":[
+                            {
+                                "data": streettiles(width, height),
+                                "height":height,
+                                "name":"Street",
+                                "opacity":1,
+                                "type":"tilelayer",
+                                "visible":true,
+                                "width":width,
+                                "x":0,
+                                "y":0
+                            }],
+                        "orientation":"orthogonal",
+                        "tileheight":32,
+                        "tilesets":[
+                            {
+                                "firstgid":1,
+                                "image":"images/streettiles.png",
+                                "imageheight":32,
+                                "imagewidth":128,
+                                "margin":0,
+                                "name":"StreetTiles",
+                                "spacing":0,
+                                "tileheight":32,
+                                "tilewidth":32
+                            }],
+                        "tilewidth":32,
+                        "version":1,
+                        "width":width
+                    };
+                l_engine.load.tilemap('street', null, tiles, Phaser.Tilemap.TILED_JSON);
+                l_engine.scale.setGameSize( jQuery("#simulation-dashboard").width(), height * 32 );
+                var map = l_engine.add.tilemap('street');
+                map.addTilesetImage('StreetTiles', 'streettiles');
+                var layer = map.createLayer('Street');
+                layer.resizeWorld();
+                layer.wrap = true;
+
+                l_music = l_engine.add.audio('music');
+                l_music.play();
+            },
+
+            remove: function( p_data )
+            {
+                //ToDo: after shut down, all vehicles should be deleted
+                l_music.stop();
+            }
+        },
+
+        defaultvehicle: {
+            create: function (p_data) {
+                // create a default vehicle
+                l_objects[p_data.id] = l_engine.add.sprite(p_data.x * 32, p_data.y * 32 + 9, 'defaultvehicle');
+            },
+
+            execute: function (p_data) {
+                // move the vehicles in the new positions
+                // @todo replace 250 with simulation speed
+                l_engine.add.tween( l_objects[p_data.id] ).to( {x: p_data.x * 32, y: p_data.y * 32 + 9}, 250 ).start();
+            }
+        },
+
+        uservehicle: {
+            create: function (p_data) {
+                //create user vehicle
+                l_objects[p_data.id] = l_engine.add.sprite(p_data.x * 32, p_data.y * 32 + 9, 'uservehicle');
+                // camera follows the user vehicle
+                l_engine.camera.follow(l_objects[p_data.id]);
+            }
+        }
+    };
+
+    // set function references
+    objectfunctions.uservehicle.execute = objectfunctions.defaultvehicle.execute;
+
+
+
+
+    // engine initialization
+    l_engine = new Phaser.Game(
+        l_screen.width(),
+        l_screen.height(),
+        Phaser.AUTO, 'simulation-screen',
+        {
+            preload: function(i) {
+                i.load.image('streettiles', 'assets/streettiles.png');
+                i.load.image('uservehicle', 'assets/uservehicle.png');
+                i.load.image('defaultvehicle', 'assets/defaultvehicle.png');
+
+                i.load.audio('music', "assets/axelf.ogg");
+            },
+            background: "#fff"
+        }
+    );
+
+    // enging bind to communication websocket
+    LightJason.websocket( "/animation" )
+              .onmessage = function ( e ) {
+                var l_data = JSON.parse( e.data );
+                if ( ( objectfunctions[l_data.type] ) && ( typeof( objectfunctions[l_data.type][l_data.status] ) === "function" ) )
+                    objectfunctions[l_data.type][l_data.status]( l_data );
+              };
+
+    jQuery( "#simulation-music" ).click(function() {
+
+    })
+
+
+
+
+
+
+
+
+
+
+    // ---- @test section --------------------------------------------------------------------------------------------------------------------------------------
+
     // https://canvasjs.com/docs/charts/basics-of-creating-html5-chart/updating-chart-options/
     var chart = new Chart( jQuery( "#simulation-panelty" ), {
         type: "line",
@@ -689,7 +851,7 @@ jQuery(function() {
             chart.update();
             chartlabel++;
         }
-    }
+    };
 
     // notify messages
     LightJason.websocket( "/data" )

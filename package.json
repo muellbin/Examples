@@ -19,7 +19,6 @@
     "url": "https://github.com/LightJason/Examples/issues"
   },
   "dependencies": {
-    "Quintus": "https://github.com/cykod/Quintus/tarball/master",
     "bootstrap": "^3.3.7",
     "chart.js": "https://github.com/chartjs/Chart.js/archive/v2.6.0.tar.gz",
     "codemirror": "^5.27.4",
@@ -30,6 +29,7 @@
     "jquery-knob": "https://github.com/aterrien/jQuery-Knob/tarball/master",
     "jquery.full.screen": "https://github.com/p34eu/jquery.full.screen/tarball/master",
     "mathjax": "https://github.com/mathjax/MathJax/archive/2.7.1.tar.gz",
+    "phaser": "https://github.com/photonstorm/phaser/archive/v2.6.2.tar.gz",
     "pnotify": "https://github.com/sciactive/pnotify/tarball/master",
     "prismjs": "https://github.com/PrismJS/prism/tarball/master",
     "remark": "https://github.com/gnab/remark/archive/v0.14.0.tar.gz",

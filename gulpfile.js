@@ -113,8 +113,7 @@ const l_gulp = require( "gulp" ),
                   source: l_gulp.src([
                       l_sourcedir + "js/global.js",
                       l_sourcedir + "js/lightjason.js",
-                      l_sourcedir + "js/initialize.js",
-                      l_sourcedir + "js/simulation.js"
+                      l_sourcedir + "js/initialize.js"
                   ])
               },
 
@@ -143,6 +142,9 @@ const l_gulp = require( "gulp" ),
                       "node_modules/codemirror/addon/hint/anyword-hint.js",
                       l_sourcedir + "js/codemirror_grammar.js",
 
+                      "node_modules/phaser/build/pixi.js",
+                      "node_modules/phaser/build/phaser.js"
+
                       /*
                       "node_modules/prismjs/prism.js",
                       "node_modules/prismjs/components/prism-clike.js",
@@ -150,8 +152,6 @@ const l_gulp = require( "gulp" ),
                       "node_modules/prismjs/components/prism-prolog.js",
                       l_sourcedir + "js/prism-agentspeak.js",
                       */
-
-                      "node_modules/Quintus/lib/*.js"
                   ])
               }
 
@@ -175,7 +175,7 @@ const l_gulp = require( "gulp" ),
           minifycss : {
 
               "css-library" : {
-                  output: "css/layout.min.css",
+                  output: "css/library.min.css",
                   source: l_gulp.src([
                       "node_modules/bootstrap/dist/css/bootstrap.css",
                       "node_modules/gentelella/build/css/custom.css",
@@ -190,6 +190,11 @@ const l_gulp = require( "gulp" ),
                   ])
               },
 
+              "css-index" : {
+                  output: "css/index.min.css",
+                  source: l_gulp.src( l_sourcedir + "css/index.css" )
+              },
+
               "css-slide" : {
                   output: "css/slide.min.css",
                   source: l_gulp.src( l_sourcedir + "css/slide.css" )
@@ -201,15 +206,6 @@ const l_gulp = require( "gulp" ),
 
 
 // --- task definition ------------------------------------------------------------------------------------
-
-// https://egghead.io/lessons/javascript-gulp-and-browserify-initial-setup
-// https://www.npmjs.com/package/vinyl-source-stream
-// https://wehavefaces.net/gulp-browserify-the-gulp-y-way-bb359b3f9623
-// https://www.viget.com/articles/gulp-browserify-starter-faq
-// http://9elements.com/io/external-bundles-with-browserify-and-gulp/
-// https://fettblog.eu/gulp-browserify-multiple-bundles/
-
-// http://schickling.me/synchronous-tasks-gulp/
 
 // minify js tasks
 for( const js in l_config.minifyjs )
