@@ -696,67 +696,64 @@ jQuery(function() {
         environment: {
             create: function( p_data )
             {
-                var height = p_data.lanes + 2;
-                var width = p_data.length;
+                var l_height = p_data.lanes + 2,
+                    l_width = p_data.length,
+                    l_tiles = [];
 
-                var streettiles = function( width, height )
-                {
-                    var l_matrix = [];
-                    var i = 1;
-                    for ( var j = 1; j <= width; j++ )
-                        l_matrix.push( 2 );
-                    while( i <= height - 2 )
-                    {
-                        for ( var j = 1; j <= width; j++ )
-                            l_matrix.push( i % 2 === 0  ? 3 : 4 );
-                        i++;
-                    }
-                    for ( var j = 1; j <= width; j++ )
-                        l_matrix.push( 2 );
-                    return l_matrix;
-                };
+                l_tiles = l_tiles.concat( Array( l_width ).fill( 2 ) );
+                for( var i=0; i < l_height - 2; i++ )
+                    l_tiles = l_tiles.concat( Array( l_width ).fill( i % 2 === 0  ? 4 : 3 ) );
+                l_tiles = l_tiles.concat( Array( l_width ).fill( 2 ) );
 
-                var tiles =
-                    {
-                        "height":height,
-                        "layers":[
-                            {
-                                "data": streettiles(width, height),
-                                "height":height,
-                                "name":"Street",
-                                "opacity":1,
-                                "type":"tilelayer",
-                                "visible":true,
-                                "width":width,
-                                "x":0,
-                                "y":0
-                            }],
-                        "orientation":"orthogonal",
-                        "tileheight":32,
-                        "tilesets":[
-                            {
-                                "firstgid":1,
-                                "image":"images/streettiles.png",
-                                "imageheight":32,
-                                "imagewidth":128,
-                                "margin":0,
-                                "name":"StreetTiles",
-                                "spacing":0,
-                                "tileheight":32,
-                                "tilewidth":32
-                            }],
-                        "tilewidth":32,
-                        "version":1,
-                        "width":width
-                    };
                 l_music = l_engine.add.audio('music');
-                l_engine.load.tilemap('street', null, tiles, Phaser.Tilemap.TILED_JSON);
-                l_engine.scale.setGameSize( jQuery("#simulation-dashboard").width(), height * 32 );
-                var map = l_engine.add.tilemap('street');
-                map.addTilesetImage('StreetTiles', 'streettiles');
-                var layer = map.createLayer('Street');
-                layer.resizeWorld();
-                layer.wrap = true;
+                l_engine.scale.setGameSize( jQuery("#simulation-dashboard").width(), l_height * 32 );
+
+                l_engine.load.tilemap(
+                    'street',
+                    null,
+                    {
+                        version: 1,
+                        orientation: "orthogonal",
+                        tileheight: 32,
+                        tilewidth: 32,
+                        height: l_height,
+                        width: l_width,
+
+                        layers: [{
+                            data: l_tiles,
+                            height: l_height,
+                            name: "Street",
+                            opacity: 1,
+                            type: "tilelayer",
+                            visible: true,
+                            width: l_width,
+                            x: 0,
+                            y:0
+                        }],
+
+                        tilesets: [
+                            {
+                                firstgid: 1,
+                                image: "assets/streettiles.png",
+                                imageheight: 32,
+                                imagewidth: 128,
+                                margin: 0,
+                                name: "StreetTiles",
+                                spacing: 0,
+                                tileheight: 32,
+                                tilewidth: 32
+                            }]
+                    },
+                    Phaser.Tilemap.TILED_JSON
+                );
+
+                var l_map = l_engine.add.tilemap('street');
+                l_map.addTilesetImage('StreetTiles', 'streettiles');
+
+                var l_layer = l_map.createLayer('Street');
+                l_layer.resizeWorld();
+                l_layer.wrap = true;
+
 
                 if ( jQuery( "#simulation-music" ).is(":checked") )
                     l_music.play();
@@ -824,6 +821,9 @@ jQuery(function() {
               };
 
     jQuery( "#simulation-music" ).change(function() {
+        if (!l_music)
+            return;
+
         if (this.checked)
             l_music.play();
         else
