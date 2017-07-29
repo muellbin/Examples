@@ -749,6 +749,7 @@ jQuery(function() {
                         "version":1,
                         "width":width
                     };
+                l_music = l_engine.add.audio('music');
                 l_engine.load.tilemap('street', null, tiles, Phaser.Tilemap.TILED_JSON);
                 l_engine.scale.setGameSize( jQuery("#simulation-dashboard").width(), height * 32 );
                 var map = l_engine.add.tilemap('street');
@@ -757,8 +758,8 @@ jQuery(function() {
                 layer.resizeWorld();
                 layer.wrap = true;
 
-                l_music = l_engine.add.audio('music');
-                l_music.play();
+                if ( jQuery( "#simulation-music" ).is(":checked") )
+                    l_music.play();
             },
 
             remove: function( p_data )
@@ -822,9 +823,12 @@ jQuery(function() {
                     objectfunctions[l_data.type][l_data.status]( l_data );
               };
 
-    jQuery( "#simulation-music" ).click(function() {
-
-    })
+    jQuery( "#simulation-music" ).change(function() {
+        if (this.checked)
+            l_music.play();
+        else
+            l_music.stop();
+    });
 
 
 
