@@ -394,7 +394,7 @@ jQuery(function() {
 
 
 
-    // --- initialize components -------------------------------------------------------------------------------------------------------------------------------
+    // --- initialize main components --------------------------------------------------------------------------------------------------------------------------
 
     // panel toolbox
     jQuery('.close-link').click(function () { jQuery(this).closest('.x_panel').remove(); });
@@ -425,21 +425,8 @@ jQuery(function() {
     jQuery(".js-switch").each(function(i,e) { var s = new Switchery( e, { color: "#26B99A" } ); });
 
 
-    // accordion
-    jQuery(".expand").on("click", function () {
-        jQuery(this).next().slideToggle(200);
-        $.expand = $(this).find(">:first-child");
 
-        if ($expand.text() === "+") {
-            $expand.text("-");
-        } else {
-            $expand.text("+");
-        }
-    });
-
-
-
-    // --- initialize data -------------------------------------------------------------------------------------------------------------------------------------
+    // --- initialize function & execution  --------------------------------------------------------------------------------------------------------------------
 
     // notify messages
     LightJason.websocket( "/message" )
@@ -495,8 +482,8 @@ jQuery(function() {
 
     // read codemirror grammer and build autocompletion & syntax highlight
     // @see http://foo123.github.io/examples/codemirror-grammar/
-    jQuery.getJSON( "/data/agentspeak.json", function(grammar) {
-        jQuery.getJSON( "/data/action.json", function(actions) {
+    jQuery.getJSON( "/assets/agentspeak.json", function(grammar) {
+        jQuery.getJSON( "/assets/action.json", function(actions) {
 
             // syntax highlighting
             grammar.Lex.builtin.tokens = Object.keys(actions);

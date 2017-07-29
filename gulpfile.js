@@ -61,6 +61,11 @@ const l_gulp = require( "gulp" ),
                   ])
               },
 
+              "assets" : {
+                  output: "assets",
+                  source: l_gulp.src( l_sourcedir + "assets/*.*" )
+              },
+
               "css-fontawesome" : {
                   output: "css",
                   source: l_gulp.src( "node_modules/font-awesome/css/font-awesome.min.css" )
@@ -74,21 +79,6 @@ const l_gulp = require( "gulp" ),
               "markdown-documents" : {
                   output: "docs",
                   source: l_gulp.src( l_sourcedir + "docs/*.md" )
-              },
-
-              "images" : {
-                  output: "images",
-                  source: l_gulp.src( l_sourcedir + "images/*.*" )
-              },
-
-              "data" : {
-                  output: "data",
-                  source: l_gulp.src( l_sourcedir + "data/*.json" )
-              },
-
-              "audio" : {
-                  output: "audio",
-                  source: l_gulp.src( l_sourcedir + "audio/*.mp3" )
               },
 
               "mathjax-jax" : {

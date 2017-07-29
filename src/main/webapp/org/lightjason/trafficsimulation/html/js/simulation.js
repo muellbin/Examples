@@ -27,15 +27,21 @@ jQuery(function() {
     var vehicles = {};
 
     /** phaser engine */
-    var game = new Phaser.Game(jQuery("#simulation-dashboard").width(), jQuery("#simulation-dashboard").height(), Phaser.AUTO, 'simulation-screen', { preload: preload });
+    var lo_dom = jQuery("#simulation-screen");
+    var game = new Phaser.Game(
+        lo_dom.width(),
+        lo_dom.height(),
+        Phaser.AUTO, 'simulation-screen',
+        {
+            preload: function(i) {
+                i.load.image('streettiles', 'assets/streettiles.png');
+                i.load.image('uservehicle', 'assets/uservehicle.png');
+                i.load.image('defaultvehicle', 'assets/defaultvehicle.png');
+            },
+            background: "#fff"
+        }
+    );
 
-    /** phaser preload function */
-    function preload()
-    {
-        game.load.image('streettiles', 'images/streettiles.png');
-        game.load.image('uservehicle', 'images/uservehicle.png');
-        game.load.image('defaultvehicle', 'images/defaultvehicle.png');
-    }
 
     /** element functions */
     var objectfunctions = {

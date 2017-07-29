@@ -8,7 +8,7 @@
     <link href="css/font-awesome.min.css" type="text/css" rel="stylesheet" media="all">
     <link href="css/layout.min.css" type="text/css" rel="stylesheet" media="all">
 
-    <link rel="shortcut icon" href="images/car.svg" sizes="any" type="image/svg+xml">
+    <link rel="shortcut icon" href="assets/car.svg" sizes="any" type="image/svg+xml">
 
     <style>
         .CodeMirror {
@@ -17,11 +17,8 @@
             height: auto;
         }
 
-        canvas {
-            margin: 5px;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+        #simulation-dashboard {
+            min-height: 200px;
         }
     </style>
 
@@ -98,7 +95,7 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="images/car.svg" alt="">Simulation
+                                    <img src="assets/car.svg" alt="">Simulation
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -244,7 +241,7 @@
                             </div>
                             <div class="x_content">
                                 <div class="dashboard-widget-content" id="simulation-dashboard">
-                                    <div id="simulation-screen" width="800" height="450"></div>
+                                    <div id="simulation-screen" width="925" height="200"></div>
                                 </div>
                             </div>
                         </div>
