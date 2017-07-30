@@ -802,7 +802,6 @@ jQuery(function() {
                 )
                 .then(function() {
                      l_visualizationobjects = {};
-                     l_engine.destroy();
                 });
             }
         },
