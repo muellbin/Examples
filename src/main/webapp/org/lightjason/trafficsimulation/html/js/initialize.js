@@ -789,10 +789,21 @@ jQuery(function() {
             remove: function( p_data )
             {
                 l_music.stop();
-                // @todo check because destroing fails
-                // Object.values( l_visualizationobjects ).forEach(function(i) { i.destroy(); });
-                // l_engine.destroy();
-                l_visualizationobjects = {};
+
+                Promise.all(
+                    Object.values( l_visualizationobjects )
+                          .map(function(i) {
+                              return new Promise( function(resolve) {
+                                  l_engine.tweens.remove(i);
+                                  i.destroy();
+                                  resolve();
+                              } );
+                          })
+                )
+                .then(function() {
+                     l_visualizationobjects = {};
+                     l_engine.destroy();
+                });
             }
         },
 
@@ -803,6 +814,9 @@ jQuery(function() {
             },
 
             execute: function (p_data) {
+                if ( !l_visualizationobjects[p_data.id] )
+                    return;
+
                 // move the vehicles in the new positions
                 l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: p_data.y * 32 + 9}, l_simulationspeed.val() ).start();
             }
@@ -847,7 +861,7 @@ jQuery(function() {
               .onmessage = function ( e ) {
                 var l_data = JSON.parse( e.data );
                 if ( ( l_visualizationfunctions[l_data.type] ) && ( typeof( l_visualizationfunctions[l_data.type][l_data.status] ) === "function" ) )
-                    l_visualizationfunctions[l_data.type][l_data.status]( l_data );
+                    l_visualizationfunctions[l_data.type][l_data.status](l_data);
               };
 
     l_simulationmusic.change(function() {
