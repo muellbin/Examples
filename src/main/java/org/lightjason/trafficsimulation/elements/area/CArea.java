@@ -158,6 +158,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         return super.call();
     }
 
+    // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------
 
     /**
      * returns a list of all vehicles inside

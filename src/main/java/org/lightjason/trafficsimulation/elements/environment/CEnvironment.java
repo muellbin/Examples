@@ -204,6 +204,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return Stream.empty();
     }
 
+    // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------
+
     /**
      * action to initialize the simulation
      *

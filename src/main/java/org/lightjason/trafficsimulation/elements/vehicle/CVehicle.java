@@ -188,6 +188,26 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         return this;
     }
 
+    @Override
+    public final double penalty()
+    {
+        return m_panelize.get();
+    }
+
+    @Override
+    public final DoubleMatrix1D goal()
+    {
+        return new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ), m_goal} );
+    }
+
+    @Override
+    public final ETYpe type()
+    {
+        return m_type;
+    }
+
+    // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------
+
     /**
      * accelerate
      */
@@ -244,24 +264,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     {
         m_panelize.addAndGet( p_value.doubleValue() );
         return this;
-    }
-
-    @Override
-    public final double penalty()
-    {
-        return m_panelize.get();
-    }
-
-    @Override
-    public final DoubleMatrix1D goal()
-    {
-        return new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ), m_goal} );
-    }
-
-    @Override
-    public final ETYpe type()
-    {
-        return m_type;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
