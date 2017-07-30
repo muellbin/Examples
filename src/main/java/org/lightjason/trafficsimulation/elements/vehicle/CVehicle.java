@@ -38,6 +38,7 @@ import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -106,20 +107,24 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * current position on lane / cell position
      */
     private final DoubleMatrix1D m_position = new DenseDoubleMatrix1D( new double[]{0, 0} );
+    /**
+     * goal position (x-coordinate)
+     */
+    private final int m_goal;
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
      * @param p_id name of the object
+     * @param p_goal goal position (x-coordinate)
      * @param p_accelerate accelerate speed
      * @param p_decelerate decelerate speed
      *
      * @todo remove fixed values
      */
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration,
-                      @Nonnull final String p_id,
-                      @Nonnull final IEnvironment p_environment,
+                      @Nonnull final String p_id, @Nonnull final IEnvironment p_environment, @Nonnegative final int p_goal,
                       @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate, @Nonnegative final double p_maximumspeed,
                       @Nonnull final ETYpe p_type
     )
@@ -129,6 +134,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         //m_decelerate = p_decelerate;
         m_maximumspeed = p_maximumspeed;
         m_environment = p_environment;
+        m_goal = p_goal;
         m_type = p_type;
 
         m_accelerate = 15;
@@ -230,6 +236,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         return m_speed.get();
     }
 
+    @Nonnull
     @Override
     public final IVehicle penalty( @Nonnull final Number p_value )
     {
@@ -241,6 +248,12 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final double penalty()
     {
         return m_panelize.get();
+    }
+
+    @Override
+    public final DoubleMatrix1D goal()
+    {
+        return new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ), m_goal} );
     }
 
     @Override
@@ -307,11 +320,15 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @SuppressWarnings( "unchecked" )
         protected final Triple<IVehicle, Boolean, Stream<String>> generate( @Nullable final Object... p_data )
         {
+            if ( ( p_data == null ) || ( p_data.length < 2 ) )
+                throw new RuntimeException( CCommon.languagestring( this, "parametercount" ) );
+
             return new ImmutableTriple<>(
                 new CVehicle(
                         m_configuration,
                         MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
                         (IEnvironment) p_data[0],
+                        ( (Number) p_data[1] ).intValue(),
                         1,
                         1,
                         m_random.nextInt( 150 ) + 100,

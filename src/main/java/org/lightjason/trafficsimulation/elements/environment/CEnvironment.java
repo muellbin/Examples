@@ -41,6 +41,7 @@ import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.trafficsimulation.common.CCommon;
+import org.lightjason.trafficsimulation.common.EDirection;
 import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -162,12 +163,13 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final synchronized boolean move( @Nonnull final IVehicle p_vehicle )
     {
-        //ToDO: must be better
-        if ( m_grid.get().size() == 0 )
-            return true;
+        final Number l_target = EDirection.FORWARD.position(
+            p_vehicle.position(),
+            p_vehicle.goal(),
+            CUnit.INSTANCE.speedtocell( p_vehicle.speed() ).doubleValue()
+        ).get( 1 );
 
-        final int l_target = CUnit.INSTANCE.positionspeedtocell( p_vehicle.position().get( 1 ), p_vehicle.speed() ).intValue();
-        if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 1 ) + 1, Math.min( l_target, m_grid.get().columns() ) )
+        if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 1 ) + 1, Math.min( l_target.intValue(), m_grid.get().columns() ) )
                       .parallel()
                       .filter( i -> m_grid.get().getQuick( (int) p_vehicle.position().get( 0 ), i ) != null )
                       .findAny()
@@ -175,14 +177,14 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         )
             return false;
 
-        if ( ( l_target > m_grid.get().columns() ) && ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) ) )
+        if ( ( l_target.intValue() > m_grid.get().columns() ) && ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) ) )
         {
             this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
             return true;
         }
 
-        m_grid.get().setQuick( (int) p_vehicle.position().get( 0 ), l_target, p_vehicle );
-        p_vehicle.position().setQuick( 1, l_target );
+        m_grid.get().setQuick( (int) p_vehicle.position().get( 0 ), l_target.intValue(), p_vehicle );
+        p_vehicle.position().setQuick( 1, l_target.intValue() );
         return true;
     }
 
@@ -278,7 +280,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         if ( !m_uservehicleuse.compareAndSet( false, true ) )
             throw new RuntimeException( "user vehicle has be created" );
 
-        final IVehicle l_vehicle = m_generatoruservehicle.generatesingle( this );
+        final IVehicle l_vehicle = m_generatoruservehicle.generatesingle( this, this.position().get( 1 ) );
         this.set( l_vehicle, l_vehicle.position() );
         m_elements.add( l_vehicle );
     }

@@ -23,8 +23,10 @@
 
 package org.lightjason.trafficsimulation.elements.vehicle;
 
+import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.trafficsimulation.elements.IObject;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.util.Locale;
 
@@ -48,6 +50,7 @@ public interface IVehicle extends IObject<IVehicle>
      * @param p_value value
      * @return self reference
      */
+    @Nonnull
     IVehicle penalty( @Nonnull final Number p_value );
 
     /**
@@ -55,7 +58,16 @@ public interface IVehicle extends IObject<IVehicle>
      *
      * @return value
      */
+    @Nonnegative
     double penalty();
+
+    /**
+     * returns the goal position of the vehicle
+     *
+     * @return goal position
+     */
+    DoubleMatrix1D goal();
+
 
     /**
      * vehicle type
