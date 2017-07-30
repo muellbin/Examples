@@ -447,7 +447,9 @@ jQuery(function() {
     agentlist();
 
     var l_markdown = new showdown.Converter(),
-        l_screen = jQuery("#simulation-screen"),
+        l_simulationscreen = jQuery("#simulation-screen"),
+        l_simulationspeed = jQuery("#simulation-speed"),
+        l_simulationmusic = jQuery( "#simulation-music" ),
         l_editor = null,
         l_music = null,
         l_engine = null,
@@ -631,7 +633,7 @@ jQuery(function() {
 
 
     // set simulation speed
-    jQuery("#simulation-speed").change(function(e) {
+    l_simulationspeed.change(function(e) {
         if (e.value)
             LightJason.ajax( "/api/simulation/time/set/" + Math.round( e.value ) )
                       .success(function(i) { notifymessage({ title: "Simulation", text: i, type: "success" }); })
@@ -780,7 +782,7 @@ jQuery(function() {
                 l_layer.wrap = true;
 
 
-                if ( jQuery( "#simulation-music" ).is(":checked") )
+                if ( l_simulationmusic.is(":checked") )
                     l_music.play();
             },
 
@@ -802,7 +804,7 @@ jQuery(function() {
 
             execute: function (p_data) {
                 // move the vehicles in the new positions
-                l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: p_data.y * 32 + 9}, jQuery("#simulation-speed").val() ).start();
+                l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: p_data.y * 32 + 9}, l_simulationspeed.val() ).start();
             }
         },
 
@@ -824,8 +826,8 @@ jQuery(function() {
 
     // engine initialization
     l_engine = new Phaser.Game(
-        l_screen.width(),
-        l_screen.height(),
+        l_simulationscreen.width(),
+        l_simulationscreen.height(),
         Phaser.AUTO,
         "simulation-screen",
         {
@@ -848,7 +850,7 @@ jQuery(function() {
                     l_visualizationfunctions[l_data.type][l_data.status]( l_data );
               };
 
-    jQuery( "#simulation-music" ).change(function() {
+    l_simulationmusic.change(function() {
         if (!l_music)
             return;
 
