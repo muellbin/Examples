@@ -23,7 +23,6 @@
 
 package org.lightjason.trafficsimulation.elements.vehicle;
 
-import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnegative;
