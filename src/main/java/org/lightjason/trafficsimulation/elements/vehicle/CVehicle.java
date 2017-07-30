@@ -106,7 +106,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     /*
      * current position on lane / cell position
      */
-    private final DoubleMatrix1D m_position = new DenseDoubleMatrix1D( new double[]{0, 0} );
+    private final DoubleMatrix1D m_position;
     /**
      * goal position (x-coordinate)
      */
@@ -117,19 +117,21 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      *
      * @param p_configuration agent configuration
      * @param p_id name of the object
+     * @param p_start start position
      * @param p_goal goal position (x-coordinate)
      * @param p_accelerate accelerate speed
      * @param p_decelerate decelerate speed
      *
      * @todo remove fixed values
      */
-    private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration,
-                      @Nonnull final String p_id, @Nonnull final IEnvironment p_environment, @Nonnegative final int p_goal,
+    private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration, @Nonnull final String p_id,
+                      @Nonnull final IEnvironment p_environment, @Nonnegative final int p_goal, @Nonnull final DoubleMatrix1D p_start,
                       @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate, @Nonnegative final double p_maximumspeed,
                       @Nonnull final ETYpe p_type
     )
     {
         super( p_configuration, FUNCTOR, p_id );
+        m_position = p_start;
         //m_accelerate = p_accelerate;
         //m_decelerate = p_decelerate;
         m_maximumspeed = p_maximumspeed;
@@ -154,8 +156,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {
         return StreamUtils.zip(
-            Stream.of( "type", "status", "id", "y", "x" ),
-            Stream.of( this.type().toString(), p_status.toString(), this.id(), this.position().get( 0 ), this.position().get( 1 ) ),
+            Stream.of( "type", "status", "id", "y", "x", "goal" ),
+            Stream.of( this.type().toString(), p_status.toString(), this.id(), this.position().get( 0 ), this.position().get( 1 ), m_goal ),
             ImmutablePair::new
         ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
     }
@@ -320,19 +322,20 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @SuppressWarnings( "unchecked" )
         protected final Triple<IVehicle, Boolean, Stream<String>> generate( @Nullable final Object... p_data )
         {
-            if ( ( p_data == null ) || ( p_data.length < 2 ) )
+            if ( ( p_data == null ) || ( p_data.length < 3 ) )
                 throw new RuntimeException( CCommon.languagestring( this, "parametercount" ) );
 
             return new ImmutableTriple<>(
                 new CVehicle(
-                        m_configuration,
-                        MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
-                        (IEnvironment) p_data[0],
-                        ( (Number) p_data[1] ).intValue(),
-                        1,
-                        1,
+                    m_configuration,
+                    MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
+                    (IEnvironment) p_data[0],
+                    ( (Number) p_data[1] ).intValue(),
+                    (DoubleMatrix1D) p_data[2],
+                    1,
+                    1,
                         m_random.nextInt( 150 ) + 100,
-                        m_type
+                    m_type
                 ),
                 m_visible,
                 Stream.of( FUNCTOR )

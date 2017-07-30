@@ -280,7 +280,11 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         if ( !m_uservehicleuse.compareAndSet( false, true ) )
             throw new RuntimeException( "user vehicle has be created" );
 
-        final IVehicle l_vehicle = m_generatoruservehicle.generatesingle( this, this.position().get( 1 ) );
+        final IVehicle l_vehicle = m_generatoruservehicle.generatesingle(
+            this,
+            this.position().get( 1 ) - 1,
+            new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1, 0} )
+        );
         this.set( l_vehicle, l_vehicle.position() );
         m_elements.add( l_vehicle );
     }

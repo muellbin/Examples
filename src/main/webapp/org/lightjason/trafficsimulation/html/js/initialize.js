@@ -808,23 +808,23 @@ jQuery(function() {
 
         defaultvehicle: {
             create: function (p_data) {
-                // create a default vehicle
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, p_data.y * 32 + 9, "defaultvehicle" );
+                // create a default vehicle (y-coordinate must be increment, because footway border is not part of the internal data model)
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, "defaultvehicle" );
             },
 
             execute: function (p_data) {
                 if ( !l_visualizationobjects[p_data.id] )
                     return;
 
-                // move the vehicles in the new positions
-                l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: p_data.y * 32 + 9}, l_simulationspeed.val() ).start();
+                // move the vehicles in the new positions (y-coordinate must be increment, because footway border is not part of the internal data model)
+                l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() ).start();
             }
         },
 
         uservehicle: {
             create: function (p_data) {
-                //create user vehicle
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, p_data.y * 32 + 9, "uservehicle" );
+                //create user vehicle (y-coordinate must be increment, because footway border is not part of the internal data model)
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, "uservehicle" );
                 // camera follows the user vehicle
                 l_engine.camera.follow(l_visualizationobjects[p_data.id]);
             }
