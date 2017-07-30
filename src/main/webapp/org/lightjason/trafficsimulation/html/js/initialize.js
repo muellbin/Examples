@@ -450,7 +450,9 @@ jQuery(function() {
         l_screen = jQuery("#simulation-screen"),
         l_editor = null,
         l_music = null,
-        l_engine = null;
+        l_engine = null,
+        l_visualizationobjects = {},
+        l_visualizationfunctions = {};
 
 
 
@@ -664,8 +666,8 @@ jQuery(function() {
     // delete agent
     jQuery( "#ui-deleteagent" ).click(function() {
         LightJason.ajax( "/api/simulation/asl/remove/" + l_editor.options.sourceid )
-            .success(function(i) { 
-                notifymessage({ title: "Agent", text: i, type: "success" }); 
+            .success(function(i) {
+                notifymessage({ title: "Agent", text: i, type: "success" });
                 l_editor.setValue("");
                 l_editor.options.sourceid = undefined;
                 agentlist();
@@ -714,8 +716,7 @@ jQuery(function() {
     // --- animation engine ------------------------------------------------------------------------------------------------------------------------------------
 
     /** element functions */
-    var l_objects = {};
-    var objectfunctions = {
+    l_visualizationfunctions = {
 
         environment: {
             create: function( p_data )
@@ -729,8 +730,8 @@ jQuery(function() {
                     l_tiles = l_tiles.concat( Array( l_width ).fill( i % 2 === 0  ? 4 : 3 ) );
                 l_tiles = l_tiles.concat( Array( l_width ).fill( 2 ) );
 
-                l_music = l_engine.add.audio('music');
-                l_engine.scale.setGameSize( jQuery("#simulation-dashboard").width(), l_height * 32 );
+                l_music = l_engine.add.audio( "music" );
+                l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), l_height * 32 );
 
                 l_engine.load.tilemap(
                     'street',
@@ -771,10 +772,10 @@ jQuery(function() {
                     Phaser.Tilemap.TILED_JSON
                 );
 
-                var l_map = l_engine.add.tilemap('street');
-                l_map.addTilesetImage('StreetTiles', 'streettiles');
+                var l_map = l_engine.add.tilemap( "street" );
+                l_map.addTilesetImage( "StreetTiles", "streettiles" );
 
-                var l_layer = l_map.createLayer('Street');
+                var l_layer = l_map.createLayer( "Street" );
                 l_layer.resizeWorld();
                 l_layer.wrap = true;
 
@@ -786,36 +787,37 @@ jQuery(function() {
             remove: function( p_data )
             {
                 l_music.stop();
-                Object.values( l_objects ).forEach(function(i) { i.destroy(); });
-                l_engine.destroy();
+                // @todo check because destroing fails
+                // Object.values( l_visualizationobjects ).forEach(function(i) { i.destroy(); });
+                // l_engine.destroy();
+                l_visualizationobjects = {};
             }
         },
 
         defaultvehicle: {
             create: function (p_data) {
                 // create a default vehicle
-                l_objects[p_data.id] = l_engine.add.sprite(p_data.x * 32, p_data.y * 32 + 9, 'defaultvehicle');
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, p_data.y * 32 + 9, "defaultvehicle" );
             },
 
             execute: function (p_data) {
                 // move the vehicles in the new positions
-                // @todo replace 250 with simulation speed
-                l_engine.add.tween( l_objects[p_data.id] ).to( {x: p_data.x * 32, y: p_data.y * 32 + 9}, 250 ).start();
+                l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: p_data.y * 32 + 9}, jQuery("#simulation-speed").val() ).start();
             }
         },
 
         uservehicle: {
             create: function (p_data) {
                 //create user vehicle
-                l_objects[p_data.id] = l_engine.add.sprite(p_data.x * 32, p_data.y * 32 + 9, 'uservehicle');
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, p_data.y * 32 + 9, "uservehicle" );
                 // camera follows the user vehicle
-                l_engine.camera.follow(l_objects[p_data.id]);
+                l_engine.camera.follow(l_visualizationobjects[p_data.id]);
             }
         }
     };
 
     // set function references
-    objectfunctions.uservehicle.execute = objectfunctions.defaultvehicle.execute;
+    l_visualizationfunctions.uservehicle.execute = l_visualizationfunctions.defaultvehicle.execute;
 
 
 
@@ -824,16 +826,17 @@ jQuery(function() {
     l_engine = new Phaser.Game(
         l_screen.width(),
         l_screen.height(),
-        Phaser.AUTO, 'simulation-screen',
+        Phaser.AUTO,
+        "simulation-screen",
         {
+            background: "#fff",
             preload: function(i) {
-                i.load.image('streettiles', 'assets/streettiles.png');
-                i.load.image('uservehicle', 'assets/uservehicle.png');
-                i.load.image('defaultvehicle', 'assets/defaultvehicle.png');
+                i.load.image( "streettiles", "assets/streettiles.png" );
+                i.load.image( "uservehicle", "assets/uservehicle.png" );
+                i.load.image( "defaultvehicle", "assets/defaultvehicle.png" );
 
-                i.load.audio('music', "assets/axelf.ogg");
-            },
-            background: "#fff"
+                i.load.audio( "music", "assets/axelf.ogg" );
+            }
         }
     );
 
@@ -841,8 +844,8 @@ jQuery(function() {
     LightJason.websocket( "/animation" )
               .onmessage = function ( e ) {
                 var l_data = JSON.parse( e.data );
-                if ( ( objectfunctions[l_data.type] ) && ( typeof( objectfunctions[l_data.type][l_data.status] ) === "function" ) )
-                    objectfunctions[l_data.type][l_data.status]( l_data );
+                if ( ( l_visualizationfunctions[l_data.type] ) && ( typeof( l_visualizationfunctions[l_data.type][l_data.status] ) === "function" ) )
+                    l_visualizationfunctions[l_data.type][l_data.status]( l_data );
               };
 
     jQuery( "#simulation-music" ).change(function() {
