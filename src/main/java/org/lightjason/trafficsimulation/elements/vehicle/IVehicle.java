@@ -62,14 +62,6 @@ public interface IVehicle extends IObject<IVehicle>
     double penalty();
 
     /**
-     * returns the goal position of the vehicle
-     *
-     * @return goal position
-     */
-    DoubleMatrix1D goal();
-
-
-    /**
      * vehicle type
      *
      * @return vehicle type

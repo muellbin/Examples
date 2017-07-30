@@ -129,6 +129,12 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     }
 
     @Override
+    public final DoubleMatrix1D nextposition()
+    {
+        return this.position();
+    }
+
+    @Override
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {
         return Collections.emptyMap();

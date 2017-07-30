@@ -50,6 +50,13 @@ public interface IObject<T extends IAgent<?>> extends IMap, IPerceiveable, IAgen
      */
     DoubleMatrix1D position();
 
+    /**
+     * returns the new position of the object
+     *
+     * @return new position
+     */
+    DoubleMatrix1D nextposition();
+
 
 
     /**

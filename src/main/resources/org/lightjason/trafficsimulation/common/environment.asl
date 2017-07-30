@@ -26,7 +26,12 @@
 // initialize
 +!main <-
     simulation/initialize( 100, 4 );
-    vehicle/user
+
+    [MaxSpeed | MaxAcceleration | MaxDeceleration] = math/statistic/randomsimple(1, 1, 1);
+    MaxSpeed = MaxSpeed * 125 + 125;
+    MaxAcceleration = MaxAcceleration * 10 + 10;
+    MaxDeceleration = -1 * MaxDeceleration * 15 + 15;
+    vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration )
     //!loop
 .
 

@@ -41,7 +41,6 @@ import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.trafficsimulation.common.CCommon;
-import org.lightjason.trafficsimulation.common.EDirection;
 import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -140,6 +139,12 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     @Override
+    public final DoubleMatrix1D nextposition()
+    {
+        return this.position();
+    }
+
+    @Override
     public final boolean shutdown()
     {
         return m_shutdown.get();
@@ -163,11 +168,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final synchronized boolean move( @Nonnull final IVehicle p_vehicle )
     {
-        final Number l_target = EDirection.FORWARD.position(
-            p_vehicle.position(),
-            p_vehicle.goal(),
-            CUnit.INSTANCE.speedtocell( p_vehicle.speed() ).doubleValue()
-        ).get( 1 );
+        final Number l_target = p_vehicle.nextposition().get( 1 );
 
         if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 1 ) + 1, Math.min( l_target.intValue(), m_grid.get().columns() ) )
                       .parallel()
@@ -277,15 +278,20 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/user" )
-    private void uservehicle()
+    private void uservehicle( final Number p_maximumspeed, final Number p_acceleration, final Number p_deceleration )
     {
         if ( !m_uservehicleuse.compareAndSet( false, true ) )
             throw new RuntimeException( "user vehicle has be created" );
 
         final IVehicle l_vehicle = m_generatoruservehicle.generatesingle(
             this,
+
+            new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1, 0} ),
             this.position().get( 1 ) - 1,
-            new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1, 0} )
+
+            p_maximumspeed,
+            p_acceleration,
+            p_deceleration
         );
         this.set( l_vehicle, l_vehicle.position() );
         m_elements.add( l_vehicle );
