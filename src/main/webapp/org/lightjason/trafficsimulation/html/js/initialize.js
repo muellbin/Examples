@@ -454,6 +454,7 @@ jQuery(function() {
         l_music = null,
         l_engine = null,
         l_visualizationobjects = {},
+        l_visualizationobjectsdata = {},
         l_visualizationfunctions = {};
 
 
@@ -723,6 +724,7 @@ jQuery(function() {
         environment: {
             create: function( p_data )
             {
+                localStorage.setItem( "environment", JSON.stringify( p_data ) );
                 var l_height = p_data.lanes + 2,
                     l_width = p_data.length,
                     l_tiles = [];
@@ -802,6 +804,8 @@ jQuery(function() {
                 )
                 .then(function() {
                      l_visualizationobjects = {};
+                     localStorage.removeItem( "environment" );
+                     localStorage.removeItem( "visualizationobjects" );
                 });
             }
         },
@@ -810,6 +814,8 @@ jQuery(function() {
             create: function (p_data) {
                 // create a default vehicle (y-coordinate must be increment, because footway border is not part of the internal data model)
                 l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, "defaultvehicle" );
+                l_visualizationobjectsdata[p_data.id] = p_data;
+                localStorage.setItem( "visualizationobjects", JSON.stringify( l_visualizationobjectsdata ) );
             },
 
             execute: function (p_data) {
@@ -821,6 +827,10 @@ jQuery(function() {
                 l_engine.add
                         .tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() * 2.5 )
                         .start();
+                l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() ).start();
+                l_visualizationobjectsdata[p_data.id].x = p_data.x * 32;
+                l_visualizationobjectsdata[p_data.id].y = ( p_data.y + 1 ) * 32 + 9;
+                localStorage.setItem( "visualizationobjects", JSON.stringify( l_visualizationobjectsdata ) );
             }
         },
 
@@ -828,6 +838,8 @@ jQuery(function() {
             create: function (p_data) {
                 //create user vehicle (y-coordinate must be increment, because footway border is not part of the internal data model)
                 l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, "uservehicle" );
+                l_visualizationobjectsdata[p_data.id] = p_data;
+                localStorage.setItem( "visualizationobjects", JSON.stringify( l_visualizationobjectsdata ) );
                 // camera follows the user vehicle
                 l_engine.camera.follow(l_visualizationobjects[p_data.id]);
             }
@@ -854,6 +866,22 @@ jQuery(function() {
                 i.load.image( "defaultvehicle", "assets/defaultvehicle.png" );
 
                 i.load.audio( "music", "assets/axelf.ogg" );
+            },
+            create: function(i) {
+                console.log(localStorage);
+                if (localStorage.getItem("environment") !== null)
+                {
+                    var l_environmentdata = JSON.parse(localStorage.getItem('environment'));
+                    l_visualizationfunctions[l_environmentdata.type][l_environmentdata.status]( l_environmentdata );
+                    if( localStorage.getItem('visualizationobjects') !== null )
+                    {
+                        var l_data = JSON.parse(localStorage.getItem('visualizationobjects'));
+                        for( var i in l_data )
+                        {
+                            l_visualizationfunctions[l_data[i].type][l_data[i].status]( l_data[i] );
+                        }
+                    }
+                }
             }
         }
     );
