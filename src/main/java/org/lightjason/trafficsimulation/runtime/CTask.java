@@ -26,7 +26,6 @@ package org.lightjason.trafficsimulation.runtime;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
-import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.CArea;
 import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
@@ -81,7 +80,7 @@ public class CTask implements ITask
             final IEnvironment l_environment = l_environmentgenerator.generatesingle(
                 l_elements,
                 this.generatorvehicle( p_asl, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),
-                this.generatorvehicle( p_asl, "uservehicle", IVehicle.ETYpe.USERVEHICLE),
+                this.generatorvehicle( p_asl, "uservehicle", IVehicle.ETYpe.USERVEHICLE ),
                 this.generatorarea( p_asl )
             );
 
@@ -133,7 +132,8 @@ public class CTask implements ITask
      * @return null or generator
      */
     @Nullable
-    private IVehicle.IGenerator<IVehicle> generatorvehicle( @Nonnull final Map<String, Pair<Boolean, String>> p_agents, @Nonnull final String p_agent, @Nonnull final IVehicle.ETYpe p_type )
+    private IVehicle.IGenerator<IVehicle> generatorvehicle( @Nonnull final Map<String, Pair<Boolean, String>> p_agents,
+                                                            @Nonnull final String p_agent, @Nonnull final IVehicle.ETYpe p_type )
     {
         final Pair<Boolean, String> l_asl = p_agents.get( p_agent );
         try
