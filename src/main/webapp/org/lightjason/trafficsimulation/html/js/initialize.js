@@ -819,17 +819,13 @@ jQuery(function() {
 
             execute: function (p_data) {
                 if ( !l_visualizationobjects[p_data.id] )
-                {
                     l_visualizationfunctions[p_data.type]["create"](p_data);
-                    return;
-                }
 
                 // move the vehicles in the new positions (y-coordinate must be increment, because footway border is not part of the internal data model)
                 // @bug tween is bracking on new websocket data -> https://phaser.io/examples/v2/tweens/tween-loop-event
                 l_engine.add
                         .tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() * 2.5 )
                         .start();
-                l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() ).start();
             }
         },
 
@@ -859,8 +855,8 @@ jQuery(function() {
 
                 i.load.audio( "music", "assets/axelf.ogg" );
             },
+
             create: function(i) {
-                console.log(localStorage);
                 if (localStorage.getItem("environment") !== null)
                 {
                     var l_environmentdata = JSON.parse(localStorage.getItem('environment'));
