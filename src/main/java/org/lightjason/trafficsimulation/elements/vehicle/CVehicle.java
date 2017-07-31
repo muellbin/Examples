@@ -88,7 +88,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     private final double m_accelerate;
     /**
      * decelerate speed in m/sec^
-     * @warning must be in (infinity, 0)
+     * @warning must be in (0, infinity)
      */
     private final double m_decelerate;
     /**
@@ -127,7 +127,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration, @Nonnull final String p_id,
                       @Nonnull final IEnvironment p_environment, @Nonnull final ETYpe p_type,
                       @Nonnull final DoubleMatrix1D p_start, @Nonnegative final int p_goal,
-                      @Nonnegative final double p_maximumspeed, @Nonnegative final double p_accelerate, final double p_decelerate
+                      @Nonnegative final double p_maximumspeed, @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate
     )
     {
         super( p_configuration, FUNCTOR, p_id );
@@ -184,14 +184,11 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
-        {
             if ( m_type.equals( ETYpe.USERVEHICLE ) )
                 m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
             else
                 this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
-        }
 
-        //System.out.println( m_position );
         CAnimation.CInstance.INSTANCE.send( EStatus.EXECUTE, this );
         return this;
     }
@@ -231,10 +228,11 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "accelerate" )
     private void accelerate()
     {
-        if ( m_speed.get() + m_accelerate > m_maximumspeed )
+        final double l_value = CUnit.INSTANCE.accelerationtospeed( m_accelerate ).doubleValue();
+        if ( m_speed.get() + l_value > m_maximumspeed )
             throw new RuntimeException( MessageFormat.format( "cannot increment speed: {0}", this ) );
 
-        m_speed.addAndGet( m_accelerate + CUnit.INSTANCE.accelerationtospeed( m_accelerate ).doubleValue() );
+        m_speed.addAndGet( m_accelerate + l_value );
     }
 
     /**
@@ -244,10 +242,11 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "decelerate" )
     private void decelerate()
     {
-        if ( m_speed.get() - m_decelerate < 0 )
+        final double l_value = CUnit.INSTANCE.accelerationtospeed( m_decelerate ).doubleValue();
+        if ( m_speed.get() - l_value < 0 )
             throw new RuntimeException( MessageFormat.format( "cannot decrement speed: {0}", this ) );
 
-        m_speed.set( m_speed.get() + CUnit.INSTANCE.accelerationtospeed( m_decelerate ).doubleValue() );
+        m_speed.set( m_speed.get() - l_value );
     }
 
     /**

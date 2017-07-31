@@ -108,7 +108,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     private final AtomicBoolean m_uservehicleuse = new AtomicBoolean();
 
-
     /**
      * ctor
      *
@@ -263,14 +262,25 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * creates a vehicle generator
      *
      * @param p_number number of vehicles
+     * @bug vehicle initialuzing not working
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/default" )
-    private void defaultvehicle( @Nonnull final Number p_number )
+    private void defaultvehicle( final Number p_number, final Number p_maximumspeed, final Number p_acceleration, final Number p_deceleration )
     {
-        m_generatordefaultvehicle.generatemultiple( p_number.intValue(), this )
-                                 .peek( i -> this.set( i, i.position() ) )
-                                 .forEach( m_elements::add );
+        IntStream.range( 0, p_number.intValue() )
+                 .mapToObj( i -> m_generatordefaultvehicle.generatesingle(
+                     this,
+
+                     new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1, 0} ),
+                     this.position().get( 1 ) - 1,
+
+                     p_maximumspeed,
+                     p_acceleration,
+                     p_deceleration
+                ) )
+                .peek( i -> this.set( i, i.position() ) )
+                .forEach( m_elements::add );
     }
 
     /**
