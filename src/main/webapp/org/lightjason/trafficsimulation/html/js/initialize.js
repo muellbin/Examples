@@ -454,7 +454,6 @@ jQuery(function() {
         l_music = null,
         l_engine = null,
         l_visualizationobjects = {},
-        l_visualizationobjectsdata = {},
         l_visualizationfunctions = {};
 
 
@@ -813,14 +812,17 @@ jQuery(function() {
         defaultvehicle: {
             create: function (p_data) {
                 // create a default vehicle (y-coordinate must be increment, because footway border is not part of the internal data model)
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, "defaultvehicle" );
-                l_visualizationobjectsdata[p_data.id] = p_data;
-                localStorage.setItem( "visualizationobjects", JSON.stringify( l_visualizationobjectsdata ) );
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, p_data.type );
+                if( p_data.type === "uservehicle")
+                    l_engine.camera.follow(l_visualizationobjects[p_data.id]);
             },
 
             execute: function (p_data) {
                 if ( !l_visualizationobjects[p_data.id] )
+                {
+                    l_visualizationfunctions[p_data.type]["create"](p_data);
                     return;
+                }
 
                 // move the vehicles in the new positions (y-coordinate must be increment, because footway border is not part of the internal data model)
                 // @bug tween is bracking on new websocket data -> https://phaser.io/examples/v2/tweens/tween-loop-event
@@ -828,26 +830,16 @@ jQuery(function() {
                         .tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() * 2.5 )
                         .start();
                 l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() ).start();
-                l_visualizationobjectsdata[p_data.id].x = p_data.x * 32;
-                l_visualizationobjectsdata[p_data.id].y = ( p_data.y + 1 ) * 32 + 9;
-                localStorage.setItem( "visualizationobjects", JSON.stringify( l_visualizationobjectsdata ) );
             }
         },
 
-        uservehicle: {
-            create: function (p_data) {
-                //create user vehicle (y-coordinate must be increment, because footway border is not part of the internal data model)
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, "uservehicle" );
-                l_visualizationobjectsdata[p_data.id] = p_data;
-                localStorage.setItem( "visualizationobjects", JSON.stringify( l_visualizationobjectsdata ) );
-                // camera follows the user vehicle
-                l_engine.camera.follow(l_visualizationobjects[p_data.id]);
-            }
-        }
+        uservehicle: {}
     };
 
     // set function references
     l_visualizationfunctions.uservehicle.execute = l_visualizationfunctions.defaultvehicle.execute;
+    l_visualizationfunctions.uservehicle.create = l_visualizationfunctions.defaultvehicle.create;
+
 
 
 
@@ -873,14 +865,6 @@ jQuery(function() {
                 {
                     var l_environmentdata = JSON.parse(localStorage.getItem('environment'));
                     l_visualizationfunctions[l_environmentdata.type][l_environmentdata.status]( l_environmentdata );
-                    if( localStorage.getItem('visualizationobjects') !== null )
-                    {
-                        var l_data = JSON.parse(localStorage.getItem('visualizationobjects'));
-                        for( var i in l_data )
-                        {
-                            l_visualizationfunctions[l_data[i].type][l_data[i].status]( l_data[i] );
-                        }
-                    }
                 }
             }
         }
