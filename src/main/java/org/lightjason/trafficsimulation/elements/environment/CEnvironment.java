@@ -48,6 +48,7 @@ import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -107,6 +108,10 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * user vehicle execution flag
      */
     private final AtomicBoolean m_uservehicleuse = new AtomicBoolean();
+    /**
+     * set / cache with generated vehicles but not set within the grid
+     */
+    private final Set<IVehicle> m_vehiclecache = new CopyOnWriteArraySet<>();
 
     /**
      * ctor
@@ -258,53 +263,74 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_elements.add( l_area );
     }
 
-    /**
-     * creates a vehicle generator
-     *
-     * @param p_number number of vehicles
-     * @bug vehicle initialuzing not working
-     */
-    @IAgentActionFilter
-    @IAgentActionName( name = "vehicle/default" )
-    private void defaultvehicle( final Number p_number, final Number p_maximumspeed, final Number p_acceleration, final Number p_deceleration )
+    @Override
+    public final IEnvironment call() throws Exception
     {
-        IntStream.range( 0, p_number.intValue() )
-                 .mapToObj( i -> m_generatordefaultvehicle.generatesingle(
-                     this,
+        super.call();
 
-                     new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1, 0} ),
-                     this.position().get( 1 ) - 1,
+        // add all cached elements to the grid if possible
+        m_vehiclecache.removeAll(
+            m_vehiclecache.parallelStream()
+                          .filter( i -> this.set( i, i.position() ) )
+                          .peek( m_elements::add )
+                          .collect( Collectors.toSet() )
+        );
 
-                     p_maximumspeed,
-                     p_acceleration,
-                     p_deceleration
-                ) )
-                .peek( i -> this.set( i, i.position() ) )
-                .forEach( m_elements::add );
+        return this;
     }
 
     /**
      * creates a vehicle generator
+     *
+     * @param p_maximumspeed maximum speed in km/h
+     * @param p_acceleration acceleration in m/s^2
+     * @param p_deceleration deceleration in m/s^2
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "vehicle/default" )
+    private void defaultvehicle( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
+    {
+        m_vehiclecache.add(
+                 m_generatordefaultvehicle.generatesingle(
+                 this,
+
+                 new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 2, 0} ),
+                 this.position().get( 1 ) - 1,
+
+                 p_maximumspeed,
+                 p_acceleration,
+                 p_deceleration
+            )
+        );
+    }
+
+    /**
+     * creates a vehicle generator
+     *
+     * @param p_maximumspeed maximum speed in km/h
+     * @param p_acceleration acceleration in m/s^2
+     * @param p_deceleration deceleration in m/s^2
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/user" )
-    private void uservehicle( final Number p_maximumspeed, final Number p_acceleration, final Number p_deceleration )
+    private void uservehicle( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
     {
         if ( !m_uservehicleuse.compareAndSet( false, true ) )
             throw new RuntimeException( "user vehicle has be created" );
 
-        final IVehicle l_vehicle = m_generatoruservehicle.generatesingle(
-            this,
+        m_vehiclecache.add(
+            m_generatoruservehicle.generatesingle(
+                this,
 
-            new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1, 0} ),
-            this.position().get( 1 ) - 1,
+                new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1, 0} ),
+                this.position().get( 1 ) - 1,
 
-            p_maximumspeed,
-            p_acceleration,
-            p_deceleration
+                p_maximumspeed,
+                p_acceleration,
+                p_deceleration
+            )
         );
-        this.set( l_vehicle, l_vehicle.position() );
-        m_elements.add( l_vehicle );
+
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

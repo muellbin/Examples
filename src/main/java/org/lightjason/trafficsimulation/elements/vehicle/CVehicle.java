@@ -60,6 +60,8 @@ import java.util.stream.Stream;
 
 /**
  * vehicle agent
+ *
+ * @bug in ctor fixed speed for testing and disabling agent execution
  */
 @IAgentAction
 public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
@@ -121,8 +123,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * @param p_goal goal position (x-coordinate)
      * @param p_accelerate accelerate speed
      * @param p_decelerate decelerate speed
-     *
-     * @todo remove fixed values
      */
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration, @Nonnull final String p_id,
                       @Nonnull final IEnvironment p_environment, @Nonnull final ETYpe p_type,
@@ -141,6 +141,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_maximumspeed = p_maximumspeed;
         m_accelerate = p_accelerate;
         m_decelerate = p_decelerate;
+
+        m_speed.set( 10 );
 
         CAnimation.CInstance.INSTANCE.send( EStatus.CREATE, this );
     }
@@ -180,7 +182,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IVehicle call() throws Exception
     {
-        super.call();
+        //super.call();
 
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )

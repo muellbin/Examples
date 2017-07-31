@@ -859,6 +859,7 @@ jQuery(function() {
     LightJason.websocket( "/animation" )
               .onmessage = function ( e ) {
                 var l_data = JSON.parse( e.data );
+                console.log( l_data );
                 if ( ( l_visualizationfunctions[l_data.type] ) && ( typeof( l_visualizationfunctions[l_data.type][l_data.status] ) === "function" ) )
                     l_visualizationfunctions[l_data.type][l_data.status](l_data);
               };
