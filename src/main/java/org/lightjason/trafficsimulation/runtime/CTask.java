@@ -26,7 +26,9 @@ package org.lightjason.trafficsimulation.runtime;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
+import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.CArea;
+import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
@@ -35,6 +37,7 @@ import org.lightjason.trafficsimulation.ui.api.CData;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -65,64 +68,31 @@ public class CTask implements ITask
     {
         m_thread = new Thread( () ->
         {
-            final IEnvironment l_environment;
+
             final Set<Callable<?>> l_elements = new CopyOnWriteArraySet<>();
 
-
             // --- initialize generators ---
-            try
-            {
+            final IEnvironment.IGenerator<IEnvironment> l_environmentgenerator = this.generatorenvironment( p_asl );
 
-                final Pair<Boolean, String> l_defaultvehicledata = p_asl.get( "defaultvehicle" );
-                final Pair<Boolean, String> l_uservehicledata = p_asl.get( "uservehicle" );
-
-                l_environment = new CEnvironment.CGenerator( p_asl.get( "environment" ).getRight() )
-                                                .resetcount()
-                                                .generatesingle(
-
-                                                    l_elements,
-
-                                                    new CVehicle.CGenerator(
-                                                        IOUtils.toInputStream( l_defaultvehicledata.getRight(), "UTF-8" ),
-                                                        l_defaultvehicledata.getLeft(),
-                                                        IVehicle.ETYpe.DEFAULTVEHICLE
-                                                    ).resetcount(),
-
-                                                    new CVehicle.CGenerator(
-                                                        IOUtils.toInputStream( l_uservehicledata.getRight(), "UTF-8" ),
-                                                        l_uservehicledata.getLeft(),
-                                                        IVehicle.ETYpe.USERVEHICLE
-                                                    ).resetcount(),
-
-                                                    new CArea.CGenerator( IOUtils.toInputStream( p_asl.get( "area" ).getRight(), "UTF-8" ) )
-                                                             .resetcount()
-
-                                                    //new CArea.CGenerator( IOUtils.toInputStream( p_asl.get( "communication" ).getRight(), "UTF-8" ) )
-
-                                                );
-
-            }
-            catch ( final Exception l_exception )
-            {
-                CMessage.CInstance.INSTANCE.write(
-                    CMessage.EType.ERROR,
-                    CCommon.languagestring( this, "initialize" ),
-                    l_exception.getLocalizedMessage()
-                );
+            if ( l_environmentgenerator == null )
                 return;
-            }
+
+
+            final IEnvironment l_environment = l_environmentgenerator.generatesingle(
+                l_elements,
+                this.generatorvehicle( p_asl, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),
+                this.generatorvehicle( p_asl, "uservehicle", IVehicle.ETYpe.USERVEHICLE),
+                this.generatorarea( p_asl )
+            );
 
             if ( l_environment == null )
-            {
-                LOGGER.warning( "environment cannot be instantiable" );
                 return;
-            }
 
 
             // --- execute objects ---
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,
-                CCommon.languagestring( this, "initialize" ),
+                CCommon.languagestring( this, "initialize", "" ),
                 CCommon.languagestring( this, "simulationstart" )
             );
 
@@ -152,6 +122,90 @@ public class CTask implements ITask
             CData.CInstance.INSTANCE.penalty( 3.5 );
         } );
     }
+
+
+    /**
+     * gets a generator of a vehicle
+     *
+     * @param p_agents agent map
+     * @param p_agent agent id
+     * @param p_type vehicle type
+     * @return null or generator
+     */
+    @Nullable
+    private IVehicle.IGenerator<IVehicle> generatorvehicle( @Nonnull final Map<String, Pair<Boolean, String>> p_agents, @Nonnull final String p_agent, @Nonnull final IVehicle.ETYpe p_type )
+    {
+        final Pair<Boolean, String> l_asl = p_agents.get( p_agent );
+        try
+        {
+            return new CVehicle.CGenerator(
+                IOUtils.toInputStream( l_asl.getRight(), "UTF-8" ),
+                l_asl.getLeft(),
+                p_type
+            ).resetcount();
+        }
+        catch ( final Exception l_exception )
+        {
+            CMessage.CInstance.INSTANCE.write(
+                CMessage.EType.ERROR,
+                CCommon.languagestring( this, "initialize", p_agent ),
+                l_exception.getLocalizedMessage()
+            );
+            return null;
+        }
+    }
+
+
+    /**
+     * area generator
+     *
+     * @param p_agents agent map
+     * @return null or generator
+     */
+    @Nullable
+    private IArea.IGenerator<IArea> generatorarea( @Nonnull final Map<String, Pair<Boolean, String>> p_agents )
+    {
+        try
+        {
+            return new CArea.CGenerator( IOUtils.toInputStream( p_agents.get( "area" ).getRight(), "UTF-8" ) )
+                .resetcount();
+        }
+        catch ( final Exception l_exception )
+        {
+            CMessage.CInstance.INSTANCE.write(
+                CMessage.EType.ERROR,
+                CCommon.languagestring( this, "initialize", "area" ),
+                l_exception.getLocalizedMessage()
+            );
+            return null;
+        }
+    }
+
+
+    /**
+     * environment generator
+     *
+     * @param p_agents agent map
+     * @return null or generator
+     */
+    @Nullable
+    private IEnvironment.IGenerator<IEnvironment> generatorenvironment( @Nonnull final Map<String, Pair<Boolean, String>> p_agents )
+    {
+        try
+        {
+            return new CEnvironment.CGenerator( p_agents.get( "environment" ).getRight() ).resetcount();
+        }
+        catch ( final Exception l_exception )
+        {
+            CMessage.CInstance.INSTANCE.write(
+                CMessage.EType.ERROR,
+                CCommon.languagestring( this, "initialize", "environment" ),
+                l_exception.getLocalizedMessage()
+            );
+            return null;
+        }
+    }
+
 
 
     /**

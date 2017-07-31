@@ -39,14 +39,4 @@
     decelerate
 .
 
-+!nearby(X, D) <-
-    swingout
-.
-
-+!faraway(X, D) <-
-    goback
-.
-
-+!collision <-
-    decelerate
-.
++!collision <- decelerate.

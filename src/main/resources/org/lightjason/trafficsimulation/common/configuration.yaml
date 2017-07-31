@@ -21,7 +21,7 @@
 
 # main definition
 main:
-    simulationspeed: 250
+    simulationspeed: 500
     messagedelay:
       default: 2500
       agentprint: 1500
@@ -48,4 +48,5 @@ ui:
 # simulation units
 units:
     cellsize_in_meter: 3.5
-    time_in_minutes: 1
+    time_in_minutes: 0.5
+
