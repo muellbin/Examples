@@ -510,7 +510,7 @@ jQuery(function() {
 
     // initialize simulation speed
     LightJason.ajax( "/api/simulation/time/get" )
-        .success(function(i) { jQuery("#simulation-speed").val(i).trigger( "change" ); })
+        .success(function(i) { l_simulationspeed.val(i).trigger( "change" ); })
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
 
@@ -817,7 +817,10 @@ jQuery(function() {
                     return;
 
                 // move the vehicles in the new positions (y-coordinate must be increment, because footway border is not part of the internal data model)
-                l_engine.add.tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() ).start();
+                // @bug tween is bracking on new websocket data -> https://phaser.io/examples/v2/tweens/tween-loop-event
+                l_engine.add
+                        .tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() * 2.5 )
+                        .start();
             }
         },
 
