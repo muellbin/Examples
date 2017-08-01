@@ -31,17 +31,19 @@
  */
 
 const MINIFY = true;
+
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),
       l_empty = require( "gulp-empty-pipe" ),
       l_vinyl = require( "vinyl-source-stream" ),
       l_browserify = require( "browserify" ),
+      l_pump = require( "pump" ),
 
       l_concatjs = require( "gulp-concat"),
       l_concatcss = require( "gulp-concat-css"),
 
       l_minifyhtml = require("gulp-htmlmin"),
-      l_minifyjs = require( "gulp-uglify"),
+      l_minifyjs = require( "gulp-uglify/composer")( require('uglify-es'), console ),
       l_minifycss = require( "gulp-uglifycss" ),
 
       l_packagedir = "org/lightjason/trafficsimulation/html/",
@@ -212,11 +214,14 @@ for( const js in l_config.minifyjs )
 {
     l_gulp.task( js,
         l_config.minifyjs[js].dependency ? [].concat( l_config.minifyjs[js].dependency ) : [],
-        function () {
-            return l_config.minifyjs[js].source
-                           .pipe( l_concatjs( l_config.minifyjs[js].output ) )
-                           .pipe( MINIFY ? l_minifyjs() : l_empty() )
-                           .pipe( l_gulp.dest( l_outputdir ) );
+        function (i) {
+            l_pump([
+                l_config.minifyjs[js].source,
+                l_concatjs( l_config.minifyjs[js].output ),
+                MINIFY ? l_minifyjs() : l_empty(),
+                l_gulp.dest( l_outputdir )
+                ], i
+            );
     });
 }
 

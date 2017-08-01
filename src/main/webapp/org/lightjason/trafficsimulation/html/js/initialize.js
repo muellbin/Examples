@@ -446,12 +446,14 @@ jQuery(function() {
     init_autosize();
     agentlist();
 
-    var l_markdown = new showdown.Converter(),
-        l_simulationscreen = jQuery("#simulation-screen"),
-        l_simulationspeed = jQuery("#simulation-speed"),
-        l_simulationmusic = jQuery( "#simulation-music" ),
-        l_wsanimation = LightJason.websocket( "/animation" ),
-        l_editor = null,
+    const MARKDOWN = new showdown.Converter(),
+          SIMULATIONSCREEN = jQuery("#simulation-screen"),
+          SIMULATIONSPEED = jQuery("#simulation-speed"),
+          SIMULATIONMUSIC = jQuery( "#simulation-music" ),
+          WSANIMATION = LightJason.websocket( "/animation" ),
+          TILESIZE = 32;
+
+    var l_editor = null,
         l_engine = null,
         l_visualizationobjects = {},
         l_visualizationfunctions = {};
@@ -510,7 +512,7 @@ jQuery(function() {
 
     // initialize simulation speed
     LightJason.ajax( "/api/simulation/time/get" )
-        .success(function(i) { l_simulationspeed.val(i).trigger( "change" ); })
+        .success(function(i) { SIMULATIONSPEED.val(i).trigger( "change" ); })
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
 
@@ -539,7 +541,7 @@ jQuery(function() {
         LightJason.ajax( "/api/simulation/language/current" )
                   .success(function(l) {
                       jQuery.get( "/docs/" + lo.data( "languagedoc" ) + "." + l + ".md" , "text" )
-                          .done(function(d) { lo.html( l_markdown.makeHtml(d) ); })
+                          .done(function(d) { lo.html( MARKDOWN.makeHtml(d) ); })
                           .fail(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
                   })
                   .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
@@ -633,7 +635,7 @@ jQuery(function() {
 
 
     // set simulation speed
-    l_simulationspeed.change(function(e) {
+    SIMULATIONSPEED.change(function(e) {
         if (e.value)
             LightJason.ajax( "/api/simulation/time/set/" + Math.round( e.value ) )
                       .success(function(i) { notifymessage({ title: "Simulation", text: i, type: "success" }); })
@@ -725,8 +727,8 @@ jQuery(function() {
             // initialize environment with tilemap
             create: function( p_data )
             {
-                localStorage.setItem( "environment", JSON.stringify( p_data ) );
-                localStorage.setItem( "time", new Date().getTime() );
+                localStorage.setItem( "environment", JSON.stringify( jQuery.extend( {}, p_data, { time : new Date().getTime() } ) ) );
+
                 var l_height = p_data.lanes + 2,
                     l_width = p_data.length,
                     l_tiles = [];
@@ -737,7 +739,7 @@ jQuery(function() {
                     l_tiles = l_tiles.concat( Array( l_width ).fill( i % 2 === 0  ? 4 : 3 ) );
                 l_tiles = l_tiles.concat( Array( l_width ).fill( 2 ) );
 
-                if ( l_simulationmusic.is(":checked") )
+                if ( SIMULATIONMUSIC.is(":checked") )
                     l_engine.music.play();
 
                 l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), l_height * 32 );
@@ -748,8 +750,8 @@ jQuery(function() {
                     {
                         version: 1,
                         orientation: "orthogonal",
-                        tileheight: 32,
-                        tilewidth: 32,
+                        tileheight: TILESIZE,
+                        tilewidth: TILESIZE,
                         height: l_height,
                         width: l_width,
 
@@ -765,18 +767,17 @@ jQuery(function() {
                             y:0
                         }],
 
-                        tilesets: [
-                            {
-                                firstgid: 1,
-                                image: "assets/streettiles.png",
-                                imageheight: 32,
-                                imagewidth: 128,
-                                margin: 0,
-                                name: "StreetTiles",
-                                spacing: 0,
-                                tileheight: 32,
-                                tilewidth: 32
-                            }]
+                        tilesets: [{
+                            firstgid: 1,
+                            image: "assets/streettiles.png",
+                            imageheight: TILESIZE,
+                            imagewidth: 4 * TILESIZE,
+                            margin: 0,
+                            name: "StreetTiles",
+                            spacing: 0,
+                            tileheight: TILESIZE,
+                            tilewidth: TILESIZE
+                        }]
                     },
                     Phaser.Tilemap.TILED_JSON
                 );
@@ -817,11 +818,11 @@ jQuery(function() {
 
             // initialize a default vehicle
             create: function (p_data) {
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, p_data.type );
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32, p_data.type );
                 if( p_data.type === "uservehicle")
                     l_engine.camera.follow(l_visualizationobjects[p_data.id]);
 
-                l_wsanimation.send( JSON.stringify({ id: p_data.id }) );
+                WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
             },
 
             // execute vehicle, create new tween animation (y-position must be increment based on footway)
@@ -829,11 +830,11 @@ jQuery(function() {
                 if ( !l_visualizationobjects[p_data.id] )
                     l_visualizationfunctions[p_data.type]["create"](p_data);
 
-                var l_tween = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({
-                                                  x: p_data.x * 32,
-                                                  y: ( p_data.y + 1 ) * 32 + 9
-                                                }, l_simulationspeed.val() );
-                l_tween.onComplete.add(function(){ l_wsanimation.send( JSON.stringify({ id: p_data.id }) ); }, this);
+                const l_tween = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({
+                                                    x: p_data.x * 32,
+                                                    y: ( p_data.y + 1 ) * 32
+                                                    }, SIMULATIONSPEED.val() );
+                l_tween.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
                 l_tween.delay(0);
                 l_tween.start();
             }
@@ -853,8 +854,8 @@ jQuery(function() {
 
     // engine initialization
     l_engine = new Phaser.Game(
-        l_simulationscreen.width(),
-        l_simulationscreen.height(),
+        SIMULATIONSCREEN.width(),
+        SIMULATIONSCREEN.height(),
         Phaser.AUTO,
         "simulation-screen",
         {
@@ -871,26 +872,21 @@ jQuery(function() {
                 g.music = g.add.audio( "music" );
 
                 // reinitialize content if the browser tab was closed
-                if ( localStorage.getItem("environment") !== null )
+                if ( localStorage.getItem("environment") )
                     LightJason.ajax( "/api/simulation/cookie/expire" )
                               .success(function(i) {
-                                  if ( ( ( new Date().getTime() - parseInt( localStorage.getItem( "time" ) ) ) / 1000 ) > parseInt( i ) * 60 )
-                                  {
-                                      localStorage.removeItem( "environment" );
-                                      localStorage.removeItem( "time" );
-                                  }
-                                  else
-                                  {
-                                      var l_environment = JSON.parse(localStorage.getItem( "environment" ) );
-                                      l_visualizationfunctions[l_environment.type][l_environment.status]( l_environment );
+                                  const l_cache = JSON.parse( localStorage.getItem("environment") );
+                                  localStorage.removeItem( "environment" );
 
+                                  if ( ( new Date().getTime() - l_cache.time ) / 1000 < i )
                                       LightJason.ajax( "/api/simulation/elements" )
                                                 .success(function(j) {
+                                                    l_visualizationfunctions[l_cache.type][l_cache.status]( l_cache );
+
                                                     j.filter( function(o) { return o.type !== "environment"; } )
                                                      .forEach( function( o ) { l_visualizationfunctions[o.type][o.status]( o ); });
                                                 })
                                                 .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-                                    }
                                 })
                                 .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
             }
@@ -899,16 +895,16 @@ jQuery(function() {
 
 
     // engine bind to communication websocket
-    l_wsanimation
+    WSANIMATION
               .onmessage = function ( e ) {
-                var l_data = JSON.parse( e.data );
+                const l_data = JSON.parse( e.data );
                 if ( ( l_visualizationfunctions[l_data.type] ) && ( typeof( l_visualizationfunctions[l_data.type][l_data.status] ) === "function" ) )
                     l_visualizationfunctions[l_data.type][l_data.status](l_data);
               };
 
 
     // music enable / disable
-    l_simulationmusic.change(function() {
+    SIMULATIONMUSIC.change(function() {
         if ( this.checked )
             l_engine.music.play();
         else

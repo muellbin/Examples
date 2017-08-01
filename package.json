@@ -46,6 +46,8 @@
     "gulp-htmlmin": "^3.0.0",
     "gulp-uglify": "^3.0.0",
     "gulp-uglifycss": "^1.0.8",
+    "pump": "^1.0.2",
+    "uglify-es": "https://github.com/mishoo/UglifyJS2/archive/harmony-v3.0.27.tar.gz",
     "vinyl-source-stream": "^1.1.0"
   }
 }
