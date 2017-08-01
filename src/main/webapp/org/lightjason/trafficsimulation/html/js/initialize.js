@@ -367,7 +367,7 @@ function codemirrorsave( pc_id, pc_source )
  */
 function aslname( pc_value )
 {
-    var lo = jQuery( "#ui-editorheader" );
+    const lo = jQuery( "#ui-editorheader" );
     lo.html( lo.html().split("<")[0] + " <small>" + pc_value + "</small>" );
 }
 
@@ -396,7 +396,7 @@ function agentlist()
 {
     LightJason.ajax( "/api/simulation/agents" )
         .success(function(o) {
-            var l_dom = jQuery( "#ui-agents" ).empty();
+            const l_dom = jQuery( "#ui-agents" ).empty();
 
             o.forEach(function(i) {
                 l_dom.append(
@@ -451,7 +451,8 @@ jQuery(function() {
           SIMULATIONSPEED = jQuery("#simulation-speed"),
           SIMULATIONMUSIC = jQuery( "#simulation-music" ),
           WSANIMATION = LightJason.websocket( "/animation" ),
-          TILESIZE = 32;
+          TILESIZE = 32,
+          PIXELCENTER = 9;
 
     var l_editor = null,
         l_engine = null,
@@ -499,7 +500,7 @@ jQuery(function() {
     LightJason.websocket( "/message" )
               .onmessage = function ( i )
               {
-                  var lo = JSON.parse( i.data );
+                  const lo = JSON.parse( i.data );
                   new PNotify({
                       title: lo.title,
                       text: lo.text,
@@ -518,7 +519,7 @@ jQuery(function() {
 
     // get language labels for html content
     jQuery( ".ui-languagelabel" ).each(function(k, e) {
-        var lo = jQuery(e);
+        const lo = jQuery(e);
         LightJason.ajax( "/api/simulation/language/label/" + lo.data( "languagelabel" ) )
         .success(function(t) { lo.html(t); })
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
@@ -527,7 +528,7 @@ jQuery(function() {
 
     // get language labels of data attributes
     jQuery( ".ui-languagelabeldata" ).each(function(k, e) {
-        var lo = jQuery(e);
+        const lo = jQuery(e);
         LightJason.ajax( "/api/simulation/language/label/" + lo.data( "languagelabel" ) )
             .success(function(t) { lo.attr( "data-" + lo.data( "languagelabelid" ), t ); })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
@@ -536,8 +537,7 @@ jQuery(function() {
 
     // get language document
     jQuery( ".ui-languagedocs" ).each(function(k, e) {
-        var lo = jQuery(e);
-
+        const lo = jQuery(e);
         LightJason.ajax( "/api/simulation/language/current" )
                   .success(function(l) {
                       jQuery.get( "/docs/" + lo.data( "languagedoc" ) + "." + l + ".md" , "text" )
@@ -555,7 +555,7 @@ jQuery(function() {
 
             // syntax highlighting
             grammar.Lex.builtin.tokens = Object.keys(actions);
-            var l_mode = CodeMirrorGrammar.getMode( grammar );
+            const l_mode = CodeMirrorGrammar.getMode( grammar );
 
             l_mode.supportCodeFolding = true;
             l_mode.supportCodeMatching = true;
@@ -570,10 +570,11 @@ jQuery(function() {
             // autocomplete
             CodeMirror.registerHelper("hint", "anyword", function(editor, options) {
 
-                var l_spacer = options && options.spacer || /\s/gu,
-                    l_current = editor.getCursor(),
-                    l_line = editor.getLine( l_current.line ),
-                    l_start = l_current.ch,
+                const l_spacer = options && options.spacer || /\s/gu,
+                      l_current = editor.getCursor(),
+                      l_line = editor.getLine( l_current.line );
+
+                var l_start = l_current.ch,
                     l_end = l_start;
 
                 for( var i=l_start; (i < l_line.length) && ( !l_spacer.test( l_line.charAt( i ) ) ); i++ )
@@ -583,8 +584,8 @@ jQuery(function() {
                     l_start = i;
 
                 // check on seach if it starts with ? or ! for getting plans otherwise actions
-                var l_search = l_line.slice( l_start, l_end + 1 );
-                var l_return = [];
+                const l_search = l_line.slice( l_start, l_end + 1 );
+                const l_return = [];
                 if ( l_start !== l_end )
                 {
                     if ((l_search.startsWith("!")) || (l_search.startsWith("?")))
@@ -706,7 +707,7 @@ jQuery(function() {
 
     // slide view
     jQuery( ".slide-view" ).click(function() {
-        var l_source = jQuery(this).data("slidesource");
+        const l_source = jQuery(this).data("slidesource");
         if ( l_source )
             window.open( "slide.htm?slides=" + encodeURIComponent( l_source ), l_source );
     });
@@ -729,20 +730,20 @@ jQuery(function() {
             {
                 localStorage.setItem( "environment", JSON.stringify( jQuery.extend( {}, p_data, { time : new Date().getTime() } ) ) );
 
-                var l_height = p_data.lanes + 2,
-                    l_width = p_data.length,
-                    l_tiles = [];
+                var l_tiles = [];
+                const HEIGHT = p_data.lanes + 2,
+                      WIDTH = p_data.length;
 
                 // build tiles with footway
-                l_tiles = l_tiles.concat( Array( l_width ).fill( 2 ) );
-                for( var i=0; i < l_height - 2; i++ )
-                    l_tiles = l_tiles.concat( Array( l_width ).fill( i % 2 === 0  ? 4 : 3 ) );
-                l_tiles = l_tiles.concat( Array( l_width ).fill( 2 ) );
+                l_tiles = l_tiles.concat( Array( WIDTH ).fill( 2 ) );
+                for( var i=0; i < HEIGHT - 2; i++ )
+                    l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 4 : 3 ) );
+                l_tiles = l_tiles.concat( Array( WIDTH ).fill( 2 ) );
 
                 if ( SIMULATIONMUSIC.is(":checked") )
                     l_engine.music.play();
 
-                l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), l_height * 32 );
+                l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), HEIGHT * 32 );
 
                 l_engine.load.tilemap(
                     'street',
@@ -752,17 +753,17 @@ jQuery(function() {
                         orientation: "orthogonal",
                         tileheight: TILESIZE,
                         tilewidth: TILESIZE,
-                        height: l_height,
-                        width: l_width,
+                        height: HEIGHT,
+                        width: WIDTH,
 
                         layers: [{
                             data: l_tiles,
-                            height: l_height,
+                            height: HEIGHT,
                             name: "Street",
                             opacity: 1,
                             type: "tilelayer",
                             visible: true,
-                            width: l_width,
+                            width: WIDTH,
                             x: 0,
                             y:0
                         }],
@@ -782,12 +783,12 @@ jQuery(function() {
                     Phaser.Tilemap.TILED_JSON
                 );
 
-                var l_map = l_engine.add.tilemap( "street" );
-                l_map.addTilesetImage( "StreetTiles", "streettiles" );
+                const MAP = l_engine.add.tilemap( "street" );
+                MAP.addTilesetImage( "StreetTiles", "streettiles" );
 
-                var l_layer = l_map.createLayer( "Street" );
-                l_layer.resizeWorld();
-                l_layer.wrap = true;
+                const LAYER = MAP.createLayer( "Street" );
+                LAYER.resizeWorld();
+                LAYER.wrap = true;
             },
 
             // remove environment content (sprites) but not the timemap
@@ -818,7 +819,7 @@ jQuery(function() {
 
             // initialize a default vehicle
             create: function (p_data) {
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32, p_data.type );
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + PIXELCENTER, p_data.type );
                 if( p_data.type === "uservehicle")
                     l_engine.camera.follow(l_visualizationobjects[p_data.id]);
 
@@ -830,13 +831,13 @@ jQuery(function() {
                 if ( !l_visualizationobjects[p_data.id] )
                     l_visualizationfunctions[p_data.type]["create"](p_data);
 
-                const l_tween = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({
-                                                    x: p_data.x * 32,
-                                                    y: ( p_data.y + 1 ) * 32
-                                                    }, SIMULATIONSPEED.val() );
-                l_tween.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
-                l_tween.delay(0);
-                l_tween.start();
+                const TWEEN = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({
+                                                  x: p_data.x * 32,
+                                                  y: ( p_data.y + 1 ) * 32 + PIXELCENTER
+                                                }, SIMULATIONSPEED.val() );
+                TWEEN.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
+                TWEEN.delay(0);
+                TWEEN.start();
             }
         },
 
@@ -870,18 +871,21 @@ jQuery(function() {
 
             create: function(g) {
                 g.music = g.add.audio( "music" );
+                g.music.lopp = true;
 
                 // reinitialize content if the browser tab was closed
                 if ( localStorage.getItem("environment") )
                     LightJason.ajax( "/api/simulation/cookie/expire" )
                               .success(function(i) {
-                                  const l_cache = JSON.parse( localStorage.getItem("environment") );
+                                  const ENV = JSON.parse( localStorage.getItem("environment") );
                                   localStorage.removeItem( "environment" );
 
-                                  if ( ( new Date().getTime() - l_cache.time ) / 1000 < i )
+                                  if ( ( new Date().getTime() - ENV.time ) / 1000 < parseInt(i) )
                                       LightJason.ajax( "/api/simulation/elements" )
                                                 .success(function(j) {
-                                                    l_visualizationfunctions[l_cache.type][l_cache.status]( l_cache );
+                                                    l_visualizationfunctions[ENV.type][ENV.status]( ENV );
+
+                                                    console.log( ENV );
 
                                                     j.filter( function(o) { return o.type !== "environment"; } )
                                                      .forEach( function( o ) { l_visualizationfunctions[o.type][o.status]( o ); });
@@ -897,9 +901,9 @@ jQuery(function() {
     // engine bind to communication websocket
     WSANIMATION
               .onmessage = function ( e ) {
-                const l_data = JSON.parse( e.data );
-                if ( ( l_visualizationfunctions[l_data.type] ) && ( typeof( l_visualizationfunctions[l_data.type][l_data.status] ) === "function" ) )
-                    l_visualizationfunctions[l_data.type][l_data.status](l_data);
+                const OBJECTDATA = JSON.parse( e.data );
+                if ( ( l_visualizationfunctions[OBJECTDATA.type] ) && ( typeof( l_visualizationfunctions[OBJECTDATA.type][OBJECTDATA.status] ) === "function" ) )
+                    l_visualizationfunctions[OBJECTDATA.type][OBJECTDATA.status](OBJECTDATA);
               };
 
 
@@ -941,7 +945,7 @@ jQuery(function() {
     });
 
     var chartlabel = 1;
-    var dataobject =
+    const dataobject =
     {
         penalty: function( p_data )
         {
@@ -958,7 +962,7 @@ jQuery(function() {
     LightJason.websocket( "/data" )
               .onmessage = function ( i )
               {
-                  var l_data = JSON.parse( i.data );
+                  const l_data = JSON.parse( i.data );
                   dataobject[l_data.type](l_data.data);
               };
 

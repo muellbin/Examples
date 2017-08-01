@@ -293,7 +293,7 @@ public final class CSimulation
     @Produces( MediaType.TEXT_PLAIN )
     public final int cookieexpire()
     {
-        return CConfiguration.INSTANCE.getOrDefault( 2, "ui", "cookieexpire_in_seconds" );
+        return CConfiguration.INSTANCE.getOrDefault( 120, "ui", "cookieexpire_in_seconds" );
     }
 
 
