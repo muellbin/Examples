@@ -21,3 +21,7 @@
  * @endcond
  */
 
++!calculate(V) <-
+    N = 1;
+    environment/send(N)
+.

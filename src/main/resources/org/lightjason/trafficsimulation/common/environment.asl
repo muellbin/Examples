@@ -43,6 +43,9 @@
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
 
     generic/print( "environment message", "user vehicle has been created" )
+
+    area/create( 0, 1000, 1, 4, 50 );
+    AREAS = 1
 .
 
 // simulation loop
@@ -60,4 +63,13 @@
 +!collision <-
     generic/print( "environment message", "collision plan hash been called" );
     simulation/shutdown
+.
+
++!penalty(N) <-
+    +value(N);
+    finish
+.
+
++!finish <-
+    simulation/penalty( 10 )
 .

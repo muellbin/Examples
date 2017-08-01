@@ -38,6 +38,7 @@ import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
@@ -69,6 +70,10 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     private static final String FUNCTOR = "area";
     /**
+     * environment
+     */
+    private final IEnvironment m_environment;
+    /**
      * set of objects inside
      */
     private final Set<IObject<?>> m_elements = new CopyOnWriteArraySet<>();
@@ -91,11 +96,13 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     private CArea(
         @Nonnull final IAgentConfiguration<IArea> p_configuration,
         @Nonnull final String p_id,
+        @Nonnull final IEnvironment p_environment,
         @Nonnull final DoubleMatrix1D p_position,
         @Nonnull final Number p_allowedspeed
     )
     {
         super( p_configuration, FUNCTOR, p_id );
+        m_environment = p_environment;
         m_allowedspeed = p_allowedspeed.doubleValue();
         m_position = p_position;
     }
@@ -212,6 +219,18 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         p_object.<IVehicle>raw().penalty( p_value );
     }
 
+    /**
+     * send penalty to environment
+     *
+     * @param p_value value
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "environment/send" )
+    private void sendpenalty(  @Nonnull final Number p_value )
+    {
+        m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "penalty", CRawTerm.from( p_value ) ) ) );
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -250,6 +269,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
                 new CArea(
                     m_configuration,
                     MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
+                    (IEnvironment) p_data[0],
                     null,
                     null
                 ),

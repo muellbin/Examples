@@ -47,6 +47,7 @@ import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
+import org.lightjason.trafficsimulation.ui.api.CData;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -246,6 +247,18 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     /**
+     * send penalty to simulation
+     *
+     * @param p_value penalty value
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "simulation/penalty" )
+    private void simulationpenalty( final Number p_value )
+    {
+        CData.CInstance.INSTANCE.penalty( p_value.doubleValue() );
+    }
+
+    /**
      * creates an area
      * @param p_positionfrom position start on the lane (inclusive)
      * @param p_positionto position end on the lane (inclusive)
@@ -257,7 +270,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "area/create" )
     private void areacreate( final Number p_positionfrom, final Number p_positionto, final Number p_lanefrom, final Number p_laneto, final Number p_maximumspeed )
     {
-        final IArea l_area = m_generatorarea.generatesingle( new DenseDoubleMatrix1D(
+        final IArea l_area = m_generatorarea.generatesingle( this, new DenseDoubleMatrix1D(
             new double[]{p_lanefrom.doubleValue(), p_laneto.doubleValue(), p_positionfrom.doubleValue(), p_positionto.doubleValue()}
         ), p_maximumspeed );
 
