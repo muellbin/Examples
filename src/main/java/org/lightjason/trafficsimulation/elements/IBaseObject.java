@@ -87,19 +87,22 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
     }
 
     @Override
+    @Nonnull
     public final String id()
     {
         return m_id;
     }
 
     @Override
-    public final Stream<ILiteral> literal( final IObject<?>... p_object )
+    @Nonnull
+    public final Stream<ILiteral> literal( @Nonnull final IObject<?>... p_object )
     {
         return this.literal( Arrays.stream( p_object ) );
     }
 
     @Override
-    public final Stream<ILiteral> literal( final Stream<IObject<?>> p_object )
+    @Nonnull
+    public final Stream<ILiteral> literal( @Nonnull final Stream<IObject<?>> p_object )
     {
         return Stream.of(
             CLiteral.from(

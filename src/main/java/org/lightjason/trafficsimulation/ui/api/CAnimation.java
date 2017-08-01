@@ -25,6 +25,7 @@ package org.lightjason.trafficsimulation.ui.api;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.lightjason.trafficsimulation.elements.IMap;
+import org.lightjason.trafficsimulation.runtime.CRuntime;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
 
 import javax.annotation.Nonnull;
@@ -48,10 +49,7 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
      */
     public CAnimation()
     {
-        super( ( i, j ) ->
-        {
-
-        } );
+        super( ( i, j ) -> j.send( CRuntime.INSTANCE.element( i.get( "id" ) ).map( IMap.EStatus.EXECUTE ) ) );
     }
 
 

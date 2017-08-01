@@ -30,8 +30,10 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
+import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,9 +45,10 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 
@@ -65,7 +68,7 @@ public final class CRuntime implements IRuntime
     /**
      * supplier of tasks
      */
-    private AtomicReference<Function<Map<String, Pair<Boolean, String>>, ITask>> m_supplier = new AtomicReference<>( ( i ) -> ITask.EMPTY );
+    private AtomicReference<BiFunction<Map<String, Pair<Boolean, String>>, Map<String, IObject<?>>, ITask>> m_supplier = new AtomicReference<>( ( i, j ) -> ITask.EMPTY );
     /**
      * map with agents and asl codes and visibility
      */
@@ -74,6 +77,10 @@ public final class CRuntime implements IRuntime
      * thread-sleep time
      */
     private final AtomicInteger m_threadsleeptime = new AtomicInteger( CConfiguration.INSTANCE.getOrDefault( 100, "main", "simulationspeed" ) );
+    /**
+     * execution objects
+     */
+    private final Map<String, IObject<?>> m_elements = new ConcurrentHashMap<>();
 
 
     /**
@@ -146,6 +153,7 @@ public final class CRuntime implements IRuntime
 
 
     @Override
+    @Nonnull
     public final IRuntime save()
     {
         // update existing agents
@@ -195,6 +203,7 @@ public final class CRuntime implements IRuntime
     }
 
     @Override
+    @Nonnull
     public final AtomicInteger time()
     {
         return m_threadsleeptime;
@@ -228,7 +237,8 @@ public final class CRuntime implements IRuntime
                                      ( n, m ) -> n,
                                      () -> new TreeMap<>( String.CASE_INSENSITIVE_ORDER )
                                  ) )
-                             )
+                             ),
+                             m_elements
                          )
             ).call();
         }
@@ -240,13 +250,24 @@ public final class CRuntime implements IRuntime
 
 
     @Override
-    public final IRuntime supplier( @Nonnull final Function<Map<String, Pair<Boolean, String>>, ITask> p_supplier )
+    public final IRuntime supplier( @Nonnull final BiFunction<Map<String, Pair<Boolean, String>>, Map<String, IObject<?>>, ITask> p_supplier )
     {
         m_supplier.set( p_supplier );
         return this;
     }
 
 
+    /**
+     * returns an element from the current executed objects
+     *
+     * @param p_id id
+     * @return null or object
+     */
+    @Nullable
+    public final IObject<?> element( final String p_id )
+    {
+        return m_elements.get( p_id );
+    }
 
 
     @Override

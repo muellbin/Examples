@@ -122,12 +122,14 @@ public final class CArea extends IBaseObject<IArea> implements IArea
             && ( m_position.get( 2 ) <= p_object.position().get( 1 ) ) && ( p_object.position().get( 1 ) <= m_position.get( 3 ) );
     }
 
+    @Nonnull
     @Override
     public final DoubleMatrix1D position()
     {
         return m_position;
     }
 
+    @Nonnull
     @Override
     public final DoubleMatrix1D nextposition()
     {

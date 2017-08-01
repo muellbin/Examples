@@ -24,11 +24,12 @@
 package org.lightjason.trafficsimulation.runtime;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 
 /**
@@ -43,7 +44,7 @@ public interface IRuntime extends Runnable
      * @param p_supplier task supplier
      * @return self reference
      */
-    IRuntime supplier( @Nonnull final Function<Map<String, Pair<Boolean, String>>, ITask> p_supplier );
+    IRuntime supplier( @Nonnull final BiFunction<Map<String, Pair<Boolean, String>>, Map<String, IObject<?>>, ITask> p_supplier );
 
     /**
      * task is running
@@ -57,6 +58,7 @@ public interface IRuntime extends Runnable
      *
      * @return self reference
      */
+    @Nonnull
     IRuntime save();
 
     /**
@@ -64,6 +66,7 @@ public interface IRuntime extends Runnable
      *
      * @return time
      */
+    @Nonnull
     AtomicInteger time();
 
 }

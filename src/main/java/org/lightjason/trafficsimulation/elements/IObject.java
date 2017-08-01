@@ -28,6 +28,8 @@ import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.generator.IAgentGenerator;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * any object interface
@@ -42,12 +44,14 @@ public interface IObject<T extends IAgent<?>> extends IMap, IPerceiveable, IAgen
      *
      * @return string name
      */
+    @Nonnull
     String id();
 
     /**
      * position of the object
      * @return position
      */
+    @Nonnull
     DoubleMatrix1D position();
 
     /**
@@ -55,6 +59,7 @@ public interface IObject<T extends IAgent<?>> extends IMap, IPerceiveable, IAgen
      *
      * @return new position
      */
+    @Nonnull
     DoubleMatrix1D nextposition();
 
 

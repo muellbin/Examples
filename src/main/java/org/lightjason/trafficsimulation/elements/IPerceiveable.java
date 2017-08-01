@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.elements;
 
 import org.lightjason.agentspeak.language.ILiteral;
 
+import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 
@@ -41,7 +42,8 @@ public interface IPerceiveable
      * @param p_object objects
      * @return stream of literal
      */
-    Stream<ILiteral> literal( final IObject<?>... p_object );
+    @Nonnull
+    Stream<ILiteral> literal( @Nonnull final IObject<?>... p_object );
 
     /**
      * get literal of the object
@@ -49,6 +51,7 @@ public interface IPerceiveable
      * @param p_object objects
      * @return stream of literal
      */
-    Stream<ILiteral> literal( final Stream<IObject<?>> p_object );
+    @Nonnull
+    Stream<ILiteral> literal( @Nonnull final Stream<IObject<?>> p_object );
 
 }

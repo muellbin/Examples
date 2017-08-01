@@ -450,6 +450,7 @@ jQuery(function() {
         l_simulationscreen = jQuery("#simulation-screen"),
         l_simulationspeed = jQuery("#simulation-speed"),
         l_simulationmusic = jQuery( "#simulation-music" ),
+        l_wsanimation = LightJason.websocket( "/animation" ),
         l_editor = null,
         l_music = null,
         l_engine = null,
@@ -815,6 +816,8 @@ jQuery(function() {
                 l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, p_data.type );
                 if( p_data.type === "uservehicle")
                     l_engine.camera.follow(l_visualizationobjects[p_data.id]);
+
+                l_wsanimation.send( JSON.stringify({ id: p_data.id }) );
             },
 
             execute: function (p_data) {
@@ -822,10 +825,12 @@ jQuery(function() {
                     l_visualizationfunctions[p_data.type]["create"](p_data);
 
                 // move the vehicles in the new positions (y-coordinate must be increment, because footway border is not part of the internal data model)
-                // @bug tween is bracking on new websocket data -> https://phaser.io/examples/v2/tweens/tween-loop-event
-                l_engine.add
-                        .tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() * 2.5 )
-                        .start();
+                  var l_tween = l_engine.add
+                                      .tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() );
+
+                l_tween.delay(0);
+                l_tween.onComplete.add(function(){ l_wsanimation.send( JSON.stringify({ id: p_data.id }) ); }, this);
+                l_tween.start();
             }
         },
 
@@ -867,10 +872,9 @@ jQuery(function() {
     );
 
     // engine bind to communication websocket
-    LightJason.websocket( "/animation" )
+    l_wsanimation
               .onmessage = function ( e ) {
                 var l_data = JSON.parse( e.data );
-                console.log( l_data );
                 if ( ( l_visualizationfunctions[l_data.type] ) && ( typeof( l_visualizationfunctions[l_data.type][l_data.status] ) === "function" ) )
                     l_visualizationfunctions[l_data.type][l_data.status](l_data);
               };

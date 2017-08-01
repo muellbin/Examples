@@ -53,7 +53,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -83,7 +82,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     /**
      * set elements
      */
-    private final Set<Callable<?>> m_elements;
+    private final Map<String, IObject<?>> m_elements;
     /**
      * grid
      */
@@ -123,7 +122,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * @param p_generatoruservehicle user vehicle generator
      */
     private CEnvironment( @Nonnull final IAgentConfiguration<IEnvironment> p_configuration, @Nonnull final String p_id,
-                          @Nonnull final Set<Callable<?>> p_elements,
+                          @Nonnull final Map<String, IObject<?>> p_elements,
                           @Nonnull final IVehicle.IGenerator<IVehicle> p_generatordefaultvehicle,
                           @Nonnull final IVehicle.IGenerator<IVehicle> p_generatoruservehicle,
                           @Nonnull final IArea.IGenerator<IArea> p_generatorarea
@@ -136,12 +135,14 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_generatordefaultvehicle = p_generatordefaultvehicle;
     }
 
+    @Nonnull
     @Override
     public final DoubleMatrix1D position()
     {
         return new DenseDoubleMatrix1D( new double[]{m_grid.get().rows(), m_grid.get().columns()} );
     }
 
+    @Nonnull
     @Override
     public final DoubleMatrix1D nextposition()
     {
@@ -260,7 +261,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             new double[]{p_lanefrom.doubleValue(), p_laneto.doubleValue(), p_positionfrom.doubleValue(), p_positionto.doubleValue()}
         ), p_maximumspeed );
         m_areas.add( l_area );
-        m_elements.add( l_area );
+        m_elements.put( l_area.id(), l_area );
     }
 
     @Override
@@ -272,7 +273,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_vehiclecache.removeAll(
             m_vehiclecache.parallelStream()
                           .filter( i -> this.set( i, i.position() ) )
-                          .peek( m_elements::add )
+                          .peek( i -> m_elements.put( i.id(), i ) )
                           .collect( Collectors.toSet() )
         );
 
@@ -368,7 +369,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
                 new CEnvironment(
                     m_configuration,
                     FUNCTOR,
-                    (Set<Callable<?>>) p_data[0],
+                    (Map<String, IObject<?>>) p_data[0],
                     (IVehicle.IGenerator<IVehicle>) p_data[1],
                     (IVehicle.IGenerator<IVehicle>) p_data[2],
                     (IArea.IGenerator<IArea>) p_data[3]

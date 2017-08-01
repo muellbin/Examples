@@ -142,17 +142,19 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_accelerate = p_accelerate;
         m_decelerate = p_decelerate;
 
-        m_speed.set( 10 );
+        //m_speed.set( 10 );
 
         CAnimation.CInstance.INSTANCE.send( EStatus.CREATE, this );
     }
 
+    @Nonnull
     @Override
     public final DoubleMatrix1D position()
     {
         return m_position;
     }
 
+    @Nonnull
     @Override
     public final DoubleMatrix1D nextposition()
     {
@@ -182,7 +184,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IVehicle call() throws Exception
     {
-        //super.call();
+        super.call();
 
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
@@ -191,7 +193,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             else
                 this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.EXECUTE, this );
         return this;
     }
 

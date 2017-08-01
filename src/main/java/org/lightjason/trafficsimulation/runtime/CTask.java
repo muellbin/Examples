@@ -26,6 +26,7 @@ package org.lightjason.trafficsimulation.runtime;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
+import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.CArea;
 import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
@@ -38,9 +39,7 @@ import org.lightjason.trafficsimulation.ui.api.CMessage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
 
@@ -62,13 +61,12 @@ public class CTask implements ITask
      * ctor
      *
      * @param p_asl asl map
+     * @param p_elements element map
      */
-    public CTask( @Nonnull final Map<String, Pair<Boolean, String>> p_asl )
+    public CTask( @Nonnull final Map<String, Pair<Boolean, String>> p_asl, @Nonnull final Map<String, IObject<?>> p_elements )
     {
         m_thread = new Thread( () ->
         {
-
-            final Set<Callable<?>> l_elements = new CopyOnWriteArraySet<>();
 
             // --- initialize generators ---
             final IEnvironment.IGenerator<IEnvironment> l_environmentgenerator = this.generatorenvironment( p_asl );
@@ -78,7 +76,7 @@ public class CTask implements ITask
 
 
             final IEnvironment l_environment = l_environmentgenerator.generatesingle(
-                l_elements,
+                p_elements,
                 this.generatorvehicle( p_asl, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),
                 this.generatorvehicle( p_asl, "uservehicle", IVehicle.ETYpe.USERVEHICLE ),
                 this.generatorarea( p_asl )
@@ -96,10 +94,10 @@ public class CTask implements ITask
             );
 
 
-            l_elements.add( l_environment );
+            p_elements.put( l_environment.id(), l_environment );
             while ( !l_environment.shutdown() )
             {
-                l_elements.parallelStream().forEach( CTask::execute );
+                p_elements.values().parallelStream().forEach( CTask::execute );
                 try
                 {
                     Thread.sleep( CRuntime.INSTANCE.time().get() );
@@ -109,6 +107,8 @@ public class CTask implements ITask
                     break;
                 }
             }
+
+            p_elements.clear();
 
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,
