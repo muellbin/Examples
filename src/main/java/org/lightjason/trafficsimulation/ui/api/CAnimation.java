@@ -52,7 +52,7 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
     {
         super( ( i, j ) ->
         {
-            final IObject<?> l_object = CRuntime.INSTANCE.element( i.get( "id" ) );
+            final IObject<?> l_object = CRuntime.INSTANCE.elements().get( i.get( "id" ) );
             if ( l_object != null )
                 j.send( l_object.map( IMap.EStatus.EXECUTE ) );
         } );

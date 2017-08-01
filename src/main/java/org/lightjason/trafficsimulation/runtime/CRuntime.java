@@ -33,7 +33,6 @@ import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -210,11 +209,8 @@ public final class CRuntime implements IRuntime
     }
 
 
-    /**
-     * agents map
-     *
-     * @return map with agent names and visibilites
-     */
+    @Override
+    @Nonnull
     public final Map<String, Pair<Boolean, String>> agents()
     {
         return m_agents;
@@ -259,10 +255,10 @@ public final class CRuntime implements IRuntime
 
 
     @Override
-    @Nullable
-    public final IObject<?> element( final String p_id )
+    @Nonnull
+    public final Map<String, IObject<?>> elements()
     {
-        return m_elements.get( p_id );
+        return Collections.unmodifiableMap( m_elements );
     }
 
 

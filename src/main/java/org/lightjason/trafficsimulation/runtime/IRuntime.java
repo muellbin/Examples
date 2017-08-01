@@ -27,7 +27,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
@@ -74,9 +73,16 @@ public interface IRuntime extends Runnable
     /**
      * returns an element from the current executed objects
      *
-     * @param p_id id
-     * @return null or object
+     * @return current element list
      */
     @Nonnull
-    IObject<?> element( final String p_id );
+    Map<String, IObject<?>> elements();
+
+    /**
+     * agents map
+     *
+     * @return map with agent names and visibilites
+     */
+    @Nonnull
+    Map<String, Pair<Boolean, String>> agents();
 }

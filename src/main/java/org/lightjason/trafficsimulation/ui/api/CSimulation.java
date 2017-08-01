@@ -27,6 +27,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
+import org.lightjason.trafficsimulation.elements.IMap;
 import org.lightjason.trafficsimulation.runtime.CRuntime;
 import org.lightjason.trafficsimulation.runtime.CTask;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
@@ -282,6 +283,11 @@ public final class CSimulation
     }
 
 
+    /**
+     * returns the cookie expire of the ui
+     *
+     * @return cookie expire
+     */
     @GET
     @Path( "/cookie/expire" )
     @Produces( MediaType.TEXT_PLAIN )
@@ -289,5 +295,16 @@ public final class CSimulation
     {
         return CConfiguration.INSTANCE.getOrDefault( 2, "ui", "cookieexpire_in_minuten" );
     }
+
+
+    @GET
+    @Path( "/elements" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public final Object elements()
+    {
+        return CRuntime.INSTANCE.elements().values().stream().map( i -> i.map( IMap.EStatus.EXECUTE ) ).collect( Collectors.toList() );
+    }
+
+
 
 }
