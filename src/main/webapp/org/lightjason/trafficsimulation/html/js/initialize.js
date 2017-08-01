@@ -725,6 +725,7 @@ jQuery(function() {
             create: function( p_data )
             {
                 localStorage.setItem( "environment", JSON.stringify( p_data ) );
+                localStorage.setItem( "time", new Date().getTime() );
                 var l_height = p_data.lanes + 2,
                     l_width = p_data.length,
                     l_tiles = [];
@@ -805,7 +806,7 @@ jQuery(function() {
                 .then(function() {
                      l_visualizationobjects = {};
                      localStorage.removeItem( "environment" );
-                     localStorage.removeItem( "visualizationobjects" );
+                     localStorage.removeItem( "time" );
                 });
             }
         },
@@ -862,10 +863,22 @@ jQuery(function() {
             },
 
             create: function(i) {
-                if (localStorage.getItem("environment") !== null)
+                if ( localStorage.getItem("environment") !== null )
                 {
-                    var l_environmentdata = JSON.parse(localStorage.getItem('environment'));
-                    l_visualizationfunctions[l_environmentdata.type][l_environmentdata.status]( l_environmentdata );
+                    LightJason.ajax( "/api/simulation/cookie/expire" )
+                        .success(function(i) {
+                            if ( ( ( new Date().getTime() - parseInt( localStorage.getItem( "time" ) ) ) / 1000 ) > parseInt( i ) * 60 )
+                            {
+                                localStorage.removeItem( "environment" );
+                                localStorage.removeItem( "time" );
+                            }
+                            else
+                            {
+                                var l_environmentdata = JSON.parse(localStorage.getItem('environment'));
+                                l_visualizationfunctions[l_environmentdata.type][l_environmentdata.status]( l_environmentdata );
+                            }
+                        })
+                        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
                 }
             }
         }
