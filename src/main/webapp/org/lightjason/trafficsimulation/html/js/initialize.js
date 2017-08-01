@@ -452,7 +452,6 @@ jQuery(function() {
         l_simulationmusic = jQuery( "#simulation-music" ),
         l_wsanimation = LightJason.websocket( "/animation" ),
         l_editor = null,
-        l_music = null,
         l_engine = null,
         l_visualizationobjects = {},
         l_visualizationfunctions = {};
@@ -722,6 +721,8 @@ jQuery(function() {
     l_visualizationfunctions = {
 
         environment: {
+
+            // initialize environment with tilemap
             create: function( p_data )
             {
                 localStorage.setItem( "environment", JSON.stringify( p_data ) );
@@ -730,12 +731,15 @@ jQuery(function() {
                     l_width = p_data.length,
                     l_tiles = [];
 
+                // build tiles with footway
                 l_tiles = l_tiles.concat( Array( l_width ).fill( 2 ) );
                 for( var i=0; i < l_height - 2; i++ )
                     l_tiles = l_tiles.concat( Array( l_width ).fill( i % 2 === 0  ? 4 : 3 ) );
                 l_tiles = l_tiles.concat( Array( l_width ).fill( 2 ) );
 
-                l_music = l_engine.add.audio( "music" );
+                if ( l_simulationmusic.is(":checked") )
+                    l_engine.music.play();
+
                 l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), l_height * 32 );
 
                 l_engine.load.tilemap(
@@ -783,15 +787,12 @@ jQuery(function() {
                 var l_layer = l_map.createLayer( "Street" );
                 l_layer.resizeWorld();
                 l_layer.wrap = true;
-
-
-                if ( l_simulationmusic.is(":checked") )
-                    l_music.play();
             },
 
+            // remove environment content (sprites) but not the timemap
             remove: function( p_data )
             {
-                l_music.stop();
+                l_engine.music.stop();
 
                 Promise.all(
                     Object.values( l_visualizationobjects )
@@ -811,9 +812,11 @@ jQuery(function() {
             }
         },
 
+
         defaultvehicle: {
+
+            // initialize a default vehicle
             create: function (p_data) {
-                // create a default vehicle (y-coordinate must be increment, because footway border is not part of the internal data model)
                 l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + 9, p_data.type );
                 if( p_data.type === "uservehicle")
                     l_engine.camera.follow(l_visualizationobjects[p_data.id]);
@@ -821,19 +824,21 @@ jQuery(function() {
                 l_wsanimation.send( JSON.stringify({ id: p_data.id }) );
             },
 
+            // execute vehicle, create new tween animation (y-position must be increment based on footway)
             execute: function (p_data) {
                 if ( !l_visualizationobjects[p_data.id] )
                     l_visualizationfunctions[p_data.type]["create"](p_data);
 
-                // move the vehicles in the new positions (y-coordinate must be increment, because footway border is not part of the internal data model)
-                  var l_tween = l_engine.add
-                                      .tween( l_visualizationobjects[p_data.id] ).to( {x: p_data.x * 32, y: ( p_data.y + 1 ) * 32 + 9}, l_simulationspeed.val() );
-
-                l_tween.delay(0);
+                var l_tween = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({
+                                                  x: p_data.x * 32,
+                                                  y: ( p_data.y + 1 ) * 32 + 9
+                                                }, l_simulationspeed.val() );
                 l_tween.onComplete.add(function(){ l_wsanimation.send( JSON.stringify({ id: p_data.id }) ); }, this);
+                l_tween.delay(0);
                 l_tween.start();
             }
         },
+
 
         uservehicle: {}
     };
@@ -862,36 +867,36 @@ jQuery(function() {
                 i.load.audio( "music", "assets/axelf.ogg" );
             },
 
-            create: function(i) {
-                if ( localStorage.getItem("environment") !== null )
-                {
-                    LightJason.ajax( "/api/simulation/cookie/expire" )
-                        .success(function(i) {
-                            if ( ( ( new Date().getTime() - parseInt( localStorage.getItem( "time" ) ) ) / 1000 ) > parseInt( i ) * 60 )
-                            {
-                                localStorage.removeItem( "environment" );
-                                localStorage.removeItem( "time" );
-                            }
-                            else
-                            {
-                                var l_environmentdata = JSON.parse(localStorage.getItem('environment'));
-                                l_visualizationfunctions[l_environmentdata.type][l_environmentdata.status]( l_environmentdata );
+            create: function(g) {
+                g.music = g.add.audio( "music" );
 
-                                LightJason.ajax( "/api/simulation/elements" )
-                                .success(function(i) {
-                                    i.forEach( function( obj ) {
-                                        if ( obj.type !== "environment" )
-                                            l_visualizationfunctions[obj.type][obj.status]( obj );
-                                    });
+                // reinitialize content if the browser tab was closed
+                if ( localStorage.getItem("environment") !== null )
+                    LightJason.ajax( "/api/simulation/cookie/expire" )
+                              .success(function(i) {
+                                  if ( ( ( new Date().getTime() - parseInt( localStorage.getItem( "time" ) ) ) / 1000 ) > parseInt( i ) * 60 )
+                                  {
+                                      localStorage.removeItem( "environment" );
+                                      localStorage.removeItem( "time" );
+                                  }
+                                  else
+                                  {
+                                      var l_environment = JSON.parse(localStorage.getItem( "environment" ) );
+                                      l_visualizationfunctions[l_environment.type][l_environment.status]( l_environment );
+
+                                      LightJason.ajax( "/api/simulation/elements" )
+                                                .success(function(j) {
+                                                    j.filter( function(o) { return o.type !== "environment"; } )
+                                                     .forEach( function( o ) { l_visualizationfunctions[o.type][o.status]( o ); });
+                                                })
+                                                .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+                                    }
                                 })
                                 .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-                            }
-                        })
-                        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-                }
             }
         }
     );
+
 
     // engine bind to communication websocket
     l_wsanimation
@@ -901,14 +906,13 @@ jQuery(function() {
                     l_visualizationfunctions[l_data.type][l_data.status](l_data);
               };
 
-    l_simulationmusic.change(function() {
-        if (!l_music)
-            return;
 
-        if (this.checked)
-            l_music.play();
+    // music enable / disable
+    l_simulationmusic.change(function() {
+        if ( this.checked )
+            l_engine.music.play();
         else
-            l_music.stop();
+            l_engine.music.stop();
     });
 
 

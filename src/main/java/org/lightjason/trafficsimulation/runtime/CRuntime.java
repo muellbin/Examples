@@ -75,7 +75,7 @@ public final class CRuntime implements IRuntime
     /**
      * thread-sleep time
      */
-    private final AtomicInteger m_threadsleeptime = new AtomicInteger( CConfiguration.INSTANCE.getOrDefault( 100, "main", "simulationspeed" ) );
+    private final AtomicInteger m_threadsleeptime = new AtomicInteger( CConfiguration.INSTANCE.getOrDefault( 500, "main", "simulationspeed" ) );
     /**
      * execution objects
      */

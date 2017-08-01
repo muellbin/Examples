@@ -32,7 +32,7 @@
 
 
     // default vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2, lane index [0 right in driving direction])
-    vehicle/default/left( 150, 7, 150, 1 );
+    vehicle/default/left( 120, 7, 150, 1 );
 
 
     // user vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2)
@@ -44,8 +44,7 @@
 
     generic/print( "environment message", "user vehicle has been created" )
 
-    area/create( 0, 1000, 1, 4, 50 );
-    AREAS = 1
+    //area/create( 0, 1000, 1, 4, 50 );
 .
 
 // simulation loop
@@ -67,7 +66,7 @@
 
 +!penalty(N) <-
     +value(N);
-    finish
+    !finish
 .
 
 +!finish <-

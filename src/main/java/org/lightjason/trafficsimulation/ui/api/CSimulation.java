@@ -234,7 +234,7 @@ public final class CSimulation
      */
     @GET
     @Path( "/time/get" )
-    @Produces( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.TEXT_PLAIN )
     public final Integer gettime()
     {
         return CRuntime.INSTANCE.time().get();
