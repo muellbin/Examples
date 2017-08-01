@@ -203,7 +203,7 @@ public final class CMessage extends IWebSocket.IBaseWebSocket
                 final Map<Object, Object> l_data = StreamUtils.zip(
                     Stream.of( "delay", "type", "title", "text" ),
                     Stream.of( m_delay, m_type.toString().toLowerCase( Locale.ROOT ),
-                               CCommon.languagestring( this, "message" ),
+                               CCommon.languagestring( CMessage.class, "message" ),
                                l_text
                     ),
                     ImmutablePair::new

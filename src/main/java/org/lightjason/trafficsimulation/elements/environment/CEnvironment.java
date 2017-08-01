@@ -295,10 +295,10 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/default/left" )
     private void defaultvehicleleft( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration,
-                                     @Nonnegative final Number p_deceleration, final int p_lane )
+                                     @Nonnegative final Number p_deceleration, @Nonnegative final Number p_lane )
     {
         this.defaultvehicle(
-            new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1 - p_lane, 0} ),
+            new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1 - p_lane.intValue(), 0} ),
             this.position().get( 1 ) - 1,
 
             p_maximumspeed,
@@ -317,7 +317,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * @param p_acceleration acceleration in m/s^2
      * @param p_deceleration deceleration in m/s^2
      */
-    private void defaultvehicle( @Nonnull final DoubleMatrix1D p_start, final double p_goal,
+    private void defaultvehicle( @Nonnull final DoubleMatrix1D p_start, @Nonnegative final double p_goal,
                                  @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
     {
         m_vehiclecache.add(

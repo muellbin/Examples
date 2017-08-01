@@ -156,7 +156,7 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
          */
         protected IBaseGenerator( @Nonnull final InputStream p_stream, @Nonnull final Class<? extends T> p_agentclass ) throws Exception
         {
-            super( p_stream, Stream.concat( CConfiguration.ACTIONS.stream(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ) );
+            super( p_stream, Stream.concat( CConfiguration.INSTANCE.actions(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ) );
         }
 
         @Override

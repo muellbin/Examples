@@ -30,15 +30,16 @@
     simulation/initialize( 100, 4 );
     generic/print( "environment message", "environment grid has been created" );
 
+
     // default vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2, lane index [0 right in driving direction])
-    //vehicle/default/left( 250, 10, 20, 1 );
+    vehicle/default/left( 150, 7, 150, 1 );
 
 
     // user vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2)
     [ MaxSpeed | MaxAcceleration | MaxDeceleration ] = math/statistic/randomsimple(1, 1, 1);
     MaxSpeed = MaxSpeed * 125 + 150;
     MaxAcceleration = MaxAcceleration * 10 + 10;
-    MaxDeceleration = -1 * MaxDeceleration * 15 + 15;
+    MaxDeceleration = MaxDeceleration * 15 + 15;
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
 
     generic/print( "environment message", "user vehicle has been created" )

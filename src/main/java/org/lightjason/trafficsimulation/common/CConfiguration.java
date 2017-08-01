@@ -38,11 +38,10 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -60,10 +59,6 @@ public final class CConfiguration extends ITree.CTree
      */
     public static final String DEFAULTPATH = Paths.get( System.getProperty( "user.home" ), ".lightjason", "trafficsimulation" ).toString();
     /**
-     * action set
-     */
-    public static final Set<IAction> ACTIONS;
-    /**
      * asl sub directory
      */
     public static final String ASLEXTENSION = ".asl";
@@ -71,27 +66,10 @@ public final class CConfiguration extends ITree.CTree
      * loading path
      */
     private String m_path = "";
-
-    static {
-
-        Set<IAction> l_actions = Collections.emptySet();
-        try
-        {
-            l_actions = Collections.unmodifiableSet(
-                Stream.concat(
-                    Stream.of( new CPrint( () -> CMessage.CInstance.INSTANCE.stream( CMessage.EType.NOTICE, 1000 ) ) ),
-                    CCommon.actionsFromPackage()
-                ).collect( Collectors.toSet()
-                )
-            );
-        }
-        catch ( final Exception l_exception )
-        {
-            // ignore exception
-        }
-
-        ACTIONS = l_actions;
-    }
+    /**
+     * action set
+     */
+    private final Set<IAction> m_actions = new HashSet<>();
 
 
     /**
@@ -134,15 +112,39 @@ public final class CConfiguration extends ITree.CTree
             {
                 m_data.clear();
                 m_data.putAll( l_result );
+
+                // build agent actions
+                m_actions.clear();
+                Stream.concat(
+                    Stream.of(
+                        new CPrint(
+                            () -> CMessage.CInstance.INSTANCE.stream(
+                                CMessage.EType.NOTICE, this.getOrDefault( 2000, "ui", "messagedelay", "agentprint" )
+                            ),
+                            "\n"
+                        )
+                    ),
+                    CCommon.actionsFromPackage()
+                ).forEach( m_actions::add );
             }
 
         }
-        catch ( final IOException l_exception )
+        catch ( final Exception l_exception )
         {
             throw new RuntimeException( l_exception );
         }
 
         return this;
+    }
+
+    /**
+     * agent actions
+     *
+     * @return action stream
+     */
+    public final Stream<IAction> actions()
+    {
+        return m_actions.stream();
     }
 
     /**
