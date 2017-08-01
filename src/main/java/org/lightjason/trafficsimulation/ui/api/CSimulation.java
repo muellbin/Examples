@@ -281,4 +281,13 @@ public final class CSimulation
         return CCommon.languagebundle().getLocale().getISO3Language();
     }
 
+
+    @GET
+    @Path( "/cookie/expire" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public final int cookieexpire()
+    {
+        return CConfiguration.INSTANCE.getOrDefault( 2, "ui", "cookieexpire_in_minuten" );
+    }
+
 }

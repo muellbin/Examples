@@ -44,6 +44,7 @@ ui:
     openbrowser: true
     port: 12345
     host: localhost
+    cookieexpire_in_minuten: 2
 
 # simulation units
 units:

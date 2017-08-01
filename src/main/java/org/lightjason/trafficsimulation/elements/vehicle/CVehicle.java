@@ -60,8 +60,6 @@ import java.util.stream.Stream;
 
 /**
  * vehicle agent
- *
- * @bug in ctor fixed speed for testing and disabling agent execution
  */
 @IAgentAction
 public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
@@ -141,8 +139,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_maximumspeed = p_maximumspeed;
         m_accelerate = p_accelerate;
         m_decelerate = p_decelerate;
-
-        //m_speed.set( 10 );
 
         CAnimation.CInstance.INSTANCE.send( EStatus.CREATE, this );
     }
