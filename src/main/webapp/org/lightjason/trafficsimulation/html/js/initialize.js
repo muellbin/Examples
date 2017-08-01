@@ -876,6 +876,15 @@ jQuery(function() {
                             {
                                 var l_environmentdata = JSON.parse(localStorage.getItem('environment'));
                                 l_visualizationfunctions[l_environmentdata.type][l_environmentdata.status]( l_environmentdata );
+
+                                LightJason.ajax( "/api/simulation/elements" )
+                                .success(function(i) {
+                                    i.forEach( function( obj ) {
+                                        if ( obj.type !== "environment" )
+                                            l_visualizationfunctions[obj.type][obj.status]( obj );
+                                    });
+                                })
+                                .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
                             }
                         })
                         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
