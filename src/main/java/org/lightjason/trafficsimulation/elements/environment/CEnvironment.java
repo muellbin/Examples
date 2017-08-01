@@ -260,6 +260,10 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         final IArea l_area = m_generatorarea.generatesingle( new DenseDoubleMatrix1D(
             new double[]{p_lanefrom.doubleValue(), p_laneto.doubleValue(), p_positionfrom.doubleValue(), p_positionto.doubleValue()}
         ), p_maximumspeed );
+
+        if ( l_area == null )
+            return;
+
         m_areas.add( l_area );
         m_elements.put( l_area.id(), l_area );
     }
@@ -281,22 +285,47 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     /**
-     * creates a vehicle generator
+     * action to create default vehicle on the left side
      *
      * @param p_maximumspeed maximum speed in km/h
      * @param p_acceleration acceleration in m/s^2
      * @param p_deceleration deceleration in m/s^2
+     * @param p_lane lane index (0 is right in driving direction)
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "vehicle/default" )
-    private void defaultvehicle( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
+    @IAgentActionName( name = "vehicle/default/left" )
+    private void defaultvehicleleft( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration,
+                                     @Nonnegative final Number p_deceleration, final int p_lane )
+    {
+        this.defaultvehicle(
+            new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1 - p_lane, 0} ),
+            this.position().get( 1 ) - 1,
+
+            p_maximumspeed,
+            p_acceleration,
+            p_deceleration
+        );
+    }
+
+
+    /**
+     * creates a default vehicle
+     *
+     * @param p_start start position
+     * @param p_goal goal position
+     * @param p_maximumspeed maximum speed in km/h
+     * @param p_acceleration acceleration in m/s^2
+     * @param p_deceleration deceleration in m/s^2
+     */
+    private void defaultvehicle( @Nonnull final DoubleMatrix1D p_start, final double p_goal,
+                                 @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
     {
         m_vehiclecache.add(
                  m_generatordefaultvehicle.generatesingle(
                  this,
 
-                 new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 2, 0} ),
-                 this.position().get( 1 ) - 1,
+                 p_start,
+                 p_goal,
 
                  p_maximumspeed,
                  p_acceleration,
@@ -305,8 +334,9 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         );
     }
 
+
     /**
-     * creates a vehicle generator
+     * action to create an user vehicle
      *
      * @param p_maximumspeed maximum speed in km/h
      * @param p_acceleration acceleration in m/s^2

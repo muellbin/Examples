@@ -29,10 +29,10 @@
     // grid size (100km with 4 lanes)
     simulation/initialize( 100, 4 );
 
-    // default vehicle
-    vehicle/default( 250, 10, 20 );
+    // default vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2, lane index [0 right in driving direction])
+    //vehicle/default/left( 250, 10, 20, 1 );
 
-    // user vehicle
+    // user vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2)
     [ MaxSpeed | MaxAcceleration | MaxDeceleration ] = math/statistic/randomsimple(1, 1, 1);
     MaxSpeed = MaxSpeed * 125 + 150;
     MaxAcceleration = MaxAcceleration * 10 + 10;

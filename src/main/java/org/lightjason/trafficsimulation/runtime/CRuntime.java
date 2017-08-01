@@ -60,7 +60,7 @@ public final class CRuntime implements IRuntime
     /**
      * instance
      */
-    public static final CRuntime INSTANCE = new CRuntime();
+    public static final IRuntime INSTANCE = new CRuntime();
     /**
      * execution task
      */
@@ -250,6 +250,7 @@ public final class CRuntime implements IRuntime
 
 
     @Override
+    @Nonnull
     public final IRuntime supplier( @Nonnull final BiFunction<Map<String, Pair<Boolean, String>>, Map<String, IObject<?>>, ITask> p_supplier )
     {
         m_supplier.set( p_supplier );
@@ -257,12 +258,7 @@ public final class CRuntime implements IRuntime
     }
 
 
-    /**
-     * returns an element from the current executed objects
-     *
-     * @param p_id id
-     * @return null or object
-     */
+    @Override
     @Nullable
     public final IObject<?> element( final String p_id )
     {
