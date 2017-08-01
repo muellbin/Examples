@@ -652,7 +652,7 @@ jQuery(function() {
     });
 
 
-    // set simulation execution
+    // run simulation
     jQuery( "#simulation-run" ).click(function() {
         LightJason.ajax( "/api/simulation/run" )
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });

@@ -24,8 +24,7 @@
 !drive.
 
 +!drive <-
-    accelerate;
-    //!linger
+    !linger;
     !drive
 .
 
@@ -35,8 +34,13 @@
 .
 
 +!linger <-
-    generic/type/fuzzyreturn( true, math/statistic/randomsimple() );
+    [ L | V ] = math/statistic/randomsimple(1, 1);
+    L <= V;
     decelerate
+.
+
+-!linger <-
+    accelerate
 .
 
 +!collision <- decelerate.

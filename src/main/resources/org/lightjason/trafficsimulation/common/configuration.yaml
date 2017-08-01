@@ -23,8 +23,8 @@
 main:
     simulationspeed: 500
     messagedelay:
-      default: 2500
-      agentprint: 1500
+      default: 3500
+      agentprint: 2500
 
 
 # agent definition (asl is relative to search path)
