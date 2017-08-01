@@ -28,16 +28,20 @@
 
     // grid size (100km with 4 lanes)
     simulation/initialize( 100, 4 );
+    generic/print( "environment message", "environment grid has been created" );
 
     // default vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2, lane index [0 right in driving direction])
     //vehicle/default/left( 250, 10, 20, 1 );
+
 
     // user vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2)
     [ MaxSpeed | MaxAcceleration | MaxDeceleration ] = math/statistic/randomsimple(1, 1, 1);
     MaxSpeed = MaxSpeed * 125 + 150;
     MaxAcceleration = MaxAcceleration * 10 + 10;
     MaxDeceleration = -1 * MaxDeceleration * 15 + 15;
-    vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration )
+    vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
+
+    generic/print( "environment message", "user vehicle has been created" )
 .
 
 // simulation loop
@@ -46,7 +50,13 @@
 .
 
 // plan to shutdown simulation execution
-+!shutdown <- simulation/shutdown.
++!shutdown <-
+    generic/print( "environment message", "shutdown plan has been called" );
+    simulation/shutdown
+.
 
 // plan on collision execution
-+!collision <- simulation/shutdown.
++!collision <-
+    generic/print( "environment message", "collision plan hash been called" );
+    simulation/shutdown
+.

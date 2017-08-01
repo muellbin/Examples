@@ -26,9 +26,14 @@ package org.lightjason.trafficsimulation.ui.api;
 import com.codepoetics.protonpack.StreamUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jetty.websocket.api.Session;
+import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
 
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -135,6 +140,77 @@ public final class CMessage extends IWebSocket.IBaseWebSocket
 
             CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
             return this;
+        }
+
+        /**
+         * creates a new print stream instance of ui messages
+         *
+         * @param p_type message type
+         * @param p_delay delay
+         * @return printstream instance
+         */
+        public final PrintStream stream( @Nonnull final EType p_type, final int p_delay )
+        {
+            return new PrintStream( new CStream( p_type, p_delay ), true );
+        }
+
+
+        /**
+         * output stream of ui messages
+         */
+        private static final class CStream extends OutputStream
+        {
+            /**
+             * string
+             */
+            private final StringBuilder m_output = new StringBuilder();
+            /**
+             * message delay
+             */
+            private final int m_delay;
+            /**
+             * type
+             */
+            private final EType m_type;
+
+            /**
+             * ctor
+             *
+             * @param p_type type
+             * @param p_delay delay
+             */
+            CStream( final EType p_type, final int p_delay )
+            {
+                m_delay = p_delay;
+                m_type = p_type;
+            }
+
+            @Override
+            public void write( final int p_char ) throws IOException
+            {
+                m_output.append( Character.toChars( p_char ) );
+            }
+
+            @Override
+            public final synchronized void flush() throws IOException
+            {
+                final String l_text = m_output.toString().trim();
+                m_output.setLength( 0 );
+
+                if ( l_text.isEmpty() )
+                    return;
+
+                final Map<Object, Object> l_data = StreamUtils.zip(
+                    Stream.of( "delay", "type", "title", "text" ),
+                    Stream.of( m_delay, m_type.toString().toLowerCase( Locale.ROOT ),
+                               CCommon.languagestring( this, "message" ),
+                               l_text
+                    ),
+                    ImmutablePair::new
+                ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
+
+                CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
+            }
         }
 
     }

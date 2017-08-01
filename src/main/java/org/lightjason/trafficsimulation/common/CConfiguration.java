@@ -26,7 +26,9 @@ package org.lightjason.trafficsimulation.common;
 
 import org.apache.commons.io.FileUtils;
 import org.lightjason.agentspeak.action.IAction;
+import org.lightjason.agentspeak.action.builtin.generic.CPrint;
 import org.lightjason.agentspeak.common.CCommon;
+import org.lightjason.trafficsimulation.ui.api.CMessage;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -60,7 +62,7 @@ public final class CConfiguration extends ITree.CTree
     /**
      * action set
      */
-    public static final Set<IAction> ACTIONS = Collections.unmodifiableSet( CCommon.actionsFromPackage().collect( Collectors.toSet() ) );
+    public static final Set<IAction> ACTIONS;
     /**
      * asl sub directory
      */
@@ -69,6 +71,27 @@ public final class CConfiguration extends ITree.CTree
      * loading path
      */
     private String m_path = "";
+
+    static {
+
+        Set<IAction> l_actions = Collections.emptySet();
+        try
+        {
+            l_actions = Collections.unmodifiableSet(
+                Stream.concat(
+                    Stream.of( new CPrint( () -> CMessage.CInstance.INSTANCE.stream( CMessage.EType.NOTICE, 1000 ) ) ),
+                    CCommon.actionsFromPackage()
+                ).collect( Collectors.toSet()
+                )
+            );
+        }
+        catch ( final Exception l_exception )
+        {
+            // ignore exception
+        }
+
+        ACTIONS = l_actions;
+    }
 
 
     /**
