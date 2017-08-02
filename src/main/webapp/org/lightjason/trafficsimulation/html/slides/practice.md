@@ -33,7 +33,7 @@ Agent-Orientated programming with AgentSpeak(L++)
 	* uses the [belief-desire-intention (BDI)](https://en.wikipedia.org/wiki/Belief%E2%80%93desire%E2%80%93intention_model) architecture 
 	* execution mechanisum is [Procedural reasoning system (PRS)](https://en.wikipedia.org/wiki/Procedural_reasoning_system)
 	* data is described in _symbols and facts_ with is used in a [logical programming language](https://en.wikipedia.org/wiki/Logic_programming)
-* We have extended this concept and the Java implemention  [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hübner to our .important[AgentSpeak(L++)] 
+* We have extended this concept and the Java implemention  [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. H端bner to our .important[AgentSpeak(L++)] 
 	* clean and strict syntax with state-of-the-art features
 	* append the PRS with concurrency mechanism
 	* using a [REST-API](https://en.wikipedia.org/wiki/Representational_state_transfer) to get a flexible system independed controlling

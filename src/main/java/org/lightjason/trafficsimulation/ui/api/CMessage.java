@@ -38,6 +38,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -161,6 +163,10 @@ public final class CMessage extends IWebSocket.IBaseWebSocket
         private static final class CStream extends OutputStream
         {
             /**
+             * header
+             */
+            private static final Pattern HEADER = Pattern.compile( "^(#\\s*.+)" );
+            /**
              * string
              */
             private final StringBuilder m_output = new StringBuilder();
@@ -194,17 +200,31 @@ public final class CMessage extends IWebSocket.IBaseWebSocket
             @Override
             public final synchronized void flush() throws IOException
             {
-                final String l_text = m_output.toString().trim();
+                final String l_input = m_output.toString().trim();
                 m_output.setLength( 0 );
 
-                if ( l_text.isEmpty() )
+                if ( l_input.isEmpty() )
                     return;
+
+                final String l_header;
+                final String l_content;
+                final Matcher l_matcher = HEADER.matcher( l_input );
+                if ( l_matcher.find() )
+                {
+                    l_content = l_input.replace( l_matcher.group( 0 ).trim(), "" ).trim();
+                    l_header = l_matcher.group( 0 ).trim().substring( 1 );
+                }
+                else
+                {
+                    l_header = CCommon.languagestring( CMessage.class, "message" );
+                    l_content = l_input;
+                }
 
                 final Map<Object, Object> l_data = StreamUtils.zip(
                     Stream.of( "delay", "type", "title", "text" ),
                     Stream.of( m_delay, m_type.toString().toLowerCase( Locale.ROOT ),
-                               CCommon.languagestring( CMessage.class, "message" ),
-                               l_text
+                               l_header,
+                               l_content
                     ),
                     ImmutablePair::new
                 ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );

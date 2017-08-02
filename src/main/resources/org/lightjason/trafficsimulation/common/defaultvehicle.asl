@@ -24,11 +24,13 @@
 !drive.
 
 
-// driving call equal to Nagel-Schreckenberg driving model,
-// on success accelerate
+// driving call equal to Nagel-Schreckenberg driving model, on success accelerate
 +!drive <-
+    // linger call
     [ L | V ] = math/statistic/randomsimple(1, 1);
     L < V;
+
+    // accelerate and drive
     accelerate;
     !drive
 .

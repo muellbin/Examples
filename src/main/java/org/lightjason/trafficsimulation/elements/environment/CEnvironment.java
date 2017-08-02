@@ -31,6 +31,7 @@ import com.codepoetics.protonpack.StreamUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
@@ -112,6 +113,10 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * set / cache with generated vehicles but not set within the grid
      */
     private final Set<IVehicle> m_vehiclecache = new CopyOnWriteArraySet<>();
+    /**
+     * number of lanes for each side
+     */
+    private final AtomicReference<Pair<Number, Number>> m_lanes = new AtomicReference<>( new ImmutablePair<>( 0, 0 ) );
 
     /**
      * ctor
@@ -156,7 +161,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return m_shutdown.get();
     }
 
-    @Nonnull
     @Override
     public final synchronized boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
     {
@@ -170,15 +174,18 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return true;
     }
 
-    @Nonnull
     @Override
     public final synchronized boolean move( @Nonnull final IVehicle p_vehicle )
     {
+        final Number l_lane = p_vehicle.position().get( 0 );
+        final Number l_start = p_vehicle.position().get( 1 );
         final Number l_target = p_vehicle.nextposition().get( 1 );
 
-        if ( IntStream.rangeClosed( (int) p_vehicle.position().get( 1 ) + 1, Math.min( l_target.intValue(), m_grid.get().columns() ) )
+        if ( ( l_start.intValue() < l_target.intValue()
+            ? IntStream.range( l_start.intValue() + 1, Math.min( l_target.intValue(), m_grid.get().columns() ) )
+            : IntStream.range( Math.max( l_target.intValue(), 0 ), l_start.intValue() - 1 ) )
                       .parallel()
-                      .filter( i -> m_grid.get().getQuick( (int) p_vehicle.position().get( 0 ), i ) != null )
+                      .filter( i -> m_grid.get().getQuick( l_lane.intValue(), i ) != null )
                       .findAny()
                       .isPresent()
         )
@@ -190,7 +197,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             return true;
         }
 
-        m_grid.get().setQuick( (int) p_vehicle.position().get( 0 ), l_target.intValue(), p_vehicle );
+        m_grid.get().setQuick( l_lane.intValue(), l_start.intValue(), null );
+        m_grid.get().setQuick( l_lane.intValue(), l_target.intValue(), p_vehicle );
         p_vehicle.position().setQuick( 1, l_target.intValue() );
         return true;
     }
@@ -199,8 +207,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {
         return StreamUtils.zip(
-            Stream.of( "type", "status", "id", "length", "lanes" ),
-            Stream.of( FUNCTOR, p_status.toString(), this.id(), this.position().get( 1 ), this.position().get( 0 ) ),
+            Stream.of( "type", "status", "id", "length", "laneslefttoright", "lanesrighttoleft" ),
+            Stream.of( FUNCTOR, p_status.toString(), this.id(), this.position().get( 1 ), m_lanes.get().getLeft(), m_lanes.get().getRight() ),
             ImmutablePair::new
         ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
     }
@@ -211,24 +219,42 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return Stream.empty();
     }
 
+    @Override
+    public final IEnvironment call() throws Exception
+    {
+        super.call();
+
+        // add all cached elements to the grid if possible
+        m_vehiclecache.removeAll(
+            m_vehiclecache.parallelStream()
+                          .filter( i -> this.set( i, i.position() ) )
+                          .peek( i -> m_elements.put( i.id(), i ) )
+                          .collect( Collectors.toSet() )
+        );
+
+        return this;
+    }
+
     // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------
 
     /**
      * action to initialize the simulation
      *
      * @param p_length length of the street in kilometer
-     * @param p_lanes number of lanes
+     * @param p_lefttorightlanes number of lanes that goes from right to left
+     * @param p_righttoleftlanes number of lanes that goes from left ro right
      */
     @IAgentActionFilter
     @IAgentActionName( name = "simulation/initialize" )
-    private void simulationinitialize( final Number p_length, final Number p_lanes )
+    private void simulationinitialize( final Number p_length, final Number p_lefttorightlanes, final Number p_righttoleftlanes )
     {
         if ( m_grid.get().size() != 0 )
             throw new RuntimeException( "world is initialized" );
 
         m_areas.clear();
+        m_lanes.set( new ImmutablePair<>( p_lefttorightlanes, p_righttoleftlanes ) );
         m_grid.set( new SparseObjectMatrix2D(
-            p_lanes.intValue(),
+            p_lefttorightlanes.intValue() + p_righttoleftlanes.intValue(),
             CUnit.INSTANCE.kilometertocell( p_length ).intValue()
         ) );
 
@@ -281,21 +307,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_elements.put( l_area.id(), l_area );
     }
 
-    @Override
-    public final IEnvironment call() throws Exception
-    {
-        super.call();
-
-        // add all cached elements to the grid if possible
-        m_vehiclecache.removeAll(
-            m_vehiclecache.parallelStream()
-                          .filter( i -> this.set( i, i.position() ) )
-                          .peek( i -> m_elements.put( i.id(), i ) )
-                          .collect( Collectors.toSet() )
-        );
-
-        return this;
-    }
 
     /**
      * action to create default vehicle on the left side

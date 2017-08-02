@@ -23,26 +23,37 @@
 
 !main.
 
+
+// function to generate maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2
+vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
+    [ Speed | Acceleration | Deceleration ] = math/statistic/randomsimple(1, 1, 1);
+    MaxSpeed = 0.5 * Speed * MaxSpeed + 0.5 * MaxSpeed;
+    MaxAcceleration = 0.5 * Acceleration * MaxAcceleration + 0.5 * MaxAcceleration;
+    MaxDeceleration = 0.5 * Deceleration * Deceleration + 0.5 * Deceleration
+.
+
+
 // initialize
 +!main <-
 
-    // grid size (100km with 4 lanes)
-    simulation/initialize( 100, 4 );
-    generic/print( "environment message", "environment grid has been created" );
+    // grid size (100km with 2x2 lanes for each direction)
+    simulation/initialize( 100, 2, 2 );
+    generic/print( "#Environment Agent", "grid has been created" );
 
+    MaxSpeed = 120;
+    MaxAcceleration = 10;
+    MaxDeceleration = 15;
 
     // default vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2, lane index [0 right in driving direction])
-    vehicle/default/left( 120, 7, 150, 1 );
+    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
+    vehicle/default/left( MaxSpeed, MaxAcceleration, MaxDeceleration, 1 );
 
 
     // user vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2)
-    [ MaxSpeed | MaxAcceleration | MaxDeceleration ] = math/statistic/randomsimple(1, 1, 1);
-    MaxSpeed = MaxSpeed * 125 + 150;
-    MaxAcceleration = MaxAcceleration * 10 + 10;
-    MaxDeceleration = MaxDeceleration * 15 + 15;
+    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
 
-    generic/print( "environment message", "user vehicle has been created" )
+    generic/print( "#Environment Agent", "user vehicle has been created" )
 
     //area/create( 0, 1000, 1, 4, 50 );
 .

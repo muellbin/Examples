@@ -67,15 +67,15 @@
  * and open the template in the editor.
  */
 
-var CURRENT_URL = window.location.href.split('#')[0].split('?')[0],
-    $BODY = $('body'),
-    $MENU_TOGGLE = $('#menu_toggle'),
-    $SIDEBAR_MENU = $('#sidebar-menu'),
-    $SIDEBAR_FOOTER = $('.sidebar-footer'),
-    $LEFT_COL = $('.left_col'),
-    $RIGHT_COL = $('.right_col'),
-    $NAV_MENU = $('.nav_menu'),
-    $FOOTER = $('footer');
+const CURRENTURL = window.location.href.split('#')[0].split('?')[0],
+      BODY = jQuery( "body" ),
+      MENUTOGGLE = jQuery( "#menu_toggle") ,
+      SIDEBARMENU = jQuery( "#sidebar-menu" ),
+      SIDEBARFOOTER = jQuery( ".sidebar-footer" ),
+      LEFTCOLUM = jQuery( ".left_col" ),
+      RIGHTCOLUM = jQuery( ".right_col" ),
+      NAVIGATIONMENU = jQuery( ".nav_menu" ),
+      FOOTER = jQuery( "footer" );
 
 /**
  * Sidebar
@@ -84,20 +84,20 @@ function init_sidebar() {
     // TODO: This is some kind of easy fix, maybe we can improve this
     var setContentHeight = function () {
         // reset height
-        $RIGHT_COL.css('min-height', $(window).height());
+        RIGHTCOLUM.css('min-height', $(window).height());
 
-        var bodyHeight = $BODY.outerHeight(),
-            footerHeight = $BODY.hasClass('footer_fixed') ? -10 : $FOOTER.height(),
-            leftColHeight = $LEFT_COL.eq(1).height() + $SIDEBAR_FOOTER.height(),
+        var bodyHeight = BODY.outerHeight(),
+            footerHeight = BODY.hasClass('footer_fixed') ? -10 : FOOTER.height(),
+            leftColHeight = LEFTCOLUM.eq(1).height() + SIDEBARFOOTER.height(),
             contentHeight = bodyHeight < leftColHeight ? leftColHeight : bodyHeight;
 
         // normalize content
-        contentHeight -= $NAV_MENU.height() + footerHeight;
+        contentHeight -= NAVIGATIONMENU.height() + footerHeight;
 
-        $RIGHT_COL.css('min-height', contentHeight);
+        RIGHTCOLUM.css('min-height', contentHeight);
     };
 
-    $SIDEBAR_MENU.find('a').on('click', function(ev) {
+    SIDEBARMENU.find('a').on('click', function(ev) {
         var $li = $(this).parent();
 
         if ($li.is('.active')) {
@@ -108,14 +108,14 @@ function init_sidebar() {
         } else {
             // prevent closing menu if we are on child menu
             if (!$li.parent().is('.child_menu')) {
-                $SIDEBAR_MENU.find('li').removeClass('active active-sm');
-                $SIDEBAR_MENU.find('li ul').slideUp();
+                SIDEBARMENU.find('li').removeClass('active active-sm');
+                SIDEBARMENU.find('li ul').slideUp();
             }else
             {
-                if ( $BODY.is( ".nav-sm" ) )
+                if ( BODY.is( ".nav-sm" ) )
                 {
-                    $SIDEBAR_MENU.find( "li" ).removeClass( "active active-sm" );
-                    $SIDEBAR_MENU.find( "li ul" ).slideUp();
+                    SIDEBARMENU.find( "li" ).removeClass( "active active-sm" );
+                    SIDEBARMENU.find( "li ul" ).slideUp();
                 }
             }
             $li.addClass('active');
@@ -127,25 +127,25 @@ function init_sidebar() {
     });
 
     // toggle small or large menu
-    $MENU_TOGGLE.on('click', function() {
-        if ($BODY.hasClass('nav-md')) {
-            $SIDEBAR_MENU.find('li.active ul').hide();
-            $SIDEBAR_MENU.find('li.active').addClass('active-sm').removeClass('active');
+    MENUTOGGLE.on('click', function() {
+        if (BODY.hasClass('nav-md')) {
+            SIDEBARMENU.find('li.active ul').hide();
+            SIDEBARMENU.find('li.active').addClass('active-sm').removeClass('active');
         } else {
-            $SIDEBAR_MENU.find('li.active-sm ul').show();
-            $SIDEBAR_MENU.find('li.active-sm').addClass('active').removeClass('active-sm');
+            SIDEBARMENU.find('li.active-sm ul').show();
+            SIDEBARMENU.find('li.active-sm').addClass('active').removeClass('active-sm');
         }
 
-        $BODY.toggleClass('nav-md nav-sm');
+        BODY.toggleClass('nav-md nav-sm');
 
         setContentHeight();
     });
 
     // check active menu
-    $SIDEBAR_MENU.find('a[href="' + CURRENT_URL + '"]').parent('li').addClass('current-page');
+    SIDEBARMENU.find('a[href="' + CURRENTURL + '"]').parent('li').addClass('current-page');
 
-    $SIDEBAR_MENU.find('a').filter(function () {
-        return this.href === CURRENT_URL;
+    SIDEBARMENU.find('a').filter(function () {
+        return this.href === CURRENTURL;
     }).parent('li').addClass('current-page').parents('ul').slideDown(function() {
         setContentHeight();
     }).parent().addClass('active');
@@ -165,16 +165,12 @@ function init_sidebar() {
             mouseWheel:{ preventDefault: true }
         });
     }
-};
-
-var randNum = function() {
-    return (Math.floor(Math.random() * (1 + 40 - 20))) + 20;
-};
+}
 
 
 //hover and retain popover when on popover content
-var originalLeave = $.fn.popover.Constructor.prototype.leave;
-$.fn.popover.Constructor.prototype.leave = function(obj) {
+var originalLeave = jQuery.fn.popover.Constructor.prototype.leave;
+jQuery.fn.popover.Constructor.prototype.leave = function(obj) {
     var self = obj instanceof this.constructor ?
         obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type);
     var container, timeout;
@@ -195,7 +191,7 @@ $.fn.popover.Constructor.prototype.leave = function(obj) {
     }
 };
 
-$BODY.popover({
+BODY.popover({
     selector: '[data-popover]',
     trigger: 'click hover',
     delay: {
@@ -204,9 +200,6 @@ $BODY.popover({
     }
 });
 
-function gd(year, month, day) {
-    return new Date(year, month - 1, day).getTime();
-}
 
 /**
  * AUTOSIZE
@@ -731,12 +724,14 @@ jQuery(function() {
                 DataStorage.set( "environment", jQuery.extend( {}, p_data, { time : new Date().getTime() } ) );
 
                 var l_tiles = [];
-                const HEIGHT = p_data.lanes + 2,
+                const HEIGHT = p_data.laneslefttoright + p_data.lanesrighttoleft + 2,
                       WIDTH = p_data.length;
 
                 // build tiles with footway
                 l_tiles = l_tiles.concat( Array( WIDTH ).fill( 2 ) );
-                for( var i=0; i < HEIGHT - 2; i++ )
+                for( var i=0; i < p_data.laneslefttoright; i++ )
+                    l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 4 : 3 ) );
+                for( var i=0; i < p_data.lanesrighttoleft; i++ )
                     l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 4 : 3 ) );
                 l_tiles = l_tiles.concat( Array( WIDTH ).fill( 2 ) );
 
@@ -759,7 +754,7 @@ jQuery(function() {
                         layers: [{
                             data: l_tiles,
                             height: HEIGHT,
-                            name: "Street",
+                            name: "street",
                             opacity: 1,
                             type: "tilelayer",
                             visible: true,
@@ -774,7 +769,7 @@ jQuery(function() {
                             imageheight: TILESIZE,
                             imagewidth: 4 * TILESIZE,
                             margin: 0,
-                            name: "StreetTiles",
+                            name: "streettiles",
                             spacing: 0,
                             tileheight: TILESIZE,
                             tilewidth: TILESIZE
@@ -784,9 +779,9 @@ jQuery(function() {
                 );
 
                 const MAP = l_engine.add.tilemap( "street" );
-                MAP.addTilesetImage( "StreetTiles", "streettiles" );
+                MAP.addTilesetImage( "streettiles", "streettiles" );
 
-                const LAYER = MAP.createLayer( "Street" );
+                const LAYER = MAP.createLayer( "street" );
                 LAYER.resizeWorld();
                 LAYER.wrap = true;
             },
@@ -819,7 +814,7 @@ jQuery(function() {
 
             // initialize a default vehicle
             initialize: function (p_data) {
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + PIXELCENTER, p_data.type );
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * TILESIZE, ( p_data.y + 1 ) * TILESIZE + PIXELCENTER, p_data.type );
                 if( p_data.type === "uservehicle")
                     l_engine.camera.follow(l_visualizationobjects[p_data.id]);
 
@@ -832,14 +827,25 @@ jQuery(function() {
                 if ( !l_visualizationobjects[p_data.id] )
                     l_visualizationfunctions[p_data.type]["create"](p_data);
 
+                const l_xpos = p_data.x * TILESIZE,
+                      l_ypos = ( p_data.y + 1 ) * TILESIZE + PIXELCENTER;
+
+                console.log( p_data.id + "  " + l_xpos +  "  " + l_ypos );
+
+                // check if the position has been changed, if not recall websocket
+                if ( ( l_xpos === l_visualizationobjects[p_data.id].x ) && ( l_ypos === l_visualizationobjects[p_data.id].y ) )
+                {
+                    WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
+                    return;
+                }
+
+                console.log( p_data.id + "    " + l_xpos +  "   " + l_ypos );
+
                 // update storage
                 //DataStorage.getandset( "environment", function(i){ i.time = new Date().getTime(); return i; } );
 
                 // create tween
-                const TWEEN = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({
-                                                  x: p_data.x * 32,
-                                                  y: ( p_data.y + 1 ) * 32 + PIXELCENTER
-                                                }, SIMULATIONSPEED.val() );
+                const TWEEN = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({ x: l_xpos, y: l_ypos }, SIMULATIONSPEED.val() );
                 TWEEN.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
                 TWEEN.delay(0);
                 TWEEN.start();
@@ -887,9 +893,6 @@ jQuery(function() {
                                       LightJason.ajax( "/api/simulation/elements" )
                                                 .success(function(j) {
                                                     l_visualizationfunctions[ENV.type][ENV.status]( ENV );
-
-                                                    console.log( ENV );
-
                                                     j.filter( function(o) { return o.type !== "environment"; } )
                                                      .forEach( function( o ) { l_visualizationfunctions[o.type][o.status]( o ); });
                                                 })
@@ -912,8 +915,10 @@ jQuery(function() {
 
     // music enable / disable
     SIMULATIONMUSIC.change(function() {
-        if ( this.checked )
-            l_engine.music.play();
+        if ( this.checked ) {
+            if ( DataStorage.get("environment") )
+                l_engine.music.play();
+        }
         else
             l_engine.music.stop();
     });

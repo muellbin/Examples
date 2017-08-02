@@ -23,26 +23,16 @@
 
 !drive.
 
+// driving call equal to Nagel-Schreckenberg driving model, on success accelerate
 +!drive <-
     accelerate;
-    //!linger
     !drive
 .
 
+
+// on driving failing decelerate
 -!drive <-
     decelerate;
     !drive
 .
 
-+!linger <-
-    generic/type/fuzzyreturn( true, math/statistic/randomsimple() );
-    decelerate
-.
-
-+!nearby(X, D) <-
-   generic/print(X, D)
-.
-
-+!faraway(X, D) <-
-    generic/print(X, D)
-.

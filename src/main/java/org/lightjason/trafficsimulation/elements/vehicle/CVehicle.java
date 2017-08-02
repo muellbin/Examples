@@ -178,21 +178,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     }
 
     @Override
-    public final IVehicle call() throws Exception
-    {
-        super.call();
-
-        // give environment the data if it is a user car
-        if ( !m_environment.move( this ) )
-            if ( m_type.equals( ETYpe.USERVEHICLE ) )
-                m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
-            else
-                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
-
-        return this;
-    }
-
-    @Override
     public final double penalty()
     {
         return m_panelize.get();
@@ -216,6 +201,21 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final ETYpe type()
     {
         return m_type;
+    }
+
+    @Override
+    public final IVehicle call() throws Exception
+    {
+        super.call();
+
+        // give environment the data if it is a user car
+        if ( !m_environment.move( this ) )
+            if ( m_type.equals( ETYpe.USERVEHICLE ) )
+                m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
+            else
+                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
+
+        return this;
     }
 
     // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------

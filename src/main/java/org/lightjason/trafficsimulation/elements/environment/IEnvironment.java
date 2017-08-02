@@ -49,7 +49,6 @@ public interface IEnvironment extends IObject<IEnvironment>
      * @param p_position position
      * @return set can be done
      */
-    @Nonnull
     boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position );
 
     /**
@@ -58,7 +57,6 @@ public interface IEnvironment extends IObject<IEnvironment>
      * @param p_vehicle vehicle
      * @return move can be done
      */
-    @Nonnull
     boolean move( @Nonnull IVehicle p_vehicle );
 
 }
