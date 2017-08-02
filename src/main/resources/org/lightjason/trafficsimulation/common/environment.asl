@@ -27,9 +27,14 @@
 // function to generate maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2
 vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     [ Speed | Acceleration | Deceleration ] = math/statistic/randomsimple(1, 1, 1);
-    MaxSpeed = 0.5 * Speed * MaxSpeed + 0.5 * MaxSpeed;
-    MaxAcceleration = 0.5 * Acceleration * MaxAcceleration + 0.5 * MaxAcceleration;
-    MaxDeceleration = 0.5 * Deceleration * Deceleration + 0.5 * Deceleration
+
+    Speed = Speed + 0.5;
+    Acceleration = Acceleration + 0.15;
+    Deceleration = Deceleration + 0.25;
+
+    MaxSpeed = Speed * MaxSpeed + 0.5 * MaxSpeed;
+    MaxAcceleration = Acceleration * MaxAcceleration + 0.25 * MaxAcceleration;
+    MaxDeceleration = Deceleration * MaxDeceleration + 0.25 * Deceleration
 .
 
 
@@ -40,28 +45,40 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     simulation/initialize( 100, 2, 2 );
     generic/print( "#Environment Agent", "grid has been created" );
 
-    MaxSpeed = 120;
-    MaxAcceleration = 10;
-    MaxDeceleration = 15;
-
-    // default vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2, lane index [0 right in driving direction])
-    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    vehicle/default/left( MaxSpeed, MaxAcceleration, MaxDeceleration, 1 );
-
-
-    // user vehicle (maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2)
-    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
-
-    generic/print( "#Environment Agent", "user vehicle has been created" )
+    !defaultvehicle
+    //!uservehicle
 
     //area/create( 0, 1000, 1, 4, 50 );
 .
 
-// simulation loop
-+!loop <-
-    !loop
++!defaultvehicle <-
+    MaxSpeed = 120;
+    MaxAcceleration = 15;
+    MaxDeceleration = 25;
+
+    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
+    vehicle/default/left( MaxSpeed, MaxAcceleration, MaxDeceleration, 1 );
+
+    generic/print( "#Environment Agent", "default vehicle generated" )
 .
+
+-!defaultvehicle <- !defaultvehicle.
+
+
++!uservehicle <-
+    MaxSpeed = 200;
+    MaxAcceleration = 15;
+    MaxDeceleration = 25;
+
+    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
+    vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
+
+    generic/print( "#Environment Agent", "user vehicle has been created" )
+.
+
+-!uservehicle <- !uservehicle.
+
+
 
 // plan to shutdown simulation execution
 +!shutdown <-
