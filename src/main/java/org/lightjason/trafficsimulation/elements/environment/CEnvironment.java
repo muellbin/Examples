@@ -232,7 +232,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             CUnit.INSTANCE.kilometertocell( p_length ).intValue()
         ) );
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.CREATE, this );
+        CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
 
     /**
@@ -243,7 +243,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     private void simulationshutdown()
     {
         m_shutdown.set( true );
-        CAnimation.CInstance.INSTANCE.send( EStatus.REMOVE, this );
+        CAnimation.CInstance.INSTANCE.send( EStatus.SHUTDOWN, this );
     }
 
     /**

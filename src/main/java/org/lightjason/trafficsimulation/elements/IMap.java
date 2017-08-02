@@ -46,9 +46,9 @@ public interface IMap
      */
     enum EStatus
     {
-        CREATE,
+        INITIALIZE,
         EXECUTE,
-        REMOVE;
+        SHUTDOWN;
 
         @Override
         public final String toString()

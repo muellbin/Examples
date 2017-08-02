@@ -115,7 +115,7 @@ const l_gulp = require( "gulp" ),
                   source: l_gulp.src([
                       l_sourcedir + "js/global.js",
                       l_sourcedir + "js/lightjason.js",
-                      l_sourcedir + "js/initialize.js"
+                      l_sourcedir + "js/simulation.js"
                   ])
               },
 

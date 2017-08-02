@@ -164,8 +164,70 @@ function classof( px_value, pc_type ) {
 
 
 /**
+ * local storage access
+ */
+var DataStorage = (function (px_modul) {
+
+    /**
+     * local storage set value
+     *
+     * @param pc_key
+     * @param px_value
+     * @return value
+     */
+    px_modul.set = function( pc_key, px_value) {
+        localStorage.setItem( pc_key, JSON.stringify( px_value ) );
+        return px_value;
+    };
+
+    /**
+     * local storag get value
+     *
+     * @param pc_key key
+     * @return object
+     */
+    px_modul.get = function( pc_key ) {
+        const lx = localStorage.getItem( pc_key );
+        return lx ? JSON.parse( lx ) : null;
+    };
+
+
+    /**
+     * local strorage get and set call
+     *
+     * @param pc_key key
+     * @param px_function function
+     */
+    px_modul.getandset = function( pc_key, px_function )
+    {
+        const lx = localStorage.getItem( pc_key );
+        localStorage.setItem( pc_key, JSON.stringify( px_function( lx ? JSON.parse( lx ) : null ) ) );
+    };
+
+    /**
+     * local storage get value and remove it
+     *
+     * @param pc_key key
+     * @return object
+     */
+    px_modul.remove = function( pc_key ) {
+        const lx = localStorage.getItem( pc_key );
+        localStorage.removeItem( pc_key );
+        return lx ? JSON.parse( lx ) : null;
+    };
+
+    return px_modul;
+
+}(DataStorage || {}));
+
+
+/**
  * @Overload
  * add an empty trigger to the empty function
  **/
-jQuery.fn.raw_empty = jQuery.fn.empty;
-jQuery.fn.empty    = function(){ return this.raw_empty().trigger( "empty", this ) }
+if ('undefined' !== typeof window.jQuery) {
+    jQuery.fn.raw_empty = jQuery.fn.empty;
+    jQuery.fn.empty = function () {
+        return this.raw_empty().trigger("empty", this)
+    }
+}

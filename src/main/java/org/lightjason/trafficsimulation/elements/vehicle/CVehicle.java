@@ -140,7 +140,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_accelerate = p_accelerate;
         m_decelerate = p_decelerate;
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.CREATE, this );
+        CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
 
     @Nonnull

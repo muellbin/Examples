@@ -726,9 +726,9 @@ jQuery(function() {
         environment: {
 
             // initialize environment with tilemap
-            create: function( p_data )
+            initialize: function( p_data )
             {
-                localStorage.setItem( "environment", JSON.stringify( jQuery.extend( {}, p_data, { time : new Date().getTime() } ) ) );
+                DataStorage.set( "environment", jQuery.extend( {}, p_data, { time : new Date().getTime() } ) );
 
                 var l_tiles = [];
                 const HEIGHT = p_data.lanes + 2,
@@ -791,8 +791,9 @@ jQuery(function() {
                 LAYER.wrap = true;
             },
 
+
             // remove environment content (sprites) but not the timemap
-            remove: function( p_data )
+            shutdown: function( p_data )
             {
                 l_engine.music.stop();
 
@@ -808,8 +809,7 @@ jQuery(function() {
                 )
                 .then(function() {
                      l_visualizationobjects = {};
-                     localStorage.removeItem( "environment" );
-                     localStorage.removeItem( "time" );
+                     DataStorage.remove( "environment" );
                 });
             }
         },
@@ -818,7 +818,7 @@ jQuery(function() {
         defaultvehicle: {
 
             // initialize a default vehicle
-            create: function (p_data) {
+            initialize: function (p_data) {
                 l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * 32, ( p_data.y + 1 ) * 32 + PIXELCENTER, p_data.type );
                 if( p_data.type === "uservehicle")
                     l_engine.camera.follow(l_visualizationobjects[p_data.id]);
@@ -826,11 +826,16 @@ jQuery(function() {
                 WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
             },
 
+
             // execute vehicle, create new tween animation (y-position must be increment based on footway)
             execute: function (p_data) {
                 if ( !l_visualizationobjects[p_data.id] )
                     l_visualizationfunctions[p_data.type]["create"](p_data);
 
+                // update storage
+                //DataStorage.getandset( "environment", function(i){ i.time = new Date().getTime(); return i; } );
+
+                // create tween
                 const TWEEN = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({
                                                   x: p_data.x * 32,
                                                   y: ( p_data.y + 1 ) * 32 + PIXELCENTER
@@ -847,7 +852,7 @@ jQuery(function() {
 
     // set function references
     l_visualizationfunctions.uservehicle.execute = l_visualizationfunctions.defaultvehicle.execute;
-    l_visualizationfunctions.uservehicle.create = l_visualizationfunctions.defaultvehicle.create;
+    l_visualizationfunctions.uservehicle.initialize = l_visualizationfunctions.defaultvehicle.initialize;
 
 
 
@@ -874,12 +879,10 @@ jQuery(function() {
                 g.music.lopp = true;
 
                 // reinitialize content if the browser tab was closed
-                if ( localStorage.getItem("environment") )
+                const ENV = DataStorage.remove( "environment" );
+                if ( ENV )
                     LightJason.ajax( "/api/simulation/cookie/expire" )
                               .success(function(i) {
-                                  const ENV = JSON.parse( localStorage.getItem("environment") );
-                                  localStorage.removeItem( "environment" );
-
                                   if ( ( new Date().getTime() - ENV.time ) / 1000 < parseInt(i) )
                                       LightJason.ajax( "/api/simulation/elements" )
                                                 .success(function(j) {
