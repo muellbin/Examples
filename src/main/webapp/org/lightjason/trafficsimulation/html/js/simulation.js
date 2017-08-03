@@ -443,14 +443,15 @@ jQuery(function() {
           SIMULATIONSCREEN = jQuery("#simulation-screen"),
           SIMULATIONSPEED = jQuery("#simulation-speed"),
           SIMULATIONMUSIC = jQuery( "#simulation-music" ),
-          WSANIMATION = LightJason.websocket( "/animation" ),
           TILESIZE = 32,
           PIXELCENTER = 9;
 
     var l_editor = null,
         l_engine = null,
         l_visualizationobjects = {},
-        l_visualizationfunctions = {};
+        l_visualizationfunctions = {},
+        WSANIMATION = LightJason.websocket( "/animation" ),
+        WSMESSAGES = LightJason.websocket( "/message" );
 
 
 
@@ -490,18 +491,18 @@ jQuery(function() {
     // --- initialize ui function & execution  -----------------------------------------------------------------------------------------------------------------
 
     // notify messages
-    LightJason.websocket( "/message" )
-              .onmessage = function ( i )
-              {
-                  const lo = JSON.parse( i.data );
-                  new PNotify({
-                      title: lo.title,
-                      text: lo.text,
-                      type: lo.type,
-                      delay: lo.delay,
-                      animate_speed: "fast"
-                  })
-              };
+    //WSMESSAGES.onclose(function() { WSMESSAGES = LightJason.websocket( "/message" ) });
+    WSMESSAGES.onmessage = function ( i )
+               {
+                   const lo = JSON.parse( i.data );
+                   new PNotify({
+                       title: lo.title,
+                       text: lo.text,
+                       type: lo.type,
+                       delay: lo.delay,
+                       animate_speed: "fast"
+                   })
+               };
 
 
     // initialize simulation speed
@@ -690,6 +691,9 @@ jQuery(function() {
 
     // set shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
+        WSANIMATION.close();
+        WSMESSAGES.close();
+
         LightJason.ajax( "/api/simulation/shutdown" )
             .error(function(i) {
                 if ( ( i.status === 503 ) || ( i.status === 0 ) )
@@ -824,8 +828,10 @@ jQuery(function() {
 
             // execute vehicle, create new tween animation (y-position must be increment based on footway)
             execute: function (p_data) {
-                if ( !l_visualizationobjects[p_data.id] )
+                if ( !l_visualizationobjects[p_data.id] ) {
+                    console.log( p_data );
                     l_visualizationfunctions[p_data.type]["create"](p_data);
+                }
 
                 const l_xpos = p_data.x * TILESIZE,
                       l_ypos = ( p_data.y + 1 ) * TILESIZE + PIXELCENTER;
@@ -838,8 +844,6 @@ jQuery(function() {
                     WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
                     return;
                 }
-
-                console.log( p_data.id + "    " + l_xpos +  "   " + l_ypos );
 
                 // update storage
                 //DataStorage.getandset( "environment", function(i){ i.time = new Date().getTime(); return i; } );
@@ -882,7 +886,9 @@ jQuery(function() {
 
             create: function(g) {
                 g.music = g.add.audio( "music" );
-                g.music.lopp = true;
+                g.music.allowMultiple = false;
+                g.music.loop = true;
+
 
                 // reinitialize content if the browser tab was closed
                 const ENV = DataStorage.remove( "environment" );

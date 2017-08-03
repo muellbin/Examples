@@ -208,6 +208,11 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     {
         super.call();
 
+        //System.out.println( MessageFormat.format(
+        // "{0} {1} {2} {3} {4} {5}", this.id(),
+        // CMath.MATRIXFORMAT.toString( m_position ), this.speed(), m_maximumspeed, m_accelerate, m_decelerate
+        // ) );
+
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
             if ( m_type.equals( ETYpe.USERVEHICLE ) )

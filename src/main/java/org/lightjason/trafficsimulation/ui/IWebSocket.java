@@ -117,14 +117,8 @@ public interface IWebSocket extends WebSocketListener
                 throw new RuntimeException( l_exception );
             }
 
-            try
-            {
-                this.getRemote().sendString( l_output );
-            }
-            catch ( final IOException l_exception )
-            {
-                // ignore error
-            }
+            // asynchronized sending to avoid blocking exception
+            this.getRemote().sendStringByFuture( l_output );
 
             return this;
         }

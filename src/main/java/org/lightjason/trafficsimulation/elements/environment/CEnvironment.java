@@ -191,13 +191,17 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         )
             return false;
 
-        if ( ( l_target.intValue() > m_grid.get().columns() ) && ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) ) )
+        m_grid.get().setQuick( l_lane.intValue(), l_start.intValue(), null );
+
+        if ( ( l_target.intValue() > m_grid.get().columns() ) || ( l_target.intValue() < 0 ) )
         {
-            this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
+            if ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) )
+                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
+
+            m_elements.remove( p_vehicle.id() );
             return true;
         }
 
-        m_grid.get().setQuick( l_lane.intValue(), l_start.intValue(), null );
         m_grid.get().setQuick( l_lane.intValue(), l_target.intValue(), p_vehicle );
         p_vehicle.position().setQuick( 1, l_target.intValue() );
         return true;
@@ -322,8 +326,36 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
                                      @Nonnegative final Number p_deceleration, @Nonnegative final Number p_lane )
     {
         this.defaultvehicle(
-            new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ) - 1 - p_lane.intValue(), 0} ),
+            new DenseDoubleMatrix1D( new double[]{p_lane.intValue() - 1, 0} ),
             this.position().get( 1 ) - 1,
+
+            p_maximumspeed,
+            p_acceleration,
+            p_deceleration
+        );
+    }
+
+
+    /**
+     * action to add random vehicles
+     *
+     * @param p_maximumspeed maximum speed in km/h
+     * @param p_acceleration acceleration in m/s^2
+     * @param p_deceleration deceleration in m/s^2
+     * @param p_lane lane index (0 is right in driving direction)
+     * @param p_position position on the lane
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "vehicle/default/position" )
+    private void defaultvehicleposition( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration,
+                                         @Nonnegative final Number p_deceleration, @Nonnegative final Number p_lane, @Nonnegative final Number p_position )
+    {
+        this.defaultvehicle(
+            new DenseDoubleMatrix1D( new double[]{
+                p_lane.intValue(),
+                p_position.intValue()
+            } ),
+            m_lanes.get().getLeft().intValue() < p_lane.intValue() ? 0 : this.position().get( 1 ) - 1,
 
             p_maximumspeed,
             p_acceleration,

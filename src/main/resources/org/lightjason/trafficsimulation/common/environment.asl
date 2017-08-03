@@ -24,47 +24,67 @@
 !main.
 
 
-// function to generate maximum speed in km/h, acceleration in m/sec^2, deceleration in m/sec^2
-vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
-    [ Speed | Acceleration | Deceleration ] = math/statistic/randomsimple(1, 1, 1);
+// --- rules ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-    Speed = Speed + 0.5;
-    Acceleration = Acceleration + 0.15;
-    Deceleration = Deceleration + 0.25;
+/**
+ * function to generate vehcile data
+ * @param MaxSpeed speed in km/h
+ * @param MaxAcceleration in m/sec^2
+ * @param MaxDeceleration in m/sec^2
+ */
+vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
+    [ Speed | Acceleration | Deceleration ] = math/statistic/randomsimple( 1, 1, 1 );
+
+    Speed += 0.5;
+    Acceleration += 0.15;
+    Deceleration += 0.25;
 
     MaxSpeed = Speed * MaxSpeed + 0.5 * MaxSpeed;
     MaxAcceleration = Acceleration * MaxAcceleration + 0.25 * MaxAcceleration;
     MaxDeceleration = Deceleration * MaxDeceleration + 0.25 * Deceleration
 .
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// initialize
+
+
+// --- plans ---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// --- initializing plan ---
 +!main <-
 
     // grid size (100km with 2x2 lanes for each direction)
     simulation/initialize( 100, 2, 2 );
     generic/print( "#Environment Agent", "grid has been created" );
 
-    !defaultvehicle
-    //!uservehicle
+    !defaultvehicle( 3 );
+    !uservehicle
 
     //area/create( 0, 1000, 1, 4, 50 );
 .
 
-+!defaultvehicle <-
+
+// --- creating default-vehicle plan ---
++!defaultvehicle( Lane ) <-
     MaxSpeed = 120;
     MaxAcceleration = 15;
     MaxDeceleration = 25;
 
-    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    vehicle/default/left( MaxSpeed, MaxAcceleration, MaxDeceleration, 1 );
+    Position = math/statistic/randomsimple();
+    Position *= 40000;
 
-    generic/print( "#Environment Agent", "default vehicle generated" )
+    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
+    vehicle/default/position( MaxSpeed, MaxAcceleration, MaxDeceleration, Lane, Position );
+
+    generic/print( "#Environment Agent", "default vehicle generated" );
+    !defaultvehicle( 3 )
 .
 
--!defaultvehicle <- !defaultvehicle.
+-!defaultvehicle( Lane ) <- !defaultvehicle( Lane ).
 
 
+// --- creating and repair user-vehicle plan ---
 +!uservehicle <-
     MaxSpeed = 200;
     MaxAcceleration = 15;
@@ -77,6 +97,8 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 .
 
 -!uservehicle <- !uservehicle.
+
+
 
 
 
