@@ -828,10 +828,8 @@ jQuery(function() {
 
             // execute vehicle, create new tween animation (y-position must be increment based on footway)
             execute: function (p_data) {
-                if ( !l_visualizationobjects[p_data.id] ) {
-                    console.log( p_data );
-                    l_visualizationfunctions[p_data.type]["create"](p_data);
-                }
+                if ( !l_visualizationobjects[p_data.id] )
+                    l_visualizationfunctions[p_data.type]["initialize"](p_data);
 
                 const l_xpos = p_data.x * TILESIZE,
                       l_ypos = ( p_data.y + 1 ) * TILESIZE + PIXELCENTER;
