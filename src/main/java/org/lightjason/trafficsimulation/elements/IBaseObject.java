@@ -24,7 +24,6 @@
 package org.lightjason.trafficsimulation.elements;
 
 import org.apache.commons.lang3.tuple.Triple;
-import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.beliefbase.view.IView;
 import org.lightjason.agentspeak.common.CCommon;
@@ -41,7 +40,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
