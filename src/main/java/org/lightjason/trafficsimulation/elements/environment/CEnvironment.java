@@ -36,11 +36,16 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
+import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.execution.IVariableBuilder;
+import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+import org.lightjason.agentspeak.language.variable.CConstant;
+import org.lightjason.agentspeak.language.variable.IVariable;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
@@ -318,7 +323,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * @param p_maximumspeed maximum speed in km/h
      * @param p_acceleration acceleration in m/s^2
      * @param p_deceleration deceleration in m/s^2
-     * @param p_lane lane index (0 is right in driving direction)
+     * @param p_lane lane index (lane number in [1, number of lanes]
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/default/left" )
@@ -342,7 +347,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * @param p_maximumspeed maximum speed in km/h
      * @param p_acceleration acceleration in m/s^2
      * @param p_deceleration deceleration in m/s^2
-     * @param p_lane lane index (0 is right in driving direction)
+     * @param p_lane lane index (lane number in [1, number of lanes]
      * @param p_position position on the lane
      */
     @IAgentActionFilter
@@ -352,7 +357,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     {
         this.defaultvehicle(
             new DenseDoubleMatrix1D( new double[]{
-                p_lane.intValue(),
+                p_lane.intValue() - 1,
                 p_position.intValue()
             } ),
             m_lanes.get().getLeft().intValue() < p_lane.intValue() ? 0 : this.position().get( 1 ) - 1,
@@ -384,6 +389,9 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
         if ( p_deceleration.doubleValue() < 8 )
             throw new RuntimeException( "deceleration is to low" );
+
+        if ( p_start.get( 0 ) > m_grid.get().rows() )
+            throw new RuntimeException( "lane number is to large" );
 
         m_vehiclecache.add(
                  m_generatordefaultvehicle.generatesingle(
@@ -453,7 +461,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
          */
         public CGenerator( @Nonnull final String p_asl ) throws Exception
         {
-            super( IOUtils.toInputStream( p_asl, "UTF-8" ), CEnvironment.class );
+            super( IOUtils.toInputStream( p_asl, "UTF-8" ), CEnvironment.class, new CVariableBuilder() );
         }
 
         @Override
@@ -484,4 +492,21 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         }
     }
 
+    /**
+     * variable builder of environment
+     */
+    private static class CVariableBuilder implements IVariableBuilder
+    {
+
+        @Override
+        public final Stream<IVariable<?>> apply( final IAgent<?> p_agent, final IInstantiable p_instance )
+        {
+            final IEnvironment l_env = p_agent.<IEnvironment>raw();
+
+            return Stream.of(
+                new CConstant<>( "Lanes", l_env.position().get( 0 ) ),
+                new CConstant<>( "StreetPositions", l_env.position().get( 1 ) )
+            );
+        }
+    }
 }

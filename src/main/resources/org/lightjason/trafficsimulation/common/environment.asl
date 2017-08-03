@@ -58,35 +58,51 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     simulation/initialize( 100, 2, 2 );
     generic/print( "#Environment Agent", "grid has been created" );
 
-    !defaultvehicle( 3 );
-    !uservehicle
-
-    //area/create( 0, 1000, 1, 4, 50 );
+    !initialize
 .
+
+
+
+// --- initialize elements ---
++!initialize <-
+    !!uservehicle;
+    !defaultvehicle( 3, 100 )
+.
+
+-!initialize <-
+    generic/print( "#Environment Agent", "Initialization has been failed" );
+    simulation/shutdown
+.
+
 
 
 // --- creating default-vehicle plan ---
-+!defaultvehicle( Lane ) <-
-    MaxSpeed = 120;
-    MaxAcceleration = 15;
-    MaxDeceleration = 25;
++!defaultvehicle( Lane, Count )
+    : Cycle < 15 <-
+        C = math/statistic/randomsimple();
+        C *= Count;
+        L = collection/list/range(0, C);
+        @(L) -> I : {
+            Position = math/statistic/randomsimple();
+            Position *= StreetPositions;
 
-    Position = math/statistic/randomsimple();
-    Position *= 40000;
+            MaxSpeed = 120;
+            MaxAcceleration = 15;
+            MaxDeceleration = 25;
 
-    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    vehicle/default/position( MaxSpeed, MaxAcceleration, MaxDeceleration, Lane, Position );
+            $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
+            vehicle/default/position( MaxSpeed, MaxAcceleration, MaxDeceleration, Lane, Position ) << true
+        };
 
-    generic/print( "#Environment Agent", "default vehicle generated" );
-    !defaultvehicle( 3 )
+        generic/print( "#Environment Agent", "default vehicle generated" );
+        !defaultvehicle( Lane, Count )
 .
 
--!defaultvehicle( Lane ) <- !defaultvehicle( Lane ).
 
 
 // --- creating and repair user-vehicle plan ---
 +!uservehicle <-
-    MaxSpeed = 200;
+    MaxSpeed = 120;
     MaxAcceleration = 15;
     MaxDeceleration = 25;
 
@@ -96,23 +112,30 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     generic/print( "#Environment Agent", "user vehicle has been created" )
 .
 
--!uservehicle <- !uservehicle.
-
-
-
 
 
 // plan to shutdown simulation execution
 +!shutdown <-
-    generic/print( "environment message", "shutdown plan has been called" );
+    generic/print( "#Environment Agent", "user vehicle has finished the tour, so simulation will be shutdown" );
     simulation/shutdown
 .
 
+
+
 // plan on collision execution
-+!collision <-
-    generic/print( "environment message", "collision plan hash been called" );
++!vehicle/usercollision <-
+    generic/print( "#environment Agent", "user collision plan hash been called" );
     simulation/shutdown
 .
+
+
+
+
+
+
+
+
+
 
 +!penalty(N) <-
     +value(N);

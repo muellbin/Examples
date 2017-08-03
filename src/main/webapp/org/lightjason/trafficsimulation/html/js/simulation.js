@@ -443,15 +443,15 @@ jQuery(function() {
           SIMULATIONSCREEN = jQuery("#simulation-screen"),
           SIMULATIONSPEED = jQuery("#simulation-speed"),
           SIMULATIONMUSIC = jQuery( "#simulation-music" ),
+          WSANIMATION = LightJason.websocket( "/animation" ),
+          WSMESSAGES = LightJason.websocket( "/message" ),
           TILESIZE = 32,
           PIXELCENTER = 9;
 
     var l_editor = null,
         l_engine = null,
         l_visualizationobjects = {},
-        l_visualizationfunctions = {},
-        WSANIMATION = LightJason.websocket( "/animation" ),
-        WSMESSAGES = LightJason.websocket( "/message" );
+        l_visualizationfunctions = {};
 
 
 
@@ -491,7 +491,6 @@ jQuery(function() {
     // --- initialize ui function & execution  -----------------------------------------------------------------------------------------------------------------
 
     // notify messages
-    //WSMESSAGES.onclose(function() { WSMESSAGES = LightJason.websocket( "/message" ) });
     WSMESSAGES.onmessage = function ( i )
                {
                    const lo = JSON.parse( i.data );
@@ -699,6 +698,7 @@ jQuery(function() {
                 if ( ( i.status === 503 ) || ( i.status === 0 ) )
                     return;
                 notifymessage({ title: i.statusText, text: i.responseText, type: "error" });
+                window.close();
             })
     });
 
@@ -834,7 +834,7 @@ jQuery(function() {
                 const l_xpos = p_data.x * TILESIZE,
                       l_ypos = ( p_data.y + 1 ) * TILESIZE + PIXELCENTER;
 
-                console.log( p_data.id + "  " + l_xpos +  "  " + l_ypos );
+                //console.log(  l_xpos +  "  " + l_ypos + "   " + JSON.stringify( p_data ) );
 
                 // check if the position has been changed, if not recall websocket
                 if ( ( l_xpos === l_visualizationobjects[p_data.id].x ) && ( l_ypos === l_visualizationobjects[p_data.id].y ) )
@@ -886,7 +886,6 @@ jQuery(function() {
                 g.music = g.add.audio( "music" );
                 g.music.allowMultiple = false;
                 g.music.loop = true;
-
 
                 // reinitialize content if the browser tab was closed
                 const ENV = DataStorage.remove( "environment" );

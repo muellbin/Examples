@@ -31,17 +31,17 @@
     L < V;
 
     // accelerate and drive
-    accelerate;
+    vehicle/accelerate(1);
     !drive
 .
 
 
 // on driving failing (linger probability) decelerate
 -!drive <-
-    decelerate;
+    vehicle/decelerate(1);
     !drive
 .
 
 
 // possible collision decelerate
-+!collision <- decelerate.
++!vehicle/collision <- vehicle/decelerate(1).

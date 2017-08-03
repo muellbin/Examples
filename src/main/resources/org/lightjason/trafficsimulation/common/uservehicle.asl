@@ -25,14 +25,14 @@
 
 // driving call equal to Nagel-Schreckenberg driving model, on success accelerate
 +!drive <-
-    accelerate;
+    vehicle/accelerate(1);
     !drive
 .
 
 
 // on driving failing decelerate
 -!drive <-
-    decelerate;
+    vehicle/decelerate(1);
     !drive
 .
 

@@ -33,11 +33,16 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
+import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.execution.IVariableBuilder;
+import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+import org.lightjason.agentspeak.language.variable.CConstant;
+import org.lightjason.agentspeak.language.variable.IVariable;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.EDirection;
 import org.lightjason.trafficsimulation.elements.CUnit;
@@ -165,8 +170,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {
         return StreamUtils.zip(
-            Stream.of( "type", "status", "id", "y", "x", "goal" ),
-            Stream.of( this.type().toString(), p_status.toString(), this.id(), this.position().get( 0 ), this.position().get( 1 ), m_goal ),
+            Stream.of( "type", "status", "id", "y", "x", "goal", "speed" ),
+            Stream.of( this.type().toString(), p_status.toString(), this.id(), this.position().get( 0 ), this.position().get( 1 ), m_goal, m_speed.get() ),
             ImmutablePair::new
         ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
     }
@@ -216,9 +221,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
             if ( m_type.equals( ETYpe.USERVEHICLE ) )
-                m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
+                m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "vehicle/usercollision" ) ) );
             else
-                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "collision" ) ) );
+                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "vehicle/collision" ) ) );
 
         return this;
     }
@@ -229,24 +234,30 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * accelerate
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "accelerate" )
-    private void accelerate()
+    @IAgentActionName( name = "vehicle/accelerate" )
+    private void accelerate( final Number p_strength )
     {
-        final double l_value = CUnit.INSTANCE.accelerationtospeed( m_accelerate ).doubleValue();
+        final double l_value = CUnit.INSTANCE.accelerationtospeed(
+            m_accelerate * Math.max( 0, Math.min( 1, p_strength.doubleValue() ) )
+        ).doubleValue();
+
         if ( m_speed.get() + l_value > m_maximumspeed )
             throw new RuntimeException( MessageFormat.format( "cannot increment speed: {0}", this ) );
 
-        m_speed.addAndGet( m_accelerate + l_value );
+        m_speed.addAndGet( m_speed.get() + l_value );
     }
 
     /**
      * decelerate
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "decelerate" )
-    private void decelerate()
+    @IAgentActionName( name = "vehicle/decelerate" )
+    private void decelerate( final Number p_strength )
     {
-        final double l_value = CUnit.INSTANCE.accelerationtospeed( m_decelerate ).doubleValue();
+        final double l_value = CUnit.INSTANCE.accelerationtospeed(
+            m_decelerate * Math.max( 0, Math.min( 1, p_strength.doubleValue() ) )
+        ).doubleValue();
+
         if ( m_speed.get() - l_value < 0 )
             throw new RuntimeException( MessageFormat.format( "cannot decrement speed: {0}", this ) );
 
@@ -257,7 +268,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * swing-out
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "swingout" )
+    @IAgentActionName( name = "vehicle/swingout" )
     private void swingout()
     {
     }
@@ -266,7 +277,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * go back into lane
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "goback" )
+    @IAgentActionName( name = "vehicle/goback" )
     private void goback()
     {
     }
@@ -302,7 +313,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          */
         public CGenerator( @Nonnull final InputStream p_stream, final boolean p_uiaccessiable, final ETYpe p_type ) throws Exception
         {
-            super( p_stream, CVehicle.class );
+            super( p_stream, CVehicle.class, new CVariableBuilder() );
             m_visible = p_uiaccessiable;
             m_type = p_type;
         }
@@ -344,6 +355,24 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 ),
                 m_visible,
                 Stream.of( FUNCTOR )
+            );
+        }
+    }
+
+
+    /**
+     * variable builder of vehicle
+     */
+    private static class CVariableBuilder implements IVariableBuilder
+    {
+
+        @Override
+        public final Stream<IVariable<?>> apply( final IAgent<?> p_agent, final IInstantiable p_instance )
+        {
+            final IVehicle l_vehicle = p_agent.<IVehicle>raw();
+
+            return Stream.of(
+                new CConstant<>( "CurrentSpeed", l_vehicle.speed() )
             );
         }
     }

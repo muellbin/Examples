@@ -24,6 +24,7 @@
 package org.lightjason.trafficsimulation.elements;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.beliefbase.view.IView;
 import org.lightjason.agentspeak.common.CCommon;
@@ -32,6 +33,7 @@ import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.ui.CHTTPServer;
 
@@ -39,6 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -151,12 +154,33 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
     protected abstract static class IBaseGenerator<T extends IObject<?>> extends IBaseAgentGenerator<T> implements IGenerator<T>
     {
         /**
-         * @param p_stream stream
-         * @throws Exception on any error
+         * @param p_stream asl stream
+         * @param p_agentclass agent class
+         * @throws Exception thrown on any error
          */
         protected IBaseGenerator( @Nonnull final InputStream p_stream, @Nonnull final Class<? extends T> p_agentclass ) throws Exception
         {
-            super( p_stream, Stream.concat( CConfiguration.INSTANCE.actions(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ) );
+            super(
+                p_stream,
+                Stream.concat( CConfiguration.INSTANCE.actions(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() )
+            );
+        }
+
+        /**
+         * ctor
+         * @param p_stream asl stream
+         * @param p_agentclass agent class
+         * @param p_variablebuilder variable builder
+         * @throws Exception thrown on any error
+         */
+        protected IBaseGenerator( @Nonnull final InputStream p_stream, @Nonnull final Class<? extends T> p_agentclass,
+                                  @Nonnull final IVariableBuilder p_variablebuilder ) throws Exception
+        {
+            super(
+                p_stream,
+                Stream.concat( CConfiguration.INSTANCE.actions(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ),
+                p_variablebuilder
+            );
         }
 
         @Override
