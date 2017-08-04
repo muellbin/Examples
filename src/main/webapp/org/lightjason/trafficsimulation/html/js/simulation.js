@@ -819,11 +819,6 @@ jQuery(function() {
             // initialize a default vehicle
             initialize: function (p_data) {
                 l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * TILESIZE, ( p_data.y + 1 ) * TILESIZE + PIXELCENTER, p_data.type );
-                if( p_data.type === "uservehicle")
-                    l_engine.camera.follow(l_visualizationobjects[p_data.id]);
-                    gauge.maxValue = p_data.maxspeed;
-                    jQuery( "#gauge-maxspeed" ).text( parseInt( p_data.maxspeed ) );
-
                 WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
             },
 
@@ -853,27 +848,27 @@ jQuery(function() {
                 TWEEN.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
                 TWEEN.delay(0);
                 TWEEN.start();
-
-                if( p_data.type === "uservehicle" )
-                {
-                    gauge.set( parseInt( p_data.speed ) );
-                    gauge.setTextField( jQuery( "#gauge-speed" ).get(0) );
-                    jQuery( "#gauge-acceleration" ).text( parseInt( p_data.acceleration ) );
-                    jQuery( "#gauge-deceleration" ).text( parseInt( p_data.deceleration ) );
-
-                }
             }
         },
 
+        uservehicle: {
+            // initialize a user vehicle
+            initialize: function (p_data) {
+                l_visualizationfunctions.defaultvehicle.initialize( p_data );
+                l_engine.camera.follow(l_visualizationobjects[p_data.id]);
+                gauge.maxValue = p_data.maxspeed;
+                jQuery( "#gauge-maxspeed" ).text( p_data.maxspeed.toFixed(0) );
+            },
 
-        uservehicle: {}
+            execute: function (p_data) {
+                l_visualizationfunctions.defaultvehicle.execute( p_data );
+                gauge.set( p_data.speed.toFixed(0) );
+                gauge.setTextField( jQuery( "#gauge-speed" ).get(0) );
+                jQuery( "#gauge-acceleration" ).text( p_data.acceleration.toFixed(0) );
+                jQuery( "#gauge-deceleration" ).text( p_data.deceleration.toFixed(0) );
+            }
+        }
     };
-
-    // set function references
-    l_visualizationfunctions.uservehicle.execute = l_visualizationfunctions.defaultvehicle.execute;
-    l_visualizationfunctions.uservehicle.initialize = l_visualizationfunctions.defaultvehicle.initialize;
-
-
 
 
 
