@@ -28,6 +28,7 @@ import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 /**
@@ -58,5 +59,24 @@ public interface IEnvironment extends IObject<IEnvironment>
      * @return move can be done
      */
     boolean move( @Nonnull IVehicle p_vehicle );
+
+    /**
+     * lane changing of a vehicle
+     *
+     * @param p_vehicle vehicle
+     * @param p_lane new lane
+     * @return changing successful
+     */
+    boolean lanechange( @Nonnull IVehicle p_vehicle, final int p_lane );
+
+    /**
+     * return an object at the position
+     *
+     * @param p_lane lane
+     * @param p_position position
+     * @return object or null
+     */
+    @Nullable
+    IObject<?> get( final int p_lane, final int p_position );
 
 }

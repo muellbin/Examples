@@ -213,6 +213,34 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     @Override
+    public final synchronized boolean lanechange( @Nonnull final IVehicle p_vehicle, final int p_lane )
+    {
+        final Number l_xpos = p_vehicle.position().get( 1 );
+        final Number l_lane = p_vehicle.position().get( 0 );
+        if ( ( p_lane < 0 ) || ( p_lane > m_grid.get().columns() - 1 ) )
+            return false;
+
+        if ( IntStream.range( Math.min( l_lane.intValue(), p_lane ), Math.max( l_lane.intValue(), p_lane ) )
+                      .parallel()
+                      .boxed()
+                      .anyMatch( i -> m_grid.get().getQuick( i, l_xpos.intValue() ) != null )
+            )
+            return false;
+
+        m_grid.get().setQuick( l_lane.intValue(), l_xpos.intValue(), null );
+        m_grid.get().setQuick( p_lane, l_xpos.intValue(), p_vehicle );
+        return true;
+    }
+
+    @Nullable
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public final IObject<?> get( final int p_lane, final int p_position )
+    {
+        return (IObject<?>) m_grid.get().getQuick( p_lane, p_position );
+    }
+
+    @Override
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {
         return StreamUtils.zip(

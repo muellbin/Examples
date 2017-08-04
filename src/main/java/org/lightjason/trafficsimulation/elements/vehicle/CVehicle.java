@@ -86,13 +86,13 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     private final IEnvironment m_environment;
     /**
-     * accelerate speed in m/sec^
+     * accelerate speed in m/sec^2
      * @warning must be in (0, infinity)
      */
     @Nonnegative
     private final double m_accelerate;
     /**
-     * decelerate speed in m/sec^
+     * decelerate speed in m/sec^2
      * @warning must be in (0, infinity)
      */
     private final double m_decelerate;
@@ -230,12 +230,20 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
-            if ( m_type.equals( ETYpe.USERVEHICLE ) )
-                m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "vehicle/usercollision" ) ) );
-            else
-                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "vehicle/collision" ) ) );
+            this.oncollision();
 
         return this;
+    }
+
+    /**
+     * runs collision handling
+     */
+    private void oncollision()
+    {
+        if ( m_type.equals( ETYpe.USERVEHICLE ) )
+            m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "vehicle/usercollision" ) ) );
+        else
+            this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "vehicle/collision" ) ) );
     }
 
     // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------
@@ -281,6 +289,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "vehicle/swingout" )
     private void swingout()
     {
+        final Number l_lane = m_position.get( 0 ) + ( m_goal == 0 ? 1 : -1 );
+        if ( !m_environment.lanechange( this, l_lane.intValue() ) )
+            this.oncollision();
     }
 
     /**
@@ -290,6 +301,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "vehicle/goback" )
     private void goback()
     {
+        final Number l_lane = m_position.get( 0 ) + ( m_goal == 0 ? -1 : 1 );
+        if ( !m_environment.lanechange( this, l_lane.intValue() ) )
+            this.oncollision();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
