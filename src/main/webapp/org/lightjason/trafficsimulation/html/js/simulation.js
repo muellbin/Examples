@@ -821,6 +821,8 @@ jQuery(function() {
                 l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * TILESIZE, ( p_data.y + 1 ) * TILESIZE + PIXELCENTER, p_data.type );
                 if( p_data.type === "uservehicle")
                     l_engine.camera.follow(l_visualizationobjects[p_data.id]);
+                    gauge.maxValue = p_data.maxspeed;
+                    jQuery( "#gauge-maxspeed" ).text( parseInt( p_data.maxspeed ) );
 
                 WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
             },
@@ -851,6 +853,15 @@ jQuery(function() {
                 TWEEN.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
                 TWEEN.delay(0);
                 TWEEN.start();
+
+                if( p_data.type === "uservehicle" )
+                {
+                    gauge.set( parseInt( p_data.speed ) );
+                    gauge.setTextField( jQuery( "#gauge-speed" ).get(0) );
+                    jQuery( "#gauge-acceleration" ).text( parseInt( p_data.acceleration ) );
+                    jQuery( "#gauge-deceleration" ).text( parseInt( p_data.deceleration ) );
+
+                }
             }
         },
 
@@ -925,6 +936,25 @@ jQuery(function() {
         else
             l_engine.music.stop();
     });
+
+    // speed widget
+    var gauge = new Gauge( jQuery("#gauge").get(0) ).setOptions({
+        lines: 12,
+        angle: 0,
+        lineWidth: 0.4,
+        pointer: {
+           length: 0.75,
+           strokeWidth: 0.042,
+           color: '#1D212A'
+        },
+        limitMax: 'false',
+        colorStart: '#1ABC9C',
+        colorStop: '#1ABC9C',
+        strokeColor: '#F0F3F3',
+        generateGradient: true
+    });
+    gauge.animationSpeed = 32;
+
 
 
 

@@ -24,6 +24,7 @@
     "codemirror": "^5.27.4",
     "file-saver": "https://github.com/eligrey/FileSaver.js/tarball/master",
     "font-awesome": "https://github.com/FortAwesome/Font-Awesome/tarball/master",
+    "gaugeJS": "https://github.com/bernii/gauge.js/tarball/gh-pages",
     "gentelella": "https://github.com/puikinsh/gentelella/archive/1.4.0.tar.gz",
     "jquery": "^2.2.4",
     "jquery-knob": "https://github.com/aterrien/jQuery-Knob/tarball/master",

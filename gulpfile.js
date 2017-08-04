@@ -30,7 +30,7 @@
  *
  */
 
-const MINIFY = true;
+const MINIFY = false;
 
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),
@@ -145,7 +145,9 @@ const l_gulp = require( "gulp" ),
                       l_sourcedir + "js/codemirror_grammar.js",
 
                       "node_modules/phaser/build/pixi.js",
-                      "node_modules/phaser/build/phaser.js"
+                      "node_modules/phaser/build/phaser.js",
+
+                      "node_modules/gaugeJS/dist/gauge.js"
 
                       /*
                       "node_modules/prismjs/prism.js",
