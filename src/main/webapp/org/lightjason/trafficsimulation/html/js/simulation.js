@@ -948,8 +948,13 @@ jQuery(function() {
         strokeColor: '#F0F3F3',
         generateGradient: true
     });
-    gauge.animationSpeed = 32;
+    gauge.animationSpeed = 32
 
+    /* ToDo: define HEIGHT als global
+    jQuery( window ).resize(function() {
+        l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), HEIGHT * 32 );
+    });
+    */
 
 
 
