@@ -170,8 +170,18 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {
         return StreamUtils.zip(
-            Stream.of( "type", "status", "id", "y", "x", "goal", "speed" ),
-            Stream.of( this.type().toString(), p_status.toString(), this.id(), this.position().get( 0 ), this.position().get( 1 ), m_goal, m_speed.get() ),
+            Stream.of( "type", "status", "id", "y", "x", "goal", "speed", "maxspeed", "acceleration", "deceleration" ),
+            Stream.of( this.type().toString(),
+                       p_status.toString(),
+                       this.id(),
+                       this.position().get( 0 ),
+                       this.position().get( 1 ),
+                       m_goal,
+                       m_speed.get(),
+                       m_maximumspeed,
+                       m_accelerate,
+                       m_decelerate
+            ),
             ImmutablePair::new
         ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
     }
