@@ -902,7 +902,6 @@ jQuery(function() {
 
             execute: function (p_data) {
                 GAUGE.value = p_data.speed;
-
                 l_visualizationfunctions.defaultvehicle.execute( p_data );
             }
         }
