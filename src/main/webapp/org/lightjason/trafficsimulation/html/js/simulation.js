@@ -883,7 +883,7 @@ jQuery(function() {
                 l_visualizationfunctions.defaultvehicle.initialize( p_data );
                 l_engine.camera.follow(l_visualizationobjects[p_data.id]);
 
-                var l_max = Math.ceil( p_data.maxspeed / 10) * 10;
+                var l_max = Math.ceil( p_data.maxspeed / 10 + 3) * 10;
                 GAUGE.value = p_data.speed;
                 GAUGE.update({
                     maxValue: l_max,
