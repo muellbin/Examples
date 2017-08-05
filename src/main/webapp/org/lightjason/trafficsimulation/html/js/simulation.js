@@ -446,7 +446,33 @@ jQuery(function() {
           WSANIMATION = LightJason.websocket( "/animation" ),
           WSMESSAGES = LightJason.websocket( "/message" ),
           TILESIZE = 32,
-          PIXELCENTER = 9;
+          PIXELCENTER = 9,
+          GAUGE = new RadialGauge({
+                            renderTo: 'simulation-speedview',
+                            width: 200,
+                            height: 148,
+                            units: "km/h",
+                            minValue: 0,
+                            maxValue: 220,
+                            majorTicks: [ "0", "20", "40", "60", "80", "100", "120", "140", "160", "180", "200", "220" ],
+                            highlights: [{
+                                "from": 160,
+                                "to": 220,
+                                "color": "rgba(200, 50, 50, .75)"
+                            }],
+                            minorTicks: 2,
+                            strokeTicks: true,
+                            colorPlate: "#fff",
+                            borderShadowWidth: 0,
+                            borders: false,
+                            needleType: "arrow",
+                            needleWidth: 2,
+                            needleCircleSize: 7,
+                            needleCircleOuter: true,
+                            needleCircleInner: false,
+                            animationDuration: 350,
+                            animationRule: "linear"
+                  }).draw();
 
     var l_editor = null,
         l_engine = null,
@@ -856,16 +882,28 @@ jQuery(function() {
             initialize: function (p_data) {
                 l_visualizationfunctions.defaultvehicle.initialize( p_data );
                 l_engine.camera.follow(l_visualizationobjects[p_data.id]);
-                gauge.maxValue = p_data.maxspeed;
-                jQuery( "#gauge-maxspeed" ).text( p_data.maxspeed.toFixed(0) );
+
+                var l_max = Math.ceil( p_data.maxspeed / 10) * 10;
+                GAUGE.value = p_data.speed;
+                GAUGE.update({
+                    maxValue: l_max,
+                    majorTicks: Array.from(Array( Math.ceil( l_max / 20 ) ).keys()).map(function(i) { return i*20; }).map(function(i) { return i.toString() }),
+                    highlights: [{
+                        "from": Math.floor( l_max * 0.75 / 20 ) * 20,
+                        "to": l_max,
+                        "color": "rgba(200, 50, 50, .75)"
+                    }],
+
+                });
+
+                jQuery( "#ui-acceleration" ).text( p_data.acceleration.toFixed(0) );
+                jQuery( "#ui-deceleration" ).text( p_data.deceleration.toFixed(0) );
             },
 
             execute: function (p_data) {
+                GAUGE.value = p_data.speed;
+
                 l_visualizationfunctions.defaultvehicle.execute( p_data );
-                gauge.set( p_data.speed.toFixed(0) );
-                gauge.setTextField( jQuery( "#gauge-speed" ).get(0) );
-                jQuery( "#gauge-acceleration" ).text( p_data.acceleration.toFixed(0) );
-                jQuery( "#gauge-deceleration" ).text( p_data.deceleration.toFixed(0) );
             }
         }
     };
@@ -932,23 +970,7 @@ jQuery(function() {
             l_engine.music.stop();
     });
 
-    // speed widget
-    var gauge = new Gauge( jQuery("#gauge").get(0) ).setOptions({
-        lines: 12,
-        angle: 0,
-        lineWidth: 0.4,
-        pointer: {
-           length: 0.75,
-           strokeWidth: 0.042,
-           color: '#1D212A'
-        },
-        limitMax: 'false',
-        colorStart: '#1ABC9C',
-        colorStop: '#1ABC9C',
-        strokeColor: '#F0F3F3',
-        generateGradient: true
-    });
-    gauge.animationSpeed = 32;
+
 
 
 

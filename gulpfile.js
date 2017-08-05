@@ -59,7 +59,9 @@ const l_gulp = require( "gulp" ),
                   output: "fonts",
                   source: l_gulp.src([
                       "node_modules/bootstrap/dist/fonts/*.*",
-                      "node_modules/font-awesome/fonts/*.*"
+                      "node_modules/font-awesome/fonts/*.*",
+                      "node_modules/canvas-gauges/fonts/*.*",
+                      "!node_modules/canvas-gauges/fonts/*.css"
                   ])
               },
 
@@ -135,6 +137,7 @@ const l_gulp = require( "gulp" ),
                       "node_modules/remark/out/remark.js",
                       "node_modules/showdown/dist/showdown.js",
                       "node_modules/chart.js/dist/Chart.bundle.js",
+                      "node_modules/canvas-gauges/gauge.min.js",
 
                       "node_modules/mathjax/unpacked/MathJax.js",
                       "node_modules/mathjax/unpacked/config/TeX-AMS-MML_HTMLorMML.js",
@@ -145,9 +148,7 @@ const l_gulp = require( "gulp" ),
                       l_sourcedir + "js/codemirror_grammar.js",
 
                       "node_modules/phaser/build/pixi.js",
-                      "node_modules/phaser/build/phaser.js",
-
-                      "node_modules/gaugeJS/dist/gauge.js"
+                      "node_modules/phaser/build/phaser.js"
 
                       /*
                       "node_modules/prismjs/prism.js",
@@ -186,6 +187,8 @@ const l_gulp = require( "gulp" ),
 
                       "node_modules/pnotify/dist/*.css",
                       "node_modules/switchery/dist/switchery.css",
+                      "node_modules/canvas-gauges/assets/styles/*.css",
+                      "node_modules/canvas-gauges/fonts/fonts.css",
                       //"node_modules/prismjs/themes/prism-coy.css",
 
                       "node_modules/codemirror/lib/codemirror.css",
