@@ -895,8 +895,8 @@ jQuery(function() {
 
                 });
 
-                jQuery( "#ui-acceleration" ).text( p_data.acceleration.toFixed(0) );
-                jQuery( "#ui-deceleration" ).text( p_data.deceleration.toFixed(0) );
+                jQuery( "#ui-acceleration" ).text( Math.round( p_data.acceleration ) );
+                jQuery( "#ui-deceleration" ).text( Math.round( p_data.deceleration ) );
             },
 
             execute: function (p_data) {

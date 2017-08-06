@@ -143,7 +143,7 @@ public final class CMath
     public static Stream<DoubleMatrix1D> viewposition( final DoubleMatrix1D p_direction, final Number p_angle )
     {
         final double l_angle = 0.5 * p_angle.doubleValue();
-        final Number l_radius = ALGEBRA.norm2( p_direction );
+        final Number l_radius = Math.sqrt( ALGEBRA.norm2( p_direction ) );
 
         return IntStream.rangeClosed( -l_radius.intValue(), l_radius.intValue() )
                  .parallel()
@@ -151,10 +151,7 @@ public final class CMath
                  .flatMap( y -> IntStream.rangeClosed( -l_radius.intValue(), l_radius.intValue() )
                                          .boxed()
                                          .filter( x -> positioninsideangle( y, x, l_angle ) )
-                                         .map( x -> new DenseDoubleMatrix1D( new double[]{
-                                             y + p_direction.getQuick( 0 ),
-                                             x + p_direction.getQuick( 1 )
-                                         } ) )
+                                         .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
                  );
     }
 

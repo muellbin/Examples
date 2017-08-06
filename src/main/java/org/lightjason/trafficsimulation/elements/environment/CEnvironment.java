@@ -409,15 +409,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     private void defaultvehicle( @Nonnull final DoubleMatrix1D p_start, @Nonnegative final double p_goal,
                                  @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
     {
-        if ( p_maximumspeed.doubleValue() < 120 )
-            throw new RuntimeException( "maximum speed to low" );
-
-        if ( p_acceleration.doubleValue() < 8 )
-            throw new RuntimeException( "acceleration is to low" );
-
-        if ( p_deceleration.doubleValue() < 8 )
-            throw new RuntimeException( "deceleration is to low" );
-
         if ( p_start.get( 0 ) > m_grid.get().rows() )
             throw new RuntimeException( "lane number is to large" );
 
@@ -447,18 +438,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "vehicle/user" )
     private void uservehicle( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
     {
-        if ( !m_uservehicleuse.compareAndSet( false, true ) )
-            throw new RuntimeException( "user vehicle has be created" );
-
-        if ( p_maximumspeed.doubleValue() < 120 )
-            throw new RuntimeException( "maximum speed to low" );
-
-        if ( p_acceleration.doubleValue() < 8 )
-            throw new RuntimeException( "acceleration is to low" );
-
-        if ( p_deceleration.doubleValue() < 8 )
-            throw new RuntimeException( "deceleration is to low" );
-
         m_vehiclecache.add(
             m_generatoruservehicle.generatesingle(
                 this,

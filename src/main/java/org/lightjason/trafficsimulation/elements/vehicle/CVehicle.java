@@ -136,16 +136,29 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * @param p_id name of the object
      * @param p_start start position
      * @param p_goal goal position (x-coordinate)
-     * @param p_accelerate accelerate speed
-     * @param p_decelerate decelerate speed
+     * @param p_acceleration accelerate speed
+     * @param p_deceleration decelerate speed
      */
     private CVehicle( @Nonnull final IAgentConfiguration<IVehicle> p_configuration, @Nonnull final String p_id,
                       @Nonnull final IEnvironment p_environment, @Nonnull final ETYpe p_type,
                       @Nonnull final DoubleMatrix1D p_start, @Nonnegative final int p_goal,
-                      @Nonnegative final double p_maximumspeed, @Nonnegative final double p_accelerate, @Nonnegative final double p_decelerate
+                      @Nonnegative final double p_maximumspeed, @Nonnegative final double p_acceleration, @Nonnegative final double p_deceleration
     )
     {
         super( p_configuration, FUNCTOR, p_id );
+
+        if ( p_maximumspeed < 120 )
+            throw new RuntimeException( "maximum speed to low" );
+
+        if ( p_acceleration < 5 )
+            throw new RuntimeException( "acceleration is to low" );
+
+        if ( p_deceleration < 5 )
+            throw new RuntimeException( "deceleration is to low" );
+
+        if ( p_acceleration < p_deceleration )
+            throw new RuntimeException( "deceleration should be greater than acceleration" );
+
 
         m_type = p_type;
         m_environment = p_environment;
@@ -154,14 +167,16 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_goal = p_goal;
 
         m_maximumspeed = p_maximumspeed;
-        m_accelerate = p_accelerate;
-        m_decelerate = p_decelerate;
+        m_accelerate = p_acceleration;
+        m_decelerate = p_deceleration;
 
         // view range position
         m_backwardview = Collections.unmodifiableSet( CMath.viewposition( new DenseDoubleMatrix1D( new double[]{0, -5} ), 90 )
                                                            .collect( Collectors.toSet() ) );
-        m_forwardview = Collections.unmodifiableSet( CMath.viewposition( new DenseDoubleMatrix1D( new double[]{0, 5} ), 90 )
-                                                          .collect( Collectors.toSet() ) );
+        m_forwardview = null;
+
+        //m_forwardview = Collections.unmodifiableSet( CMath.viewposition( new DenseDoubleMatrix1D( new double[]{0, 5} ), 90 )
+        //                                                  .collect( Collectors.toSet() ) );
 
         if ( p_type.equals( ETYpe.USERVEHICLE ) )
             System.out.println( m_backwardview.stream().map( CMath.MATRIXFORMAT::toString ).collect( Collectors.toSet() ) );
