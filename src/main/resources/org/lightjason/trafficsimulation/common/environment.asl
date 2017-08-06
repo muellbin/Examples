@@ -58,20 +58,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     simulation/initialize( 100, 2, 2 );
     generic/print( "#Environment Agent", "grid has been created" );
 
-    !initialize
-.
-
-
-
-// --- initialize elements ---
-+!initialize <-
-    !!uservehicle;
-    !defaultvehicle( 3, 100 )
-.
-
--!initialize <-
-    generic/print( "#Environment Agent", "Initialization has been failed" );
-    simulation/shutdown
+    !uservehicle
 .
 
 
@@ -109,8 +96,13 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
 
-    generic/print( "#Environment Agent", "user vehicle has been created" )
+    generic/print( "#Environment Agent", "user vehicle has been created" );
+    !defaultvehicle( 3, 100 )
 .
+
+-!uservehicle <-
+    generic/print( "#Environment Agent", "user vehicle initializing has been faild, try again" );
+    !uservehicle.
 
 
 

@@ -67,16 +67,15 @@ public interface IEnvironment extends IObject<IEnvironment>
      * @param p_lane new lane
      * @return changing successful
      */
-    boolean lanechange( @Nonnull IVehicle p_vehicle, final int p_lane );
+    boolean lanechange( @Nonnull IVehicle p_vehicle, final Number p_lane );
 
     /**
      * return an object at the position
      *
-     * @param p_lane lane
      * @param p_position position
      * @return object or null
      */
     @Nullable
-    IObject<?> get( final int p_lane, final int p_position );
+    IObject<?> get( @Nonnull final DoubleMatrix1D p_position );
 
 }

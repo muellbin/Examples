@@ -37,6 +37,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.SynchronizedRandomGenerator;
 
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -130,5 +131,44 @@ public final class CMath
             new DenseDoubleMatrix1D( p_second.toArray() )
                 .assign( p_first, Functions.minus )
         );
+    }
+
+    /**
+     * returns a stream of positions
+     *
+     * @param p_direction direction relative to the zero point
+     * @param p_angle angle of view
+     * @return stream with position
+     */
+    public static Stream<DoubleMatrix1D> viewposition( final DoubleMatrix1D p_direction, final Number p_angle )
+    {
+        final double l_angle = 0.5 * p_angle.doubleValue();
+        final Number l_radius = ALGEBRA.norm2( p_direction );
+
+        return IntStream.rangeClosed( -l_radius.intValue(), l_radius.intValue() )
+                 .parallel()
+                 .boxed()
+                 .flatMap( y -> IntStream.rangeClosed( -l_radius.intValue(), l_radius.intValue() )
+                                         .boxed()
+                                         .filter( x -> positioninsideangle( y, x, l_angle ) )
+                                         .map( x -> new DenseDoubleMatrix1D( new double[]{
+                                             y + p_direction.getQuick( 0 ),
+                                             x + p_direction.getQuick( 1 )
+                                         } ) )
+                 );
+    }
+
+    /**
+     * checks if a point is within the angel of the visual range
+     *
+     * @param p_ypos y-position of the point (relative position [-radius, +radius])
+     * @param p_xpos x-position of the point (relative position [-radius, +radius])
+     * @param p_halfangle angle of the view-range in degree (half value)
+     * @return boolean if the position is inside
+     */
+    private static boolean positioninsideangle( final double p_ypos, final double p_xpos, final double p_halfangle )
+    {
+        final double l_angle = Math.toDegrees( Math.atan( Math.abs( p_ypos ) / Math.abs( p_xpos ) ) );
+        return !Double.isNaN( l_angle ) && ( l_angle >= 360 - p_halfangle ) || ( l_angle <= p_halfangle );
     }
 }

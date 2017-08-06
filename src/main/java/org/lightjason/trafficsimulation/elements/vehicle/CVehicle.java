@@ -34,6 +34,7 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.agentspeak.beliefbase.IBeliefbaseOnDemand;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
@@ -44,6 +45,7 @@ import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.agentspeak.language.variable.CConstant;
 import org.lightjason.agentspeak.language.variable.IVariable;
 import org.lightjason.trafficsimulation.common.CCommon;
+import org.lightjason.trafficsimulation.common.CMath;
 import org.lightjason.trafficsimulation.common.EDirection;
 import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
@@ -56,7 +58,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -116,6 +120,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * goal position (x-coordinate)
      */
     private final int m_goal;
+    /**
+     * position of backward view
+     */
+    private final Set<DoubleMatrix1D> m_backwardview;
+    /**
+     * position of forward view
+     */
+    private final Set<DoubleMatrix1D> m_forwardview;
 
     /**
      * ctor
@@ -144,6 +156,21 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_maximumspeed = p_maximumspeed;
         m_accelerate = p_accelerate;
         m_decelerate = p_decelerate;
+
+        // view range position
+        m_backwardview = Collections.unmodifiableSet( CMath.viewposition( new DenseDoubleMatrix1D( new double[]{0, -5} ), 90 )
+                                                           .collect( Collectors.toSet() ) );
+        m_forwardview = Collections.unmodifiableSet( CMath.viewposition( new DenseDoubleMatrix1D( new double[]{0, 5} ), 90 )
+                                                          .collect( Collectors.toSet() ) );
+
+        if ( p_type.equals( ETYpe.USERVEHICLE ) )
+            System.out.println( m_backwardview.stream().map( CMath.MATRIXFORMAT::toString ).collect( Collectors.toSet() ) );
+
+        // beliefbase
+        //final IView l_env = new CBeliefbase( new CSingleOnlyStorage<>() ).create( "env", m_beliefbase );
+        //m_beliefbase.add( l_env );
+
+        //l_env.add( new CEnvironmentView( p_direction, p_angle ).create( "backward", l_env ) );
 
         CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
@@ -245,6 +272,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         else
             this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "vehicle/collision" ) ) );
     }
+
+
 
     // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -398,6 +427,34 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             return Stream.of(
                 new CConstant<>( "CurrentSpeed", l_vehicle.speed() )
             );
+        }
+    }
+
+    /**
+     * on-demand beliefbase
+     */
+    private final class CEnvironmentView extends IBeliefbaseOnDemand<IVehicle>
+    {
+        /**
+         * direction relativ to position
+         */
+        private final DoubleMatrix1D m_direction;
+        /**
+         * angle of perceiving
+         */
+        private final double m_angle;
+
+
+        /**
+         * ctor
+         *
+         * @param p_direction direction relativ to own position
+         * @param p_angle angle of perceiving
+         */
+        CEnvironmentView( final DoubleMatrix1D p_direction, final double p_angle )
+        {
+            m_direction = p_direction;
+            m_angle = p_angle;
         }
     }
 }

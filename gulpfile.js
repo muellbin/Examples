@@ -60,7 +60,7 @@ const l_gulp = require( "gulp" ),
                   source: l_gulp.src([
                       "node_modules/bootstrap/dist/fonts/*.*",
                       "node_modules/font-awesome/fonts/*.*",
-                      "node_modules/canvas-gauges/fonts/*.*",
+                      //"node_modules/canvas-gauges/fonts/*.*",
                       //"!node_modules/canvas-gauges/fonts/*.css"
                   ])
               },
