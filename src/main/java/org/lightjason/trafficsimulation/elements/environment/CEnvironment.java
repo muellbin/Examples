@@ -388,7 +388,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
                 p_lane.intValue() - 1,
                 p_position.intValue()
             } ),
-            m_lanes.get().getLeft().intValue() < p_lane.intValue() ? 0 : this.position().get( 1 ) - 1,
+            m_lanes.get().getLeft().intValue() >= p_lane.intValue() ? 0 : this.position().get( 1 ) - 1,
 
             p_maximumspeed,
             p_acceleration,
