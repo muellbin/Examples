@@ -40,6 +40,7 @@ import org.lightjason.agentspeak.beliefbase.storage.CSingleOnlyStorage;
 import org.lightjason.agentspeak.beliefbase.view.IView;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
+import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.agentspeak.language.instantiable.IInstantiable;
@@ -47,6 +48,7 @@ import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.agentspeak.language.variable.CConstant;
 import org.lightjason.agentspeak.language.variable.IVariable;
+import org.lightjason.rest.container.CRaw;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CMath;
 import org.lightjason.trafficsimulation.common.EDirection;
@@ -61,8 +63,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
@@ -225,9 +230,13 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     }
 
     @Override
-    protected final Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object )
+    protected final Stream<ILiteral> individualliteral( final IObject<?> p_object )
     {
-        return Stream.empty();
+        return Stream.of(
+            CLiteral.from( "speed", CRawTerm.from( m_speed.get() ) ),
+            CLiteral.from( "lane", CRawTerm.from( m_position.get( 0 ) ) ),
+            CLiteral.from( "distance", CRawTerm.from( CMath.distance( m_position, p_object.position() ) ) )
+        );
     }
 
     @Override
@@ -261,10 +270,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     {
         super.call();
 
-        //System.out.println( MessageFormat.format(
-        // "{0} {1} {2} {3} {4} {5}", this.id(),
-        // CMath.MATRIXFORMAT.toString( m_position ), this.speed(), m_maximumspeed, m_accelerate, m_decelerate
-        // ) );
+        if ( m_type.equals( ETYpe.USERVEHICLE ) )
+            System.out.println( this.beliefbase().stream().collect( Collectors.toList() ) );
 
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
@@ -461,5 +468,34 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         {
             m_position = p_position;
         }
+
+        @Nonnull
+        @Override
+        public final Stream<ILiteral> streamLiteral()
+        {
+            return m_position.parallelStream()
+                             .map( m_environment::get )
+                             .filter( Objects::nonNull )
+                             .collect(
+                                 Collectors.toMap(
+                                     i -> CMath.distance( i.position(), CVehicle.this.position() ),
+                                     i -> i.literal( CVehicle.this )
+                                 )
+                             ).values().stream();
+        }
+
+        @Override
+        public final boolean containsLiteral( @Nonnull final String p_key )
+        {
+            return p_key.equals( "vehicle" );
+        }
+
+        @Nonnull
+        @Override
+        public final Collection<ILiteral> literal( @Nonnull final String p_key )
+        {
+            return this.streamLiteral().filter( i -> p_key.equals( i.functor() ) ).collect( Collectors.toList() );
+        }
+
     }
 }

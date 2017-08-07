@@ -40,18 +40,9 @@ public interface IPerceiveable
      * get literal of the object
      *
      * @param p_object objects
-     * @return stream of literal
+     * @return literal
      */
     @Nonnull
-    Stream<ILiteral> literal( @Nonnull final IObject<?>... p_object );
-
-    /**
-     * get literal of the object
-     *
-     * @param p_object objects
-     * @return stream of literal
-     */
-    @Nonnull
-    Stream<ILiteral> literal( @Nonnull final Stream<IObject<?>> p_object );
+    ILiteral literal( @Nonnull final IObject<?> p_object );
 
 }

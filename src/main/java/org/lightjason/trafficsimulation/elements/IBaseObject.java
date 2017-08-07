@@ -96,38 +96,29 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
 
     @Override
     @Nonnull
-    public final Stream<ILiteral> literal( @Nonnull final IObject<?>... p_object )
+    public final ILiteral literal( @Nonnull final IObject<?> p_object )
     {
-        return this.literal( Arrays.stream( p_object ) );
-    }
-
-    @Override
-    @Nonnull
-    public final Stream<ILiteral> literal( @Nonnull final Stream<IObject<?>> p_object )
-    {
-        return Stream.of(
-            CLiteral.from(
-                m_functor,
-                Stream.concat(
+        return CLiteral.from(
+                    m_functor,
                     Stream.concat(
-                        Stream.of(
-                            CLiteral.from( "id", CRawTerm.from( m_id ) )
+                        Stream.concat(
+                            Stream.of(
+                                CLiteral.from( "id", CRawTerm.from( m_id ) )
+                            ),
+                            m_external.stream().map( i -> i.shallowcopysuffix() )
                         ),
-                        m_external.stream().map( i -> i.shallowcopysuffix() )
-                    ),
-                    this.individualliteral( p_object ).sorted().sequential()
-                )
-            )
-        );
+                        this.individualliteral( p_object ).sorted().sequential()
+                    )
+               );
     }
 
     /**
      * define object literal addons
      *
-     * @param p_object calling objects
+     * @param p_object calling object
      * @return literal stream
      */
-    protected abstract Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object );
+    protected abstract Stream<ILiteral> individualliteral( final IObject<?> p_object );
 
     @Override
     public final int hashCode()

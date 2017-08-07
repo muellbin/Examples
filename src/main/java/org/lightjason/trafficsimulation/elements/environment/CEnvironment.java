@@ -251,7 +251,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     @Override
-    protected final Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object )
+    protected final Stream<ILiteral> individualliteral( final IObject<?> p_object )
     {
         return Stream.empty();
     }
@@ -385,8 +385,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     {
         this.defaultvehicle(
             new DenseDoubleMatrix1D( new double[]{
-                p_lane.intValue() - 1,
-                p_position.intValue()
+                Math.min( m_grid.get().rows(), Math.max( 1, p_lane.intValue() ) ) - 1,
+                Math.min( m_grid.get().columns(), Math.max( 1, p_position.intValue() ) ) - 1
             } ),
             m_lanes.get().getLeft().intValue() >= p_lane.intValue() ? 0 : this.position().get( 1 ) - 1,
 

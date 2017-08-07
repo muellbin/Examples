@@ -150,7 +150,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     }
 
     @Override
-    protected final Stream<ILiteral> individualliteral( final Stream<IObject<?>> p_object )
+    protected final Stream<ILiteral> individualliteral( final IObject<?> p_object )
     {
         return Stream.of(
             CLiteral.from( "allowedspeed", CRawTerm.from( m_allowedspeed ) )
