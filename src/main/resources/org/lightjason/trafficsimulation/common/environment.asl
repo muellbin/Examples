@@ -73,8 +73,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
         @(V) -> I : {
             [Position | Lane] = math/statistic/randomsimple(1, 1);
             Position *= StreetPositions;
-            // @todo remove
-            Help = Lanes - 1;
+            Help = Lanes;
             Lane *= Help;
 
             MaxSpeed = 160;
