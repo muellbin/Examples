@@ -409,7 +409,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     private void defaultvehicle( @Nonnull final DoubleMatrix1D p_start, @Nonnegative final double p_goal,
                                  @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
     {
-        if ( p_start.get( 0 ) > m_grid.get().rows() )
+        if ( p_start.get( 0 ) > m_grid.get().rows() - 1 )
             throw new RuntimeException( "lane number is to large" );
 
         m_vehiclecache.add(

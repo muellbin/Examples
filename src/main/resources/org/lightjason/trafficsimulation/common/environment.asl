@@ -37,11 +37,11 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
     Speed += 0.5;
     Acceleration += 0.2;
-    Deceleration += 0.25;
+    Deceleration += 0.35;
 
     MaxSpeed = Speed * MaxSpeed + 0.25 * MaxSpeed;
     MaxAcceleration = Acceleration * MaxAcceleration + 0.25 * MaxAcceleration;
-    MaxDeceleration = Deceleration * MaxDeceleration + 0.25 * Deceleration
+    MaxDeceleration = Deceleration * MaxDeceleration + 0.25 * MaxDeceleration
 .
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -64,25 +64,29 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 
 // --- creating default-vehicle plan ---
-+!defaultvehicle( Lane, Count )
++!defaultvehicle( Count )
     : Cycle < 15 <-
-        C = math/statistic/randomsimple();
+        C = math/statistic/randomsimple;
         C *= Count;
-        L = collection/list/range(0, C);
-        @(L) -> I : {
-            Position = math/statistic/randomsimple();
+
+        V = collection/list/range(0, C);
+        @(V) -> I : {
+            [Position | Lane] = math/statistic/randomsimple(1, 1);
             Position *= StreetPositions;
+            // @todo remove
+            Help = Lanes - 1;
+            Lane *= Help;
 
             MaxSpeed = 160;
-            MaxAcceleration = 20;
-            MaxDeceleration = 30;
+            MaxAcceleration = 15;
+            MaxDeceleration = 25;
 
             $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
             vehicle/default/position( MaxSpeed, MaxAcceleration, MaxDeceleration, Lane, Position ) << true
         };
 
         generic/print( "#Environment Agent", "default vehicle generated" );
-        !defaultvehicle( Lane, Count )
+        !defaultvehicle( Count )
 .
 
 
@@ -90,14 +94,14 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 // --- creating and repair user-vehicle plan ---
 +!uservehicle <-
     MaxSpeed = 180;
-    MaxAcceleration = 20;
-    MaxDeceleration = 30;
+    MaxAcceleration = 15;
+    MaxDeceleration = 25;
 
     $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
 
     generic/print( "#Environment Agent", "user vehicle has been created" );
-    !defaultvehicle( 3, 100 )
+    !defaultvehicle( 100 )
 .
 
 -!uservehicle <-

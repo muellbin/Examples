@@ -646,7 +646,7 @@ jQuery(function() {
                     indentWithTabs: false,
                     matching: true,
                     lint: false,
-                    extraKeys: {"Ctrl-Enter": "autocomplete"}
+                    extraKeys: { "Ctrl-Enter": "autocomplete" }
                 }
             );
 

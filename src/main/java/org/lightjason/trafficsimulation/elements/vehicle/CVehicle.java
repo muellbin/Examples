@@ -459,7 +459,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
          */
         CEnvironmentView( final Set<DoubleMatrix1D> p_position )
         {
-            m_position = p_position
+            m_position = p_position;
         }
     }
 }
