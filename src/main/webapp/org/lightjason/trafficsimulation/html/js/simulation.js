@@ -445,6 +445,8 @@ jQuery(function() {
           WSANIMATION = LightJason.websocket( "/animation" ),
           WSMESSAGES = LightJason.websocket( "/message" ),
           TILESIZE = 32,
+          VEHICLEXSIZE = 32,
+          VEHICLEYSIZE = 16,
           PIXELCENTER = 9,
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
@@ -751,7 +753,6 @@ jQuery(function() {
             initialize: function( p_data )
             {
                 DataStorage.set( "environment", jQuery.extend( {}, p_data, { time : new Date().getTime() } ) );
-
                 var l_tiles = [];
                 const HEIGHT = p_data.laneslefttoright + p_data.lanesrighttoleft + 2,
                       WIDTH = p_data.length;
@@ -843,7 +844,12 @@ jQuery(function() {
 
             // initialize a default vehicle
             initialize: function (p_data) {
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * TILESIZE, ( p_data.y + 1 ) * TILESIZE + PIXELCENTER, p_data.type );
+                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * TILESIZE + VEHICLEXSIZE / 2, ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER, p_data.type );
+                l_visualizationobjects[p_data.id].anchor.setTo( 0.5, 0.5 );
+                if( p_data.goal === 0 )
+                {
+                    l_visualizationobjects[p_data.id].angle = 180;
+                }
                 WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
             },
 
@@ -853,8 +859,8 @@ jQuery(function() {
                 if ( !l_visualizationobjects[p_data.id] )
                     l_visualizationfunctions[p_data.type]["initialize"](p_data);
 
-                const l_xpos = p_data.x * TILESIZE,
-                      l_ypos = ( p_data.y + 1 ) * TILESIZE + PIXELCENTER;
+                const l_xpos = p_data.x * TILESIZE + VEHICLEXSIZE / 2,
+                      l_ypos = ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER;
 
                 //console.log(  l_xpos +  "  " + l_ypos + "   " + JSON.stringify( p_data ) );
 
