@@ -891,8 +891,7 @@ jQuery(function() {
                         "from": Math.floor( l_max * 0.75 / 20 ) * 20,
                         "to": l_max,
                         "color": "rgba(200, 50, 50, .75)"
-                    }],
-
+                    }]
                 });
 
                 jQuery( "#ui-acceleration" ).text( Math.round( p_data.acceleration ) );

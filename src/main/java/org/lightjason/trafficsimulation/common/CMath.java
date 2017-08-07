@@ -36,6 +36,7 @@ import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.SynchronizedRandomGenerator;
 
+import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -134,23 +135,22 @@ public final class CMath
     }
 
     /**
-     * returns a stream of positions
+     * returns a stream of realtive positions
      *
-     * @param p_direction direction relative to the zero point
-     * @param p_angle angle of view
-     * @return stream with position
+     * @param p_radius radius
+     * @param p_from from-angle
+     * @param p_to to-angle
+     * @return stream with relative position
      */
-    public static Stream<DoubleMatrix1D> viewposition( final DoubleMatrix1D p_direction, final Number p_angle )
+    @Nonnull
+    public static Stream<DoubleMatrix1D> cellangle( @Nonnull final Number p_radius, @Nonnull final Number p_from, @Nonnull final Number p_to )
     {
-        final double l_angle = 0.5 * p_angle.doubleValue();
-        final Number l_radius = Math.sqrt( ALGEBRA.norm2( p_direction ) );
-
-        return IntStream.rangeClosed( -l_radius.intValue(), l_radius.intValue() )
+        return IntStream.rangeClosed( -p_radius.intValue(), p_radius.intValue() )
                  .parallel()
                  .boxed()
-                 .flatMap( y -> IntStream.rangeClosed( -l_radius.intValue(), l_radius.intValue() )
+                 .flatMap( y -> IntStream.rangeClosed( -p_radius.intValue(), p_radius.intValue() )
                                          .boxed()
-                                         .filter( x -> positioninsideangle( y, x, l_angle ) )
+                                         .filter( x -> positioninsideangle( y, x, p_from.doubleValue(), p_to.doubleValue() ) )
                                          .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
                  );
     }
@@ -158,14 +158,17 @@ public final class CMath
     /**
      * checks if a point is within the angel of the visual range
      *
-     * @param p_ypos y-position of the point (relative position [-radius, +radius])
-     * @param p_xpos x-position of the point (relative position [-radius, +radius])
-     * @param p_halfangle angle of the view-range in degree (half value)
+     * @param p_ypos y-position of center
+     * @param p_xpos x-position of center
+     * @param p_from start angle
+     * @param p_to end angle
      * @return boolean if the position is inside
      */
-    private static boolean positioninsideangle( final double p_ypos, final double p_xpos, final double p_halfangle )
+    private static boolean positioninsideangle( final double p_ypos, final double p_xpos, final double p_from, final double p_to )
     {
-        final double l_angle = Math.toDegrees( Math.atan( Math.abs( p_ypos ) / Math.abs( p_xpos ) ) );
-        return !Double.isNaN( l_angle ) && ( l_angle >= 360 - p_halfangle ) || ( l_angle <= p_halfangle );
+        double l_angle = Math.toDegrees( Math.atan2( p_ypos, p_xpos ) );
+        l_angle = l_angle < 0 ? 360 + l_angle : l_angle;
+        return !Double.isNaN( l_angle ) && ( p_from <= l_angle ) && ( l_angle <= p_to );
     }
+
 }

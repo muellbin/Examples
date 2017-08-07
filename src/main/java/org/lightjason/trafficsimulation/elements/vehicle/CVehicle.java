@@ -34,7 +34,10 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.agentspeak.beliefbase.CBeliefbase;
 import org.lightjason.agentspeak.beliefbase.IBeliefbaseOnDemand;
+import org.lightjason.agentspeak.beliefbase.storage.CSingleOnlyStorage;
+import org.lightjason.agentspeak.beliefbase.view.IView;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.ILiteral;
@@ -120,14 +123,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * goal position (x-coordinate)
      */
     private final int m_goal;
-    /**
-     * position of backward view
-     */
-    private final Set<DoubleMatrix1D> m_backwardview;
-    /**
-     * position of forward view
-     */
-    private final Set<DoubleMatrix1D> m_forwardview;
 
     /**
      * ctor
@@ -170,22 +165,23 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_accelerate = p_acceleration;
         m_decelerate = p_deceleration;
 
-        // view range position
-        m_backwardview = Collections.unmodifiableSet( CMath.viewposition( new DenseDoubleMatrix1D( new double[]{0, -5} ), 90 )
-                                                           .collect( Collectors.toSet() ) );
-        m_forwardview = null;
-
-        //m_forwardview = Collections.unmodifiableSet( CMath.viewposition( new DenseDoubleMatrix1D( new double[]{0, 5} ), 90 )
-        //                                                  .collect( Collectors.toSet() ) );
-
-        if ( p_type.equals( ETYpe.USERVEHICLE ) )
-            System.out.println( m_backwardview.stream().map( CMath.MATRIXFORMAT::toString ).collect( Collectors.toSet() ) );
-
         // beliefbase
-        //final IView l_env = new CBeliefbase( new CSingleOnlyStorage<>() ).create( "env", m_beliefbase );
-        //m_beliefbase.add( l_env );
+        final IView l_env = new CBeliefbase( new CSingleOnlyStorage<>() ).create( "env", m_beliefbase );
+        m_beliefbase.add( l_env );
 
-        //l_env.add( new CEnvironmentView( p_direction, p_angle ).create( "backward", l_env ) );
+        l_env.add(
+            new CEnvironmentView(
+                Collections.unmodifiableSet( CMath.cellangle( 5, 135, 225 ).collect( Collectors.toSet() ) )
+            ).create( "backward", l_env ) );
+
+        l_env.add( new CEnvironmentView(
+            Collections.unmodifiableSet(
+                Stream.concat(
+                    CMath.cellangle( 8, 0, 60 ),
+                    CMath.cellangle( 8, 300, 359.99 )
+                ).collect( Collectors.toSet() )
+            )
+        ).create( "backward", l_env ) );
 
         CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
@@ -451,25 +447,19 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     private final class CEnvironmentView extends IBeliefbaseOnDemand<IVehicle>
     {
         /**
-         * direction relativ to position
+         * cell position
          */
-        private final DoubleMatrix1D m_direction;
-        /**
-         * angle of perceiving
-         */
-        private final double m_angle;
+        private final Set<DoubleMatrix1D> m_position;
 
 
         /**
          * ctor
          *
-         * @param p_direction direction relativ to own position
-         * @param p_angle angle of perceiving
+         * @param p_position cell position relative to object position
          */
-        CEnvironmentView( final DoubleMatrix1D p_direction, final double p_angle )
+        CEnvironmentView( final Set<DoubleMatrix1D> p_position )
         {
-            m_direction = p_direction;
-            m_angle = p_angle;
+            m_position = p_position
         }
     }
 }
