@@ -451,7 +451,7 @@ jQuery(function() {
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
                             width: 200,
-                            height: 120,
+                            height: 180,
                             units: "km/h",
                             minValue: 0,
                             maxValue: 220,
@@ -471,7 +471,7 @@ jQuery(function() {
                             needleCircleSize: 7,
                             needleCircleOuter: true,
                             needleCircleInner: false,
-                            animationDuration: 350,
+                            animationDuration: SIMULATIONSPEED.val(),
                             animationRule: "linear"
                   }).draw();
 
@@ -659,7 +659,10 @@ jQuery(function() {
     SIMULATIONSPEED.change(function(e) {
         if (e.value)
             LightJason.ajax( "/api/simulation/time/set/" + Math.round( e.value ) )
-                      .success(function(i) { notifymessage({ title: "Simulation", text: i, type: "success" }); })
+                      .success(function(i) {
+                          GAUGE.update({ animationDuration: e.value });
+                          notifymessage({ title: "Simulation", text: i, type: "success" });
+                      })
                       .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
@@ -818,7 +821,7 @@ jQuery(function() {
 
 
             // remove environment content (sprites) but not the timemap
-            shutdown: function( p_data )
+            release: function( p_data )
             {
                 l_engine.music.stop();
 
@@ -863,12 +866,14 @@ jQuery(function() {
 
                 // check if the position has been changed, if not recall websocket
                 // or position is lower than
+                /*
                 if ( ( ( p_data.goal === 0 ) && ( l_xpos >= l_visualizationobjects[p_data.id].x ) )
                     || ( ( p_data.goal !== 0 ) && ( l_xpos <= l_visualizationobjects[p_data.id].x ) ) )
                 {
                     WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
                     return;
                 }
+                */
 
                 // update storage
                 //DataStorage.getandset( "environment", function(i){ i.time = new Date().getTime(); return i; } );
@@ -878,6 +883,17 @@ jQuery(function() {
                 TWEEN.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
                 TWEEN.delay(0);
                 TWEEN.start();
+            },
+
+
+            // release for removing vehicles
+            release: function( p_data ) {
+                if ( !l_visualizationobjects[p_data.id] )
+                    return;
+
+                l_engine.tweens.remove( l_visualizationobjects[p_data.id] );
+                l_visualizationobjects[p_data.id].destroy();
+                delete l_visualizationobjects[p_data.id];
             }
         },
 
@@ -887,7 +903,7 @@ jQuery(function() {
                 l_visualizationfunctions.defaultvehicle.initialize( p_data );
                 l_engine.camera.follow(l_visualizationobjects[p_data.id]);
 
-                var l_max = Math.ceil( p_data.maxspeed / 10 + 3) * 10;
+                var l_max = Math.ceil( p_data.maxspeed / 10 + 5) * 10;
                 GAUGE.value = p_data.speed;
                 GAUGE.update({
                     maxValue: l_max,
@@ -906,7 +922,9 @@ jQuery(function() {
             execute: function (p_data) {
                 GAUGE.value = p_data.speed;
                 l_visualizationfunctions.defaultvehicle.execute( p_data );
-            }
+            },
+
+            release: function(p_data) { l_visualizationfunctions.defaultvehicle.release( p_data ) }
         }
     };
 

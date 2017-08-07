@@ -35,9 +35,9 @@
 vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     [ Speed | Acceleration | Deceleration ] = math/statistic/randomsimple( 1, 1, 1 );
 
-    Speed += 0.5;
-    Acceleration += 0.2;
-    Deceleration += 0.35;
+    Speed += 0.2;
+    Acceleration += 0.15;
+    Deceleration += 0.3;
 
     MaxSpeed = Speed * MaxSpeed + 0.25 * MaxSpeed;
     MaxAcceleration = Acceleration * MaxAcceleration + 0.25 * MaxAcceleration;
@@ -77,8 +77,8 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
             Lane *= Help;
 
             MaxSpeed = 160;
-            MaxAcceleration = 15;
-            MaxDeceleration = 25;
+            MaxAcceleration = 6;
+            MaxDeceleration = 7;
 
             $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
             vehicle/default/position( MaxSpeed, MaxAcceleration, MaxDeceleration, Lane, Position ) << true
@@ -93,8 +93,8 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 // --- creating and repair user-vehicle plan ---
 +!uservehicle <-
     MaxSpeed = 180;
-    MaxAcceleration = 15;
-    MaxDeceleration = 25;
+    MaxAcceleration = 6;
+    MaxDeceleration = 7;
 
     $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );

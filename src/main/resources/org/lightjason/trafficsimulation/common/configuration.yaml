@@ -21,10 +21,10 @@
 
 # main definition
 main:
-    simulationspeed: 2500
+    simulationspeed: 5000
     messagedelay:
       default: 3500
-      agentprint: 2500
+      agentprint: 3000
 
 
 # agent definition (asl is relative to search path)
@@ -49,5 +49,5 @@ ui:
 # simulation units
 units:
     cellsize_in_meter: 3.5
-    time_in_minutes: 0.5
+    time_in_minutes: 0.25
 

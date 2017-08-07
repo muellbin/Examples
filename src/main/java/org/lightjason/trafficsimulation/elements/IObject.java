@@ -62,6 +62,14 @@ public interface IObject<T extends IAgent<?>> extends IMap, IPerceiveable, IAgen
     @Nonnull
     DoubleMatrix1D nextposition();
 
+    /**
+     * is called for object destroying
+     *
+     * @return self reference
+     */
+    @Nonnull
+    IObject<T> release();
+
 
 
     /**

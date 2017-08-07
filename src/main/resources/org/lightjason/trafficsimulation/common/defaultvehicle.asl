@@ -23,20 +23,18 @@
 
 !drive.
 
-
 // driving call equal to Nagel-Schreckenberg driving model, on success accelerate
 +!drive <-
-    // linger call
-    [ L | V ] = math/statistic/randomsimple(1, 1);
-    L < V;
+    // linger
+    L = math/statistic/randomsimple;
+    L >= 0.2;
 
-    // accelerate and drive
     vehicle/accelerate(1);
     !drive
 .
 
 
-// on driving failing (linger probability) decelerate
+// on driving failing decelerate
 -!drive <-
     vehicle/decelerate(1);
     !drive
@@ -44,4 +42,7 @@
 
 
 // possible collision decelerate
-+!vehicle/collision <- vehicle/decelerate(1).
++!vehicle/collision <-
+    vehicle/decelerate(1);
+    !drive
+.

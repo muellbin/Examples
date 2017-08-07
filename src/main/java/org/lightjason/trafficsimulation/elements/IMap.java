@@ -48,7 +48,7 @@ public interface IMap
     {
         INITIALIZE,
         EXECUTE,
-        SHUTDOWN;
+        RELEASE;
 
         @Override
         public final String toString()

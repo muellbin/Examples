@@ -160,6 +160,15 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return this.position();
     }
 
+    @Nonnull
+    @Override
+    public final IObject<IEnvironment> release()
+    {
+        m_shutdown.set( true );
+        CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
+        return this;
+    }
+
     @Override
     public final boolean shutdown()
     {
@@ -177,7 +186,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         p_vehicle.position().setQuick( 0, p_position.get( 0 ) );
         p_vehicle.position().setQuick( 1, p_position.get( 1 ) );
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, p_vehicle );
         return true;
     }
 
@@ -205,7 +213,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             if ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) )
                 this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
 
-            m_elements.remove( p_vehicle.id() );
+            m_elements.remove( p_vehicle.release().id() );
             return true;
         }
 
@@ -307,8 +315,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "simulation/shutdown" )
     private void simulationshutdown()
     {
-        m_shutdown.set( true );
-        CAnimation.CInstance.INSTANCE.send( EStatus.SHUTDOWN, this );
+        this.release();
     }
 
     /**

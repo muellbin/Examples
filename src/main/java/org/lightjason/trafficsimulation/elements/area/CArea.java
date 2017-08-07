@@ -143,6 +143,13 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         return this.position();
     }
 
+    @Nonnull
+    @Override
+    public final IObject<IArea> release()
+    {
+        return this;
+    }
+
     @Override
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {

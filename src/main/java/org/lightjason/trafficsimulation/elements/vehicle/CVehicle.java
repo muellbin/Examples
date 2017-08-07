@@ -52,6 +52,7 @@ import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
+import org.lightjason.trafficsimulation.ui.api.CAnimation;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -143,10 +144,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         if ( p_maximumspeed < 120 )
             throw new RuntimeException( "maximum speed to low" );
 
-        if ( p_acceleration < 5 )
+        if ( p_acceleration < 1 )
             throw new RuntimeException( "acceleration is to low" );
 
-        if ( p_deceleration < 5 )
+        if ( p_deceleration < 1 )
             throw new RuntimeException( "deceleration is to low" );
 
         if ( p_deceleration < p_acceleration )
@@ -182,6 +183,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             )
         ).create( "forward", l_env ) );
 */
+        CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
 
     @Nonnull
@@ -200,6 +202,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ), m_goal} ),
             CUnit.INSTANCE.speedtocell( this.speed() ).doubleValue()
         );
+    }
+
+    @Nonnull
+    @Override
+    public final IObject<IVehicle> release()
+    {
+        CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
+        return this;
     }
 
     @Override
@@ -233,9 +243,24 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     }
 
     @Override
+    @Nonnegative
     public final double penalty()
     {
         return m_panelize.get();
+    }
+
+    @Override
+    @Nonnegative
+    public final double acceleration()
+    {
+        return m_accelerate;
+    }
+
+    @Override
+    @Nonnegative
+    public final double deceleration()
+    {
+        return m_decelerate;
     }
 
     @Override
@@ -295,14 +320,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "vehicle/accelerate" )
     private void accelerate( final Number p_strength )
     {
-        final double l_value = CUnit.INSTANCE.accelerationtospeed(
+        final double l_value = m_speed.get() + CUnit.INSTANCE.accelerationtospeed(
             m_accelerate * Math.max( 0, Math.min( 1, p_strength.doubleValue() ) )
         ).doubleValue();
 
-        if ( m_speed.get() + l_value > m_maximumspeed )
+        if (  l_value > m_maximumspeed )
             throw new RuntimeException( MessageFormat.format( "cannot increment speed: {0}", this ) );
 
-        m_speed.addAndGet( m_speed.get() + l_value );
+        m_speed.set( l_value );
     }
 
     /**
@@ -312,14 +337,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "vehicle/decelerate" )
     private void decelerate( final Number p_strength )
     {
-        final double l_value = CUnit.INSTANCE.accelerationtospeed(
+        final double l_value = m_speed.get() - CUnit.INSTANCE.accelerationtospeed(
             m_decelerate * Math.max( 0, Math.min( 1, p_strength.doubleValue() ) )
         ).doubleValue();
 
-        if ( m_speed.get() - l_value < 0 )
+        if (  l_value < 0 )
             throw new RuntimeException( MessageFormat.format( "cannot decrement speed: {0}", this ) );
 
-        m_speed.set( m_speed.get() - l_value );
+        m_speed.set( l_value );
     }
 
     /**
@@ -436,7 +461,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             final IVehicle l_vehicle = p_agent.<IVehicle>raw();
 
             return Stream.of(
-                new CConstant<>( "CurrentSpeed", l_vehicle.speed() )
+                new CConstant<>( "CurrentSpeed", l_vehicle.speed() ),
+                new CConstant<>( "Acceleration", l_vehicle.acceleration() ),
+                new CConstant<>( "Deceleration", l_vehicle.deceleration() )
             );
         }
     }

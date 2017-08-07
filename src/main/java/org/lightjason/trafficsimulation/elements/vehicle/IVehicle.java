@@ -41,6 +41,7 @@ public interface IVehicle extends IObject<IVehicle>
      *
      * @return current speed
      */
+    @Nonnegative
     double speed();
 
     /**
@@ -59,6 +60,24 @@ public interface IVehicle extends IObject<IVehicle>
      */
     @Nonnegative
     double penalty();
+
+    /**
+     * returns acceleration in m/sec^2
+     *
+     * @return acceleration
+     */
+    @Nonnegative
+    double acceleration();
+
+    /**
+     * returns deceleration in m/sec^2
+     *
+     * @return deceleration
+     */
+    @Nonnegative
+    double deceleration();
+
+
 
     /**
      * vehicle type
