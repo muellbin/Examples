@@ -27,7 +27,6 @@ package org.lightjason.trafficsimulation.elements;
 import org.lightjason.agentspeak.language.ILiteral;
 
 import javax.annotation.Nonnull;
-import java.util.stream.Stream;
 
 
 /**

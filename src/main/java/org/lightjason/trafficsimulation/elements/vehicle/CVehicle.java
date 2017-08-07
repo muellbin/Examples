@@ -34,10 +34,7 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IAgent;
-import org.lightjason.agentspeak.beliefbase.CBeliefbase;
 import org.lightjason.agentspeak.beliefbase.IBeliefbaseOnDemand;
-import org.lightjason.agentspeak.beliefbase.storage.CSingleOnlyStorage;
-import org.lightjason.agentspeak.beliefbase.view.IView;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
@@ -48,7 +45,6 @@ import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.agentspeak.language.variable.CConstant;
 import org.lightjason.agentspeak.language.variable.IVariable;
-import org.lightjason.rest.container.CRaw;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CMath;
 import org.lightjason.trafficsimulation.common.EDirection;
@@ -56,7 +52,6 @@ import org.lightjason.trafficsimulation.elements.CUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
-import org.lightjason.trafficsimulation.ui.api.CAnimation;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -64,8 +59,6 @@ import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -171,6 +164,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_decelerate = p_deceleration;
 
         // beliefbase
+/*
         final IView l_env = new CBeliefbase( new CSingleOnlyStorage<>() ).create( "env", m_beliefbase );
         m_beliefbase.add( l_env );
 
@@ -187,7 +181,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 ).collect( Collectors.toSet() )
             )
         ).create( "forward", l_env ) );
-
+*/
     }
 
     @Nonnull
@@ -486,7 +480,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @Override
         public final boolean containsLiteral( @Nonnull final String p_key )
         {
-            return p_key.equals( "vehicle" );
+            return "vehicle".equals( p_key );
         }
 
         @Nonnull
