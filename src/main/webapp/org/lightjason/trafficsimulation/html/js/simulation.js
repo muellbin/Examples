@@ -847,9 +847,8 @@ jQuery(function() {
                 l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * TILESIZE + VEHICLEXSIZE / 2, ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER, p_data.type );
                 l_visualizationobjects[p_data.id].anchor.setTo( 0.5, 0.5 );
                 if( p_data.goal === 0 )
-                {
                     l_visualizationobjects[p_data.id].angle = 180;
-                }
+
                 WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
             },
 
@@ -862,10 +861,10 @@ jQuery(function() {
                 const l_xpos = p_data.x * TILESIZE + VEHICLEXSIZE / 2,
                       l_ypos = ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER;
 
-                //console.log(  l_xpos +  "  " + l_ypos + "   " + JSON.stringify( p_data ) );
-
                 // check if the position has been changed, if not recall websocket
-                if ( ( l_xpos === l_visualizationobjects[p_data.id].x ) && ( l_ypos === l_visualizationobjects[p_data.id].y ) )
+                // or position is lower than
+                if ( ( ( p_data.goal === 0 ) && ( l_xpos >= l_visualizationobjects[p_data.id].x ) )
+                    || ( ( p_data.goal !== 0 ) && ( l_xpos <= l_visualizationobjects[p_data.id].x ) ) )
                 {
                     WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
                     return;

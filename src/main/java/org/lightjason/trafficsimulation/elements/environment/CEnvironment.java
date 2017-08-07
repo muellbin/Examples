@@ -176,6 +176,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_grid.get().set( (int) p_position.get( 0 ), (int) p_position.get( 1 ), p_vehicle );
         p_vehicle.position().setQuick( 0, p_position.get( 0 ) );
         p_vehicle.position().setQuick( 1, p_position.get( 1 ) );
+
+        CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, p_vehicle );
         return true;
     }
 
@@ -451,7 +453,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
                 p_deceleration
             )
         );
-
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

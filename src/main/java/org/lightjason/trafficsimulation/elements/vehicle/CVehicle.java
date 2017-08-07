@@ -156,7 +156,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         if ( p_deceleration < 5 )
             throw new RuntimeException( "deceleration is to low" );
 
-        if ( p_acceleration < p_deceleration )
+        if ( p_deceleration < p_acceleration )
             throw new RuntimeException( "deceleration should be greater than acceleration" );
 
 
@@ -186,9 +186,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                     CMath.cellangle( 8, 300, 359.99 )
                 ).collect( Collectors.toSet() )
             )
-        ).create( "backward", l_env ) );
+        ).create( "forward", l_env ) );
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
 
     @Nonnull
@@ -270,8 +269,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     {
         super.call();
 
-        if ( m_type.equals( ETYpe.USERVEHICLE ) )
-            System.out.println( this.beliefbase().stream().collect( Collectors.toList() ) );
+        //if ( m_type.equals( ETYpe.USERVEHICLE ) )
+        //    System.out.println( this.beliefbase().stream().collect( Collectors.toList() ) );
 
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
