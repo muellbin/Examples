@@ -383,10 +383,11 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     private void defaultvehicleposition( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration,
                                          @Nonnegative final Number p_deceleration, @Nonnegative final Number p_lane, @Nonnegative final Number p_position )
     {
+        //System.out.println( "p_lane: " + p_lane + ", y: " +  ( Math.min( m_grid.get().rows(), Math.max( 1, p_lane.intValue() ) ) - 1 ) );
         this.defaultvehicle(
             new DenseDoubleMatrix1D( new double[]{
-                p_lane.intValue() - 1,
-                p_position.intValue()
+                Math.min( m_grid.get().rows(), Math.max( 1, p_lane.intValue() ) ) - 1,
+                Math.min( m_grid.get().columns(), Math.max( 1, p_position.intValue() ) ) - 1
             } ),
             m_lanes.get().getLeft().intValue() >= p_lane.intValue() ? 0 : this.position().get( 1 ) - 1,
 
