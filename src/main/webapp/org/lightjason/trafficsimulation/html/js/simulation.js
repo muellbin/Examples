@@ -707,16 +707,49 @@ jQuery(function() {
 
     // shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
-        WSANIMATION.close();
-        WSMESSAGES.close();
-
         LightJason.ajax( "/api/simulation/shutdown" )
-            .error(function(i) {
-                if ( ( i.status === 503 ) || ( i.status === 0 ) )
-                    return;
-                notifymessage({ title: i.statusText, text: i.responseText, type: "error" });
-                window.close();
+            .success(function() {
+                WSANIMATION.close();
+                WSMESSAGES.close();
+                jQuery( ".nav_menu, #sidebar-menu, .sidebar-footer, #second_row" ).fadeOut();
             })
+            .error(function(i) {
+                BootstrapDialog.show({
+                    title: "Warning",
+                    message: "Simulation is active - should we shutdown really?",
+                    buttons: [{
+                        label: "Yes",
+                        action: function(dialog) {
+                            LightJason.ajax({
+                                              url : "/lightjason/agent/environment/trigger/add/goal/immediately",
+                                              data: "shutdown",
+                                              contentType: "text/plain",
+                                              method: "POST"
+                                      })
+                                      .success(function() {
+                                          setTimeout(function() {
+                                              LightJason.ajax("/api/simulation/shutdown")
+                                                  .success(function () {
+                                                      WSANIMATION.close();
+                                                      WSMESSAGES.close();
+                                                      dialog.close();
+                                                      jQuery(".nav_menu, #sidebar-menu, .sidebar-footer, #second_row").fadeOut();
+                                                  })
+                                                  .error(function (i) {
+                                                      notifymessage({title: i.statusText, text: i.responseText, type: "error"});
+                                                  });
+                                          },
+                                          SIMULATIONSPEED.val()*1.5);
+                                      });
+                        }
+                    }, {
+                        label: "No",
+                        action: function(dialog) {
+                            dialog.close();
+                        }
+                    }]
+                });
+            });
     });
 
     // slide view
@@ -964,6 +997,9 @@ jQuery(function() {
 
     // music enable / disable
     SIMULATIONMUSIC.change(function() {
+        if ( (!l_engine) || (!l_engine.music) )
+            return;
+
         if ( this.checked ) {
             if ( DataStorage.get("environment") )
                 l_engine.music.play();

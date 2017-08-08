@@ -74,12 +74,13 @@ public final class CSimulation
      */
     @GET
     @Path( "/shutdown" )
-    @Produces( MediaType.APPLICATION_JSON )
+    @Produces( MediaType.TEXT_PLAIN )
     public final Response shutdown()
     {
         if ( CRuntime.INSTANCE.running() )
             return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "isrunning" ) ).build();
 
+        // asynchronized thread for shutdown, because server process cannot be disable during communication
         new Thread( CHTTPServer::shutdown ).start();
         return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "shutdown" ) ).build();
     }
@@ -310,6 +311,11 @@ public final class CSimulation
         return CRuntime.INSTANCE.elements().values().stream().map( i -> i.map( IMap.EStatus.EXECUTE ) ).collect( Collectors.toList() );
     }
 
+    /**
+     * returns state of the music play
+     *
+     * @return music state
+     */
     @GET
     @Path( "/music" )
     @Produces( MediaType.TEXT_PLAIN )
@@ -318,6 +324,11 @@ public final class CSimulation
         return CConfiguration.INSTANCE.getOrDefault( true, "ui", "music" );
     }
 
+    /**
+     * returns unique system instance identifier
+     *
+     * @return identifier
+     */
     @GET
     @Path( "/systemid" )
     @Produces( MediaType.TEXT_PLAIN )
