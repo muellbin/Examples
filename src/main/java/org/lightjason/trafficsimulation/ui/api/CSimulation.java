@@ -318,4 +318,12 @@ public final class CSimulation
         return CConfiguration.INSTANCE.getOrDefault( true, "ui", "music" );
     }
 
+    @GET
+    @Path( "/systemid" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public final Object systemid()
+    {
+        return CConfiguration.SYSTEMID;
+    }
+
 }

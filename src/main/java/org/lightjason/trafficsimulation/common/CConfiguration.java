@@ -41,6 +41,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -58,6 +59,10 @@ public final class CConfiguration extends ITree.CTree
      * default configuration path
      */
     public static final String DEFAULTPATH = Paths.get( System.getProperty( "user.home" ), ".lightjason", "trafficsimulation" ).toString();
+    /**
+     * instantiation system id
+     */
+    public static final String SYSTEMID = UUID.randomUUID().toString();
     /**
      * asl sub directory
      */
