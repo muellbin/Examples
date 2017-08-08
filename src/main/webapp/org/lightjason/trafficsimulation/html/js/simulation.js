@@ -490,7 +490,7 @@ jQuery(function() {
               title: "Warning",
               message: "Simulation is still running, shall we really shutdown now?",
               buttons: [{
-                  label: "Yes",
+                  label: "Yes, shutdown now",
                   action: function(dialog) {
                       dialog.close();
                       LightJason.ajax({
@@ -510,7 +510,8 @@ jQuery(function() {
                           });
                   }
               }, {
-                  label: "No",
+                  label: "No, don't shutdown",
+                  cssClass: "btn-primary",
                   action: function(dialog) {
                       dialog.close();
                   }
@@ -519,8 +520,11 @@ jQuery(function() {
 
         MANUALLANGUAGELABEL = {
             "warning" : function(i) { SHUTDOWNDIALOG.setTitle(i); },
-            "shutdownquestion" : function(i) { SHUTDOWNDIALOG.setMessage(i); }
+            "shutdownquestion" : function(i) { SHUTDOWNDIALOG.setMessage(i); },
+            "shutdownnow" : function(i) { SHUTDOWNDIALOG.getButtons()[0].label = i; },
+            "shutdownabort" : function(i) { SHUTDOWNDIALOG.getButtons()[1].label = i; }
         };
+
 
 
     var l_editor = null,
