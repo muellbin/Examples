@@ -742,7 +742,16 @@ jQuery(function() {
             // initialize environment with tilemap
             initialize: function( p_data )
             {
-                DataStorage.set( "environment", jQuery.extend( {}, p_data, { time : new Date().getTime() } ) );
+                // get system id
+                LightJason.ajax( "/api/simulation/systemid")
+                    .success(function(i) {
+                        DataStorage.set( "environment", jQuery.extend( {}, p_data, {
+                            time : new Date().getTime(),
+                            systemid: i
+                        } ) );
+                    } )
+                    .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+
                 var l_tiles = [];
                 const HEIGHT = p_data.laneslefttoright + p_data.lanesrighttoleft + 2,
                       WIDTH = p_data.length;
@@ -858,7 +867,10 @@ jQuery(function() {
                       l_ypos = ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER;
 
                 // update storage
-                //DataStorage.getandset( "environment", function(i){ i.time = new Date().getTime(); return i; } );
+                DataStorage.getandset( "environment", function(i){
+                    if ( i !== null )
+                        i.time = new Date().getTime(); return i;
+                } );
 
                 // create tween
                 const TWEEN = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({ x: l_xpos, y: l_ypos }, SIMULATIONSPEED.val() );
@@ -936,18 +948,25 @@ jQuery(function() {
                 // reinitialize content if the browser tab was closed
                 const ENV = DataStorage.remove( "environment" );
                 if ( ENV )
-                    LightJason.ajax( "/api/simulation/cookie/expire" )
-                              .success(function(i) {
-                                  if ( ( new Date().getTime() - ENV.time ) / 1000 < parseInt(i) )
-                                      LightJason.ajax( "/api/simulation/elements" )
+                    LightJason.ajax( "/api/simulation/systemid")
+                        .success(function(i) {
+                            if ( i === ENV.systemid )
+                            {
+                                LightJason.ajax( "/api/simulation/cookie/expire" )
+                                    .success(function(i) {
+                                        if ( ( new Date().getTime() - ENV.time ) / 1000 < parseInt(i) )
+                                            LightJason.ajax( "/api/simulation/elements" )
                                                 .success(function(j) {
                                                     l_visualizationfunctions[ENV.type][ENV.status]( ENV );
                                                     j.filter( function(o) { return o.type !== "environment"; } )
                                                      .forEach( function( o ) { l_visualizationfunctions[o.type][o.status]( o ); });
                                                 })
                                                 .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-                                })
-                                .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+                                    })
+                                    .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+                            }
+                        } )
+                        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
             }
         }
     );
