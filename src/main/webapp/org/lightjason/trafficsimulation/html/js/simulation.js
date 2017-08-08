@@ -768,7 +768,7 @@ jQuery(function() {
     // shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
         LightJason.ajax( "/api/simulation/shutdown" )
-                  .success(function() { shutdown( WSANIMATION, WSMESSAGES ); })
+                  .success(function() { shutdown(); })
                   .error(function(i) { SHUTDOWNDIALOG.open(); });
     });
 
@@ -782,6 +782,18 @@ jQuery(function() {
 
     // set fullscreen structure
     jQuery( ".ui-fullscreen" ).fullscreen();
+
+
+    // catch resize calls
+    const RESIZE = function() {
+        if (l_engine)
+            l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), l_engine.height );
+    };
+
+    jQuery( window ).resize(function() { RESIZE(); });
+    jQuery("#menu_toggle").click(function() { RESIZE(); });
+
+
 
 
 
