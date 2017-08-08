@@ -404,6 +404,16 @@ function agentlist()
         });
 }
 
+/**
+ * shutdown function of the ui
+ */
+function shutdown()
+{
+    jQuery( ".nav_menu, #sidebar-menu, .sidebar-footer, #second_row" ).fadeOut();
+    for(var i = 0; i < arguments.length; i++)
+        arguments[i].close();
+}
+
 
 CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); };
 
@@ -448,6 +458,7 @@ jQuery(function() {
           VEHICLEXSIZE = 32,
           VEHICLEYSIZE = 16,
           PIXELCENTER = 9,
+
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
                             width: 200,
@@ -473,7 +484,44 @@ jQuery(function() {
                             needleCircleInner: false,
                             animationDuration: SIMULATIONSPEED.val(),
                             animationRule: "linear"
-                  }).draw();
+                  }).draw(),
+
+          SHUTDOWNDIALOG = new BootstrapDialog({
+              title: "Warning",
+              message: "Simulation is still running, shall we really shutdown now?",
+              buttons: [{
+                  label: "Yes",
+                  action: function(dialog) {
+                      dialog.close();
+                      LightJason.ajax({
+                          url : "/lightjason/agent/environment/trigger/add/goal/immediately",
+                          data: "shutdown",
+                          contentType: "text/plain",
+                          method: "POST"
+                      })
+                          .success(function() {
+                              // timeout to wait for ajax request
+                              setTimeout(function() {
+                                      LightJason.ajax("/api/simulation/shutdown")
+                                          .success(function () { shutdown( WSANIMATION, WSANIMATION ); })
+                                          .error(function (i) { notifymessage({title: i.statusText, text: i.responseText, type: "error"}); });
+                                  },
+                                  SIMULATIONSPEED.val()*1.15);
+                          });
+                  }
+              }, {
+                  label: "No",
+                  action: function(dialog) {
+                      dialog.close();
+                  }
+              }]
+          }),
+
+        MANUALLANGUAGELABEL = {
+            "warning" : function(i) { SHUTDOWNDIALOG.setTitle(i); },
+            "shutdownquestion" : function(i) { SHUTDOWNDIALOG.setMessage(i); }
+        };
+
 
     var l_editor = null,
         l_engine = null,
@@ -557,6 +605,14 @@ jQuery(function() {
             .success(function(t) { lo.attr( "data-" + lo.data( "languagelabelid" ), t ); })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
+
+
+    // get manual language enties
+    Object.keys(MANUALLANGUAGELABEL)
+          .forEach(function(i) {
+              LightJason.ajax( "/api/simulation/language/label/" + i )
+                        .success(function(t) { MANUALLANGUAGELABEL[i](t); })
+          });
 
 
     // get language document
@@ -708,48 +764,8 @@ jQuery(function() {
     // shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
         LightJason.ajax( "/api/simulation/shutdown" )
-            .success(function() {
-                WSANIMATION.close();
-                WSMESSAGES.close();
-                jQuery( ".nav_menu, #sidebar-menu, .sidebar-footer, #second_row" ).fadeOut();
-            })
-            .error(function(i) {
-                BootstrapDialog.show({
-                    title: "Warning",
-                    message: "Simulation is active - should we shutdown really?",
-                    buttons: [{
-                        label: "Yes",
-                        action: function(dialog) {
-                            LightJason.ajax({
-                                              url : "/lightjason/agent/environment/trigger/add/goal/immediately",
-                                              data: "shutdown",
-                                              contentType: "text/plain",
-                                              method: "POST"
-                                      })
-                                      .success(function() {
-                                          setTimeout(function() {
-                                              LightJason.ajax("/api/simulation/shutdown")
-                                                  .success(function () {
-                                                      WSANIMATION.close();
-                                                      WSMESSAGES.close();
-                                                      dialog.close();
-                                                      jQuery(".nav_menu, #sidebar-menu, .sidebar-footer, #second_row").fadeOut();
-                                                  })
-                                                  .error(function (i) {
-                                                      notifymessage({title: i.statusText, text: i.responseText, type: "error"});
-                                                  });
-                                          },
-                                          SIMULATIONSPEED.val()*1.5);
-                                      });
-                        }
-                    }, {
-                        label: "No",
-                        action: function(dialog) {
-                            dialog.close();
-                        }
-                    }]
-                });
-            });
+                  .success(function() { shutdown( WSANIMATION, WSMESSAGES ); })
+                  .error(function(i) { SHUTDOWNDIALOG.open(); });
     });
 
     // slide view
@@ -806,7 +822,7 @@ jQuery(function() {
                 if ( SIMULATIONMUSIC.is(":checked") )
                     l_engine.music.play();
 
-                l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), HEIGHT * 32 );
+                l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), HEIGHT * TILESIZE );
 
                 l_engine.load.tilemap(
                     'street',
