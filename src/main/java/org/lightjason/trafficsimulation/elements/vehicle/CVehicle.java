@@ -34,7 +34,10 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.agentspeak.beliefbase.CBeliefbase;
 import org.lightjason.agentspeak.beliefbase.IBeliefbaseOnDemand;
+import org.lightjason.agentspeak.beliefbase.storage.CSingleOnlyStorage;
+import org.lightjason.agentspeak.beliefbase.view.IView;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
@@ -60,6 +63,7 @@ import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -165,7 +169,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_decelerate = p_deceleration;
 
         // beliefbase
-/*
         final IView l_env = new CBeliefbase( new CSingleOnlyStorage<>() ).create( "env", m_beliefbase );
         m_beliefbase.add( l_env );
 
@@ -182,7 +185,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 ).collect( Collectors.toSet() )
             )
         ).create( "forward", l_env ) );
-*/
+
         CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
 

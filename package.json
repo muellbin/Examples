@@ -23,7 +23,6 @@
     "canvas-gauges": "https://github.com/Mikhus/canvas-gauges/tarball/master",
     "chart.js": "https://github.com/chartjs/Chart.js/archive/v2.6.0.tar.gz",
     "codemirror": "^5.27.4",
-    "file-saver": "https://github.com/eligrey/FileSaver.js/tarball/master",
     "font-awesome": "https://github.com/FortAwesome/Font-Awesome/tarball/master",
     "gentelella": "https://github.com/puikinsh/gentelella/archive/1.4.0.tar.gz",
     "jquery": "^2.2.4",

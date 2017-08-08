@@ -536,6 +536,10 @@ jQuery(function() {
         .success(function(i) { SIMULATIONSPEED.val(i).trigger( "change" ); })
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
+    // initialize music
+    LightJason.ajax( "/api/simulation/music" )
+              .success(function(i) { if ( i !== "true" ) SIMULATIONMUSIC.trigger("click"); });
+
 
     // get language labels for html content
     jQuery( ".ui-languagelabel" ).each(function(k, e) {
@@ -667,14 +671,6 @@ jQuery(function() {
     });
 
 
-    // save panelty image
-    jQuery( "#ui-savepanelty" ).click(function() {
-        jQuery( "#simulation-panelty" ).get(0).toBlob(function( po_blob ) {
-            saveAs( po_blob, "panelty.png" );
-        });
-    });
-
-
     // run simulation
     jQuery( "#simulation-run" ).click(function() {
         LightJason.ajax( "/api/simulation/run" )
@@ -709,16 +705,7 @@ jQuery(function() {
         loadagent( jQuery(this).data("sourceid"), l_editor );
     });
 
-
-    // save simulation image
-    jQuery( "#ui-savesimulation" ).click(function() {
-        jQuery( "#simulation-screen" ).get(0).toBlob(function( po_blob ) {
-            saveAs( po_blob, "simulation.png" );
-        });
-    });
-
-
-    // set shutdown button
+    // shutdown button
     jQuery( ".simulation-shutdown" ).click(function() {
         WSANIMATION.close();
         WSMESSAGES.close();
@@ -863,17 +850,6 @@ jQuery(function() {
 
                 const l_xpos = p_data.x * TILESIZE + VEHICLEXSIZE / 2,
                       l_ypos = ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER;
-
-                // check if the position has been changed, if not recall websocket
-                // or position is lower than
-                /*
-                if ( ( ( p_data.goal === 0 ) && ( l_xpos >= l_visualizationobjects[p_data.id].x ) )
-                    || ( ( p_data.goal !== 0 ) && ( l_xpos <= l_visualizationobjects[p_data.id].x ) ) )
-                {
-                    WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
-                    return;
-                }
-                */
 
                 // update storage
                 //DataStorage.getandset( "environment", function(i){ i.time = new Date().getTime(); return i; } );

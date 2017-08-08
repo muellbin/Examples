@@ -134,7 +134,6 @@ const l_gulp = require( "gulp" ),
                       "node_modules/pnotify/dist/pnotify.js",
                       "node_modules/switchery/dist/switchery.js",
 
-                      "node_modules/file-saver/FileSaver.min.js",
                       "node_modules/remark/out/remark.js",
                       "node_modules/showdown/dist/showdown.js",
                       "node_modules/chart.js/dist/Chart.bundle.js",

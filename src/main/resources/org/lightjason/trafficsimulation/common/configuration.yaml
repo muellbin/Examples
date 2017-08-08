@@ -45,6 +45,7 @@ ui:
     port: 12345
     host: localhost
     cookieexpire_in_seconds: 20
+    music: true
 
 # simulation units
 units:

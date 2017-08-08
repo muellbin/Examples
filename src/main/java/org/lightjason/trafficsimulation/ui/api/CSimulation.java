@@ -297,6 +297,11 @@ public final class CSimulation
     }
 
 
+    /**
+     * returns a list of all current active simulation elements
+     *
+     * @return simulation elements
+     */
     @GET
     @Path( "/elements" )
     @Produces( MediaType.APPLICATION_JSON )
@@ -305,6 +310,12 @@ public final class CSimulation
         return CRuntime.INSTANCE.elements().values().stream().map( i -> i.map( IMap.EStatus.EXECUTE ) ).collect( Collectors.toList() );
     }
 
-
+    @GET
+    @Path( "/music" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public final Object music()
+    {
+        return CConfiguration.INSTANCE.getOrDefault( true, "ui", "music" );
+    }
 
 }
