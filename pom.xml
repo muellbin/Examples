@@ -425,6 +425,7 @@
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.yml</exclude>
                         <exclude>**/*.md</exclude>
+                        <exclude>**/*.ogg</exclude>
                         <exclude>**/*.htm</exclude>
                         <exclude>**/*.doxyfile</exclude>
                         <exclude>target/**</exclude>
