@@ -748,12 +748,18 @@ jQuery(function() {
                       WIDTH = p_data.length;
 
                 // build tiles with footway
-                l_tiles = l_tiles.concat( Array( WIDTH ).fill( 2 ) );
+                for( var i = 0; i < WIDTH; i++ )
+                {
+                    l_tiles.push( Math.ceil( Math.random() * 8 + 2 ) );
+                }
                 for( var i=0; i < p_data.laneslefttoright; i++ )
-                    l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 4 : 3 ) );
+                    l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 1 : 2 ) );
                 for( var i=0; i < p_data.lanesrighttoleft; i++ )
-                    l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 4 : 3 ) );
-                l_tiles = l_tiles.concat( Array( WIDTH ).fill( 2 ) );
+                    l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 1 : 2 ) );
+                for( var i = 0; i < WIDTH; i++ )
+                {
+                    l_tiles.push( Math.ceil( Math.random() * 8 + 2 ) );
+                }
 
                 if ( SIMULATIONMUSIC.is(":checked") )
                     l_engine.music.play();
@@ -787,7 +793,7 @@ jQuery(function() {
                             firstgid: 1,
                             image: "assets/streettiles.png",
                             imageheight: TILESIZE,
-                            imagewidth: 4 * TILESIZE,
+                            imagewidth: 10 * TILESIZE,
                             margin: 0,
                             name: "streettiles",
                             spacing: 0,
