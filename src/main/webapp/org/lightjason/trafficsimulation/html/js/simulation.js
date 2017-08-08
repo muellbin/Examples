@@ -787,11 +787,11 @@ jQuery(function() {
     // catch resize calls
     const RESIZE = function() {
         if (l_engine)
-            l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), l_engine.height );
+            l_engine.scale.setGameSize( jQuery("#simulation-dashboard").width(), l_engine.height );
     };
 
-    jQuery( window ).resize(function() { RESIZE(); });
-    jQuery("#menu_toggle").click(function() { RESIZE(); });
+    jQuery( window ).resize(RESIZE);
+    jQuery("#menu_toggle").click(RESIZE);
 
 
 
@@ -821,19 +821,15 @@ jQuery(function() {
                 const HEIGHT = p_data.laneslefttoright + p_data.lanesrighttoleft + 2,
                       WIDTH = p_data.length;
 
-                // build tiles with footway
+                // build tiles with footway and random footway tiles
                 for( var i = 0; i < WIDTH; i++ )
-                {
                     l_tiles.push( Math.ceil( Math.random() * 17 + 2 ) );
-                }
                 for( var i=0; i < p_data.laneslefttoright; i++ )
                     l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 1 : 2 ) );
                 for( var i=0; i < p_data.lanesrighttoleft; i++ )
                     l_tiles = l_tiles.concat( Array( WIDTH ).fill( i % 2 === 0  ? 1 : 2 ) );
                 for( var i = 0; i < WIDTH; i++ )
-                {
                     l_tiles.push( Math.ceil( Math.random() * 18 + 2 ) );
-                }
 
                 if ( SIMULATIONMUSIC.is(":checked") )
                     l_engine.music.play();
@@ -1012,26 +1008,32 @@ jQuery(function() {
 
                 // reinitialize content if the browser tab was closed
                 const ENV = DataStorage.remove( "environment" );
-                if ( ENV )
-                    LightJason.ajax( "/api/simulation/systemid")
-                        .success(function(i) {
-                            if ( i === ENV.systemid )
-                            {
-                                LightJason.ajax( "/api/simulation/cookie/expire" )
-                                    .success(function(i) {
-                                        if ( ( new Date().getTime() - ENV.time ) / 1000 < parseInt(i) )
-                                            LightJason.ajax( "/api/simulation/elements" )
-                                                .success(function(j) {
-                                                    l_visualizationfunctions[ENV.type][ENV.status]( ENV );
-                                                    j.filter( function(o) { return o.type !== "environment"; } )
-                                                     .forEach( function( o ) { l_visualizationfunctions[o.type][o.status]( o ); });
-                                                })
-                                                .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-                                    })
-                                    .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-                            }
-                        } )
-                        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+                if ( !ENV )
+                    return;
+
+                LightJason.ajax( "/api/simulation/systemid")
+                    .success(function(i) {
+                        if ( i !== ENV.systemid )
+                            return;
+
+                        LightJason.ajax( "/api/simulation/cookie/expire" )
+                                  .success(function(i) {
+                                      if ( ( new Date().getTime() - ENV.time ) / 1000 > parseInt(i) )
+                                          return;
+
+                                      LightJason.ajax( "/api/simulation/elements" )
+                                               .success(function(j) {
+                                                   l_visualizationfunctions[ENV.type][ENV.status]( ENV );
+
+                                                   j.filter( function(o) { return o.type !== "environment"; } )
+                                                    .forEach( function( o ) { l_visualizationfunctions[o.type][o.status]( o ); });
+                                               })
+                                               .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+                                })
+                                .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+
+                    } )
+                    .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
             }
         }
     );
