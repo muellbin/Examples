@@ -451,7 +451,7 @@ jQuery(function() {
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
                             width: 200,
-                            height: 180,
+                            height: 130,
                             units: "km/h",
                             minValue: 0,
                             maxValue: 220,
