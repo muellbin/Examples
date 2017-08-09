@@ -28,7 +28,7 @@ import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.stream.Stream;
 
 
 /**
@@ -70,12 +70,22 @@ public interface IEnvironment extends IObject<IEnvironment>
     boolean lanechange( @Nonnull IVehicle p_vehicle, final Number p_lane );
 
     /**
-     * return an object at the position
+     * return an object stream
+     * for each position
      *
-     * @param p_position position
-     * @return object or null
+     * @param p_position position stream
+     * @return object stream
      */
-    @Nullable
-    IObject<?> get( @Nonnull final DoubleMatrix1D p_position );
+    @Nonnull
+    Stream<? extends IObject<?>> get( @Nonnull final Stream<DoubleMatrix1D> p_position );
+
+    /**
+     * checks if a position is within th egrid
+     *
+     * @param p_lane lane number
+     * @param p_position position number
+     * @return position is inside
+     */
+    boolean isinside( @Nonnull final Number p_lane, @Nonnull final Number p_position );
 
 }

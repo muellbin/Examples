@@ -59,6 +59,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -93,7 +94,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     /**
      * grid
      */
-    private final AtomicReference<ObjectMatrix2D> m_grid = new AtomicReference<>( new SparseObjectMatrix2D( 0, 0 ) );
+    private ObjectMatrix2D m_grid = new SparseObjectMatrix2D( 0, 0 );
     /**
      * set with areas
      */
@@ -150,7 +151,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final DoubleMatrix1D position()
     {
-        return new DenseDoubleMatrix1D( new double[]{m_grid.get().rows(), m_grid.get().columns()} );
+        return new DenseDoubleMatrix1D( new double[]{m_grid.rows(), m_grid.columns()} );
     }
 
     @Nonnull
@@ -178,11 +179,11 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final synchronized boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
     {
-        final IVehicle l_vehicle = (IVehicle) m_grid.get().getQuick( (int) p_position.get( 0 ), (int) p_position.get( 1 ) );
+        final IVehicle l_vehicle = (IVehicle) m_grid.getQuick( (int) p_position.get( 0 ), (int) p_position.get( 1 ) );
         if ( l_vehicle != null )
             return false;
 
-        m_grid.get().set( (int) p_position.get( 0 ), (int) p_position.get( 1 ), p_vehicle );
+        m_grid.set( (int) p_position.get( 0 ), (int) p_position.get( 1 ), p_vehicle );
         p_vehicle.position().setQuick( 0, p_position.get( 0 ) );
         p_vehicle.position().setQuick( 1, p_position.get( 1 ) );
 
@@ -197,18 +198,18 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         final Number l_target = p_vehicle.nextposition().get( 1 );
 
         if ( ( l_start.intValue() < l_target.intValue()
-            ? IntStream.range( l_start.intValue() + 1, Math.min( l_target.intValue(), m_grid.get().columns() ) )
+            ? IntStream.range( l_start.intValue() + 1, Math.min( l_target.intValue(), m_grid.columns() ) )
             : IntStream.range( Math.max( l_target.intValue(), 0 ), l_start.intValue() - 1 ) )
                       .parallel()
-                      .filter( i -> m_grid.get().getQuick( l_lane.intValue(), i ) != null )
+                      .filter( i -> m_grid.getQuick( l_lane.intValue(), i ) != null )
                       .findAny()
                       .isPresent()
         )
             return false;
 
-        m_grid.get().setQuick( l_lane.intValue(), l_start.intValue(), null );
+        m_grid.setQuick( l_lane.intValue(), l_start.intValue(), null );
 
-        if ( ( l_target.intValue() > m_grid.get().columns() ) || ( l_target.intValue() < 0 ) )
+        if ( ( l_target.intValue() > m_grid.columns() ) || ( l_target.intValue() < 0 ) )
         {
             if ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) )
                 this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
@@ -217,7 +218,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             return true;
         }
 
-        m_grid.get().setQuick( l_lane.intValue(), l_target.intValue(), p_vehicle );
+        m_grid.setQuick( l_lane.intValue(), l_target.intValue(), p_vehicle );
         p_vehicle.position().setQuick( 1, l_target.intValue() );
         return true;
     }
@@ -227,30 +228,38 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     {
         final Number l_xpos = p_vehicle.position().get( 1 );
         final Number l_lane = p_vehicle.position().get( 0 );
-        if ( ( p_lane.intValue() < 0 ) || ( p_lane.intValue() > m_grid.get().columns() - 1 ) )
+        if ( ( p_lane.intValue() < 0 ) || ( p_lane.intValue() > m_grid.columns() - 1 ) )
             return false;
 
         if ( IntStream.range( Math.min( l_lane.intValue(), p_lane.intValue() ), Math.max( l_lane.intValue(), p_lane.intValue() ) )
                       .parallel()
                       .boxed()
-                      .anyMatch( i -> m_grid.get().getQuick( i, l_xpos.intValue() ) != null )
+                      .anyMatch( i -> m_grid.getQuick( i, l_xpos.intValue() ) != null )
             )
             return false;
 
-        m_grid.get().setQuick( l_lane.intValue(), l_xpos.intValue(), null );
-        m_grid.get().setQuick( p_lane.intValue(), l_xpos.intValue(), p_vehicle );
+        m_grid.setQuick( l_lane.intValue(), l_xpos.intValue(), null );
+        m_grid.setQuick( p_lane.intValue(), l_xpos.intValue(), p_vehicle );
         return true;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     @SuppressWarnings( "unchecked" )
-    public final IObject<?> get( @Nonnull final DoubleMatrix1D p_position )
+    public final synchronized Stream<? extends IObject<?>> get( @Nonnull final Stream<DoubleMatrix1D> p_position )
     {
-        return ( p_position.getQuick( 0 ) < 0 ) || ( p_position.getQuick( 0 ) >= m_grid.get().rows() )
-               || ( p_position.getQuick( 1 ) < 0 ) || ( p_position.getQuick( 1 ) >= m_grid.get().columns() )
-               ? null
-               : (IObject<?>) m_grid.get().getQuick( (int) p_position.getQuick( 0 ), (int) p_position.getQuick( 1 ) );
+        return p_position.sequential()
+                         .map( i -> (IObject<?>) m_grid.getQuick( (int) i.getQuick( 0 ), (int) i.getQuick( 1 ) ) )
+                         .filter( Objects::nonNull );
+    }
+
+    @Override
+    public final boolean isinside( @Nonnull final Number p_lane, @Nonnull final Number p_position )
+    {
+        return ( p_lane.intValue() < 0 )
+               || ( p_position.intValue() < 0 )
+               || ( p_lane.intValue() >= m_grid.rows() )
+               || ( p_position.intValue() >= m_grid.columns() );
     }
 
     @Override
@@ -296,17 +305,17 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     @IAgentActionFilter
     @IAgentActionName( name = "simulation/initialize" )
-    private void simulationinitialize( final Number p_length, final Number p_lefttorightlanes, final Number p_righttoleftlanes )
+    private synchronized void simulationinitialize( final Number p_length, final Number p_lefttorightlanes, final Number p_righttoleftlanes )
     {
-        if ( m_grid.get().size() != 0 )
+        if ( m_grid.size() != 0 )
             throw new RuntimeException( "world is initialized" );
 
         m_areas.clear();
         m_lanes.set( new ImmutablePair<>( p_lefttorightlanes, p_righttoleftlanes ) );
-        m_grid.set( new SparseObjectMatrix2D(
+        m_grid = new SparseObjectMatrix2D(
             p_lefttorightlanes.intValue() + p_righttoleftlanes.intValue(),
             CUnit.INSTANCE.kilometertocell( p_length ).intValue()
-        ) );
+        );
 
         CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
@@ -398,8 +407,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         //System.out.println( "p_lane: " + p_lane + ", y: " +  ( Math.min( m_grid.get().rows(), Math.max( 1, p_lane.intValue() ) ) - 1 ) );
         this.defaultvehicle(
             new DenseDoubleMatrix1D( new double[]{
-                Math.min( m_grid.get().rows(), Math.max( 1, p_lane.intValue() ) ) - 1,
-                Math.min( m_grid.get().columns(), Math.max( 1, p_position.intValue() ) ) - 1
+                Math.min( m_grid.rows(), Math.max( 1, p_lane.intValue() ) ) - 1,
+                Math.min( m_grid.columns(), Math.max( 1, p_position.intValue() ) ) - 1
             } ),
             m_lanes.get().getLeft().intValue() >= p_lane.intValue() ? 0 : this.position().get( 1 ) - 1,
 
@@ -422,7 +431,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     private void defaultvehicle( @Nonnull final DoubleMatrix1D p_start, @Nonnegative final double p_goal,
                                  @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
     {
-        if ( p_start.get( 0 ) > m_grid.get().rows() - 1 )
+        if ( p_start.get( 0 ) > m_grid.rows() - 1 )
             throw new RuntimeException( "lane number is to large" );
 
         m_vehiclecache.add(

@@ -25,6 +25,7 @@ package org.lightjason.trafficsimulation.elements.vehicle;
 
 import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
+import cern.jet.math.Functions;
 import com.codepoetics.protonpack.StreamUtils;
 import com.google.common.util.concurrent.AtomicDouble;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -65,11 +66,12 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -126,6 +128,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * goal position (x-coordinate)
      */
     private final int m_goal;
+    /**
+     * backward view
+     */
+    private final CEnvironmentView m_backwardview;
+    /**
+     * forward view
+     */
+    private final CEnvironmentView m_forwardview;
 
     /**
      * ctor
@@ -172,19 +182,23 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         final IView l_env = new CBeliefbase( new CSingleOnlyStorage<>() ).create( "env", m_beliefbase );
         m_beliefbase.add( l_env );
 
-        l_env.add(
-            new CEnvironmentView(
-                Collections.unmodifiableSet( CMath.cellangle( 5, 135, 225 ).collect( Collectors.toSet() ) )
-            ).create( "backward", l_env ) );
 
-        l_env.add( new CEnvironmentView(
+        m_backwardview = new CEnvironmentView(
+            Collections.unmodifiableSet( CMath.cellangle( CUnit.INSTANCE.metertocell( 150 ), 135, 225 ).collect( Collectors.toSet() ) )
+        );
+
+        m_forwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
                 Stream.concat(
-                    CMath.cellangle( 8, 0, 60 ),
-                    CMath.cellangle( 8, 300, 359.99 )
+                    CMath.cellangle( CUnit.INSTANCE.metertocell( 500 ), 0, 60 ),
+                    CMath.cellangle( CUnit.INSTANCE.metertocell( 500 ), 300, 359.99 )
                 ).collect( Collectors.toSet() )
             )
-        ).create( "forward", l_env ) );
+        );
+
+        l_env.add( m_backwardview.create( "backward", l_env ) );
+        l_env.add( m_forwardview.create( "forward", l_env ) );
+
 
         CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
@@ -289,10 +303,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IVehicle call() throws Exception
     {
-        super.call();
+        //m_backwardview.run();
+        //m_forwardview.run();
 
-        //if ( m_type.equals( ETYpe.USERVEHICLE ) )
-        //    System.out.println( this.beliefbase().stream().collect( Collectors.toList() ) );
+        super.call();
 
         // give environment the data if it is a user car
         if ( !m_environment.move( this ) )
@@ -474,13 +488,16 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     /**
      * on-demand beliefbase
      */
-    private final class CEnvironmentView extends IBeliefbaseOnDemand<IVehicle>
+    private final class CEnvironmentView extends IBeliefbaseOnDemand<IVehicle> implements Runnable
     {
         /**
          * cell position
          */
         private final Set<DoubleMatrix1D> m_position;
-
+        /**
+         * object cache with distance and literal
+         */
+        private final Map<Number, ILiteral> m_cache = new ConcurrentHashMap<>();
 
         /**
          * ctor
@@ -496,15 +513,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @Override
         public final Stream<ILiteral> streamLiteral()
         {
-            return m_position.parallelStream()
-                             .map( m_environment::get )
-                             .filter( Objects::nonNull )
-                             .collect(
-                                 Collectors.toMap(
-                                     i -> CMath.distance( i.position(), CVehicle.this.position() ),
-                                     i -> i.literal( CVehicle.this )
-                                 )
-                             ).values().stream();
+            return m_cache.values().stream();
         }
 
         @Override
@@ -517,8 +526,24 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @Override
         public final Collection<ILiteral> literal( @Nonnull final String p_key )
         {
-            return this.streamLiteral().filter( i -> p_key.equals( i.functor() ) ).collect( Collectors.toList() );
+            return m_cache.values();
         }
 
+        @Override
+        public final void run()
+        {
+            if ( !m_type.equals( ETYpe.USERVEHICLE ) )
+                return;
+
+            m_cache.clear();
+
+            m_environment.get(
+                m_position.parallelStream()
+                          .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
+                          .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
+            ).forEach( System.out::println );
+
+            System.out.println( "----------" );
+        }
     }
 }

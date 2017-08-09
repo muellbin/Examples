@@ -135,40 +135,32 @@ public final class CMath
     }
 
     /**
-     * returns a stream of realtive positions
+     * returns a stream all coordinates
+     * within an arc
      *
      * @param p_radius radius
-     * @param p_from from-angle
-     * @param p_to to-angle
+     * @param p_from from-angle in degree
+     * @param p_to to-angle in degree
      * @return stream with relative position
      */
     @Nonnull
     public static Stream<DoubleMatrix1D> cellangle( @Nonnull final Number p_radius, @Nonnull final Number p_from, @Nonnull final Number p_to )
     {
+        final double l_start = Math.toRadians( p_from.doubleValue() );
+        final double l_end = Math.toRadians( p_to.doubleValue() );
+
         return IntStream.rangeClosed( -p_radius.intValue(), p_radius.intValue() )
                  .parallel()
                  .boxed()
                  .flatMap( y -> IntStream.rangeClosed( -p_radius.intValue(), p_radius.intValue() )
                                          .boxed()
-                                         .filter( x -> positioninsideangle( y, x, p_from.doubleValue(), p_to.doubleValue() ) )
                                          .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
-                 );
-    }
+                                         .filter( i -> {
+                                             final double l_angle = Math.atan( i.getQuick( 0 ) / i.getQuick( 1 ) );
+                                             return ( !Double.isNaN( l_angle ) ) && ( l_angle >= l_start ) && ( l_angle <= l_end );
+                                         } )
 
-    /**
-     * checks if a point is within the angel of the visual range
-     *
-     * @param p_ypos y-position of center
-     * @param p_xpos x-position of center
-     * @param p_from start angle
-     * @param p_to end angle
-     * @return boolean if the position is inside
-     */
-    private static boolean positioninsideangle( final double p_ypos, final double p_xpos, final double p_from, final double p_to )
-    {
-        double l_angle = Math.toDegrees( Math.atan2( p_ypos, p_xpos ) );
-        l_angle = l_angle < 0 ? 360 + l_angle : l_angle;
-        return !Double.isNaN( l_angle ) && ( p_from <= l_angle ) && ( l_angle <= p_to );
+                 );
     }
 
 }
