@@ -155,7 +155,8 @@ public final class CMath
                  .flatMap( y -> IntStream.rangeClosed( -p_radius.intValue(), p_radius.intValue() )
                                          .boxed()
                                          .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
-                                         .filter( i -> {
+                                         .filter( i ->
+                                         {
                                              final double l_angle = Math.atan( i.getQuick( 0 ) / i.getQuick( 1 ) );
                                              return ( !Double.isNaN( l_angle ) ) && ( l_angle >= l_start ) && ( l_angle <= l_end );
                                          } )
