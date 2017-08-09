@@ -414,6 +414,7 @@ function shutdown()
         arguments[i].close();
 }
 
+window.PhaserGlobal = { hideBanner: true };
 
 CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); };
 
@@ -1037,7 +1038,6 @@ jQuery(function() {
             }
         }
     );
-
 
     // engine bind to communication websocket
     WSANIMATION

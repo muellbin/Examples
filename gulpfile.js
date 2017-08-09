@@ -30,7 +30,7 @@
  *
  */
 
-const MINIFY = false;
+const MINIFY = true;
 
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),
@@ -45,6 +45,7 @@ const l_gulp = require( "gulp" ),
       l_minifyhtml = require("gulp-htmlmin"),
       l_minifyjs = require( "gulp-uglify/composer")( require('uglify-es'), console ),
       l_minifycss = require( "gulp-uglifycss" ),
+      l_stripdebug = require( "gulp-strip-debug" ),
 
       l_packagedir = "org/lightjason/trafficsimulation/html/",
       l_sourcedir = "src/main/webapp/" + l_packagedir,
@@ -213,6 +214,7 @@ for( const js in l_config.minifyjs )
                 l_config.minifyjs[js].source,
                 l_concatjs( l_config.minifyjs[js].output ),
                 MINIFY ? l_minifyjs() : l_empty(),
+                MINIFY ? l_stripdebug() : l_empty(),
                 l_gulp.dest( l_outputdir )
                 ], i
             );

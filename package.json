@@ -44,6 +44,8 @@
     "gulp-concat-css": "^2.3.0",
     "gulp-empty-pipe": "^5.0.0",
     "gulp-htmlmin": "^3.0.0",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-strip-debug": "^1.1.0",
     "gulp-uglify": "^3.0.0",
     "gulp-uglifycss": "^1.0.8",
     "pump": "^1.0.2",
