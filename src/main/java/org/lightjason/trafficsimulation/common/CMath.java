@@ -146,9 +146,6 @@ public final class CMath
     @Nonnull
     public static Stream<DoubleMatrix1D> cellangle( @Nonnull final Number p_radius, @Nonnull final Number p_from, @Nonnull final Number p_to )
     {
-        final double l_start = Math.toRadians( p_from.doubleValue() );
-        final double l_end = Math.toRadians( p_to.doubleValue() );
-
         return IntStream.rangeClosed( -p_radius.intValue(), p_radius.intValue() )
                  .parallel()
                  .boxed()
@@ -157,8 +154,8 @@ public final class CMath
                                          .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
                                          .filter( i ->
                                          {
-                                             final double l_angle = Math.atan( i.getQuick( 0 ) / i.getQuick( 1 ) );
-                                             return ( !Double.isNaN( l_angle ) ) && ( l_angle >= l_start ) && ( l_angle <= l_end );
+                                             final double l_angle = Math.toDegrees( Math.atan2( i.getQuick( 0 ), i.getQuick( 1 ) ) );
+                                             return ( !Double.isNaN( l_angle ) ) && ( p_from.doubleValue() <= l_angle  ) && ( l_angle <= p_to.doubleValue() );
                                          } )
 
                  );
