@@ -30,7 +30,7 @@
  *
  */
 
-const MINIFY = true;
+const MINIFY = false;
 
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),
@@ -61,8 +61,6 @@ const l_gulp = require( "gulp" ),
                       "node_modules/bootstrap/dist/fonts/*.*",
                       "node_modules/font-awesome/fonts/*.*",
                       "node_modules/mathjax/fonts/**/*.*"
-                      //"node_modules/canvas-gauges/fonts/*.*",
-                      //"!node_modules/canvas-gauges/fonts/*.css"
                   ])
               },
 
@@ -150,14 +148,6 @@ const l_gulp = require( "gulp" ),
 
                       "node_modules/phaser/build/pixi.js",
                       "node_modules/phaser/build/phaser.js"
-
-                      /*
-                      "node_modules/prismjs/prism.js",
-                      "node_modules/prismjs/components/prism-clike.js",
-                      "node_modules/prismjs/components/prism-java.js",
-                      "node_modules/prismjs/components/prism-prolog.js",
-                      l_sourcedir + "js/prism-agentspeak.js",
-                      */
                   ])
               }
 
@@ -189,9 +179,6 @@ const l_gulp = require( "gulp" ),
                       "node_modules/pnotify/dist/*.css",
                       "node_modules/switchery/dist/switchery.css",
                       "node_modules/bootstrap3-dialog/dist/css/bootstrap-dialog.css",
-                      //"node_modules/canvas-gauges/assets/styles/*.css",
-                      //"node_modules/canvas-gauges/fonts/fonts.css",
-                      //"node_modules/prismjs/themes/prism-coy.css",
 
                       "node_modules/codemirror/lib/codemirror.css",
                       "node_modules/codemirror/addon/hint/show-hint.css",

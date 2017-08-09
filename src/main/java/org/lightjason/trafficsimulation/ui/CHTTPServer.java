@@ -103,6 +103,7 @@ public final class CHTTPServer
 
         l_webapp.setServer( m_server );
         l_webapp.setContextPath( "/" );
+        l_webapp.setInitParameter( "Cache-Control", "max-age=0,no-cache,no-store,post-check=0,pre-check=0" );
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
         l_webapp.setResourceBase(
             CHTTPServer.class.getResource(

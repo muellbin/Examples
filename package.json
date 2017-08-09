@@ -32,7 +32,6 @@
     "mathjax": "https://github.com/mathjax/MathJax/archive/2.7.1.tar.gz",
     "phaser": "https://github.com/photonstorm/phaser/archive/v2.6.2.tar.gz",
     "pnotify": "https://github.com/sciactive/pnotify/tarball/master",
-    "prismjs": "https://github.com/PrismJS/prism/tarball/master",
     "remark": "https://github.com/gnab/remark/archive/v0.14.0.tar.gz",
     "showdown": "https://github.com/showdownjs/showdown/tarball/master",
     "switchery": "https://github.com/abpetkov/switchery/tarball/master"

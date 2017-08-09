@@ -247,7 +247,10 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @SuppressWarnings( "unchecked" )
     public final IObject<?> get( @Nonnull final DoubleMatrix1D p_position )
     {
-        return (IObject<?>) m_grid.get().getQuick( (int) p_position.getQuick( 0 ), (int) p_position.getQuick( 1 ) );
+        return ( p_position.getQuick( 0 ) < 0 ) || ( p_position.getQuick( 0 ) >= m_grid.get().rows() )
+               || ( p_position.getQuick( 1 ) < 0 ) || ( p_position.getQuick( 1 ) >= m_grid.get().columns() )
+               ? null
+               : (IObject<?>) m_grid.get().getQuick( (int) p_position.getQuick( 0 ), (int) p_position.getQuick( 1 ) );
     }
 
     @Override

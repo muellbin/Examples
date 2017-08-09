@@ -222,8 +222,9 @@ var DataStorage = (function (px_modul) {
 
 
 /**
- * @Overload
  * add an empty trigger to the empty function
+ *
+ * @Overload
  **/
 if ('undefined' !== typeof window.jQuery) {
     jQuery.fn.raw_empty = jQuery.fn.empty;
