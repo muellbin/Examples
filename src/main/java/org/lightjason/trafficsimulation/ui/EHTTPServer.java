@@ -37,7 +37,7 @@ import org.lightjason.rest.CApplication;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
-import org.lightjason.trafficsimulation.runtime.CRuntime;
+import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.ui.api.CAPI;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
 import org.lightjason.trafficsimulation.ui.api.CData;
@@ -61,8 +61,10 @@ import java.util.stream.Stream;
  * @see https://blog.openshift.com/how-to-build-java-websocket-applications-using-the-jsr-356-api/
  *
  */
-public final class CHTTPServer
+public enum EHTTPServer
 {
+    INSTANCE;
+
     /**
      * server default port
      */
@@ -71,11 +73,6 @@ public final class CHTTPServer
      * server default host
      */
     private static final String DEFAULTHOST = "localhost";
-
-    /**
-     * webservcer instance
-     */
-    private static final CHTTPServer INSTANCE = new CHTTPServer();
     /**
      * server instance
      */
@@ -88,7 +85,7 @@ public final class CHTTPServer
     /**
      * ctor
      */
-    private CHTTPServer()
+    private EHTTPServer()
     {
         // server process
         m_server = new Server(
@@ -106,7 +103,7 @@ public final class CHTTPServer
         l_webapp.setInitParameter( "Cache-Control", "max-age=0,no-cache,no-store,post-check=0,pre-check=0" );
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
         l_webapp.setResourceBase(
-            CHTTPServer.class.getResource(
+            EHTTPServer.class.getResource(
                 MessageFormat.format( "/{0}/html", CCommon.PACKAGEROOT.replace( ".", "/" ) )
             ).toExternalForm()
         );
@@ -155,9 +152,6 @@ public final class CHTTPServer
      */
     public static void execute()
     {
-        if ( INSTANCE == null )
-            return;
-
         try
         {
             INSTANCE.m_server.start();
@@ -183,10 +177,7 @@ public final class CHTTPServer
      */
     public static void shutdown()
     {
-        if ( INSTANCE == null )
-            return;
-
-        CRuntime.INSTANCE.save();
+        ERuntime.INSTANCE.save();
         try
         {
             INSTANCE.m_server.stop();
@@ -210,7 +201,7 @@ public final class CHTTPServer
      */
     public static <T extends IObject<?>> T register( @Nonnull final T p_agent, final boolean p_register, @Nullable final String... p_group )
     {
-        if ( ( INSTANCE == null ) || ( !p_register ) )
+        if ( !p_register )
             return p_agent;
 
         INSTANCE.m_restagent.register( p_agent.id(), p_agent, p_group );

@@ -34,7 +34,7 @@ import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.trafficsimulation.common.CConfiguration;
-import org.lightjason.trafficsimulation.ui.CHTTPServer;
+import org.lightjason.trafficsimulation.ui.EHTTPServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -175,7 +175,7 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
         public final T generatesingle( @Nullable final Object... p_data )
         {
             final Triple<T, Boolean, Stream<String>> l_data = this.generate( p_data );
-            return l_data == null ? null : CHTTPServer.register( l_data );
+            return l_data == null ? null : EHTTPServer.register( l_data );
         }
 
         /**

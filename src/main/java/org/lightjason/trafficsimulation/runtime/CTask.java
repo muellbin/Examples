@@ -100,7 +100,7 @@ public class CTask implements ITask
                 p_elements.values().parallelStream().forEach( CTask::execute );
                 try
                 {
-                    Thread.sleep( CRuntime.INSTANCE.time().get() );
+                    Thread.sleep( ERuntime.INSTANCE.time().get() );
                 }
                 catch ( final InterruptedException l_exception )
                 {

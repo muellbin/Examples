@@ -54,12 +54,10 @@ import java.util.stream.Collectors;
 /**
  * runtime singletone instance
  */
-public final class CRuntime implements IRuntime
+public enum ERuntime implements IRuntime
 {
-    /**
-     * instance
-     */
-    public static final IRuntime INSTANCE = new CRuntime();
+    INSTANCE;
+
     /**
      * execution task
      */
@@ -85,7 +83,7 @@ public final class CRuntime implements IRuntime
     /**
      * ctor
      */
-    private CRuntime()
+    private ERuntime()
     {
         try
         {
