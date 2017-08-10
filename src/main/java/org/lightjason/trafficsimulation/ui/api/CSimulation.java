@@ -43,8 +43,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 
 /**
@@ -111,7 +110,7 @@ public final class CSimulation
     @GET
     @Path( "/agents" )
     @Produces( MediaType.APPLICATION_JSON )
-    public final Set<String> agents()
+    public final Object agents()
     {
         return ERuntime.INSTANCE
                        .agents()
@@ -119,7 +118,7 @@ public final class CSimulation
                        .stream()
                        .filter( i -> i.getValue().getLeft() )
                        .map( Map.Entry::getKey )
-                       .collect( Collectors.toSet() );
+                       .toArray();
     }
 
     /**
@@ -308,7 +307,7 @@ public final class CSimulation
     @Produces( MediaType.APPLICATION_JSON )
     public final Object elements()
     {
-        return ERuntime.INSTANCE.elements().values().stream().map( i -> i.map( IMap.EStatus.EXECUTE ) ).collect( Collectors.toList() );
+        return ERuntime.INSTANCE.elements().values().stream().map( i -> i.map( IMap.EStatus.EXECUTE ) ).toArray();
     }
 
     /**

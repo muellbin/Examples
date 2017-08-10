@@ -29,7 +29,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
-import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.ui.EHTTPServer;
 
 import java.io.IOException;
@@ -98,7 +97,6 @@ public final class CMain
 
         // load configuration and generate default if not exists
         CConfiguration.INSTANCE.loadfile( CConfiguration.createdefault( l_cli.getOptionValue( "config", CConfiguration.DEFAULTPATH ) ) );
-        ERuntime.INSTANCE.agents();
 
         // start http server if possible
         EHTTPServer.execute();

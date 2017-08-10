@@ -57,8 +57,6 @@ import java.util.stream.Stream;
  * Jersey-Jetty-HTTP server for UI
  *
  * debug: -Dorg.eclipse.jetty.servlet.LEVEL=ALL
- * @see https://jaxenter.de/jax-rs-20-websocket-13453
- * @see https://blog.openshift.com/how-to-build-java-websocket-applications-using-the-jsr-356-api/
  *
  */
 public enum EHTTPServer
@@ -85,7 +83,7 @@ public enum EHTTPServer
     /**
      * ctor
      */
-    private EHTTPServer()
+    EHTTPServer()
     {
         // server process
         m_server = new Server(

@@ -83,7 +83,7 @@ public enum ERuntime implements IRuntime
     /**
      * ctor
      */
-    private ERuntime()
+    ERuntime()
     {
         try
         {
