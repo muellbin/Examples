@@ -25,9 +25,6 @@ package org.lightjason.trafficsimulation.ui.api;
 
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.lightjason.rest.CCommon;
-
-import java.text.MessageFormat;
 
 
 /**
@@ -41,13 +38,8 @@ public final class CAPI extends ResourceConfig
      */
     public CAPI()
     {
-        this.register( new CSimulation() );
-
-        this.packages(
-            true,
-            MessageFormat.format( "{0}.{1}", CCommon.PACKAGEROOT, "container" ),
-            "com.fasterxml.jackson.jaxrs.map"
-        );
+        this.register( CSimulation.class );
+        this.packages( true, "com.fasterxml.jackson.jaxrs.map" );
     }
 
 }

@@ -401,7 +401,8 @@ function agentlist()
                     )
                 );
             });
-        });
+        })
+        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
 
 /**
