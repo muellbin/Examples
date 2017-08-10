@@ -387,7 +387,7 @@ function loadagent( pc_id, po_editor )
  */
 function agentlist()
 {
-    LightJason.ajax( "/api/simulation/agents" )
+    LightJason.ajax( "/api/simulation/agentlist" )
         .success(function(o) {
             const l_dom = jQuery( "#ui-agents" ).empty();
 

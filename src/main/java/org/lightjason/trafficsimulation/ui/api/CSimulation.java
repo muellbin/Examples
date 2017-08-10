@@ -41,8 +41,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
 
 
 
@@ -108,10 +108,12 @@ public final class CSimulation
      * @return map of agents with asl code
      */
     @GET
-    @Path( "/agents" )
+    @Path( "/agentlist" )
     @Produces( MediaType.APPLICATION_JSON )
     public final Object agents()
     {
+        return Collections.emptyList();
+        /*
         return ERuntime.INSTANCE
                        .agents()
                        .entrySet()
@@ -119,6 +121,7 @@ public final class CSimulation
                        .filter( i -> i.getValue().getLeft() )
                        .map( Map.Entry::getKey )
                        .toArray();
+                       */
     }
 
     /**
