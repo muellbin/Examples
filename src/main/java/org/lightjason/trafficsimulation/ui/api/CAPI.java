@@ -24,6 +24,7 @@
 package org.lightjason.trafficsimulation.ui.api;
 
 
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 
@@ -39,6 +40,7 @@ public final class CAPI extends ResourceConfig
     public CAPI()
     {
         this.register( CSimulation.class );
+        this.register( JacksonFeature.class );
         this.packages( true, "com.fasterxml.jackson.jaxrs.map" );
     }
 
