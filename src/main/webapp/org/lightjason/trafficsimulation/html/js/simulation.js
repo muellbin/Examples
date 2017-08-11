@@ -464,8 +464,8 @@ jQuery(function() {
 
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
-                            width: 200,
-                            height: 132,
+                            width: jQuery( "#simulation-speedview-dashboard" ).width() / 2,
+                            height: jQuery( "#simulation-speedview-dashboard" ).width() / 2,
                             units: "km/h",
                             minValue: 0,
                             maxValue: 220,
@@ -794,7 +794,10 @@ jQuery(function() {
             GAME.layer.resize( GAME.instance.width, GAME.instance.height );
         }
 
-        // @todo gauge must be resized
+        GAUGE.update({
+            width: jQuery( "#simulation-speedview-dashboard" ).width() / 2,
+            height: jQuery( "#simulation-speedview-dashboard" ).width() / 2
+        });
     };
 
     jQuery( window ).resize(RESIZE);

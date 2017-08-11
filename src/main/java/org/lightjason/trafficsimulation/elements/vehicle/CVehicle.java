@@ -158,7 +158,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         if ( p_maximumspeed < 120 )
             throw new RuntimeException( "maximum speed to low" );
 
-        if ( ( p_acceleration < 3 ) || ( p_deceleration < 3) )
+        if ( ( p_acceleration < 3 ) || ( p_deceleration < 3 ) )
             throw new RuntimeException( "acceleration or deceleration is to low" );
 
         if ( p_deceleration < p_acceleration )
