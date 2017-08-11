@@ -182,25 +182,16 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
         m_backwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
-                IntStream.rangeClosed( -1, 1 )
-                         .boxed()
-                         .flatMap( y -> IntStream.range( -CUnit.INSTANCE.metertocell( 150 ).intValue(), 0 )
-                                                 .boxed()
-                                                 .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
-
-                         ).collect( Collectors.toSet() )
+                CMath.cellangle( CUnit.INSTANCE.metertocell( 150 ), 135, 225 ).collect( Collectors.toSet() )
             )
         );
 
         m_forwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
-                IntStream.rangeClosed( -1, 1 )
-                         .boxed()
-                         .flatMap( y -> IntStream.range( -CUnit.INSTANCE.metertocell( 500 ).intValue(), 0 )
-                                                 .boxed()
-                                                 .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
-
-                         ).collect( Collectors.toSet() )
+                Stream.concat(
+                    CMath.cellangle( CUnit.INSTANCE.metertocell( 500 ), 0, 60 ),
+                    CMath.cellangle( CUnit.INSTANCE.metertocell( 500 ), 300, 359.99 )
+                ).collect( Collectors.toSet() )
             )
         );
 
@@ -312,7 +303,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final IVehicle call() throws Exception
     {
         //m_backwardview.run();
-        //m_forwardview.run();
+        m_forwardview.run();
 
         super.call();
 
@@ -540,11 +531,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @Override
         public final void run()
         {
-            if ( !m_type.equals( ETYpe.USERVEHICLE ) )
-                return;
+            //if ( !m_type.equals( ETYpe.USERVEHICLE ) )
+            //    return;
 
             m_cache.clear();
-
             m_environment.get(
                 m_position.parallelStream()
                           .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )

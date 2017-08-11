@@ -1095,7 +1095,7 @@ jQuery(function() {
             maintainAspectRatio: false,
             legend: {
                 display: false
-            },
+            }
         }
     });
 
