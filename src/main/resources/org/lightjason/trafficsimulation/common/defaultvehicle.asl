@@ -23,27 +23,44 @@
 
 !drive.
 
-// driving call equal to Nagel-Schreckenberg driving model, on success accelerate
+// --- driving call equal to Nagel-Schreckenberg driving model, on success accelerate ---
 +!drive <-
     // linger
     L = math/statistic/randomsimple;
     L >= 0.2;
 
     vehicle/accelerate(1);
+    !driveleft;
     !drive
 .
 
 
-// on driving failing decelerate
+// --- on driving failing decelerate ---
 -!drive <-
     vehicle/decelerate(1);
     !drive
 .
 
 
-// possible collision decelerate
+// --- try to drive-left ---
++!driveleft <-
+    L = math/statistic/randomsimple;
+    L >= 0.35;
+
+    vehicle/goback;
+    !driveleft
+.
+
+
+// --- possible collision decelerate ---
 +!vehicle/collision <-
+    vehicle/swingout;
+    !drive
+.
+
+
+// --- swing-out fails then decelerate ---
+-!vehicle/collision <-
     vehicle/decelerate(1);
-    generic/print( "#Default Vehicle Agent", "Collision occures" );
     !drive
 .

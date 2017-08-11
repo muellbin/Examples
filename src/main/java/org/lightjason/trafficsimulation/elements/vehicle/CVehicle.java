@@ -303,8 +303,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IVehicle call() throws Exception
     {
-        m_backwardview.run();
-        m_forwardview.run();
+        //m_backwardview.run();
+        //m_forwardview.run();
 
         super.call();
 

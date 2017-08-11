@@ -50,7 +50,6 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 // --- plans ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-
 // --- initializing plan ---
 +!main <-
 
@@ -58,6 +57,26 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     simulation/initialize( 100, 2, 2 );
     generic/print( "#Environment Agent", "grid has been created" );
 
+    !uservehicle
+.
+
+
+
+// --- creating and repair user-vehicle plan ---
++!uservehicle <-
+    MaxSpeed = 180;
+    MaxAcceleration = 6;
+    MaxDeceleration = 7;
+
+    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
+    vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
+    generic/print( "#Environment Agent", "user vehicle has been created" );
+
+    !defaultvehicle( 150, 15 )
+.
+
+-!uservehicle <-
+    generic/print( "#Environment Agent", "user vehicle initializing has been faild, try again" );
     !uservehicle
 .
 
@@ -91,26 +110,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 
 
-// --- creating and repair user-vehicle plan ---
-+!uservehicle <-
-    MaxSpeed = 180;
-    MaxAcceleration = 6;
-    MaxDeceleration = 7;
-
-    $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    generic/print( "#Environment Agent", "user vehicle has been created" );
-
-    !defaultvehicle( 100, 15 )
-.
-
--!uservehicle <-
-    generic/print( "#Environment Agent", "user vehicle initializing has been faild, try again" );
-    !uservehicle.
-
-
-
-// plan to shutdown simulation execution
+// --- plan to shutdown simulation execution ---
 +!shutdown <-
     generic/print( "#Environment Agent", "user vehicle has finished the tour, so simulation will be shutdown" );
     simulation/shutdown
@@ -118,7 +118,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 
 
-// plan on collision execution
+// --- plan on collision execution ---
 +!vehicle/usercollision <-
     generic/print( "#environment Agent", "user collision plan hash been called" );
     simulation/shutdown
