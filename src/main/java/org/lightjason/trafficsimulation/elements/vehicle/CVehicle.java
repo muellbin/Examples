@@ -71,6 +71,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -157,11 +158,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         if ( p_maximumspeed < 120 )
             throw new RuntimeException( "maximum speed to low" );
 
-        if ( p_acceleration < 1 )
-            throw new RuntimeException( "acceleration is to low" );
-
-        if ( p_deceleration < 1 )
-            throw new RuntimeException( "deceleration is to low" );
+        if ( ( p_acceleration < 3 ) || ( p_deceleration < 3) )
+            throw new RuntimeException( "acceleration or deceleration is to low" );
 
         if ( p_deceleration < p_acceleration )
             throw new RuntimeException( "deceleration should be greater than acceleration" );
@@ -183,15 +181,26 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
 
         m_backwardview = new CEnvironmentView(
-            Collections.unmodifiableSet( CMath.cellangle( CUnit.INSTANCE.metertocell( 150 ), 135, 225 ).collect( Collectors.toSet() ) )
+            Collections.unmodifiableSet(
+                IntStream.rangeClosed( -1, 1 )
+                         .boxed()
+                         .flatMap( y -> IntStream.range( -CUnit.INSTANCE.metertocell( 150 ).intValue(), 0 )
+                                                 .boxed()
+                                                 .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
+
+                         ).collect( Collectors.toSet() )
+            )
         );
 
         m_forwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
-                Stream.concat(
-                    CMath.cellangle( CUnit.INSTANCE.metertocell( 500 ), 0, 60 ),
-                    CMath.cellangle( CUnit.INSTANCE.metertocell( 500 ), 300, 359.99 )
-                ).collect( Collectors.toSet() )
+                IntStream.rangeClosed( -1, 1 )
+                         .boxed()
+                         .flatMap( y -> IntStream.range( -CUnit.INSTANCE.metertocell( 500 ).intValue(), 0 )
+                                                 .boxed()
+                                                 .map( x -> new DenseDoubleMatrix1D( new double[]{y, x} ) )
+
+                         ).collect( Collectors.toSet() )
             )
         );
 

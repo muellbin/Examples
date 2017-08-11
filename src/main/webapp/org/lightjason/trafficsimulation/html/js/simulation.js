@@ -460,6 +460,7 @@ jQuery(function() {
           VEHICLEXSIZE = 32,
           VEHICLEYSIZE = 16,
           PIXELCENTER = 9,
+          GAME = { instance: null, layer: null, music: null },
 
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
@@ -530,8 +531,6 @@ jQuery(function() {
 
 
     var l_editor = null,
-        l_engine = null,
-        l_enginelayer = null,
         l_visualizationobjects = {},
         l_visualizationfunctions = {};
 
@@ -789,10 +788,10 @@ jQuery(function() {
 
     // catch resize calls
     const RESIZE = function() {
-        if (l_engine)
+        if ( ( GAME.instance ) && ( GAME.layer ) )
         {
-            l_engine.scale.setGameSize( jQuery("#simulation-dashboard").width(), l_engine.height );
-            l_enginelayer.resize( l_engine.width, l_engine.height );
+            GAME.instance.scale.setGameSize( jQuery("#simulation-dashboard").width(), GAME.instance.height );
+            GAME.layer.resize( GAME.instance.width, GAME.instance.height );
         }
 
         // @todo gauge must be resized
@@ -840,11 +839,11 @@ jQuery(function() {
                     l_tiles.push( Math.ceil( Math.random() * 18 + 2 ) );
 
                 if ( SIMULATIONMUSIC.is(":checked") )
-                    l_engine.music.play();
+                    GAME.music.play();
 
-                l_engine.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), HEIGHT * TILESIZE );
+                GAME.instance.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), HEIGHT * TILESIZE );
 
-                l_engine.load.tilemap(
+                GAME.instance.load.tilemap(
                     'street',
                     null,
                     {
@@ -882,25 +881,25 @@ jQuery(function() {
                     Phaser.Tilemap.TILED_JSON
                 );
 
-                const MAP = l_engine.add.tilemap( "street" );
+                const MAP = GAME.instance.add.tilemap( "street" );
                 MAP.addTilesetImage( "streettiles", "streettiles" );
 
-                l_enginelayer = MAP.createLayer( "street" );
-                l_enginelayer.resizeWorld();
-                l_enginelayer.wrap = true;
+                GAME.layer = MAP.createLayer( "street" );
+                GAME.layer.resizeWorld();
+                GAME.layer.wrap = true;
             },
 
 
             // remove environment content (sprites) but not the timemap
             release: function( p_data )
             {
-                l_engine.music.stop();
+                GAME.music.stop();
 
                 Promise.all(
                     Object.values( l_visualizationobjects )
                           .map(function(i) {
                               return new Promise( function(resolve) {
-                                  l_engine.tweens.remove(i);
+                                  GAME.instance.tweens.remove(i);
                                   i.destroy();
                                   resolve();
                               } );
@@ -918,7 +917,7 @@ jQuery(function() {
 
             // initialize a default vehicle
             initialize: function (p_data) {
-                l_visualizationobjects[p_data.id] = l_engine.add.sprite( p_data.x * TILESIZE + VEHICLEXSIZE / 2, ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER, p_data.type );
+                l_visualizationobjects[p_data.id] = GAME.instance.add.sprite( p_data.x * TILESIZE + VEHICLEXSIZE / 2, ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER, p_data.type );
                 l_visualizationobjects[p_data.id].anchor.setTo( 0.5, 0.5 );
                 if( p_data.goal === 0 )
                     l_visualizationobjects[p_data.id].angle = 180;
@@ -942,7 +941,7 @@ jQuery(function() {
                 } );
 
                 // create tween
-                const TWEEN = l_engine.add.tween( l_visualizationobjects[p_data.id] ).to({ x: l_xpos, y: l_ypos }, SIMULATIONSPEED.val() );
+                const TWEEN = GAME.instance.add.tween( l_visualizationobjects[p_data.id] ).to({ x: l_xpos, y: l_ypos }, SIMULATIONSPEED.val() );
                 TWEEN.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
                 TWEEN.delay(0);
                 TWEEN.start();
@@ -954,7 +953,7 @@ jQuery(function() {
                 if ( !l_visualizationobjects[p_data.id] )
                     return;
 
-                l_engine.tweens.remove( l_visualizationobjects[p_data.id] );
+                GAME.instance.tweens.remove( l_visualizationobjects[p_data.id] );
                 l_visualizationobjects[p_data.id].destroy();
                 delete l_visualizationobjects[p_data.id];
             }
@@ -964,7 +963,7 @@ jQuery(function() {
             // initialize a user vehicle
             initialize: function (p_data) {
                 l_visualizationfunctions.defaultvehicle.initialize( p_data );
-                l_engine.camera.follow(l_visualizationobjects[p_data.id]);
+                GAME.instance.camera.follow(l_visualizationobjects[p_data.id]);
 
                 var l_max = Math.ceil( p_data.maxspeed / 10 + 5) * 10;
                 GAUGE.value = p_data.speed;
@@ -994,7 +993,7 @@ jQuery(function() {
 
 
     // engine initialization
-    l_engine = new Phaser.Game(
+    GAME.instance = new Phaser.Game(
         SIMULATIONSCREEN.width(),
         SIMULATIONSCREEN.height(),
         Phaser.AUTO,
@@ -1010,9 +1009,9 @@ jQuery(function() {
             },
 
             create: function(g) {
-                g.music = g.add.audio( "music" );
-                g.music.allowMultiple = false;
-                g.music.loop = true;
+                GAME.music = g.add.audio( "music" );
+                GAME.music.allowMultiple = false;
+                GAME.music.loop = true;
 
                 // reinitialize content if the browser tab was closed
                 const ENV = DataStorage.remove( "environment" );
@@ -1057,15 +1056,15 @@ jQuery(function() {
 
     // music enable / disable
     SIMULATIONMUSIC.change(function() {
-        if ( (!l_engine) || (!l_engine.music) )
+        if ( !GAME.music )
             return;
 
         if ( this.checked ) {
             if ( DataStorage.get("environment") )
-                l_engine.music.play();
+                GAME.music.play();
         }
         else
-            l_engine.music.stop();
+            GAME.music.stop();
     });
 
 

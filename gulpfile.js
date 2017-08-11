@@ -30,7 +30,7 @@
  *
  */
 
-const MINIFY = true;
+const MINIFY = false;
 
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),

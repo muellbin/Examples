@@ -64,8 +64,8 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 
 // --- creating default-vehicle plan ---
-+!defaultvehicle( Count )
-    : Cycle < 15 <-
++!defaultvehicle( Count, EndCycle )
+    : EndCycle > 0 <-
         C = math/statistic/randomsimple;
         C *= Count;
 
@@ -85,7 +85,8 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
         };
 
         generic/print( "#Environment Agent", "default vehicle generated" );
-        !defaultvehicle( Count )
+        EndCycle--;
+        !defaultvehicle( Count, EndCycle )
 .
 
 
@@ -98,9 +99,9 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
     $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
-
     generic/print( "#Environment Agent", "user vehicle has been created" );
-    !defaultvehicle( 100 )
+
+    !defaultvehicle( 100, 15 )
 .
 
 -!uservehicle <-
