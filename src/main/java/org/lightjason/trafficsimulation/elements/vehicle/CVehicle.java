@@ -27,6 +27,9 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.jet.math.Functions;
 import com.codepoetics.protonpack.StreamUtils;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.AtomicDouble;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -68,10 +71,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -302,7 +303,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IVehicle call() throws Exception
     {
-        //m_backwardview.run();
+        m_backwardview.run();
         m_forwardview.run();
 
         super.call();
@@ -496,7 +497,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         /**
          * object cache with distance and literal
          */
-        private final Map<Number, ILiteral> m_cache = new ConcurrentHashMap<>();
+        private final Multimap<Number, ILiteral> m_cache = Multimaps.synchronizedMultimap( HashMultimap.create() );
 
         /**
          * ctor
@@ -531,17 +532,14 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @Override
         public final void run()
         {
-            //if ( !m_type.equals( ETYpe.USERVEHICLE ) )
-            //    return;
-
             m_cache.clear();
             m_environment.get(
                 m_position.parallelStream()
                           .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
                           .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
-            ).forEach( System.out::println );
-
-            System.out.println( "----------" );
+            ).forEach( i -> m_cache.put(
+                CMath.distance( CVehicle.this.m_position, i.position() ), i.literal( CVehicle.this )
+            ) );
         }
     }
 }

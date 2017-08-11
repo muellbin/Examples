@@ -74,7 +74,6 @@ public class CTask implements ITask
             if ( l_environmentgenerator == null )
                 return;
 
-
             final IEnvironment l_environment = l_environmentgenerator.generatesingle(
                 p_elements,
                 this.generatorvehicle( p_asl, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),

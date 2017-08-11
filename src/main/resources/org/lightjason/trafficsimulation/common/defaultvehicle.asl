@@ -44,5 +44,6 @@
 // possible collision decelerate
 +!vehicle/collision <-
     vehicle/decelerate(1);
+    generic/print( "#Default Vehicle Agent", "Collision occures" );
     !drive
 .
