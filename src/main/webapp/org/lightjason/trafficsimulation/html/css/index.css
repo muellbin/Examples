@@ -38,3 +38,7 @@
 #simulation-dashboard, #penalty-dashboard {
     min-height: 200px;
 }
+
+.fixed_height_300 {
+    height: 300px;
+}
