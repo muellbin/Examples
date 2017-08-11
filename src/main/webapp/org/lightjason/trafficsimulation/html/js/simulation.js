@@ -454,6 +454,7 @@ jQuery(function() {
           SIMULATIONSCREEN = jQuery("#simulation-screen"),
           SIMULATIONSPEED = jQuery("#simulation-speed"),
           SIMULATIONMUSIC = jQuery( "#simulation-music" ),
+          GAUGEWIDGET = jQuery( "#simulation-speedview-dashboard" ),
           WSANIMATION = LightJason.websocket( "/animation" ),
           WSMESSAGES = LightJason.websocket( "/message" ),
           TILESIZE = 32,
@@ -464,8 +465,8 @@ jQuery(function() {
 
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
-                            width: jQuery( "#simulation-speedview-dashboard" ).width() / 2,
-                            height: jQuery( "#simulation-speedview-dashboard" ).width() / 2,
+                            width: GAUGEWIDGET.width() * 3 / 4,
+                            height: GAUGEWIDGET.width() * 3 / 4,
                             units: "km/h",
                             minValue: 0,
                             maxValue: 220,
@@ -794,10 +795,7 @@ jQuery(function() {
             GAME.layer.resize( GAME.instance.width, GAME.instance.height );
         }
 
-        GAUGE.update({
-            width: jQuery( "#simulation-speedview-dashboard" ).width() / 2,
-            height: jQuery( "#simulation-speedview-dashboard" ).width() / 2
-        });
+        GAUGE.update({ width: GAUGEWIDGET.width() * 3 / 4, height: GAUGEWIDGET.width() * 3 / 4 });
     };
 
     jQuery( window ).resize(RESIZE);
