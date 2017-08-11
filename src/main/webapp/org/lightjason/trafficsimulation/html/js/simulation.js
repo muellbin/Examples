@@ -531,6 +531,7 @@ jQuery(function() {
 
     var l_editor = null,
         l_engine = null,
+        l_enginelayer = null,
         l_visualizationobjects = {},
         l_visualizationfunctions = {};
 
@@ -789,7 +790,10 @@ jQuery(function() {
     // catch resize calls
     const RESIZE = function() {
         if (l_engine)
+        {
             l_engine.scale.setGameSize( jQuery("#simulation-dashboard").width(), l_engine.height );
+            l_enginelayer.resize( l_engine.width, l_engine.height );
+        }
 
         // @todo gauge must be resized
     };
@@ -881,9 +885,9 @@ jQuery(function() {
                 const MAP = l_engine.add.tilemap( "street" );
                 MAP.addTilesetImage( "streettiles", "streettiles" );
 
-                const LAYER = MAP.createLayer( "street" );
-                LAYER.resizeWorld();
-                LAYER.wrap = true;
+                l_enginelayer = MAP.createLayer( "street" );
+                l_enginelayer.resizeWorld();
+                l_enginelayer.wrap = true;
             },
 
 
