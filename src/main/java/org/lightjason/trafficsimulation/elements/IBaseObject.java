@@ -25,20 +25,30 @@ package org.lightjason.trafficsimulation.elements;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.agent.IBaseAgent;
+import org.lightjason.agentspeak.beliefbase.CBeliefbase;
+import org.lightjason.agentspeak.beliefbase.storage.CMultiStorage;
+import org.lightjason.agentspeak.beliefbase.storage.CSingleStorage;
 import org.lightjason.agentspeak.beliefbase.view.IView;
 import org.lightjason.agentspeak.common.CCommon;
+import org.lightjason.agentspeak.configuration.CDefaultAgentConfiguration;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
+import org.lightjason.agentspeak.language.fuzzy.operator.IFuzzyBundle;
+import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
+import org.lightjason.agentspeak.language.instantiable.rule.IRule;
+import org.lightjason.agentspeak.language.unify.IUnifier;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.ui.EHTTPServer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,10 +89,9 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
     protected IBaseObject( @Nonnull final IAgentConfiguration<T> p_configuration, @Nonnull final String p_functor, @Nonnull final String p_id )
     {
         super( p_configuration );
-        m_functor = p_functor;
-        m_id = p_id;
 
-        //m_beliefbase.add( new CEnvironmentBeliefbase().create( "env", m_beliefbase ) );
+        m_id = p_id;
+        m_functor = p_functor;
         m_external = m_beliefbase.beliefbase().view( "extern" );
     }
 
@@ -186,6 +195,56 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
          */
         @Nullable
         protected abstract Triple<T, Boolean, Stream<String>> generate( @Nullable final Object... p_data );
+
+        @Override
+        protected IAgentConfiguration<T> configuration( @Nonnull final IFuzzyBundle<Boolean> p_fuzzy, @Nonnull final Collection<ILiteral> p_initalbeliefs,
+                                                        @Nonnull final Set<IPlan> p_plans, @Nonnull final Set<IRule> p_rules,
+                                                        @Nullable final ILiteral p_initialgoal,
+                                                        @Nonnull final IUnifier p_unifier, @Nonnull final IVariableBuilder p_variablebuilder
+        )
+        {
+            return new CAgentConfiguration( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_variablebuilder );
+        }
+
+
+        /**
+         * agent configuration
+         */
+        private final class CAgentConfiguration extends CDefaultAgentConfiguration<T>
+        {
+            /**
+             * ctor
+             *
+             * @param p_fuzzy fuzzy bundle
+             * @param p_initalbeliefs initial beliefs
+             * @param p_plans plans
+             * @param p_rules rules
+             * @param p_initialgoal initial goal
+             * @param p_unifier unifier
+             * @param p_variablebuilder variable builder
+             */
+            CAgentConfiguration( @Nonnull final IFuzzyBundle<Boolean> p_fuzzy, @Nonnull final Collection<ILiteral> p_initalbeliefs,
+                            @Nonnull final Set<IPlan> p_plans, @Nonnull final Set<IRule> p_rules, @Nullable final ILiteral p_initialgoal,
+                            @Nonnull final IUnifier p_unifier, @Nonnull final IVariableBuilder p_variablebuilder
+            )
+            {
+                super( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_variablebuilder );
+            }
+
+            @Nonnull
+            @Override
+            public final IView beliefbase()
+            {
+                final IView l_view = new CBeliefbase( new CMultiStorage<>() ).create( BELIEFBASEROOTNAME );
+                l_view.add( new CBeliefbase( new CSingleStorage<>() ).create( "extern", l_view ) );
+
+                // add initial beliefs and clear initial beliefbase trigger
+                m_initialbeliefs.parallelStream().forEach( i -> l_view.add( i.shallowcopy() ) );
+                l_view.trigger();
+
+                return l_view;
+            }
+        }
     }
 
 }

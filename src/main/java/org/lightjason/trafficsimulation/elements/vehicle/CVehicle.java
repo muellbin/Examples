@@ -55,7 +55,7 @@ import org.lightjason.agentspeak.language.variable.IVariable;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CMath;
 import org.lightjason.trafficsimulation.common.EDirection;
-import org.lightjason.trafficsimulation.elements.CUnit;
+import org.lightjason.trafficsimulation.elements.EUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
@@ -183,15 +183,15 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
         m_backwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
-                CMath.cellangle( CUnit.INSTANCE.metertocell( 150 ), 135, 225 ).collect( Collectors.toSet() )
+                CMath.cellangle( EUnit.INSTANCE.metertocell( 150 ), 135, 225 ).collect( Collectors.toSet() )
             )
         );
 
         m_forwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
                 Stream.concat(
-                    CMath.cellangle( CUnit.INSTANCE.metertocell( 500 ), 0, 60 ),
-                    CMath.cellangle( CUnit.INSTANCE.metertocell( 500 ), 300, 359.99 )
+                    CMath.cellangle( EUnit.INSTANCE.metertocell( 500 ), 0, 60 ),
+                    CMath.cellangle( EUnit.INSTANCE.metertocell( 500 ), 300, 359.99 )
                 ).collect( Collectors.toSet() )
             )
         );
@@ -205,7 +205,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
     @Nonnull
     @Override
-    public final DoubleMatrix1D position()
+    public final synchronized DoubleMatrix1D position()
     {
         return m_position;
     }
@@ -217,7 +217,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         return EDirection.FORWARD.position(
             this.position(),
             new DenseDoubleMatrix1D( new double[]{this.position().get( 0 ), m_goal} ),
-            CUnit.INSTANCE.speedtocell( this.speed() ).doubleValue()
+            EUnit.INSTANCE.speedtocell( this.speed() ).doubleValue()
         );
     }
 
@@ -254,8 +254,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     {
         return Stream.of(
             CLiteral.from( "speed", CRawTerm.from( m_speed.get() ) ),
-            CLiteral.from( "lane", CRawTerm.from( m_position.get( 0 ) ) ),
-            CLiteral.from( "distance", CRawTerm.from( CMath.distance( m_position, p_object.position() ) ) )
+            CLiteral.from( "lane", CRawTerm.from( this.position().get( 0 ) ) ),
+            CLiteral.from( "distance", CRawTerm.from( EUnit.INSTANCE.celltometer( CMath.distance( this.position(), p_object.position() ) ) ) )
         );
     }
 
@@ -304,7 +304,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final IVehicle call() throws Exception
     {
         //m_backwardview.run();
-        //m_forwardview.run();
+        m_forwardview.run();
 
         super.call();
 
@@ -337,7 +337,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "vehicle/accelerate" )
     private void accelerate( final Number p_strength )
     {
-        final double l_value = m_speed.get() + CUnit.INSTANCE.accelerationtospeed(
+        final double l_value = m_speed.get() + EUnit.INSTANCE.accelerationtospeed(
             m_accelerate * Math.max( 0, Math.min( 1, p_strength.doubleValue() ) )
         ).doubleValue();
 
@@ -354,7 +354,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "vehicle/decelerate" )
     private void decelerate( final Number p_strength )
     {
-        final double l_value = m_speed.get() - CUnit.INSTANCE.accelerationtospeed(
+        final double l_value = m_speed.get() - EUnit.INSTANCE.accelerationtospeed(
             m_decelerate * Math.max( 0, Math.min( 1, p_strength.doubleValue() ) )
         ).doubleValue();
 
@@ -371,7 +371,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "vehicle/swingout" )
     private void swingout()
     {
-        final Number l_lane = m_position.get( 0 ) + ( m_goal == 0 ? 1 : -1 );
+        final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? 1 : -1 );
         if ( !m_environment.lanechange( this, l_lane.intValue() ) )
             this.oncollision();
     }
@@ -383,7 +383,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @IAgentActionName( name = "vehicle/goback" )
     private void goback()
     {
-        final Number l_lane = m_position.get( 0 ) + ( m_goal == 0 ? -1 : 1 );
+        final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? -1 : 1 );
         if ( !m_environment.lanechange( this, l_lane.intValue() ) )
             this.oncollision();
     }
@@ -537,9 +537,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 m_position.parallelStream()
                           .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
                           .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
-            ).forEach( i -> m_cache.put(
-                CMath.distance( CVehicle.this.m_position, i.position() ), i.literal( CVehicle.this )
-            ) );
+            ).forEach( i -> System.out.println( i.literal( CVehicle.this ) ) );
         }
     }
 }

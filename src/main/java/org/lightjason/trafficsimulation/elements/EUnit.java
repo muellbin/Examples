@@ -30,15 +30,9 @@ import org.lightjason.trafficsimulation.common.CConfiguration;
 /**
  * unit class
  */
-public final class CUnit
+public enum EUnit
 {
-    /**
-     * singleton instance
-     */
-    public static final CUnit INSTANCE = new CUnit(
-                                            CConfiguration.INSTANCE.getOrDefault( 3.5, "units", "cellsize_in_meter" ),
-                                            CConfiguration.INSTANCE.getOrDefault( 1.25, "units", "time_in_minutes" )
-    );
+    INSTANCE;
     /**
      * constant value to scale km/h in m/s
      **/
@@ -63,14 +57,11 @@ public final class CUnit
 
     /**
      * ctor
-     *
-     * @param p_cellsize cell size in meter
-     * @param p_timestep timestep size in minutes
      */
-    private CUnit( final Number p_cellsize, final Number p_timestep )
+    EUnit()
     {
-        m_cellsize = p_cellsize.doubleValue();
-        m_timestep = p_timestep.doubleValue() * 60D;
+        m_cellsize = CConfiguration.INSTANCE.getOrDefault( 3.5, "units", "cellsize_in_meter" );
+        m_timestep = CConfiguration.INSTANCE.getOrDefault( 1.25, "units", "time_in_minutes" ) * 60D;
         m_celltimestep = KMHINMS * m_timestep / m_cellsize;
     }
 
@@ -104,7 +95,7 @@ public final class CUnit
      */
     public final Number celltometer( final Number p_cells )
     {
-        return p_cells.doubleValue() * m_cellsize;
+        return p_cells.doubleValue() / m_cellsize;
     }
 
     /**

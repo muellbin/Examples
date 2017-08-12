@@ -126,12 +126,12 @@ public final class CMath
      * @param p_second vector
      * @return distance
      */
-    public static double distance( final DoubleMatrix1D p_first, final DoubleMatrix1D p_second )
+    public static Number distance( final DoubleMatrix1D p_first, final DoubleMatrix1D p_second )
     {
-        return ALGEBRA.norm2(
+        return Math.sqrt( ALGEBRA.norm2(
             new DenseDoubleMatrix1D( p_second.toArray() )
                 .assign( p_first, Functions.minus )
-        );
+        ) );
     }
 
     /**

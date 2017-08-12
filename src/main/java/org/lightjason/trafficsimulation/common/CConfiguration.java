@@ -188,7 +188,7 @@ public final class CConfiguration extends ITree.CTree
      */
     public static Stream<String> defaultagents()
     {
-        return Stream.of( "area", "communication", "environment", "defaultvehicle", "uservehicle" );
+        return Stream.of( "area", "environment", "defaultvehicle", "uservehicle" );
     }
 
     /**

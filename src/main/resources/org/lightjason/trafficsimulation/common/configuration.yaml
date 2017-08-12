@@ -31,8 +31,6 @@ main:
 agent:
     environment:
       visible: false
-    communication:
-      visible: false
     area:
       visible: false
     defaultvehicle:

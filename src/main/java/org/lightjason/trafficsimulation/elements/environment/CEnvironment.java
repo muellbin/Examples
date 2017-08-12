@@ -47,7 +47,7 @@ import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.agentspeak.language.variable.CConstant;
 import org.lightjason.agentspeak.language.variable.IVariable;
 import org.lightjason.trafficsimulation.common.CCommon;
-import org.lightjason.trafficsimulation.elements.CUnit;
+import org.lightjason.trafficsimulation.elements.EUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.IArea;
@@ -314,7 +314,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_lanes.set( new ImmutablePair<>( p_lefttorightlanes, p_righttoleftlanes ) );
         m_grid = new SparseObjectMatrix2D(
             p_lefttorightlanes.intValue() + p_righttoleftlanes.intValue(),
-            CUnit.INSTANCE.kilometertocell( p_length ).intValue()
+            EUnit.INSTANCE.kilometertocell( p_length ).intValue()
         );
 
         CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
