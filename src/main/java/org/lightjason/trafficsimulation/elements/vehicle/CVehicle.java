@@ -27,9 +27,6 @@ import cern.colt.matrix.DoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.jet.math.Functions;
 import com.codepoetics.protonpack.StreamUtils;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.google.common.util.concurrent.AtomicDouble;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -66,8 +63,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -183,15 +182,15 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
         m_backwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
-                CMath.cellangle( EUnit.INSTANCE.metertocell( 150 ), 135, 225 ).collect( Collectors.toSet() )
+                CMath.cellangle( EUnit.INSTANCE.metertocell( 150 + ( Math.random() - 0.5 ) * 50 ), 135, 225 ).collect( Collectors.toSet() )
             )
         );
 
         m_forwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
                 Stream.concat(
-                    CMath.cellangle( EUnit.INSTANCE.metertocell( 500 ), 0, 60 ),
-                    CMath.cellangle( EUnit.INSTANCE.metertocell( 500 ), 300, 359.99 )
+                    CMath.cellangle( EUnit.INSTANCE.metertocell( 450 + ( Math.random() - 0.5 ) * 75 ), 0, 60 ),
+                    CMath.cellangle( EUnit.INSTANCE.metertocell( 450 + ( Math.random() - 0.5 ) * 75 ), 300, 359.99 )
                 ).collect( Collectors.toSet() )
             )
         );
@@ -303,7 +302,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IVehicle call() throws Exception
     {
-        //m_backwardview.run();
+        m_backwardview.run();
         m_forwardview.run();
 
         super.call();
@@ -497,7 +496,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         /**
          * object cache with distance and literal
          */
-        private final Multimap<Number, ILiteral> m_cache = Multimaps.synchronizedMultimap( HashMultimap.create() );
+        private final List<ILiteral> m_cache = new ArrayList<>();
 
         /**
          * ctor
@@ -513,7 +512,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @Override
         public final Stream<ILiteral> streamLiteral()
         {
-            return m_cache.values().stream();
+            return m_cache.stream();
         }
 
         @Override
@@ -526,7 +525,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         @Override
         public final Collection<ILiteral> literal( @Nonnull final String p_key )
         {
-            return m_cache.values();
+            return m_cache;
         }
 
         @Override
@@ -537,7 +536,13 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 m_position.parallelStream()
                           .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
                           .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
-            ).forEach( i -> System.out.println( i.literal( CVehicle.this ) ) );
+            )
+                         .parallel()
+                         .map( i -> new ImmutablePair<>( EUnit.INSTANCE.celltometer( CMath.distance( CVehicle.this.position(), i.position() ) ), i ) )
+                         .sorted( ( i, j ) -> Double.compare( i.getLeft().doubleValue(), j.getLeft().doubleValue() ) )
+                         .map( ImmutablePair::getRight )
+                         .map( i -> i.literal( CVehicle.this ) )
+                         .forEachOrdered( m_cache::add );
         }
     }
 }
