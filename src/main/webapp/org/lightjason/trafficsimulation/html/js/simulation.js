@@ -653,6 +653,10 @@ jQuery(function() {
             activable : {
                 name: "Activable",
                 callback: function( k ) { console.log( "click: " + k ); }
+            },
+            remove : {
+                name: "Delete",
+                callback: function( k ) { console.log( "click: " + k ); }
             }
         }
     });
