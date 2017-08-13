@@ -918,8 +918,6 @@ jQuery(function() {
                           })
                 )
                 .then(function() {
-                     GAUGE.value = 0;
-                     GAUGE.update({ value: 0 });
                      l_visualizationobjects = {};
                      DataStorage.remove( "environment" );
                 });
@@ -1001,9 +999,9 @@ jQuery(function() {
             },
 
             release: function(p_data) {
+                l_visualizationfunctions.defaultvehicle.release( p_data );
                 GAUGE.value = 0;
                 GAUGE.update({ value: 0 });
-                l_visualizationfunctions.defaultvehicle.release( p_data );
             }
         }
     };

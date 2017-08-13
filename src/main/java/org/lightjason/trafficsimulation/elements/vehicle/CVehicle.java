@@ -269,12 +269,12 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     private static Number distancevariation( @Nonnull final IVehicle p_first, @Nonnull final IObject<?> p_second )
     {
         final Number l_distance = EUnit.INSTANCE.celltometer( CMath.distance( p_first.position(), p_second.position() ) );
-        if ( !(p_second instanceof IVehicle) )
+        if ( !( p_second instanceof IVehicle ) )
             return l_distance;
 
         return (
                    // scale distance difference on a sigmoid function
-                   1 / ( 1 + Math.exp(  - p_first.speed() / p_second.<IVehicle>raw().speed() ) )
+                   1 / ( 1 + Math.exp(  -p_first.speed() / p_second.<IVehicle>raw().speed() ) )
                    // normalize the result in [-0.5, 0.5]
                    - 0.5
                  )
