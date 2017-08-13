@@ -182,13 +182,23 @@ public final class CConfiguration extends ITree.CTree
     }
 
     /**
-     * returns a stream of default agent names
+     * returns a stream of base agent names
      *
      * @return name stream (without file extension)
      */
-    public static Stream<String> defaultagents()
+    public static Stream<String> baseagents()
     {
-        return Stream.of( "area", "environment", "defaultvehicle", "uservehicle" );
+        return Stream.of( "area", "environment", "defaultvehicle" );
+    }
+
+    /**
+     * returns a stream of activable agent names
+     *
+     * @return name stream (without file extension)
+     */
+    public static Stream<String> activatableagents()
+    {
+        return Stream.of( "uservehicle" );
     }
 
     /**
@@ -206,7 +216,7 @@ public final class CConfiguration extends ITree.CTree
         Paths.get( p_path ).toFile().mkdirs();
         Stream.concat(
             Stream.of( "configuration.yaml" ),
-            defaultagents().map( i -> i + ASLEXTENSION )
+            Stream.concat( baseagents(), activatableagents() ).map( i -> i + ASLEXTENSION )
         )
             .forEach( i ->
             {

@@ -40,6 +40,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 
 
@@ -170,7 +171,7 @@ public final class CSimulation
         final ERuntime.CAgentDefinition l_data = ERuntime.INSTANCE.agents().get( p_id );
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
-        if ( ( !l_data.getvisibility() ) || ( CConfiguration.defaultagents().anyMatch( p_id::equals ) ) )
+        if ( ( !l_data.getvisibility() ) || ( Stream.concat( CConfiguration.baseagents(), CConfiguration.activatableagents() ).anyMatch( p_id::equals ) ) )
             return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
 
         ERuntime.INSTANCE.agents().remove( p_id.toLowerCase( Locale.ROOT ) );

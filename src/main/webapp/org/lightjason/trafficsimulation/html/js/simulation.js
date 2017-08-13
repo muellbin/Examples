@@ -389,17 +389,24 @@ function agentlist()
 {
     LightJason.ajax( "/api/simulation/agentlist" )
         .success(function(o) {
+
             const l_dom = jQuery( "#ui-agents" ).empty();
 
             o.forEach(function(i) {
-                l_dom.append(
-                    jQuery("<li>").append(
-                        jQuery("<a>").attr( "href", "#" )
-                            .attr("data-sourceid", i.id)
-                            .addClass("ui-agent-source")
-                            .text( i.id )
-                    )
-                );
+                const l_item = jQuery("<a>").attr( "href", "#" )
+                                            .attr("data-sourceid", i.id)
+                                            .addClass("ui-agent-source");
+
+                l_dom.append( jQuery("<li>").append( l_item ) );
+                l_item.append( jQuery("<span>").text( i.id ) );
+
+                if ( i.activable )
+                {
+                    const l_icon = jQuery("<span>").addClass( "activable" );
+                    l_item.append( l_icon );
+                    if ( i.active )
+                        l_icon.addClass("fa fa-check-circle");
+                }
             });
         })
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });

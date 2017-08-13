@@ -50,6 +50,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -99,13 +100,13 @@ public enum ERuntime implements IRuntime
         }
 
         // check nessessary agents
-        CConfiguration.defaultagents()
-                      .filter( i -> !m_agents.containsKey( i ) )
-                      .findAny()
-                      .ifPresent( i ->
-                      {
-                          throw new RuntimeException( CCommon.languagestring( this, "agentnotfound", i ) );
-                      } );
+        Stream.concat( CConfiguration.baseagents(), CConfiguration.activatableagents() )
+              .filter( i -> !m_agents.containsKey( i ) )
+              .findAny()
+              .ifPresent( i ->
+              {
+                  throw new RuntimeException( CCommon.languagestring( this, "agentnotfound", i ) );
+              } );
     }
 
 
@@ -127,10 +128,10 @@ public enum ERuntime implements IRuntime
                 l_id,
                 new CAgentDefinition(
                     CConfiguration.INSTANCE.getOrDefault( true, "agent", l_id, "visible" ),
-                    false,
+                    CConfiguration.baseagents().noneMatch( l_id::equals ),
                     l_id,
                     IOUtils.toString( l_stream, "UTF-8" )
-                )
+                ).swapactive()
             );
         }
         catch ( final IOException l_exception )
@@ -288,8 +289,8 @@ public enum ERuntime implements IRuntime
         /**
          * is-activiable
          */
-        @XmlElement( name = "activatable" )
-        private boolean m_isactivatable;
+        @XmlElement( name = "activable" )
+        private boolean m_activable;
         /**
          * asl source
          */
@@ -308,22 +309,22 @@ public enum ERuntime implements IRuntime
             m_asl = "";
             m_name = p_name;
             m_visibility = true;
-            m_isactivatable = true;
+            m_activable = true;
         }
 
         /**
          * ctor
          *
          * @param p_visiblity visible
-         * @param p_isactivatable activatable flag
+         * @param p_activable activatable flag
          * @param p_asl asl code
          */
-        CAgentDefinition( final boolean p_visiblity, final boolean p_isactivatable, @Nonnull final String p_name, @Nonnull final String p_asl )
+        CAgentDefinition( final boolean p_visiblity, final boolean p_activable, @Nonnull final String p_name, @Nonnull final String p_asl )
         {
             m_asl = p_asl;
             m_name = p_name;
             m_visibility = p_visiblity;
-            m_isactivatable = p_isactivatable;
+            m_activable = p_activable;
         }
 
         @Override
@@ -388,9 +389,9 @@ public enum ERuntime implements IRuntime
          *
          * @return activatable
          */
-        public final boolean isactivatable()
+        public final boolean isactivable()
         {
-            return m_isactivatable;
+            return m_activable;
         }
 
         /**
@@ -411,6 +412,9 @@ public enum ERuntime implements IRuntime
         @Nonnull
         public final CAgentDefinition swapactive()
         {
+            if ( !m_activable )
+                return this;
+
             m_active = !m_active;
             return this;
         }
