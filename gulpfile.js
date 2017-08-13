@@ -128,7 +128,6 @@ const l_gulp = require( "gulp" ),
                       "node_modules/jquery/dist/jquery.js",
                       "node_modules/bootstrap/dist/js/bootstrap.js",
 
-                      "node_modules/jquery.full.screen/jquery.full.screen.js",
                       "node_modules/jquery-knob/js/jquery.knob.js",
                       "node_modules/pnotify/dist/pnotify.js",
                       "node_modules/switchery/dist/switchery.js",

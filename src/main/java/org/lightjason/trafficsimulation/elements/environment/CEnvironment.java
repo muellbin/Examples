@@ -145,6 +145,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_generatorarea = p_generatorarea;
         m_generatoruservehicle = p_generatoruservehicle;
         m_generatordefaultvehicle = p_generatordefaultvehicle;
+
+        m_elements.put( this.id(), this );
     }
 
     @Nonnull
@@ -167,6 +169,11 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     {
         m_shutdown.set( true );
         CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
+
+        m_elements.remove( this.id() );
+        m_elements.values().parallelStream().forEach( IObject::release );
+        m_elements.clear();
+
         return this;
     }
 

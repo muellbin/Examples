@@ -92,8 +92,6 @@ public class CTask implements ITask
                 CCommon.languagestring( this, "simulationstart" )
             );
 
-
-            p_elements.put( l_environment.id(), l_environment );
             while ( !l_environment.shutdown() )
             {
                 p_elements.values().parallelStream().forEach( CTask::execute );
@@ -106,8 +104,6 @@ public class CTask implements ITask
                     break;
                 }
             }
-
-            p_elements.clear();
 
             CMessage.CInstance.INSTANCE.write(
                 CMessage.EType.SUCCESS,

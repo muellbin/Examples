@@ -66,6 +66,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -254,8 +255,33 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         return Stream.of(
             CLiteral.from( "speed", CRawTerm.from( m_speed.get() ) ),
             CLiteral.from( "lane", CRawTerm.from( this.position().get( 0 ) ) ),
-            CLiteral.from( "distance", CRawTerm.from( EUnit.INSTANCE.celltometer( CMath.distance( this.position(), p_object.position() ) ) ) )
+            CLiteral.from( "distance", CRawTerm.from( distancevariation( this, p_object ) ) )
         );
+    }
+
+    /**
+     * change distance perceiving on fuzzyness
+     *
+     * @param p_first first object which should use the distance
+     * @param p_second second object
+     * @return distance in meter
+     */
+    private static Number distancevariation( @Nonnull final IVehicle p_first, @Nonnull final IObject<?> p_second )
+    {
+        final Number l_distance = EUnit.INSTANCE.celltometer( CMath.distance( p_first.position(), p_second.position() ) );
+        if ( !(p_second instanceof IVehicle) )
+            return l_distance;
+
+        return (
+                   // scale distance difference on a sigmoid function
+                   1 / ( 1 + Math.exp(  - p_first.speed() / p_second.<IVehicle>raw().speed() ) )
+                   // normalize the result in [-0.5, 0.5]
+                   - 0.5
+                 )
+                 // scale it with a random value and the real distance
+                 * Math.random() * l_distance.doubleValue()
+                 // change real distance
+                + l_distance.doubleValue();
     }
 
     @Override
@@ -538,11 +564,12 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                           .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
             )
                          .parallel()
-                         .map( i -> new ImmutablePair<>( EUnit.INSTANCE.celltometer( CMath.distance( CVehicle.this.position(), i.position() ) ), i ) )
-                         .sorted( ( i, j ) -> Double.compare( i.getLeft().doubleValue(), j.getLeft().doubleValue() ) )
+                         .map( i -> new ImmutablePair<>( distancevariation( CVehicle.this, i ), i ) )
+                         .sorted( Comparator.comparingDouble( i -> i.getLeft().doubleValue() ) )
                          .map( ImmutablePair::getRight )
                          .map( i -> i.literal( CVehicle.this ) )
                          .forEachOrdered( m_cache::add );
+
         }
     }
 }

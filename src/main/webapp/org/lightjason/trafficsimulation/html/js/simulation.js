@@ -737,7 +737,27 @@ jQuery(function() {
     // run simulation
     jQuery( "#simulation-run" ).click(function() {
         LightJason.ajax( "/api/simulation/run" )
+                  .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
+
+
+    // stop simulation
+    jQuery( "#simulation-stop" ).click(function() {
+        LightJason.ajax({
+            url : "/lightjason/agent/environment/trigger/add/goal/immediately",
+            data: "shutdown",
+            contentType: "text/plain",
+            method: "POST"
+        })
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
+
+
+    // shutdown button
+    jQuery( ".simulation-shutdown" ).click(function() {
+        LightJason.ajax( "/api/simulation/shutdown" )
+            .success(function() { shutdown(); })
+            .error(function(i) { SHUTDOWNDIALOG.open(); });
     });
 
 
@@ -763,17 +783,12 @@ jQuery(function() {
             .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
 
+
     // bind action to load asl source
     jQuery(document).on( "click", ".ui-agent-source", function() {
         loadagent( jQuery(this).data("sourceid"), l_editor );
     });
 
-    // shutdown button
-    jQuery( ".simulation-shutdown" ).click(function() {
-        LightJason.ajax( "/api/simulation/shutdown" )
-                  .success(function() { shutdown(); })
-                  .error(function(i) { SHUTDOWNDIALOG.open(); });
-    });
 
     // slide view
     jQuery( ".slide-view" ).click(function() {
@@ -781,10 +796,6 @@ jQuery(function() {
         if ( l_source )
             window.open( "slide.htm?slides=" + encodeURIComponent( l_source ), l_source );
     });
-
-
-    // set fullscreen structure
-    jQuery( ".ui-fullscreen" ).fullscreen();
 
 
     // catch resize calls
@@ -907,6 +918,8 @@ jQuery(function() {
                           })
                 )
                 .then(function() {
+                     GAUGE.value = 0;
+                     GAUGE.update({ value: 0 });
                      l_visualizationobjects = {};
                      DataStorage.remove( "environment" );
                 });
@@ -967,8 +980,8 @@ jQuery(function() {
                 GAME.instance.camera.follow(l_visualizationobjects[p_data.id]);
 
                 var l_max = Math.ceil( p_data.maxspeed / 10 + 5) * 10;
-                GAUGE.value = p_data.speed;
                 GAUGE.update({
+                    value: p_data.speed,
                     maxValue: l_max,
                     majorTicks: Array.from(Array( Math.ceil( l_max / 20 ) ).keys()).map(function(i) { return i*20; }).map(function(i) { return i.toString() }),
                     highlights: [{
@@ -987,7 +1000,11 @@ jQuery(function() {
                 l_visualizationfunctions.defaultvehicle.execute( p_data );
             },
 
-            release: function(p_data) { l_visualizationfunctions.defaultvehicle.release( p_data ) }
+            release: function(p_data) {
+                GAUGE.value = 0;
+                GAUGE.update({ value: 0 });
+                l_visualizationfunctions.defaultvehicle.release( p_data );
+            }
         }
     };
 
