@@ -61,7 +61,8 @@ const l_gulp = require( "gulp" ),
                   source: l_gulp.src([
                       "node_modules/bootstrap/dist/fonts/*.*",
                       "node_modules/font-awesome/fonts/*.*",
-                      "node_modules/mathjax/fonts/**/*.*"
+                      "node_modules/mathjax/fonts/**/*.*",
+                      "node_modules/jquery-contextmenu/dist/font/*.*"
                   ])
               },
 
@@ -147,7 +148,10 @@ const l_gulp = require( "gulp" ),
                       l_sourcedir + "js/codemirror_grammar.js",
 
                       "node_modules/phaser/build/pixi.js",
-                      "node_modules/phaser/build/phaser.js"
+                      "node_modules/phaser/build/phaser.js",
+
+                      "node_modules/jquery-contextmenu/dist/jquery.contextMenu.js",
+                      "node_modules/jquery-contextmenu/dist/jquery.ui.position.js"
                   ])
               }
 
@@ -182,7 +186,9 @@ const l_gulp = require( "gulp" ),
 
                       "node_modules/codemirror/lib/codemirror.css",
                       "node_modules/codemirror/addon/hint/show-hint.css",
-                      "node_modules/codemirror/theme/neat.css"
+                      "node_modules/codemirror/theme/neat.css",
+
+                      "node_modules/jquery-contextmenu/dist/jquery.contextMenu.css"
                   ])
               },
 

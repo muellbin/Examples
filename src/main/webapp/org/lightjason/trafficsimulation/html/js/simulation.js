@@ -402,8 +402,11 @@ function agentlist()
 
                 if ( i.activable )
                 {
-                    const l_icon = jQuery("<span>").addClass( "activable" );
+                    const l_icon = jQuery("<span>");
+
+                    l_item.addClass( "activable" );
                     l_item.append( l_icon );
+
                     if ( i.active )
                         l_icon.addClass("fa fa-check-circle");
                 }
@@ -640,6 +643,20 @@ jQuery(function() {
                   })
                   .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
     });
+
+
+    // context menu
+    jQuery.contextMenu({
+        selector: ".activable",
+        autoHide: true,
+        items : {
+            activable : {
+                name: "Activable",
+                callback: function( k ) { console.log( "click: " + k ); }
+            }
+        }
+    });
+
 
 
     // read codemirror grammer and build autocompletion & syntax highlight
