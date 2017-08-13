@@ -40,7 +40,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Locale;
-import java.util.Map;
 
 
 
@@ -112,10 +111,9 @@ public final class CSimulation
     {
         return ERuntime.INSTANCE
                        .agents()
-                       .entrySet()
+                       .values()
                        .stream()
-                       .filter( i -> i.getValue().getvisibility() )
-                       .map( Map.Entry::getKey )
+                       .filter( ERuntime.CAgentDefinition::getvisibility )
                        .toArray();
     }
 
@@ -134,7 +132,7 @@ public final class CSimulation
         if ( l_data != null )
             return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "agentexist", p_id ) ).build();
 
-        ERuntime.INSTANCE.agents().put( p_id.toLowerCase( Locale.ROOT ), new ERuntime.CAgentDefinition() );
+        ERuntime.INSTANCE.agents().put( p_id,  new ERuntime.CAgentDefinition( p_id ) );
         return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentcreate", p_id ) ).build();
     }
 

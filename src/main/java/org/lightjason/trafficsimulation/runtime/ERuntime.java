@@ -30,6 +30,10 @@ import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -123,6 +127,8 @@ public enum ERuntime implements IRuntime
                 l_id,
                 new CAgentDefinition(
                     CConfiguration.INSTANCE.getOrDefault( true, "agent", l_id, "visible" ),
+                    false,
+                    l_id,
                     IOUtils.toString( l_stream, "UTF-8" )
                 )
             );
@@ -266,6 +272,8 @@ public enum ERuntime implements IRuntime
     /**
      * agent object
      */
+    @XmlAccessorType( XmlAccessType.NONE )
+    @XmlRootElement( name = "agentdefinition" )
     public static final class CAgentDefinition
     {
         /**
@@ -275,31 +283,70 @@ public enum ERuntime implements IRuntime
         /**
          * active
          */
+        @XmlElement( name = "active" )
         private boolean m_active;
+        /**
+         * is-activiable
+         */
+        @XmlElement( name = "activatable" )
+        private boolean m_isactivatable;
         /**
          * asl source
          */
         private String m_asl;
+        /**
+         * name of agent
+         */
+        @XmlElement( name = "id" )
+        private final String m_name;
 
         /**
          * ctor
          */
-        public CAgentDefinition()
+        public CAgentDefinition( @Nonnull final String p_name )
         {
-            m_visibility = true;
             m_asl = "";
+            m_name = p_name;
+            m_visibility = true;
+            m_isactivatable = true;
         }
 
         /**
          * ctor
          *
          * @param p_visiblity visible
+         * @param p_isactivatable activatable flag
          * @param p_asl asl code
          */
-        CAgentDefinition( final boolean p_visiblity, @Nonnull final String p_asl )
+        CAgentDefinition( final boolean p_visiblity, final boolean p_isactivatable, @Nonnull final String p_name, @Nonnull final String p_asl )
         {
             m_asl = p_asl;
+            m_name = p_name;
             m_visibility = p_visiblity;
+            m_isactivatable = p_isactivatable;
+        }
+
+        @Override
+        public final int hashCode()
+        {
+            return m_name.hashCode();
+        }
+
+        @Override
+        public final boolean equals( final Object p_object )
+        {
+            return ( p_object != null ) && ( p_object instanceof CAgentDefinition ) && ( p_object.hashCode() == this.hashCode() );
+        }
+
+        /**
+         * name of the agent
+         *
+         * @return name
+         */
+        @Nonnull
+        public final String name()
+        {
+            return m_name;
         }
 
         /**
@@ -317,6 +364,7 @@ public enum ERuntime implements IRuntime
          *
          * @return asl
          */
+        @Nonnull
         public final String getasl()
         {
             return m_asl;
@@ -328,10 +376,21 @@ public enum ERuntime implements IRuntime
          * @param p_asl asl
          * @return self reference
          */
+        @Nonnull
         public final CAgentDefinition setasl( @Nonnull final String p_asl )
         {
             m_asl = p_asl;
             return this;
+        }
+
+        /**
+         * returns activatable flag
+         *
+         * @return activatable
+         */
+        public final boolean isactivatable()
+        {
+            return m_isactivatable;
         }
 
         /**
@@ -349,6 +408,7 @@ public enum ERuntime implements IRuntime
          *
          * @return self reference
          */
+        @Nonnull
         public final CAgentDefinition swapactive()
         {
             m_active = !m_active;

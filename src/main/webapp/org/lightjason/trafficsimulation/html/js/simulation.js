@@ -395,9 +395,9 @@ function agentlist()
                 l_dom.append(
                     jQuery("<li>").append(
                         jQuery("<a>").attr( "href", "#" )
-                            .attr("data-sourceid", i)
+                            .attr("data-sourceid", i.id)
                             .addClass("ui-agent-source")
-                            .text(i)
+                            .text( i.id )
                     )
                 );
             });
