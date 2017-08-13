@@ -23,7 +23,6 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.elements.IObject;
 
 import javax.annotation.Nonnull;
@@ -44,7 +43,7 @@ public interface IRuntime extends Runnable
      * @param p_supplier task supplier
      * @return self reference
      */
-    IRuntime supplier( @Nonnull final BiFunction<Map<String, Pair<Boolean, String>>, Map<String, IObject<?>>, ITask> p_supplier );
+    IRuntime supplier( @Nonnull final BiFunction<Map<String, ERuntime.CAgentDefinition>, Map<String, IObject<?>>, ITask> p_supplier );
 
     /**
      * task is running
@@ -84,5 +83,5 @@ public interface IRuntime extends Runnable
      * @return map with agent names and visibilites
      */
     @Nonnull
-    Map<String, Pair<Boolean, String>> agents();
+    Map<String, ERuntime.CAgentDefinition> agents();
 }

@@ -23,8 +23,6 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IMap;
@@ -116,7 +114,7 @@ public final class CSimulation
                        .agents()
                        .entrySet()
                        .stream()
-                       .filter( i -> i.getValue().getLeft() )
+                       .filter( i -> i.getValue().getvisibility() )
                        .map( Map.Entry::getKey )
                        .toArray();
     }
@@ -132,11 +130,11 @@ public final class CSimulation
     @Produces( MediaType.TEXT_PLAIN )
     public final Object createasl( @PathParam( "id" ) final String p_id )
     {
-        final Pair<Boolean, String> l_data = ERuntime.INSTANCE.agents().get( p_id );
+        final ERuntime.CAgentDefinition l_data = ERuntime.INSTANCE.agents().get( p_id );
         if ( l_data != null )
             return Response.status( Response.Status.CONFLICT ).entity( CCommon.languagestring( this, "agentexist", p_id ) ).build();
 
-        ERuntime.INSTANCE.agents().put( p_id.toLowerCase( Locale.ROOT ), new MutablePair<>( true, "" ) );
+        ERuntime.INSTANCE.agents().put( p_id.toLowerCase( Locale.ROOT ), new ERuntime.CAgentDefinition() );
         return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentcreate", p_id ) ).build();
     }
 
@@ -151,13 +149,13 @@ public final class CSimulation
     @Produces( MediaType.TEXT_PLAIN )
     public final Object getasl( @PathParam( "id" ) final String p_id )
     {
-        final Pair<Boolean, String> l_data = ERuntime.INSTANCE.agents().get( p_id );
+        final ERuntime.CAgentDefinition l_data = ERuntime.INSTANCE.agents().get( p_id );
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
-        if ( !l_data.getLeft() )
+        if ( !l_data.getvisibility() )
             return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
 
-        return l_data.getRight();
+        return l_data.getasl();
     }
 
     /**
@@ -171,10 +169,10 @@ public final class CSimulation
     @Produces( MediaType.TEXT_PLAIN )
     public final Object removeasl( @PathParam( "id" ) final String p_id )
     {
-        final Pair<Boolean, String> l_data = ERuntime.INSTANCE.agents().get( p_id );
+        final ERuntime.CAgentDefinition l_data = ERuntime.INSTANCE.agents().get( p_id );
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
-        if ( ( !l_data.getLeft() ) || ( CConfiguration.defaultagents().anyMatch( p_id::equals ) ) )
+        if ( ( !l_data.getvisibility() ) || ( CConfiguration.defaultagents().anyMatch( p_id::equals ) ) )
             return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
 
         ERuntime.INSTANCE.agents().remove( p_id.toLowerCase( Locale.ROOT ) );
@@ -194,15 +192,15 @@ public final class CSimulation
     @Consumes( MediaType.TEXT_PLAIN )
     public final Response setasl( @PathParam( "id" ) final String p_id, final String p_content )
     {
-        final Pair<Boolean, String> l_data = ERuntime.INSTANCE.agents().get( p_id );
+        final ERuntime.CAgentDefinition l_data = ERuntime.INSTANCE.agents().get( p_id );
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
-        if ( !l_data.getLeft() )
+        if ( !l_data.getvisibility() )
             return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
 
-        if ( !l_data.getValue().equals( p_content ) )
+        if ( !l_data.getasl().equals( p_content ) )
         {
-            l_data.setValue( p_content );
+            l_data.setasl( p_content );
             return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentchanged", p_id ) ).build();
         }
 

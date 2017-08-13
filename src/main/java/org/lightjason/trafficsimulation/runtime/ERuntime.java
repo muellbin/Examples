@@ -25,9 +25,6 @@ package org.lightjason.trafficsimulation.runtime;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -65,11 +62,11 @@ public enum ERuntime implements IRuntime
     /**
      * supplier of tasks
      */
-    private AtomicReference<BiFunction<Map<String, Pair<Boolean, String>>, Map<String, IObject<?>>, ITask>> m_supplier = new AtomicReference<>( ( i, j ) -> ITask.EMPTY );
+    private AtomicReference<BiFunction<Map<String, CAgentDefinition>, Map<String, IObject<?>>, ITask>> m_supplier = new AtomicReference<>( ( i, j ) -> ITask.EMPTY );
     /**
      * map with agents and asl codes and visibility
      */
-    private final Map<String, Pair<Boolean, String>> m_agents = Collections.synchronizedMap( new TreeMap<>( String.CASE_INSENSITIVE_ORDER ) );
+    private final Map<String, CAgentDefinition> m_agents = Collections.synchronizedMap( new TreeMap<>( String.CASE_INSENSITIVE_ORDER ) );
     /**
      * thread-sleep time
      */
@@ -124,7 +121,7 @@ public enum ERuntime implements IRuntime
         {
             m_agents.put(
                 l_id,
-                new MutablePair<>(
+                new CAgentDefinition(
                     CConfiguration.INSTANCE.getOrDefault( true, "agent", l_id, "visible" ),
                     IOUtils.toString( l_stream, "UTF-8" )
                 )
@@ -162,7 +159,7 @@ public enum ERuntime implements IRuntime
                     {
                         FileUtils.writeStringToFile(
                             Paths.get( CConfiguration.INSTANCE.path(), i.getKey().toLowerCase( Locale.ROOT ) + CConfiguration.ASLEXTENSION ).toFile(),
-                            i.getValue().getRight(),
+                            i.getValue().getasl(),
                             "UTF-8"
                         );
                     }
@@ -209,7 +206,7 @@ public enum ERuntime implements IRuntime
 
     @Override
     @Nonnull
-    public final Map<String, Pair<Boolean, String>> agents()
+    public final Map<String, CAgentDefinition> agents()
     {
         return m_agents;
     }
@@ -227,7 +224,7 @@ public enum ERuntime implements IRuntime
                              Collections.unmodifiableMap(
                                  m_agents.entrySet().stream().collect( Collectors.toMap(
                                      Map.Entry::getKey,
-                                     j -> new ImmutablePair<>( j.getValue().getLeft(), j.getValue().getRight() ),
+                                     Map.Entry::getValue,
                                      ( n, m ) -> n,
                                      () -> new TreeMap<>( String.CASE_INSENSITIVE_ORDER )
                                  ) )
@@ -245,7 +242,7 @@ public enum ERuntime implements IRuntime
 
     @Override
     @Nonnull
-    public final IRuntime supplier( @Nonnull final BiFunction<Map<String, Pair<Boolean, String>>, Map<String, IObject<?>>, ITask> p_supplier )
+    public final IRuntime supplier( @Nonnull final BiFunction<Map<String, CAgentDefinition>, Map<String, IObject<?>>, ITask> p_supplier )
     {
         m_supplier.set( p_supplier );
         return this;
@@ -264,5 +261,98 @@ public enum ERuntime implements IRuntime
     public final boolean running()
     {
         return m_task.get().running();
+    }
+
+    /**
+     * agent object
+     */
+    public static final class CAgentDefinition
+    {
+        /**
+         * visiblity
+         */
+        private final boolean m_visibility;
+        /**
+         * active
+         */
+        private boolean m_active;
+        /**
+         * asl source
+         */
+        private String m_asl;
+
+        /**
+         * ctor
+         */
+        public CAgentDefinition()
+        {
+            m_visibility = true;
+            m_asl = "";
+        }
+
+        /**
+         * ctor
+         *
+         * @param p_visiblity visible
+         * @param p_asl asl code
+         */
+        CAgentDefinition( final boolean p_visiblity, @Nonnull final String p_asl )
+        {
+            m_asl = p_asl;
+            m_visibility = p_visiblity;
+        }
+
+        /**
+         * returns visiblity
+         *
+         * @return visibility
+         */
+        public final boolean getvisibility()
+        {
+            return m_visibility;
+        }
+
+        /**
+         * returns asl source
+         *
+         * @return asl
+         */
+        public final String getasl()
+        {
+            return m_asl;
+        }
+
+        /**
+         * set asl source
+         *
+         * @param p_asl asl
+         * @return self reference
+         */
+        public final CAgentDefinition setasl( @Nonnull final String p_asl )
+        {
+            m_asl = p_asl;
+            return this;
+        }
+
+        /**
+         * returns active state
+         *
+         * @return active
+         */
+        public final boolean getactive()
+        {
+            return m_active;
+        }
+
+        /**
+         * swap active
+         *
+         * @return self reference
+         */
+        public final CAgentDefinition swapactive()
+        {
+            m_active = !m_active;
+            return this;
+        }
     }
 }

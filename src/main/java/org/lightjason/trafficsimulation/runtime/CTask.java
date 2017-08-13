@@ -24,7 +24,6 @@
 package org.lightjason.trafficsimulation.runtime;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.CArea;
@@ -60,25 +59,25 @@ public class CTask implements ITask
     /**
      * ctor
      *
-     * @param p_asl asl map
+     * @param p_agentdefinition asl map
      * @param p_elements element map
      */
-    public CTask( @Nonnull final Map<String, Pair<Boolean, String>> p_asl, @Nonnull final Map<String, IObject<?>> p_elements )
+    public CTask( @Nonnull final Map<String, ERuntime.CAgentDefinition> p_agentdefinition, @Nonnull final Map<String, IObject<?>> p_elements )
     {
         m_thread = new Thread( () ->
         {
 
             // --- initialize generators ---
-            final IEnvironment.IGenerator<IEnvironment> l_environmentgenerator = this.generatorenvironment( p_asl );
+            final IEnvironment.IGenerator<IEnvironment> l_environmentgenerator = this.generatorenvironment( p_agentdefinition );
 
             if ( l_environmentgenerator == null )
                 return;
 
             final IEnvironment l_environment = l_environmentgenerator.generatesingle(
                 p_elements,
-                this.generatorvehicle( p_asl, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),
-                this.generatorvehicle( p_asl, "uservehicle", IVehicle.ETYpe.USERVEHICLE ),
-                this.generatorarea( p_asl )
+                this.generatorvehicle( p_agentdefinition, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),
+                this.generatorvehicle( p_agentdefinition, "uservehicle", IVehicle.ETYpe.USERVEHICLE ),
+                this.generatorarea( p_agentdefinition )
             );
 
             if ( l_environment == null )
@@ -127,15 +126,15 @@ public class CTask implements ITask
      * @return null or generator
      */
     @Nullable
-    private IVehicle.IGenerator<IVehicle> generatorvehicle( @Nonnull final Map<String, Pair<Boolean, String>> p_agents,
+    private IVehicle.IGenerator<IVehicle> generatorvehicle( @Nonnull final Map<String, ERuntime.CAgentDefinition> p_agents,
                                                             @Nonnull final String p_agent, @Nonnull final IVehicle.ETYpe p_type )
     {
-        final Pair<Boolean, String> l_asl = p_agents.get( p_agent );
+        final ERuntime.CAgentDefinition l_agentdefinition = p_agents.get( p_agent );
         try
         {
             return new CVehicle.CGenerator(
-                IOUtils.toInputStream( l_asl.getRight(), "UTF-8" ),
-                l_asl.getLeft(),
+                IOUtils.toInputStream( l_agentdefinition.getasl(), "UTF-8" ),
+                l_agentdefinition.getvisibility(),
                 p_type
             ).resetcount();
         }
@@ -158,11 +157,11 @@ public class CTask implements ITask
      * @return null or generator
      */
     @Nullable
-    private IArea.IGenerator<IArea> generatorarea( @Nonnull final Map<String, Pair<Boolean, String>> p_agents )
+    private IArea.IGenerator<IArea> generatorarea( @Nonnull final Map<String, ERuntime.CAgentDefinition> p_agents )
     {
         try
         {
-            return new CArea.CGenerator( IOUtils.toInputStream( p_agents.get( "area" ).getRight(), "UTF-8" ) )
+            return new CArea.CGenerator( IOUtils.toInputStream( p_agents.get( "area" ).getasl(), "UTF-8" ) )
                 .resetcount();
         }
         catch ( final Exception l_exception )
@@ -184,11 +183,11 @@ public class CTask implements ITask
      * @return null or generator
      */
     @Nullable
-    private IEnvironment.IGenerator<IEnvironment> generatorenvironment( @Nonnull final Map<String, Pair<Boolean, String>> p_agents )
+    private IEnvironment.IGenerator<IEnvironment> generatorenvironment( @Nonnull final Map<String, ERuntime.CAgentDefinition> p_agents )
     {
         try
         {
-            return new CEnvironment.CGenerator( p_agents.get( "environment" ).getRight() ).resetcount();
+            return new CEnvironment.CGenerator( p_agents.get( "environment" ).getasl() ).resetcount();
         }
         catch ( final Exception l_exception )
         {
