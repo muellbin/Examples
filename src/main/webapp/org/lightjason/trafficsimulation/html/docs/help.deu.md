@@ -2,8 +2,6 @@
 
 <script type="text/javascript" src="../js/help.js"></script>
 
-<style> a { cursor: pointer; } </style>
-
 * <a onclick="return showanno( 'widget-simulation', true, 'bottom', false )">Simulation</a>
 * <a onclick="return showanno( 'widget-speed', true, 'bottom', false )">Speed</a>
 * <a onclick="return showanno( 'widget-penalty', true, 'bottom', false )">Penalty</a>
