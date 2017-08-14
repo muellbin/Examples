@@ -30,7 +30,7 @@
  *
  */
 
-const MINIFY = true;
+const MINIFY = false;
 
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),
@@ -151,7 +151,9 @@ const l_gulp = require( "gulp" ),
                       "node_modules/phaser/build/phaser.js",
 
                       "node_modules/jquery-contextmenu/dist/jquery.contextMenu.js",
-                      "node_modules/jquery-contextmenu/dist/jquery.ui.position.js"
+                      "node_modules/jquery-contextmenu/dist/jquery.ui.position.js",
+
+                      "node_modules/anno.js/dist/anno.js"
                   ])
               }
 
@@ -188,7 +190,9 @@ const l_gulp = require( "gulp" ),
                       "node_modules/codemirror/addon/hint/show-hint.css",
                       "node_modules/codemirror/theme/neat.css",
 
-                      "node_modules/jquery-contextmenu/dist/jquery.contextMenu.css"
+                      "node_modules/jquery-contextmenu/dist/jquery.contextMenu.css",
+
+                      "node_modules/anno.js/dist/anno.css"
                   ])
               },
 
