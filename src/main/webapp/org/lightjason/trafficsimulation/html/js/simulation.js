@@ -389,28 +389,49 @@ function agentlist()
 {
     LightJason.ajax( "/api/simulation/agentlist" )
         .success(function(o) {
-
             const l_dom = jQuery( "#ui-agents" ).empty();
 
             o.forEach(function(i) {
                 const l_item = jQuery("<a>").attr( "href", "#" )
                                             .attr("data-sourceid", i.id)
-                                            .addClass("ui-agent-source");
+                                            .addClass("ui-agent-source")
+                                            .append( jQuery("<span>").text( i.id ) );
 
                 l_dom.append( jQuery("<li>").append( l_item ) );
-                l_item.append( jQuery("<span>").text( i.id ) );
 
                 if ( i.activable )
                 {
-                    const l_icon = jQuery("<span>");
-
-                    l_item.addClass( "activable" );
+                    const l_icon = jQuery("<span>").addClass( "fa" );
+                    l_item.addClass( "agentactivable" );
                     l_item.append( l_icon );
 
                     if ( i.active )
-                        l_icon.addClass("fa fa-check-circle");
+                        l_icon.addClass("fa-check-circle");
                 }
             });
+        })
+        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+}
+
+/**
+ * deletes an agent
+ *
+ * @param pc_id agent id
+ * @param po_editor editor instance
+ */
+function deleteagent( pc_id, po_editor )
+{
+    LightJason.ajax( "/api/simulation/asl/remove/" + pc_id )
+        .success(function(i) {
+            notifymessage({ title: "Agent", text: i, type: "success" });
+            agentlist();
+
+            if ( p_editor.options.sourceid !== pc_id )
+                return;
+
+            aslname( "" );
+            l_editor.setValue("");
+            l_editor.options.sourceid = undefined;
         })
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
@@ -459,6 +480,11 @@ jQuery(function() {
     init_knob();
     init_autosize();
     agentlist();
+
+
+    var l_editor = null,
+        l_visualizationobjects = {},
+        l_visualizationfunctions = {};
 
     const MARKDOWN = new showdown.Converter(),
           SIMULATIONSCREEN = jQuery("#simulation-screen"),
@@ -536,14 +562,41 @@ jQuery(function() {
             "warning" : function(i) { SHUTDOWNDIALOG.setTitle(i); },
             "shutdownquestion" : function(i) { SHUTDOWNDIALOG.setMessage(i); },
             "shutdownnow" : function(i) { SHUTDOWNDIALOG.getButtons()[0].label = i; },
-            "shutdownabort" : function(i) { SHUTDOWNDIALOG.getButtons()[1].label = i; }
+            "shutdownabort" : function(i) { SHUTDOWNDIALOG.getButtons()[1].label = i; },
+            "contextmenu" : function(i) {
+                var l_lang = i.split(",");
+                jQuery.contextMenu({
+                    selector: ".agentactivable",
+                    autoHide: true,
+                    items : {
+                        activable : {
+                            name: l_lang[0] || "Activable",
+                            callback: function( k, o ) {
+
+                                jQuery( ".fa-check-circle" ).removeClass( "fa-check-circle" );
+                                o.$trigger.find( "span:nth-child(2)" ).addClass( "fa-check-circle" );
+
+                                LightJason.ajax("/api/simulation/asl/activate/" + o.$trigger.data("sourceid"))
+                                          .success(function (i) {
+                                              notifymessage({title: "Agent", text: i, type: "success"});
+                                          })
+                                          .error(function (i) {
+                                              notifymessage({title: i.statusText, text: i.responseText, type: "error"});
+                                          });
+                            }
+                        },
+                        remove : {
+                            name: l_lang[1] || "Delete",
+                            callback: function( k, o ) { deleteagent( o.$trigger.data("sourceid"), l_editor ); }
+                        }
+                    }
+                });
+
+
+            }
+
         };
 
-
-
-    var l_editor = null,
-        l_visualizationobjects = {},
-        l_visualizationfunctions = {};
 
 
 
@@ -642,23 +695,6 @@ jQuery(function() {
                           .fail(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
                   })
                   .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-    });
-
-
-    // context menu
-    jQuery.contextMenu({
-        selector: ".activable",
-        autoHide: true,
-        items : {
-            activable : {
-                name: "Activable",
-                callback: function( k ) { console.log( "click: " + k ); }
-            },
-            remove : {
-                name: "Delete",
-                callback: function( k ) { console.log( "click: " + k ); }
-            }
-        }
     });
 
 
@@ -800,15 +836,7 @@ jQuery(function() {
 
     // delete agent
     jQuery( "#ui-deleteagent" ).click(function() {
-        LightJason.ajax( "/api/simulation/asl/remove/" + l_editor.options.sourceid )
-            .success(function(i) {
-                notifymessage({ title: "Agent", text: i, type: "success" });
-                l_editor.setValue("");
-                l_editor.options.sourceid = undefined;
-                agentlist();
-                aslname( "" );
-            })
-            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+        deleteagent( l_editor.options.sourceid, l_editor );
     });
 
 
