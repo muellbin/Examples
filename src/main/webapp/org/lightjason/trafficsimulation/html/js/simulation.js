@@ -394,19 +394,19 @@ function agentlist()
             o.forEach(function(i) {
                 const l_item = jQuery("<a>").attr( "href", "#" )
                                             .attr("data-sourceid", i.id)
-                                            .addClass("ui-agent-source");
+                                            .addClass("ui-agent-source")
+                                            .append( jQuery("<span>").text( i.id ) );
 
                 l_dom.append( jQuery("<li>").append( l_item ) );
-                l_item.append( jQuery("<span>").text( i.id ) );
 
                 if ( i.activable )
                 {
-                    const l_icon = jQuery("<span>");
+                    const l_icon = jQuery("<span>").addClass( "fa" );
                     l_item.addClass( "agentactivable" );
                     l_item.append( l_icon );
 
                     if ( i.active )
-                        l_icon.addClass("fa fa-check-circle");
+                        l_icon.addClass("fa-check-circle");
                 }
             });
         })
@@ -572,11 +572,13 @@ jQuery(function() {
                         activable : {
                             name: l_lang[0] || "Activable",
                             callback: function( k, o ) {
-                                jQuery( ".agentactivable" agentactive" )
+
+                                jQuery( ".fa-check-circle" ).removeClass( "fa-check-circle" );
+                                o.$trigger.find( "span:nth-child(2)" ).addClass( "fa-check-circle" );
+
                                 LightJason.ajax("/api/simulation/asl/activate/" + o.$trigger.data("sourceid"))
                                           .success(function (i) {
                                               notifymessage({title: "Agent", text: i, type: "success"});
-                                              agentlist();
                                           })
                                           .error(function (i) {
                                               notifymessage({title: i.statusText, text: i.responseText, type: "error"});
