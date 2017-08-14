@@ -389,7 +389,6 @@ function agentlist()
 {
     LightJason.ajax( "/api/simulation/agentlist" )
         .success(function(o) {
-
             const l_dom = jQuery( "#ui-agents" ).empty();
 
             o.forEach(function(i) {
@@ -403,14 +402,36 @@ function agentlist()
                 if ( i.activable )
                 {
                     const l_icon = jQuery("<span>");
-
-                    l_item.addClass( "activable" );
+                    l_item.addClass( "agentactivable" );
                     l_item.append( l_icon );
 
                     if ( i.active )
                         l_icon.addClass("fa fa-check-circle");
                 }
             });
+        })
+        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+}
+
+/**
+ * deletes an agent
+ *
+ * @param pc_id agent id
+ * @param po_editor editor instance
+ */
+function deleteagent( pc_id, po_editor )
+{
+    LightJason.ajax( "/api/simulation/asl/remove/" + pc_id )
+        .success(function(i) {
+            notifymessage({ title: "Agent", text: i, type: "success" });
+            agentlist();
+
+            if ( p_editor.options.sourceid !== pc_id )
+                return;
+
+            aslname( "" );
+            l_editor.setValue("");
+            l_editor.options.sourceid = undefined;
         })
         .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
@@ -459,6 +480,11 @@ jQuery(function() {
     init_knob();
     init_autosize();
     agentlist();
+
+
+    var l_editor = null,
+        l_visualizationobjects = {},
+        l_visualizationfunctions = {};
 
     const MARKDOWN = new showdown.Converter(),
           SIMULATIONSCREEN = jQuery("#simulation-screen"),
@@ -540,16 +566,26 @@ jQuery(function() {
             "contextmenu" : function(i) {
                 var l_lang = i.split(",");
                 jQuery.contextMenu({
-                    selector: ".activable",
+                    selector: ".agentactivable",
                     autoHide: true,
                     items : {
                         activable : {
                             name: l_lang[0] || "Activable",
-                            callback: function( k ) { console.log( "click: " + k ); }
+                            callback: function( k, o ) {
+                                jQuery( ".agentactivable" agentactive" )
+                                LightJason.ajax("/api/simulation/asl/activate/" + o.$trigger.data("sourceid"))
+                                          .success(function (i) {
+                                              notifymessage({title: "Agent", text: i, type: "success"});
+                                              agentlist();
+                                          })
+                                          .error(function (i) {
+                                              notifymessage({title: i.statusText, text: i.responseText, type: "error"});
+                                          });
+                            }
                         },
                         remove : {
                             name: l_lang[1] || "Delete",
-                            callback: function( k ) { console.log( "click: " + k ); }
+                            callback: function( k, o ) { deleteagent( o.$trigger.data("sourceid"), l_editor ); }
                         }
                     }
                 });
@@ -559,11 +595,6 @@ jQuery(function() {
 
         };
 
-
-
-    var l_editor = null,
-        l_visualizationobjects = {},
-        l_visualizationfunctions = {};
 
 
 
@@ -803,15 +834,7 @@ jQuery(function() {
 
     // delete agent
     jQuery( "#ui-deleteagent" ).click(function() {
-        LightJason.ajax( "/api/simulation/asl/remove/" + l_editor.options.sourceid )
-            .success(function(i) {
-                notifymessage({ title: "Agent", text: i, type: "success" });
-                l_editor.setValue("");
-                l_editor.options.sourceid = undefined;
-                agentlist();
-                aslname( "" );
-            })
-            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+        deleteagent( l_editor.options.sourceid, l_editor );
     });
 
 

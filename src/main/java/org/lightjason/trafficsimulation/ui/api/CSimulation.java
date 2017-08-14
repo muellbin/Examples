@@ -207,6 +207,33 @@ public final class CSimulation
     }
 
     /**
+     * activates an asl script
+     *
+     * @param p_id identifier of the agent
+     * @return response
+     */
+    @GET
+    @Path( "/asl/activate/{id}" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    public final Response setasl( @PathParam( "id" ) final String p_id )
+    {
+        final ERuntime.CAgentDefinition l_data = ERuntime.INSTANCE.agents().get( p_id );
+        if ( l_data == null )
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
+        if ( !l_data.getvisibility() )
+            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
+
+        ERuntime.INSTANCE
+                .agents()
+                .values()
+                .forEach( ERuntime.CAgentDefinition::deactivate );
+        l_data.activate();
+
+        return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentactivate", p_id ) ).build();
+    }
+
+
+    /**
      * sets the simulation time
      *
      * @param p_time simulation time
@@ -265,6 +292,8 @@ public final class CSimulation
             return Response.status( Response.Status.NOT_FOUND ).entity( l_exception.getLocalizedMessage() ).build();
         }
     }
+
+
 
     /**
      * returns the current language

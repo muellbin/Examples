@@ -129,9 +129,10 @@ public enum ERuntime implements IRuntime
                 new CAgentDefinition(
                     CConfiguration.INSTANCE.getOrDefault( true, "agent", l_id, "visible" ),
                     CConfiguration.baseagents().noneMatch( l_id::equals ),
+                    CConfiguration.activatableagents().anyMatch( l_id::equals ),
                     l_id,
                     IOUtils.toString( l_stream, "UTF-8" )
-                ).swapactive()
+                )
             );
         }
         catch ( final IOException l_exception )
@@ -319,12 +320,13 @@ public enum ERuntime implements IRuntime
          * @param p_activable activatable flag
          * @param p_asl asl code
          */
-        CAgentDefinition( final boolean p_visiblity, final boolean p_activable, @Nonnull final String p_name, @Nonnull final String p_asl )
+        CAgentDefinition( final boolean p_visiblity, final boolean p_activable, final boolean p_active, @Nonnull final String p_name, @Nonnull final String p_asl )
         {
             m_asl = p_asl;
             m_name = p_name;
-            m_visibility = p_visiblity;
+            m_active = p_active;
             m_activable = p_activable;
+            m_visibility = p_visiblity;
         }
 
         @Override
@@ -405,18 +407,34 @@ public enum ERuntime implements IRuntime
         }
 
         /**
-         * swap active
+         * activate
          *
          * @return self reference
          */
         @Nonnull
-        public final CAgentDefinition swapactive()
+        public final CAgentDefinition activate()
         {
             if ( !m_activable )
                 return this;
 
-            m_active = !m_active;
+            m_active = true;
             return this;
         }
+
+        /**
+         * deactivate
+         *
+         * @return self reference
+         */
+        @Nonnull
+        public final CAgentDefinition deactivate()
+        {
+            if ( !m_activable )
+                return this;
+
+            m_active = false;
+            return this;
+        }
+
     }
 }
