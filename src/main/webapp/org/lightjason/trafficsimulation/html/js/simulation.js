@@ -354,6 +354,38 @@ function codemirrorsave( pc_id, pc_source )
 }
 
 /**
+ * help tooltips
+ */
+function helptooltip() {
+    const l_targetid = jQuery(this).data("targetid");
+
+    jQuery("#simulation-help").hide();
+    jQuery(".modal-backdrop").hide();
+
+    // examples: http://iamdanfox.github.io/anno.js/
+    var anno = new Anno( {
+        target : '#' + l_targetid,
+        position: jQuery(this).data("position"),
+        content: jQuery(this).data("content"),
+        buttons: [
+            {
+                text: 'Done',
+                click: function(anno, evt){
+                    anno.hide();
+                    jQuery(".modal-backdrop").show()
+                    jQuery("#simulation-help").show();
+                }
+            } ]
+    } ).show();
+
+    if ( !jQuery(this).data("backdrop") )
+        jQuery( ".anno-overlay" ).css( "display", "none" );
+
+    if ( jQuery(this).data("deletebg") )
+        jQuery( "#" + l_targetid ).css( "background", "none" );
+}
+
+/**
  * sets the asl name into ui
  *
  * @param pc_value value
@@ -448,6 +480,8 @@ function shutdown()
 
 window.PhaserGlobal = { hideBanner: true };
 
+showdown.setFlavor("github");
+
 CodeMirror.commands.save = function(i) { codemirrorsave( i.options.sourceid, i.getValue() ); };
 
 MathJax.Hub.Config({
@@ -486,7 +520,11 @@ jQuery(function() {
         l_visualizationobjects = {},
         l_visualizationfunctions = {};
 
-    const MARKDOWN = new showdown.Converter(),
+    const MARKDOWN = new showdown.Converter({
+            smartIndentationFix: true,
+            encodeEmails: true,
+            openLinksInNewWindow: true
+          }),
           SIMULATIONSCREEN = jQuery("#simulation-screen"),
           SIMULATIONSPEED = jQuery("#simulation-speed"),
           SIMULATIONMUSIC = jQuery( "#simulation-music" ),
@@ -691,7 +729,7 @@ jQuery(function() {
         LightJason.ajax( "/api/simulation/language/current" )
                   .success(function(l) {
                       jQuery.get( "/docs/" + lo.data( "languagedoc" ) + "." + l + ".md" , "text" )
-                          .done(function(d) { lo.html( MARKDOWN.makeHtml(d) ); })
+                          .done(function(d) { lo.html( '<script>jQuery(".helptooltip").click( helptooltip );</script>' + MARKDOWN.makeHtml(d) ); })
                           .fail(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
                   })
                   .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
@@ -1139,41 +1177,6 @@ jQuery(function() {
             GAME.music.stop();
     });
 
-
-    //help
-    jQuery( ".helpview" ).on("click", function() {
-        console.log("help item clicked!");
-        var l_targetid = jQuery(this).data("targetid");
-        var l_backdrop = jQuery(this).data("backdrop");
-        var l_position = jQuery(this).data("position");
-        var l_deletebg = jQuery(this).data("deletebg");
-        var l_content = jQuery(this).data("content");
-
-        jQuery("#simulation-help").hide();
-        jQuery(".modal-backdrop").hide();
-
-        // examples: http://iamdanfox.github.io/anno.js/
-        var anno = new Anno( {
-            target : '#' + l_targetid,
-            position: l_position,
-            content: l_content,
-            buttons: [
-            {
-                text: 'Done',
-                click: function(anno, evt){
-                    anno.hide();
-                    jQuery(".modal-backdrop").show()
-                    jQuery("#simulation-help").show();
-                }
-            } ]
-        } ).show();
-
-        if ( !l_backdrop )
-            jQuery( ".anno-overlay" ).css( "display", "none" );
-
-        if ( l_deletebg )
-            jQuery( "#" + l_targetid ).css( "background", "none" );
-    });
 
 
 
