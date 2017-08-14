@@ -536,7 +536,27 @@ jQuery(function() {
             "warning" : function(i) { SHUTDOWNDIALOG.setTitle(i); },
             "shutdownquestion" : function(i) { SHUTDOWNDIALOG.setMessage(i); },
             "shutdownnow" : function(i) { SHUTDOWNDIALOG.getButtons()[0].label = i; },
-            "shutdownabort" : function(i) { SHUTDOWNDIALOG.getButtons()[1].label = i; }
+            "shutdownabort" : function(i) { SHUTDOWNDIALOG.getButtons()[1].label = i; },
+            "contextmenu" : function(i) {
+                var l_lang = i.split(",");
+                jQuery.contextMenu({
+                    selector: ".activable",
+                    autoHide: true,
+                    items : {
+                        activable : {
+                            name: l_lang[0] || "Activable",
+                            callback: function( k ) { console.log( "click: " + k ); }
+                        },
+                        remove : {
+                            name: l_lang[1] || "Delete",
+                            callback: function( k ) { console.log( "click: " + k ); }
+                        }
+                    }
+                });
+
+
+            }
+
         };
 
 
@@ -642,23 +662,6 @@ jQuery(function() {
                           .fail(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
                   })
                   .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-    });
-
-
-    // context menu
-    jQuery.contextMenu({
-        selector: ".activable",
-        autoHide: true,
-        items : {
-            activable : {
-                name: "Activable",
-                callback: function( k ) { console.log( "click: " + k ); }
-            },
-            remove : {
-                name: "Delete",
-                callback: function( k ) { console.log( "click: " + k ); }
-            }
-        }
     });
 
 
