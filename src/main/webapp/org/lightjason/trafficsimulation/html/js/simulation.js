@@ -1112,7 +1112,40 @@ jQuery(function() {
     });
 
 
+    //help
+    jQuery( ".helpview" ).on("click", function() {
+        console.log("help item clicked!");
+        var l_targetid = jQuery(this).data("targetid");
+        var l_backdrop = jQuery(this).data("backdrop");
+        var l_position = jQuery(this).data("position");
+        var l_deletebg = jQuery(this).data("deletebg");
+        var l_content = jQuery(this).data("content");
 
+        jQuery("#simulation-help").hide();
+        jQuery(".modal-backdrop").hide();
+
+        // examples: http://iamdanfox.github.io/anno.js/
+        var anno = new Anno( {
+            target : '#' + l_targetid,
+            position: l_position,
+            content: l_content,
+            buttons: [
+            {
+                text: 'Done',
+                click: function(anno, evt){
+                    anno.hide();
+                    jQuery(".modal-backdrop").show()
+                    jQuery("#simulation-help").show();
+                }
+            } ]
+        } ).show();
+
+        if ( !l_backdrop )
+            jQuery( ".anno-overlay" ).css( "display", "none" );
+
+        if ( l_deletebg )
+            jQuery( "#" + l_targetid ).css( "background", "none" );
+    });
 
 
 

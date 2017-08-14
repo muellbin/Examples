@@ -1,13 +1,15 @@
 --- Hier soll die Hilfe zu finden sein ---
 
-<script type="text/javascript" src="../js/help.js"></script>
+<script type="text/javascript">
 
-* <a onclick="return showanno( 'widget-simulation', true, 'bottom', false )">Simulation</a>
-* <a onclick="return showanno( 'widget-speed', true, 'bottom', false )">Speed</a>
-* <a onclick="return showanno( 'widget-penalty', true, 'bottom', false )">Penalty</a>
-* <a onclick="return showanno( 'widget-editor', true, 'top', false )">Editor</a>
-* <a onclick="return showanno( 'information', false, 'right', true )">Information</a>
-* <a onclick="return showanno( 'agents', false, 'right', true )">Agents</a>
-* <a onclick="return showanno( 'footer-buttons', false, 'top', false )">Footer buttons</a>
 
+</script>
+
+* <a class="helpview" data-targetid="widget-simulation"  data-backdrop="true" data-position="bottom" data-deletebg="false" data-content="widget-simulation description..." href="#">Simulation</a>
+* <a class="helpview" data-targetid="widget-speed"  data-backdrop="true" data-position="bottom" data-deletebg="false" data-content="widget-speed description..." href="#">Speed</a>
+* <a class="helpview" data-targetid="widget-penalty"  data-backdrop="true" data-position="bottom" data-deletebg="false" data-content="widget-penalty description..." href="#">Penalty</a>
+* <a class="helpview" data-targetid="widget-editor"  data-backdrop="true" data-position="top" data-deletebg="false" data-content="widget-editor description..." href="#">Editor</a>
+* <a class="helpview" data-targetid="information"  data-backdrop="false" data-position="right" data-deletebg="true" data-content="information description..." href="#">Information</a>
+* <a class="helpview" data-targetid="agents"  data-backdrop="false" data-position="right" data-deletebg="true" data-content="agents description..." href="#">Agents</a>
+* <a class="helpview" data-targetid="footer-buttons"  data-backdrop="false" data-position="top" data-deletebg="false" data-content="footer-buttons description..." href="#">Footer buttons</a>
 
