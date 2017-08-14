@@ -32,14 +32,14 @@
                         <div class="menu_section active">
 
                             <ul class="nav side-menu">
-                                <li><a><i class="fa fa-home"></i> <span class="ui-languagelabel" data-languagelabel="information">Information</span> <span class="fa fa-chevron-down"></span></a>
+                                <li id="information"><a><i class="fa fa-home"></i> <span class="ui-languagelabel" data-languagelabel="information">Information</span> <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a class="btn-link ui-languagelabel" data-languagelabel="scenariodescription" data-toggle="modal" data-target="#simulation-description">Scenario</a></li>
                                         <li><a class="slide-view ui-languagelabel" data-slidesource="practice" data-languagelabel="slideexercise">Exercise Slides (Practice)</a></li>
                                         <li><a class="slide-view ui-languagelabel" data-slidesource="lecture" data-languagelabel="slidelecture">Lecture Slides (Theory)</a></li>
                                     </ul>
                                 </li>
-                                <li><a><i class="fa fa-edit"></i> <span class="ui-languagelabel" data-languagelabel="agents">Agents</span> <span class="fa fa-chevron-down"></span></a>
+                                <li id="agents"><a><i class="fa fa-edit"></i> <span class="ui-languagelabel" data-languagelabel="agents">Agents</span> <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" id="ui-agents">
                                     </ul>
                                 </li>
@@ -50,7 +50,7 @@
 
 
                     <!-- /menu footer buttons -->
-                    <div class="sidebar-footer hidden-small">
+                    <div class="sidebar-footer hidden-small" id="footer-buttons">
                         <a data-toggle="tooltip" data-placement="top" data-original-title="Run" id="simulation-run" class="ui-languagelabeldata" data-languagelabel="run" data-languagelabelid="original-title">
                             <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
                         </a>
@@ -214,7 +214,7 @@
                 <div class="row" id="first_row">
 
                     <!-- simulation canvas widget -->
-                    <div class="col-md-6">
+                    <div class="col-md-6" id="widget-simulation">
                         <div class="x_panel fixed_height_300">
                             <div class="x_title">
                                 <h2 class="ui-languagelabel" data-languagelabel="environment">Simulation Environment</h2>
@@ -231,7 +231,7 @@
 
 
                     <!-- speed canvas widget -->
-                    <div class="col-md-2">
+                    <div class="col-md-2" id="widget-speed">
                         <div class="x_panel fixed_height_300">
                             <div class="x_title">
                                 <h2 class="ui-languagelabel" data-languagelabel="vehicleinformation">Vehicle Information</h2>
@@ -261,7 +261,7 @@
 
 
                     <!-- penality canvas widget -->
-                    <div class="col-md-4">
+                    <div class="col-md-4" id="widget-penalty">
                         <div class="x_panel fixed_height_300">
                             <div class="x_title">
                                 <h2 class="ui-languagelabel" data-languagelabel="penalty">Penalty History</h2>
@@ -287,7 +287,7 @@
                 <div class="row" id="second_row">
 
                     <!-- code editor widget -->
-                    <div class="x_panel">
+                    <div class="x_panel" id="widget-editor">
                         <div class="x_title">
                             <h2 class="ui-languagelabel" data-languagelabel="editor" id="ui-editorheader">Agent Source Code</h2>
                             <ul class="nav navbar-right panel_toolbox">

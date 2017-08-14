@@ -19,6 +19,7 @@
     "url": "https://github.com/LightJason/Examples/issues"
   },
   "dependencies": {
+    "anno.js": "https://github.com/iamdanfox/anno.js/tarball/gh-pages",
     "bootstrap": "^3.3.7",
     "bootstrap3-dialog": "https://github.com/nakupanda/bootstrap3-dialog/tarball/master",
     "canvas-gauges": "https://github.com/Mikhus/canvas-gauges/tarball/master",
