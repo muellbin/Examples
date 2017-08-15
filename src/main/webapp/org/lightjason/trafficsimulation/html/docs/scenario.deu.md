@@ -1,4 +1,4 @@
-Ziel des Programms ist es eine ein [Multi-Agenten System (MAS)](https://de.wikipedia.org/wiki/Multiagentensystem) zu beschreiben.
+Ziel der Simulation ist es eine ein [Multi-Agenten System (MAS)](https://de.wikipedia.org/wiki/Multiagentensystem) zu beschreiben.
 Das Szenario umfasst folgende Problemstellung
 
 > Es ist ein Verkehrssystem beschrieben, in dem ein Agenten-Fahrzeug (grün) durch den Benutzer _programmiert_ werden soll,
