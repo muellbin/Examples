@@ -45,6 +45,7 @@ import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
@@ -105,6 +106,13 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         m_environment = p_environment;
         m_allowedspeed = p_allowedspeed.doubleValue();
         m_position = p_position;
+
+        if ( m_allowedspeed < 10 )
+            throw new RuntimeException( "maximumspeed is to low" );
+        if ( m_position.getQuick( 0 ) > m_position.getQuick( 1 ) )
+            throw new RuntimeException( "lane index must be from lower to upper" );
+        if ( m_position.getQuick( 2 ) < m_position.getQuick( 3 ) )
+            throw new RuntimeException( "position index must be from lower to upper" );
     }
 
     /*
