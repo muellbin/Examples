@@ -305,7 +305,8 @@ public final class CSimulation
     @Produces( MediaType.TEXT_PLAIN )
     public final String currentlanguage()
     {
-        return CCommon.languagebundle().getLocale().getISO3Language();
+        final String l_lang = CCommon.languagebundle().getLocale().getISO3Language();
+        return l_lang.isEmpty() ? Locale.ENGLISH.getISO3Language() : l_lang;
     }
 
 
