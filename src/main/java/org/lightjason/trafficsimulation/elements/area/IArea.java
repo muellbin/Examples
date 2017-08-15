@@ -23,7 +23,9 @@
 
 package org.lightjason.trafficsimulation.elements.area;
 
+import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
 import javax.annotation.Nonnull;
 
@@ -40,14 +42,6 @@ public interface IArea extends IObject<IArea>
      * @param p_object object
      * @return input object
      */
-    IObject<?> push( @Nonnull IObject<?> p_object );
-
-    /**
-     * check if vehicle inside
-     *
-     * @param p_object vehicle
-     * @return in-side flag
-     */
-    boolean inside( final IObject<?> p_object );
+    IVehicle push( @Nonnull IVehicle p_object, @Nonnull DoubleMatrix1D p_start, @Nonnull DoubleMatrix1D p_end, @Nonnull Number p_speed );
 
 }

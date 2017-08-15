@@ -306,6 +306,12 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     }
 
     @Override
+    public final double maximumspeed()
+    {
+        return m_maximumspeed;
+    }
+
+    @Override
     public final double speed()
     {
         return m_speed.get();

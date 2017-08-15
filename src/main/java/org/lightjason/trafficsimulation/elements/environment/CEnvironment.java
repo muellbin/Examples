@@ -202,11 +202,13 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     {
         final Number l_lane = p_vehicle.position().get( 0 );
         final Number l_start = p_vehicle.position().get( 1 );
-        final Number l_target = p_vehicle.nextposition().get( 1 );
+        final DoubleMatrix1D l_target = p_vehicle.nextposition();
+        final Number l_targetposition = l_target.get( 1 );
 
-        if ( ( l_start.intValue() < l_target.intValue()
-            ? IntStream.range( l_start.intValue() + 1, Math.min( l_target.intValue(), m_grid.columns() ) )
-            : IntStream.range( Math.max( l_target.intValue(), 0 ), l_start.intValue() - 1 ) )
+        // test free direction
+        if ( ( l_start.intValue() < l_targetposition.intValue()
+            ? IntStream.range( l_start.intValue() + 1, Math.min( l_targetposition.intValue(), m_grid.columns() ) )
+            : IntStream.range( Math.max( l_targetposition.intValue(), 0 ), l_start.intValue() - 1 ) )
                       .parallel()
                       .filter( i -> m_grid.getQuick( l_lane.intValue(), i ) != null )
                       .findAny()
@@ -214,9 +216,14 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         )
             return false;
 
+        // test area
+        m_areas.parallelStream().forEach( i -> i.push( p_vehicle, p_vehicle.position(), l_target, p_vehicle.speed() ) );
+
+
+        // object moving
         m_grid.setQuick( l_lane.intValue(), l_start.intValue(), null );
 
-        if ( ( l_target.intValue() > m_grid.columns() ) || ( l_target.intValue() < 0 ) )
+        if ( ( l_targetposition.intValue() > m_grid.columns() ) || ( l_targetposition.intValue() < 0 ) )
         {
             if ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) )
                 this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
@@ -225,8 +232,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             return true;
         }
 
-        m_grid.setQuick( l_lane.intValue(), l_target.intValue(), p_vehicle );
-        p_vehicle.position().setQuick( 1, l_target.intValue() );
+        m_grid.setQuick( l_lane.intValue(), l_targetposition.intValue(), p_vehicle );
+        p_vehicle.position().setQuick( 1, l_targetposition.intValue() );
         return true;
     }
 
@@ -361,12 +368,20 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "area/create" )
     private void areacreate( final Number p_positionfrom, final Number p_positionto, final Number p_lanefrom, final Number p_laneto, final Number p_maximumspeed )
     {
-        final IArea l_area = m_generatorarea.generatesingle( this, new DenseDoubleMatrix1D(
-            new double[]{p_lanefrom.doubleValue(), p_laneto.doubleValue(), p_positionfrom.doubleValue(), p_positionto.doubleValue()}
-        ), p_maximumspeed );
+        final IArea l_area = m_generatorarea.generatesingle(
+            this,
+            new DenseDoubleMatrix1D(
+                new double[]{
+                    p_lanefrom.doubleValue(), p_laneto.doubleValue(),
+                    EUnit.INSTANCE.kilometertocell( p_positionfrom.doubleValue() ).doubleValue(),
+                    EUnit.INSTANCE.kilometertocell( p_positionto.doubleValue() ).doubleValue()
+                }
+            ),
+            p_maximumspeed
+        );
 
         if ( l_area == null )
-            return;
+            throw new RuntimeException( "area not created" );
 
         m_areas.add( l_area );
         m_elements.put( l_area.id(), l_area );
@@ -383,8 +398,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/default/left" )
-    private void defaultvehicleleft( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration,
-                                     @Nonnegative final Number p_deceleration, @Nonnegative final Number p_lane )
+    private void defaultvehicleleft( final Number p_maximumspeed, final Number p_acceleration,
+                                     final Number p_deceleration, final Number p_lane )
     {
         this.defaultvehicle(
             new DenseDoubleMatrix1D( new double[]{p_lane.intValue() - 1, 0} ),
@@ -408,10 +423,9 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/default/position" )
-    private void defaultvehicleposition( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration,
-                                         @Nonnegative final Number p_deceleration, @Nonnegative final Number p_lane, @Nonnegative final Number p_position )
+    private void defaultvehicleposition( final Number p_maximumspeed, final Number p_acceleration,
+                                         final Number p_deceleration, final Number p_lane, @Nonnegative final Number p_position )
     {
-        //System.out.println( "p_lane: " + p_lane + ", y: " +  ( Math.min( m_grid.get().rows(), Math.max( 1, p_lane.intValue() ) ) - 1 ) );
         this.defaultvehicle(
             new DenseDoubleMatrix1D( new double[]{
                 Math.min( m_grid.rows(), Math.max( 1, p_lane.intValue() ) ) - 1,
@@ -435,8 +449,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * @param p_acceleration acceleration in m/s^2
      * @param p_deceleration deceleration in m/s^2
      */
-    private void defaultvehicle( @Nonnull final DoubleMatrix1D p_start, @Nonnegative final double p_goal,
-                                 @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
+    private void defaultvehicle( @Nonnull final DoubleMatrix1D p_start, final double p_goal, final Number p_maximumspeed,
+                                 final Number p_acceleration, final Number p_deceleration )
     {
         if ( p_start.get( 0 ) > m_grid.rows() - 1 )
             throw new RuntimeException( "lane number is to large" );
@@ -465,7 +479,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/user" )
-    private void uservehicle( @Nonnegative final Number p_maximumspeed, @Nonnegative final Number p_acceleration, @Nonnegative final Number p_deceleration )
+    private void uservehicle( final Number p_maximumspeed, final Number p_acceleration, final Number p_deceleration )
     {
         m_vehiclecache.add(
             m_generatoruservehicle.generatesingle(

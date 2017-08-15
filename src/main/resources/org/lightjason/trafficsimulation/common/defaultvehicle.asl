@@ -30,7 +30,7 @@
     L >= 0.2;
 
     vehicle/accelerate(1);
-    !driveleft;
+    !driveright;
     !drive
 .
 
@@ -42,8 +42,8 @@
 .
 
 
-// --- try to drive-left ---
-+!driveleft <-
+// --- try to drive-right ---
++!driveright <-
     L = math/statistic/randomsimple;
     L >= 0.35;
 

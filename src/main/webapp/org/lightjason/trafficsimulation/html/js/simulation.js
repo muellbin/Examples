@@ -364,7 +364,6 @@ function showhelptooltip() {
     hidehelptooltip();
     jQuery(".modal-backdrop").hide();
 
-    // examples: http://iamdanfox.github.io/anno.js/
     helptooltip = new Anno( {
         target : '#' + l_targetid,
         position: jQuery(this).data("position"),
@@ -540,7 +539,7 @@ jQuery(function() {
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
                             width: GAUGEWIDGET.width() * 2.5 / 4,
-                            height: GAUGEWIDGET.width() * 2.5 / 4,
+                            height: Math.min( 155, GAUGEWIDGET.width() * 2.5 / 4),
                             units: "km/h",
                             minValue: 0,
                             maxValue: 220,
@@ -729,7 +728,7 @@ jQuery(function() {
         LightJason.ajax( "/api/simulation/language/current" )
                   .success(function(l) {
                       jQuery.get( "/docs/" + lo.data( "languagedoc" ) + "." + l + ".md" , "text" )
-                          .done(function(d) { lo.html( '<script>jQuery(".helptooltip").mouseover( showhelptooltip );jQuery(".helptooltip").mouseout( hidehelptooltip );</script>' + MARKDOWN.makeHtml(d) ); })
+                          .done(function(d) { lo.html( '<script>jQuery(".helptooltip").mouseover( showhelptooltip ).mouseout( hidehelptooltip );</script>' + MARKDOWN.makeHtml(d) ); })
                           .fail(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
                   })
                   .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
@@ -900,7 +899,7 @@ jQuery(function() {
             GAME.layer.resize( GAME.instance.width, GAME.instance.height );
         }
 
-        GAUGE.update({ width: GAUGEWIDGET.width() * 2.5 / 4, height: GAUGEWIDGET.width() * 2.5 / 4 });
+        GAUGE.update({ width: GAUGEWIDGET.width() * 2.5 / 4, height: Math.min( 155, GAUGEWIDGET.width() * 2.5 / 4 ) });
     };
 
     jQuery( window ).resize(RESIZE);

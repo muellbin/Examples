@@ -107,6 +107,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         m_position = p_position;
     }
 
+    /*
     @Override
     public final IObject<?> push( @Nonnull final IObject<?> p_object )
     {
@@ -128,6 +129,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         return ( m_position.get( 0 ) <= p_object.position().get( 0 ) ) && ( p_object.position().get( 0 ) <= m_position.get( 1 ) )
             && ( m_position.get( 2 ) <= p_object.position().get( 1 ) ) && ( p_object.position().get( 1 ) <= m_position.get( 3 ) );
     }
+    */
 
     @Nonnull
     @Override
@@ -157,6 +159,15 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     }
 
     @Override
+    public final IVehicle push( @Nonnull final IVehicle p_object, @Nonnull final DoubleMatrix1D p_start,
+                                @Nonnull final DoubleMatrix1D p_end, @Nonnull final Number p_speed )
+    {
+        //http://www.w3ii.com/de/computer_graphics/computer_graphics_quick_guide.html
+        return p_object;
+    }
+
+
+    @Override
     protected final Stream<ILiteral> individualliteral( final IObject<?> p_object )
     {
         return Stream.of(
@@ -167,6 +178,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     @Override
     public final IArea call() throws Exception
     {
+        /*
         m_elements.parallelStream()
                   .filter( i -> !this.inside( i ) )
                   .filter( m_elements::remove )
@@ -176,6 +188,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
                         CLiteral.from( "element", CRawTerm.from( i ) )
                       )
                   ) );
+        */
 
         return super.call();
     }
@@ -272,13 +285,16 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         @Override
         protected final Triple<IArea, Boolean, Stream<String>> generate( @Nullable final Object... p_data )
         {
+            if ( ( p_data == null ) || ( p_data.length < 3 ) )
+                throw new RuntimeException( "not enough parameter for area" );
+
             return new ImmutableTriple<>(
                 new CArea(
                     m_configuration,
                     MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
                     (IEnvironment) p_data[0],
-                    null,
-                    null
+                    (DoubleMatrix1D) p_data[1],
+                    (Number) p_data[2]
                 ),
                 CConfiguration.INSTANCE.getOrDefault( false, "agent", "area", "visible" ),
                 Stream.of( FUNCTOR )

@@ -77,6 +77,14 @@ public interface IVehicle extends IObject<IVehicle>
     @Nonnegative
     double deceleration();
 
+    /**
+     * returns the maximum speed of the vehicle
+     *
+     * @return maximum speed
+     */
+    @Nonnegative
+    double maximumspeed();
+
 
 
     /**
