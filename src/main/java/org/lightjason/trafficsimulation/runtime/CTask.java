@@ -76,7 +76,15 @@ public class CTask implements ITask
             final IEnvironment l_environment = l_environmentgenerator.generatesingle(
                 p_elements,
                 this.generatorvehicle( p_agentdefinition, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),
-                this.generatorvehicle( p_agentdefinition, "uservehicle", IVehicle.ETYpe.USERVEHICLE ),
+                this.generatorvehicle( p_agentdefinition,
+                                       p_agentdefinition.entrySet()
+                                                        .stream()
+                                                        .filter( i -> i.getValue().getactive() )
+                                                        .findFirst()
+                                                        .map( Map.Entry::getKey )
+                                                        .orElseThrow( () -> new RuntimeException( CCommon.languagestring( this, "notactivefound" ) ) ),
+                                       IVehicle.ETYpe.USERVEHICLE
+                ),
                 this.generatorarea( p_agentdefinition )
             );
 
