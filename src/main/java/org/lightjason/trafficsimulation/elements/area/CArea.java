@@ -24,7 +24,11 @@
 package org.lightjason.trafficsimulation.elements.area;
 
 import cern.colt.matrix.DoubleMatrix1D;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
@@ -76,7 +80,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     /**
      * set of objects inside
      */
-    private final Set<IObject<?>> m_elements = new CopyOnWriteArraySet<>();
+    private final Multimap<IObject<?>, Pair<Number, Number>> m_elements = Multimaps.synchronizedMultimap( HashMultimap.create() );
     /**
      * allowed speed
      */
@@ -122,14 +126,19 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         }
         return p_object;
     }
-
-    @Override
-    public final boolean inside( final IObject<?> p_object )
-    {
-        return ( m_position.get( 0 ) <= p_object.position().get( 0 ) ) && ( p_object.position().get( 0 ) <= m_position.get( 1 ) )
-            && ( m_position.get( 2 ) <= p_object.position().get( 1 ) ) && ( p_object.position().get( 1 ) <= m_position.get( 3 ) );
-    }
     */
+
+    /**
+     * checking if a position is inside the area
+     *
+     * @param p_position position
+     * @return is-inside flag
+     */
+    private boolean inside( final DoubleMatrix1D p_position )
+    {
+        return ( m_position.get( 0 ) <= p_position.get( 0 ) ) && ( p_position.get( 0 ) <= m_position.get( 1 ) )
+            && ( m_position.get( 2 ) <= p_position.get( 1 ) ) && ( p_position.get( 1 ) <= m_position.get( 3 ) );
+    }
 
     @Nonnull
     @Override
@@ -162,6 +171,8 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     public final IVehicle push( @Nonnull final IVehicle p_object, @Nonnull final DoubleMatrix1D p_start,
                                 @Nonnull final DoubleMatrix1D p_end, @Nonnull final Number p_speed )
     {
+        // check if start or end position is inside
+
         //http://www.w3ii.com/de/computer_graphics/computer_graphics_quick_guide.html
         return p_object;
     }
@@ -194,18 +205,6 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     }
 
     // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------
-
-    /**
-     * returns a list of all vehicles inside
-     *
-     * @return list
-     */
-    @IAgentActionFilter
-    @IAgentActionName( name = "element/list" )
-    private List<IObject<?>> list()
-    {
-        return new ArrayList<>( m_elements );
-    }
 
     /**
      * returns the current speed
