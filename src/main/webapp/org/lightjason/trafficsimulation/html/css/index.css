@@ -42,3 +42,7 @@
 .fixed_height_300 {
     height: 300px;
 }
+
+.anno-content {
+  background-color: #ffffcc !important;
+}

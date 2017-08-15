@@ -353,29 +353,23 @@ function codemirrorsave( pc_id, pc_source )
     .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 }
 
+var helptooltip;
+
 /**
  * help tooltips
  */
-function helptooltip() {
+function showhelptooltip() {
     const l_targetid = jQuery(this).data("targetid");
 
-    jQuery("#simulation-help").hide();
+    hidehelptooltip();
     jQuery(".modal-backdrop").hide();
 
     // examples: http://iamdanfox.github.io/anno.js/
-    var anno = new Anno( {
+    helptooltip = new Anno( {
         target : '#' + l_targetid,
         position: jQuery(this).data("position"),
         content: jQuery(this).data("content"),
-        buttons: [
-            {
-                text: 'Done',
-                click: function(anno, evt){
-                    anno.hide();
-                    jQuery(".modal-backdrop").show()
-                    jQuery("#simulation-help").show();
-                }
-            } ]
+        buttons: []
     } ).show();
 
     if ( !jQuery(this).data("backdrop") )
@@ -383,6 +377,12 @@ function helptooltip() {
 
     if ( jQuery(this).data("deletebg") )
         jQuery( "#" + l_targetid ).css( "background", "none" );
+}
+
+function hidehelptooltip() {
+    if( typeof helptooltip !== "undefined" && helptooltip._annoElem !== null )
+        helptooltip.hide();
+    jQuery(".modal-backdrop").show();
 }
 
 /**
@@ -729,7 +729,7 @@ jQuery(function() {
         LightJason.ajax( "/api/simulation/language/current" )
                   .success(function(l) {
                       jQuery.get( "/docs/" + lo.data( "languagedoc" ) + "." + l + ".md" , "text" )
-                          .done(function(d) { lo.html( '<script>jQuery(".helptooltip").click( helptooltip );</script>' + MARKDOWN.makeHtml(d) ); })
+                          .done(function(d) { lo.html( '<script>jQuery(".helptooltip").mouseover( showhelptooltip );jQuery(".helptooltip").mouseout( hidehelptooltip );</script>' + MARKDOWN.makeHtml(d) ); })
                           .fail(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
                   })
                   .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
