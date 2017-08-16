@@ -33,12 +33,12 @@ Agent-Orientated programming with AgentSpeak(L++)
     * [Belief-desire-intention (BDI)](https://en.wikipedia.org/wiki/Belief%E2%80%93desire%E2%80%93intention_model) architecture 
     * [Procedural reasoning system (PRS)](https://en.wikipedia.org/wiki/Procedural_reasoning_system)  as execution mechanism 
     * [Logical programming language](https://en.wikipedia.org/wiki/Logic_programming) to represent data with _symbols_ and _facts_
-    * Java reference implementation [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hübner
+    * Java reference implementation [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. H端bner
 
 ---
 ## Lecture Recap II
 
-* Based on the work of Rao, Bordini and Hübner, [[Aschermann, Kraus, 2006]](https://lightjason.github.io/publication/2016-eumas.pdf) designed the agent language AgentSpeak(L++) and [reimplemented it from scratch](https://github.com/AgentSpeak), featuring
+* Based on the work of Rao, Bordini and H端bner, [[Aschermann, Kraus, 2006]](https://lightjason.github.io/publication/2016-eumas.pdf) designed the agent language AgentSpeak(L++) and [reimplemented it from scratch](https://github.com/AgentSpeak), featuring
     * clean and strict syntax with state-of-the-art technologies
     * [well](https://lightjason.github.io) [documented](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/) [software](http://lightjason.github.io/AgentSpeak/sources/) (not just "documentation by research papers")
     * extended PRS with a mechanism optimised for concurrency
@@ -134,7 +134,7 @@ Any literal can be a [belief or fact](https://lightjason.github.io/knowledgebase
 	* sensors the agent uses to perceive its environment.
   	* agents themselves, so the agent can _conclude_ anything by combining beliefs to new ones
 
-  Note: Perceptions can be wrong, if for example a sensor is defect or other agents simply "lie", so a .important[belief can be perceived as true, but need not to be factual true]
+  Note: Perceptions can be wrong, if for example a sensor is defect or other agents simply "lie", so a .important[belief can be percieved as true, but need not to be factual true]
 
 ---
 ### Variables
@@ -190,10 +190,10 @@ The example (prev. slide) translates to
 
 <svg height=125px class="railroad-diagram" viewBox="0 0 350 92" id="svg_37e402d5ccf7ec7d8ed9ebd1d8f2fe97"><path d="M20 21v20m10-20v20M20 31h20.5m-.5 0h10m0 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 31h4m52 0h4M74 20h52v22H74z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#883acd43c77567e1c3baced84ccf6ed7"><text x="100" y="35">PLUS</text></a></g><path d="M130 31h20M50 31a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 50h60v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#ffc0d9b54a1fe677c4c9e6b050e67c81"><text x="100" y="65">MINUS</text></a></g><path d="M130 61a10 10 0 0 0 10-10V41a10 10 0 0 1 10-10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M160 20h140v22H160z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#a811f517fa7f9ba04cf05d3a6c777799"><text x="230" y="35">EXCLAMATIONMARK</text></a></g><path d="M300 31h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
 
-* Goals define which plans an agent should try to instantiate and execute.
+* Goals define which plans an agent should try to instatiate and execute.
 * They can be defined as 
     * initial goal, e.g. by convention `!main.` or 
-    * inside plans, e.g. `!dosomething(1)`, which means _"try to instantiate and execute plan `dosomething` (with parameter variable `X` set to `1`) in the next cycle"_.
+    * inside plans, e.g. `!dosomething(1)`, which means _"try to instantiate and execute a plan `dosomething(X)` (with parameter variable `X` set to `1`) in the next cycle"_.
   
   (-> see example on the next slide)
 
@@ -234,8 +234,8 @@ The example (prev. slide) translates to
 * Agents are repeatedly executed by a [runtime](https://lightjason.github.io/knowledgebase/logicalprogramming/#runtime) of the simulation.
 * Each time an agent gets executed it runs through the [_agent cycle_](https://lightjason.github.io/knowledgebase/differencetojason/#lightjason-agent-cycle):
 
-1. updating beliefs by perceiving the environment with sensors
-2. executes all possible, i.e. _instantiable_ plans in parallel
+1. updating beliefs bei perceives the environment with sensors
+2. executes all possible, i.e. _instanciable_ plans in parallel
 
 > __But each step is done in a parallel execution, so all data of the sensors are collected in parallel and all possible plans are run in parallel and all agents work in parallel__
 
