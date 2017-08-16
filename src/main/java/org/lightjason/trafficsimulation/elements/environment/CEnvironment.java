@@ -373,8 +373,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             new DenseDoubleMatrix1D(
                 new double[]{
                     p_lanefrom.doubleValue(), p_laneto.doubleValue(),
-                    EUnit.INSTANCE.kilometertocell( p_positionfrom.doubleValue() ).doubleValue(),
-                    EUnit.INSTANCE.kilometertocell( p_positionto.doubleValue() ).doubleValue()
+                    p_positionfrom.doubleValue(), p_positionto.doubleValue()
                 }
             ),
             p_maximumspeed

@@ -35,10 +35,6 @@ Agent-Orientated programming with AgentSpeak(L++)
   * [Logical programming language](https://en.wikipedia.org/wiki/Logic_programming) to represent data with _symbols_ and _facts_
   * Java reference implementation [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hübner
 
-* But as shown by Aschermann and Kraus at [EUMAS 2016](https://lightjason.github.io/publication/2016-eumas-slides.pdf)
-  * _AgentSpeak(L)_ language not suitable for describing concurrently running agents and lacks consistent grammar
-  * _Jason_ not on a par with State-of-the-Art techniques, e.g. concurrency, documentation, bug resilience
- 
 ---
 ## Lecture Recap II
 
