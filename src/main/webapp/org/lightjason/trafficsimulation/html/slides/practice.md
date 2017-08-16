@@ -134,7 +134,9 @@ Any literal can be a [belief or fact](https://lightjason.github.io/knowledgebase
 	* sensors the agent uses to perceive its environment.
   	* agents themselves, so the agent can _conclude_ anything by combining beliefs to new ones
 
-  Note: Perceptions can be wrong, if for example a sensor is defect or other agents simply "lie", so a .important[belief can be percieved as true, but need not to be factual true]
+Note: Perceptions might be wrong!
+If for example a sensor is defect or other agents simply "lie" (depending on the scenario).
+So a .important[belief can be percieved as true, but need not to be factual true].
 
 ---
 ### Variables
