@@ -38,7 +38,7 @@ Agent-Orientated programming with AgentSpeak(L++)
 ---
 ## Lecture Recap II
 
-* Based on the work of Rao, Bordini and Hübner, we designed the agent language AgentSpeak(L++) in [[Aschermann, Kraus, 2006]](https://lightjason.github.io/publication/2016-eumas.pdf) and [reimplemented it from scratch](https://github.com/AgentSpeak), featuring
+* Based on the work of Rao, Bordini and Hübner, we designed the agent language AgentSpeak(L++) in [[Aschermann, Kraus, 2006]](https://lightjason.github.io/publication/2016-eumas.pdf) and [reimplemented it from scratch](https://github.com/LightJason/AgentSpeak), featuring
 	* clean and strict syntax with state-of-the-art technologies
 	* [well](https://lightjason.github.io) [documented](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/) [software](http://lightjason.github.io/AgentSpeak/sources/) (not just "documentation by research papers")
 	* extended PRS with a mechanism optimised for concurrency
