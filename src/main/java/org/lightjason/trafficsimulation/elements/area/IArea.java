@@ -27,6 +27,7 @@ import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 
@@ -42,6 +43,22 @@ public interface IArea extends IObject<IArea>
      * @param p_object object
      * @return input object
      */
-    IVehicle push( @Nonnull IVehicle p_object, @Nonnull DoubleMatrix1D p_start, @Nonnull DoubleMatrix1D p_end, @Nonnull Number p_speed );
+    IVehicle push( @Nonnull IVehicle p_object, @Nonnull DoubleMatrix1D p_start, @Nonnull DoubleMatrix1D p_end, @Nonnull @Nonnegative Number p_speed );
+
+    /**
+     * returns the allowed speed in km/h
+     *
+     * @return allowed speed
+     */
+    @Nonnegative
+    double allowedspeed();
+
+    /**
+     * length / width of the area in km
+     *
+     * @return length
+     */
+    @Nonnegative
+    double length();
 
 }

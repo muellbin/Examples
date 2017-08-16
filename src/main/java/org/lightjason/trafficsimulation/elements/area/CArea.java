@@ -33,19 +33,24 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
+import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.execution.IVariableBuilder;
+import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+import org.lightjason.agentspeak.language.variable.CConstant;
+import org.lightjason.agentspeak.language.variable.IVariable;
 import org.lightjason.trafficsimulation.common.CConfiguration;
+import org.lightjason.trafficsimulation.elements.EUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
@@ -86,6 +91,11 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      * current position (lane start, lane end, position on the lane start, position on the lane end)
      */
     private final DoubleMatrix1D m_position;
+    /**
+     * length of the area
+     */
+    private final double m_length;
+
 
     /**
      * ctor
@@ -113,6 +123,12 @@ public final class CArea extends IBaseObject<IArea> implements IArea
             throw new RuntimeException( "lane index must be from lower to upper" );
         if ( m_position.getQuick( 2 ) < m_position.getQuick( 3 ) )
             throw new RuntimeException( "position index must be from lower to upper" );
+
+        // calculate km in cell position
+        m_length = m_position.getQuick( 3 ) - m_position.getQuick( 2 );
+        m_position.setQuick( 2, EUnit.INSTANCE.kilometertocell( m_position.getQuick( 2 ) ).doubleValue() );
+        m_position.setQuick( 3, EUnit.INSTANCE.kilometertocell( m_position.getQuick( 3 ) ).doubleValue() );
+
     }
 
     /*
@@ -181,6 +197,18 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         return p_object;
     }
 
+    @Override
+    public final double allowedspeed()
+    {
+        return m_allowedspeed;
+    }
+
+    @Override
+    public final double length()
+    {
+        return m_length;
+    }
+
 
     @Override
     protected final Stream<ILiteral> individualliteral( final IObject<?> p_object )
@@ -218,12 +246,28 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/speed" )
-    private double speed( @Nonnull final IObject<?> p_object )
+    private double speed( final IObject<?> p_object )
     {
         if ( !( p_object instanceof IVehicle ) )
             throw new RuntimeException( MessageFormat.format( "speed value can be read for vehicles only, but it is: {0}", p_object ) );
 
         return p_object.<IVehicle>raw().speed();
+    }
+
+    /**
+     * reutns the maximum speed of a vehicle
+     *
+     * @param p_object object
+     * @return maximum speed of the object
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "vehicle/maximumspeed" )
+    private double maximumspeed( final IObject<?> p_object )
+    {
+        if ( !( p_object instanceof IVehicle ) )
+            throw new RuntimeException( MessageFormat.format( "speed value can be read for vehicles only, but it is: {0}", p_object ) );
+
+        return p_object.<IVehicle>raw().maximumspeed();
     }
 
     /**
@@ -234,7 +278,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/penalty" )
-    private void penalty( @Nonnull final IObject<?> p_object, @Nonnull final Number p_value )
+    private void penalty( final IObject<?> p_object, final Number p_value )
     {
         if ( !( p_object instanceof IVehicle ) )
             throw new RuntimeException( MessageFormat.format( "penality value can be set for vehicles only, but it is set to: {0}", p_object ) );
@@ -274,7 +318,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
          */
         public CGenerator( @Nonnull final InputStream p_stream ) throws Exception
         {
-            super( p_stream, CArea.class );
+            super( p_stream, CArea.class, new CVariableBuilder() );
         }
 
         @Override
@@ -301,6 +345,24 @@ public final class CArea extends IBaseObject<IArea> implements IArea
                 ),
                 CConfiguration.INSTANCE.getOrDefault( false, "agent", "area", "visible" ),
                 Stream.of( FUNCTOR )
+            );
+        }
+    }
+
+    /**
+     * variable builder of vehicle
+     */
+    private static class CVariableBuilder implements IVariableBuilder
+    {
+
+        @Override
+        public final Stream<IVariable<?>> apply( final IAgent<?> p_agent, final IInstantiable p_instance )
+        {
+            final IArea l_area = p_agent.<IArea>raw();
+
+            return Stream.of(
+                new CConstant<>( "Length", l_area.length() ),
+                new CConstant<>( "AllowedSpeed", l_area.allowedspeed() )
             );
         }
     }
