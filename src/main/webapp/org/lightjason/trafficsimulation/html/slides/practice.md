@@ -27,18 +27,24 @@ Agent-Orientated programming with AgentSpeak(L++)
 
 ---
 <!-- page_number: true -->
-## Lecture Recap
+## Lecture Recap I
 
-* [AgentSpeak(L)](https://en.wikipedia.org/wiki/AgentSpeak) introduced in 1996 from A. Rao
-	* uses the [belief-desire-intention (BDI)](https://en.wikipedia.org/wiki/Belief%E2%80%93desire%E2%80%93intention_model) architecture 
-	* execution mechanisum is [Procedural reasoning system (PRS)](https://en.wikipedia.org/wiki/Procedural_reasoning_system)
-	* data is described in _symbols and facts_ with is used in a [logical programming language](https://en.wikipedia.org/wiki/Logic_programming)
-* We have extended this concept and the Java implemention  [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hübner to our .important[AgentSpeak(L++)] 
-	* clean and strict syntax with state-of-the-art features
-	* append the PRS with concurrency mechanism
-	* using a [REST-API](https://en.wikipedia.org/wiki/Representational_state_transfer) to get a flexible system independed controlling
-	* boost-up the execution mechanism up to approximatly 2.6 Mio agents on a desktop computer
-	* additional support for cloud computing with [Hadoop](https://en.wikipedia.org/wiki/Apache_Hadoop)
+* History: [AgentSpeak(L)](https://en.wikipedia.org/wiki/AgentSpeak) \[Rao, 1996; Bordini et al. 2007\]
+	* [Belief-desire-intention (BDI)](https://en.wikipedia.org/wiki/Belief%E2%80%93desire%E2%80%93intention_model) architecture 
+	* [Procedural reasoning system (PRS)](https://en.wikipedia.org/wiki/Procedural_reasoning_system)  as execution mechanism 
+	* [Logical programming language](https://en.wikipedia.org/wiki/Logic_programming) to represent data with _symbols_ and _facts_
+	* Java reference implementation [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hübner
+
+---
+## Lecture Recap II
+
+* Based on the work of Rao, Bordini and Hübner, we designed the agent language AgentSpeak(L++) in [[Aschermann, Kraus, 2006]](https://lightjason.github.io/publication/2016-eumas.pdf) and [reimplemented it from scratch](https://github.com/AgentSpeak), featuring
+	* clean and strict syntax with state-of-the-art technologies
+	* [well](https://lightjason.github.io) [documented](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/) [software](http://lightjason.github.io/AgentSpeak/sources/) (not just "documentation by research papers")
+	* extended PRS with a mechanism optimised for concurrency
+	* [REST-API](https://en.wikipedia.org/wiki/Representational_state_transfer) for flexible, system independed control of [multi-agent system (MAS)](https://en.wikipedia.org/wiki/Multi-agent_system)
+	* scalable, concurrent execution of approximately 2.6 Mio agents on a desktop computer
+	* additional support for cloud computing, for example [Hadoop](https://en.wikipedia.org/wiki/Apache_Hadoop)
 
 
 ---
