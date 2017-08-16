@@ -29,30 +29,34 @@ Agent-Orientated programming with AgentSpeak(L++)
 <!-- page_number: true -->
 ## Lecture Recap I
 
-* [AgentSpeak(L)](https://en.wikipedia.org/wiki/AgentSpeak) \[Rao, 1996; Bordini et al. 2007\]
+* [AgentSpeak(L)](https://en.wikipedia.org/wiki/AgentSpeak) \[Rao 1996; Bordini et al. 2007\]
+
     * [Belief-desire-intention (BDI)](https://en.wikipedia.org/wiki/Belief%E2%80%93desire%E2%80%93intention_model) architecture 
     * [Procedural reasoning system (PRS)](https://en.wikipedia.org/wiki/Procedural_reasoning_system)  as execution mechanism 
     * [Logical programming language](https://en.wikipedia.org/wiki/Logic_programming) to represent data with _symbols_ and _facts_
-    * Java reference implementation [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. H端bner
+    * Java reference implementation [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hç«¯bner
 
 ---
 ## Lecture Recap II
 
-* Based on the work of Rao, Bordini and H端bner, [[Aschermann, Kraus, 2016]](https://lightjason.github.io/publication/2016-eumas.pdf) designed the agent language AgentSpeak(L++) and [reimplemented it from scratch](https://github.com/AgentSpeak), featuring
+* Based on the work of Rao, Bordini and Hç«¯bner, [[Aschermann and Kraus 2016]](https://lightjason.github.io/publication/2016-eumas.pdf) designed the agent language AgentSpeak(L++) and [reimplemented it from scratch](https://github.com/AgentSpeak), featuring
+
     * clean and strict syntax with state-of-the-art technologies
     * [well](https://lightjason.github.io) [documented](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/) [software](http://lightjason.github.io/AgentSpeak/sources/) (not just "documentation by research papers")
     * extended PRS with a mechanism optimised for concurrency
     * [REST-API](https://en.wikipedia.org/wiki/Representational_state_transfer) for flexible, system independed control of [multi-agent system (MAS)](https://en.wikipedia.org/wiki/Multi-agent_system)
     * scalable, concurrent execution of approximately 2.6 Mio agents on a desktop computer
     * additional support for cloud computing, for example [Hadoop](https://en.wikipedia.org/wiki/Apache_Hadoop)
+
 * **Important:** Distinguish between
+
     * **AgentSpeak(L++)** as the language to describe agents (knowledge and behaviour) and
     * **LightJason**, the Java implementation to execute agents written in AgentSpeak(L++)
 
 ---
-### Agent Oriented Programming with AgentSpeak(L++) and LightJason
+## Agent Oriented Programming with AgentSpeak(L++) and LightJason
 
-#### Agenda:
+### Agenda:
 
 1. Basic elements and structures:
     * Atoms
@@ -69,9 +73,9 @@ Agent-Orientated programming with AgentSpeak(L++)
 3. Additional theory and architecture details
 
 ---
-## Agent Oriented Programming - Symbolic Representation
+### Agent Oriented Programming - Symbolic Representation
 
-### Example: Traffic Light
+#### Example: Traffic Light
 
 In imperative programming languages, e.g. Java, traffic light states could be described by:
 
@@ -148,7 +152,7 @@ Any literal can be a [belief or fact](https://lightjason.github.io/knowledgebase
 	* sensors the agent uses to perceive its environment.
   	* agents themselves, so the agent can _conclude_ anything by combining beliefs to new ones
 
-Note: Perceptions might be wrong!
+**Note:** Perceptions might be wrong!
 If for example a sensor is defect or other agents simply "lie" (depending on the scenario).
 So a .important[belief can be percieved as true, but need not to be factual true].
 
@@ -192,7 +196,7 @@ public static boolean phaseduration( int newduration )
 ```
 
 ---
-### Plan
+### Plans
 
 <svg width=600px class="railroad-diagram" viewBox="0 0 726 80" id="svg_5fc25157650d0cb24f02216d904584df"><path d="M20 30v20m10-20v20M20 40h20.5m-.5 0h10m0 0a10 10 0 0 0 10-10 10 10 0 0 1 10-10m0 0h108m0 0a10 10 0 0 1 10 10 10 10 0 0 0 10 10M50 40h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 29h108v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#4ab6864fc58ecd8b598ee10dfe2ac311"><text x="124" y="44">annotations</text></a></g><path d="M178 40h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M208 29h116v22H208z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#4f0fa1b5875427a602b3f913163be2ca"><text x="266" y="44">plan_trigger</text></a></g><path d="M324 40h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M344 29h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f0d674f1e0ed4292267f149c5983db02"><text x="382" y="44">literal</text></a></g><path d="M420 40h10m0 0a10 10 0 0 0 10-10 10 10 0 0 1 10-10m0 0h152m0 0a10 10 0 0 1 10 10 10 10 0 0 0 10 10m-192 0h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M460 29h132v22H460z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#d60b4a42e52668da3017e5717ef3f60"><text x="526" y="44">plandefinition</text></a></g><path d="M592 40h10m-142 0a10 10 0 0 0-10 10 10 10 0 0 0 10 10m0 0h132m0 0a10 10 0 0 0 10-10 10 10 0 0 0-10-10m10 0h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M632 29h44v22h-44z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#40679521b5da0954b705341a2859f782"><text x="654" y="44">DOT</text></a></g><path d="M676 40h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
 
@@ -201,11 +205,10 @@ The example (prev. slide) translates to
 ```prolog
 +!phaseduration(NewDuration)
   : NewDuration < 1
-  <- fail
+ <- fail
  
-  : NewDuration >= 1
-  <- 
-    generic/print( "For safety, changing light to RED" );
+  : NewDuration >= 1 
+ <- generic/print( "For safety, changing light to RED" );
     generic/print( "Changing phase duration to", NewDuration )
 .
 ```
@@ -230,18 +233,17 @@ The example (prev. slide) translates to
 ```prolog
 !main.
 
-+!main <-
-    generic/print("Hello World!");
++!main
+ <- generic/print("Hello World!");
     !phaseduration(90)
 .
 
 +!phaseduration(NewDuration)
   : NewDuration < 1
-  <- fail
+ <- fail
  
   : NewDuration >= 1
-  <- 
-    generic/print( "For safety, changing light to RED" );
+ <- generic/print( "For safety, changing light to RED" );
     generic/print( "Changing phase duration to", NewDuration )
 .
 ```
@@ -260,7 +262,7 @@ phase( duration(60), program(morning) ).
 ```
 
 ---
-#### Beliefs - Traffic Light Example
+### Beliefs - Traffic Light Example
 
 ```prolog
 light(red).
@@ -268,22 +270,19 @@ phase( duration(60), program(morning) ).
 
 !main.
 
-+!main <-
-    generic/print("Hello World!");
-    -light(red);
-    +light(green);
++!main
+ <- generic/print("Hello World!");
+    -light(red); +light(green);
     !phaseduration(90)
 .
 
 +!phaseduration(NewDuration)
   : NewDuration < 1
-  <- fail
+ <- fail
  
   : NewDuration >= 1
-  <- 
-    generic/print( "For safety, changing light to RED" );
-    -light(green);
-    +light(red);
+ <- generic/print( "For safety, changing light to RED" );
+    -light(green); +light(red);
     
     generic/print( "Changing phase duration to", NewDuration );
     -phase( duration(CurrentDuration), program(Program) );
@@ -311,7 +310,7 @@ If run twice or with different initial belief light, this will lead to unintende
 1. updating beliefs by perceiving the environment with sensors
 2. executes all possible, i.e. _instanciable_ plans in parallel
 
-> __But each step is done in a parallel execution, so all data of the sensors are collected in parallel and all possible plans are run in parallel and all agents work in parallel__
+**Note**: Each step is executed in parallel, which means that data perception from sensors, agent and plan execution are done in parallel.
 
 
 ---
@@ -343,26 +342,24 @@ phase( duration(60), program(morning) ).
 
 !main.
 
-+!main <-
-    generic/print("Hello World!");
-    -light(red);
-    +light(green);
++!main
+ <- generic/print("Hello World!");
+    -light(red); +light(green);
     !phaseduration(90)
 .
 
 +!phaseduration(NewDuration)
   : NewDuration < 1
-  <- fail
+ <- fail
  
-  : NewDuration >= 1 && >>light(Colour) && >>phase( duration(CurrentDuration), program(Program) )
-  <- 
-    generic/print( "For safety, changing light", Colour, "to RED" );
-    -light(Colour);
-    +light(red);
+  : NewDuration >= 1 && >>light(Colour)
+    && >>phase( duration(CurrentDuration), program(Program) )
+ <- generic/print( "For safety, changing light", Colour, "to RED" );
+    -light(Colour); +light(red);
 
     generic/print( "Changing phase duration to", NewDuration );
     -phase( duration(CurrentDuration), program(Program) );
-    +phase( duration(NewDuration), program(Program) );
+    +phase( duration(NewDuration), program(Program) )
 .
 ```
 
