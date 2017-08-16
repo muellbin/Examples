@@ -49,13 +49,29 @@ Agent-Orientated programming with AgentSpeak(L++)
     * **AgentSpeak(L++)** as the language to describe agent (knowledge and behaviour) and
     * **LightJason**, the Java implementation to execute agents written in AgentSpeak(L++)
 
+---
+### Agent Oriented Programming with AgentSpeak(L++) and LightJason
+
+#### Agenda:
+
+1. Basic elements and structures:
+    * Atoms
+    * Terms
+    * Literals
+    * Beliefs and Facts
+    * Variables
+2. Giving life to an agent:
+    * Events, Plans and Goals
+    * Agent Cycle
+    * Execution
+3. Additional theory and architecture details
 
 ---
-## Agent Oriented Programming (AOP) - Symbolic Representation
+## Agent Oriented Programming - Symbolic Representation
 
 ### Example: Traffic Light
 
-In imperative programming languages, e.g. Java, the traffic light state could be described by:
+In imperative programming languages, e.g. Java, traffic light states could be described by:
 
 ```java 
 String  state = "green";
@@ -73,23 +89,6 @@ phase( duration(60), program(morning) ).
 applies( vehicles ).
 ~applies( pedestrians ).
 ```
-
----
-### AOP with AgentSpeak(L++) and LightJason
-
-#### Agenda:
-
-1. Basic elements and structures:
-    * Atoms
-    * Terms
-    * Literals
-    * Beliefs and Facts
-    * Variables
-2. Giving life to an agent:
-    * Events, Plans and Goals
-    * Agent Cycle
-    * Execution
-3. Additional theory and architecture details
 
 ---
 ### Atoms
