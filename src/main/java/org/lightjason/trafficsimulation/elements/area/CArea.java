@@ -191,10 +191,72 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     public final IVehicle push( @Nonnull final IVehicle p_object, @Nonnull final DoubleMatrix1D p_start,
                                 @Nonnull final DoubleMatrix1D p_end, @Nonnull final Number p_speed )
     {
+        /*
         // check if start or end position is inside
+        if ( ( this.inside( p_start ) ) && ( !this.inside( p_end ) ) )
+        {
+            this.executetrigger(
+                "vehicle/drive",
+                p_object,
+                p_speed,
+                EUnit.INSTANCE.celltokilometer( p_start.get( 1 ) - m_position.getQuick( 2 ) )
+            );
+
+            return p_object;
+        }
+
+        if ( ( this.inside( p_end ) ) && ( !this.inside( p_start ) ) )
+        {
+            this.executetrigger(
+                "vehicle/drive",
+                p_object,
+                p_speed,
+                EUnit.INSTANCE.celltokilometer( p_end.get( 1 ) - m_position.getQuick( 2 ) )
+            );
+
+            return p_object;
+        }
+
+        if ( ( this.inside( p_end ) ) && ( this.inside( p_start ) ) )
+        {
+            this.executetrigger(
+                "vehicle/drive",
+                p_object,
+                p_speed,
+                EUnit.INSTANCE.celltokilometer( p_end.get( 1 ) - p_end.getQuick( 1 ) )
+            );
+
+            return p_object;
+        }
+        */
+
 
         //http://www.w3ii.com/de/computer_graphics/computer_graphics_quick_guide.html
         return p_object;
+    }
+
+    /**
+     * executes a trigger
+     *
+     * @param p_functor functor
+     * @param p_object object
+     * @param p_speed speed
+     * @param p_distance distance
+     */
+    private void executetrigger( @Nonnull final String p_functor, @Nonnull final IObject<?> p_object,
+                                 @Nonnull final Number p_speed, @Nonnull final Number p_distance )
+    {
+        this.trigger(
+            CTrigger.from(
+                ITrigger.EType.ADDGOAL,
+                CLiteral.from(
+                    p_functor,
+                    CLiteral.from( "vehicle", CRawTerm.from( p_object ) ),
+                    CLiteral.from( "speed", CRawTerm.from( p_speed ) ),
+                    CLiteral.from( "distance", CRawTerm.from( p_distance ) )
+                )
+            )
+        );
     }
 
     @Override
