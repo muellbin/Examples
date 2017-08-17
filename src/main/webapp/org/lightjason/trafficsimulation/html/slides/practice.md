@@ -34,12 +34,12 @@ Agent-Orientated programming with AgentSpeak(L++)
     * [Belief-desire-intention (BDI)](https://en.wikipedia.org/wiki/Belief%E2%80%93desire%E2%80%93intention_model) architecture 
     * [Procedural reasoning system (PRS)](https://en.wikipedia.org/wiki/Procedural_reasoning_system)  as execution mechanism 
     * [Logical programming language](https://en.wikipedia.org/wiki/Logic_programming) to represent data with _symbols_ and _facts_
-    * Java reference implementation [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hç«¯bner
+    * Java reference implementation [Jason](http://jason.sourceforge.net/) by Rafael H. Bordini & Jomi F. Hübner
 
 ---
 ## Lecture Recap II
 
-* Based on the work of Rao, Bordini and Hç«¯bner, [[Aschermann and Kraus 2016]](https://lightjason.github.io/publication/2016-eumas.pdf) designed the agent language AgentSpeak(L++) and [reimplemented it from scratch](https://github.com/AgentSpeak), featuring
+* Based on the work of Rao, Bordini and Hübner, [[Aschermann and Kraus 2016]](https://lightjason.github.io/publication/2016-eumas.pdf) designed the agent language AgentSpeak(L++) and [reimplemented it from scratch](https://github.com/AgentSpeak), featuring
 
     * clean and strict syntax with state-of-the-art technologies
     * [well](https://lightjason.github.io) [documented](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/) [software](http://lightjason.github.io/AgentSpeak/sources/) (not just "documentation by research papers")
@@ -48,7 +48,7 @@ Agent-Orientated programming with AgentSpeak(L++)
     * scalable, concurrent execution of approximately 2.6 Mio agents on a desktop computer
     * additional support for cloud computing, for example [Hadoop](https://en.wikipedia.org/wiki/Apache_Hadoop)
 
-* **Important:** Distinguish between
+* **Important** to distinguish between
 
     * **AgentSpeak(L++)** as the language to describe agents (knowledge and behaviour) and
     * **LightJason**, the Java implementation to execute agents written in AgentSpeak(L++)
@@ -85,7 +85,7 @@ int     phase_duration = 60;
 String  phase_program = "morning";
 boolean applies_to_vehicles = true;
 boolean applies_to_pedestrians = false;
-```   
+```
 
 The same information in a _symbolic representation_:
 
@@ -186,12 +186,12 @@ Consider the following Java method to change the phase duration of a traffic lig
 ```java
 public static boolean phaseduration( int newduration )
 {
-	if (newduration < 1)
-    	return false;
+	if (newduration < 1)   // Plan condition: plan fails if
+    	return false;      // new duration is unreasonably small
         
     System.out.println( "For safety, changing light to RED" );
     System.out.println( "Changing phase duration to " + newduration );
-    return true;
+    return true;          // Plan succeeded
 }
 ```
 
@@ -204,10 +204,10 @@ The example (prev. slide) translates to
 
 ```prolog
 +!phaseduration(NewDuration)
-  : NewDuration < 1
+  : NewDuration < 1     // Plan condition to fail
  <- fail
  
-  : NewDuration >= 1 
+  : NewDuration >= 1    // Plan condition to succeed
  <- generic/print( "For safety, changing light to RED" );
     generic/print( "Changing phase duration to", NewDuration )
 .
