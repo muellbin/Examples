@@ -37,6 +37,8 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.apache.commons.math3.random.SynchronizedRandomGenerator;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -161,4 +163,135 @@ public final class CMath
                  );
     }
 
+    /**
+     * line clipping
+     *
+     * @param p_leftupper left-upper corner of the rectangle
+     * @param p_rightbottom right-bottom corner of the rectangle
+     * @param p_start line start point
+     * @param p_end line end point
+     * @return empty vector or clipped line
+     * @see https://en.wikipedia.org/wiki/Liang%E2%80%93Barsky_algorithm
+     * @see http://www.thecrazyprogrammer.com/2017/02/liang-barsky-line-clipping-algorithm.html
+     */
+    @Nonnull
+    public static DoubleMatrix1D lineclipping( @Nonnull final DoubleMatrix1D p_leftupper, @Nonnull final DoubleMatrix1D p_rightbottom,
+                                     @Nonnull final DoubleMatrix1D p_start, @Nonnull final DoubleMatrix1D p_end )
+    {
+        final double[] l_pval = Stream.of(
+            -( p_end.get( 1 ) - p_start.getQuick( 1 ) ),
+            p_end.get( 1 ) - p_start.getQuick( 1 ),
+            -( p_end.get( 0 ) - p_start.getQuick( 0 ) ),
+            p_end.get( 0 ) - p_start.getQuick( 0 )
+        ).mapToDouble( i -> i ).toArray();
+
+        final double[] l_qval = Stream.of(
+            p_start.get( 1 ) - p_leftupper.getQuick( 1 ),
+            p_rightbottom.getQuick( 1 ) - p_start.getQuick( 1 ),
+            p_start.get( 0 ) - p_leftupper.getQuick( 0 ),
+            p_rightbottom.getQuick( 1 ) - p_start.getQuick( 0 )
+        ).mapToDouble( i -> i ).toArray();
+
+
+        final DoubleMatrix1D l_vector = lineinsideoutside( p_leftupper, p_rightbottom, p_start, p_end, l_pval, l_qval );
+        return l_vector != null
+               ? l_vector
+               : linebounderies( p_start, p_end, l_pval, l_qval );
+    }
+
+    /**
+     * check line inside rectangle
+     *
+     * @param p_leftupper left-upper corner of the rectangle
+     * @param p_rightbottom right-bottom corner of the rectangle
+     * @param p_start line start point
+     * @param p_end line end point
+     * @param p_pval p-values
+     * @param p_qval q-values
+     * @return null or clipped-line
+     */
+    @Nullable
+    private static DoubleMatrix1D lineinsideoutside( @Nonnull final DoubleMatrix1D p_leftupper, @Nonnull final DoubleMatrix1D p_rightbottom,
+                                                     @Nonnull final DoubleMatrix1D p_start, @Nonnull final DoubleMatrix1D p_end,
+                                                     final double[] p_pval, final double[] p_qval )
+    {
+        return IntStream.range( 0, 4 )
+                        .boxed()
+                        .filter( i -> ( p_pval[i] == 0 ) && ( p_qval[i] >= 0 ) )
+                        .map( i ->
+                        {
+                            if ( i < 2 )
+                            {
+                                return new DenseDoubleMatrix1D( new double[]{
+                                    p_start.getQuick( 0 ) < p_leftupper.getQuick( 0 )
+                                        ? p_leftupper.getQuick( 0 )
+                                        : p_start.getQuick( 0 ),
+
+                                    p_start.getQuick( 1 ),
+
+                                    p_end.getQuick( 0 ) > p_rightbottom.getQuick( 0 )
+                                        ? p_rightbottom.getQuick( 0 )
+                                        : p_end.getQuick( 0 ),
+
+                                    p_end.getQuick( 1 )
+                                } );
+                            }
+
+                            if ( i > 1 )
+                            {
+                                return new DenseDoubleMatrix1D( new double[]{
+                                    p_start.getQuick( 0 ),
+
+                                    p_start.getQuick( 1 ) < p_leftupper.getQuick( 1 )
+                                        ? p_leftupper.getQuick( 1 )
+                                        : p_start.getQuick( 1 ),
+
+                                    p_end.getQuick( 0 ),
+
+                                    p_end.getQuick( 1 ) > p_rightbottom.getQuick( 1 )
+                                        ? p_rightbottom.getQuick( 1 )
+                                        : p_end.getQuick( 1 )
+                                } );
+                            }
+
+                            return null;
+                        } )
+                        .filter( Objects::nonNull )
+                        .findFirst()
+                        .orElse( null );
+    }
+
+    /**
+     * clip-line to bounderiers
+     *
+     * @param p_start line start point
+     * @param p_end line end point
+     * @param p_pval p-values
+     * @param p_qval q-values
+     * @return clipped-line or empty vector
+     */
+    @Nonnull
+    private static DoubleMatrix1D linebounderies( @Nonnull final DoubleMatrix1D p_start, @Nonnull final DoubleMatrix1D p_end, final double[] p_pval, final double[] p_qval )
+    {
+        double l_t1 = 0;
+        double l_t2 = 1;
+
+        for ( int i = 0; i < 4; i++ )
+        {
+            final double l_temp = p_qval[i] / p_pval[i];
+            if ( p_pval[i] < 0 )
+                l_t1 = l_t1 <= l_temp ? l_temp : l_t1;
+            else
+                l_t2 = l_t2 > l_temp ? l_temp : l_t2;
+        }
+
+        return l_t1 < l_t2
+               ? new DenseDoubleMatrix1D( new double[]{
+                    p_start.getQuick( 0 ) + l_t1 * p_pval[3],
+                    p_start.getQuick( 1 ) + l_t1 * p_pval[1],
+                    p_start.getQuick( 0 ) + l_t2 * p_pval[3],
+                    p_start.getQuick( 1 ) + l_t2 * p_pval[1],
+               } )
+               : new DenseDoubleMatrix1D( 0 );
+    }
 }

@@ -45,7 +45,7 @@
         <build.commit></build.commit>
         <coverall.token></coverall.token>
 
-        <jetty.version>9.4.6.v20170531</jetty.version>
+        <jetty.version>9.4.7.RC0</jetty.version>
 
         <npm.executable>npm</npm.executable>
         <gulp.executable>gulp</gulp.executable>

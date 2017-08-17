@@ -21,7 +21,6 @@
  * @endcond
  */
 
-+!calculate(V) <-
-    N = 1;
-    environment/send(N)
++!vehicle/move( vehicle(V), speed(S), distance(D) ) <-
+    generic/print( "#Area Agent", "Vehicle Movement", V, S, D )
 .

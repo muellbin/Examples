@@ -45,6 +45,7 @@ import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 import org.lightjason.agentspeak.language.variable.CConstant;
 import org.lightjason.agentspeak.language.variable.IVariable;
 import org.lightjason.trafficsimulation.common.CConfiguration;
+import org.lightjason.trafficsimulation.common.CMath;
 import org.lightjason.trafficsimulation.elements.EUnit;
 import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -131,23 +132,6 @@ public final class CArea extends IBaseObject<IArea> implements IArea
 
     }
 
-    /*
-    @Override
-    public final IObject<?> push( @Nonnull final IObject<?> p_object )
-    {
-        if ( ( this.inside( p_object ) ) && ( m_elements.add( p_object ) ) )
-        {
-            this.trigger(
-                CTrigger.from(
-                    ITrigger.EType.ADDGOAL,
-                    CLiteral.from( "element", CRawTerm.from( p_object ) )
-                )
-            );
-        }
-        return p_object;
-    }
-    */
-
     /**
      * checking if a position is inside the area
      *
@@ -191,47 +175,26 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     public final IVehicle push( @Nonnull final IVehicle p_object, @Nonnull final DoubleMatrix1D p_start,
                                 @Nonnull final DoubleMatrix1D p_end, @Nonnull final Number p_speed )
     {
-        /*
-        // check if start or end position is inside
-        if ( ( this.inside( p_start ) ) && ( !this.inside( p_end ) ) )
-        {
+        final DoubleMatrix1D l_line = CMath.lineclipping(
+                                        m_position.viewPart( 0, 2 ),
+                                        m_position.viewPart( 2, 2 ),
+                                        p_start,
+                                        p_end
+        );
+
+        if ( l_line.size() != 0 )
             this.executetrigger(
-                "vehicle/drive",
+                "vehicle/move",
                 p_object,
                 p_speed,
-                EUnit.INSTANCE.celltokilometer( p_start.get( 1 ) - m_position.getQuick( 2 ) )
+                EUnit.INSTANCE.celltokilometer(
+                    CMath.distance(
+                        l_line.viewPart( 0, 2 ),
+                        l_line.viewPart( 2, 2 )
+                    )
+                )
             );
 
-            return p_object;
-        }
-
-        if ( ( this.inside( p_end ) ) && ( !this.inside( p_start ) ) )
-        {
-            this.executetrigger(
-                "vehicle/drive",
-                p_object,
-                p_speed,
-                EUnit.INSTANCE.celltokilometer( p_end.get( 1 ) - m_position.getQuick( 2 ) )
-            );
-
-            return p_object;
-        }
-
-        if ( ( this.inside( p_end ) ) && ( this.inside( p_start ) ) )
-        {
-            this.executetrigger(
-                "vehicle/drive",
-                p_object,
-                p_speed,
-                EUnit.INSTANCE.celltokilometer( p_end.get( 1 ) - p_end.getQuick( 1 ) )
-            );
-
-            return p_object;
-        }
-        */
-
-
-        //http://www.w3ii.com/de/computer_graphics/computer_graphics_quick_guide.html
         return p_object;
     }
 
