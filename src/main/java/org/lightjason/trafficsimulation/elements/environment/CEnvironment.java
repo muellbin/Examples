@@ -358,26 +358,29 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
     /**
      * creates an area
-     * @param p_positionfrom position start on the lane (inclusive)
-     * @param p_positionto position end on the lane (inclusive)
+     * @param p_maximumspeed maximum allowed speed
      * @param p_lanefrom lane start (inclusive)
      * @param p_laneto lane end (inclusive)
-     * @param p_maximumspeed maximum allowed speed
+     * @param p_positionfrom position start on the lane (inclusive)
+     * @param p_positionto position end on the lane (inclusive)
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "area/create" )
-    private void areacreate( final Number p_positionfrom, final Number p_positionto, final Number p_lanefrom, final Number p_laneto, final Number p_maximumspeed )
+    @IAgentActionName( name = "area/initialize" )
+    private void areacreate( final Number p_maximumspeed,
+                             final Number p_lanefrom, final Number p_laneto,
+                             final Number p_positionfrom, final Number p_positionto
+    )
     {
         final IArea l_area = m_generatorarea.generatesingle(
-            this,
-            new DenseDoubleMatrix1D(
-                new double[]{
-                    p_lanefrom.doubleValue(), p_laneto.doubleValue(),
-                    p_positionfrom.doubleValue(), p_positionto.doubleValue()
-                }
-            ),
-            p_maximumspeed
-        );
+                                this,
+                                new DenseDoubleMatrix1D(
+                                    new double[]{
+                                        p_lanefrom.doubleValue(), p_laneto.doubleValue(),
+                                        p_positionfrom.doubleValue(), p_positionto.doubleValue()
+                                    }
+                                ),
+                                p_maximumspeed
+                             );
 
         if ( l_area == null )
             throw new RuntimeException( "area not created" );

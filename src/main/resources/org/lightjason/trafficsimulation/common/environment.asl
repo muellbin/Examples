@@ -57,7 +57,15 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     simulation/initialize( 100, 2, 2 );
     generic/print( "#Environment Agent", "grid has been created" );
 
+    // create areas
+    area/initialize( 50, 0, 3, 10, 90 );
+
     !uservehicle
+.
+
+-!main <-
+    generic/print( "#Environment Agent", "initializing fails, simulation shutdown" );
+    simulation/shutdown
 .
 
 

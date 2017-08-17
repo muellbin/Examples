@@ -122,7 +122,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
             throw new RuntimeException( "maximumspeed is to low" );
         if ( m_position.getQuick( 0 ) > m_position.getQuick( 1 ) )
             throw new RuntimeException( "lane index must be from lower to upper" );
-        if ( m_position.getQuick( 2 ) < m_position.getQuick( 3 ) )
+        if ( m_position.getQuick( 2 ) > m_position.getQuick( 3 ) )
             throw new RuntimeException( "position index must be from lower to upper" );
 
         // calculate km in cell position
@@ -209,6 +209,9 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     private void executetrigger( @Nonnull final String p_functor, @Nonnull final IObject<?> p_object,
                                  @Nonnull final Number p_speed, @Nonnull final Number p_distance )
     {
+        if ( p_distance.doubleValue() == 0 )
+            return;
+
         this.trigger(
             CTrigger.from(
                 ITrigger.EType.ADDGOAL,
@@ -241,24 +244,6 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         return Stream.of(
             CLiteral.from( "allowedspeed", CRawTerm.from( m_allowedspeed ) )
         );
-    }
-
-    @Override
-    public final IArea call() throws Exception
-    {
-        /*
-        m_elements.parallelStream()
-                  .filter( i -> !this.inside( i ) )
-                  .filter( m_elements::remove )
-                  .forEach( i -> this.trigger(
-                      CTrigger.from(
-                        ITrigger.EType.DELETEGOAL,
-                        CLiteral.from( "element", CRawTerm.from( i ) )
-                      )
-                  ) );
-        */
-
-        return super.call();
     }
 
     // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------
