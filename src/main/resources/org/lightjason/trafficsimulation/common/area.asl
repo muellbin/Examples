@@ -21,6 +21,7 @@
  * @endcond
  */
 
-+!vehicle/move( vehicle(V), speed(S), distance(D) ) <-
-    generic/print( "#Area Agent", "Vehicle Movement", S, D )
++!vehicle/move( vehicle(V), speed(S), distance(D) )
+    : S > AllowedSpeed <-
+        generic/print( "#Area Agent", "Vehicle Movement", S, D )
 .
