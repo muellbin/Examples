@@ -36,12 +36,6 @@ import java.util.stream.Stream;
  */
 public interface IEnvironment extends IObject<IEnvironment>
 {
-    /**
-     * shutdown execution
-     *
-     * @return shutdown is enabled
-     */
-    boolean shutdown();
 
     /**
      * sets avehicle inside the grid

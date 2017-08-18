@@ -85,10 +85,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      */
     private static final String FUNCTOR = "environment";
     /**
-     * shutdown flag
-     */
-    private final AtomicBoolean m_shutdown = new AtomicBoolean();
-    /**
      * set elements
      */
     private final Map<String, IObject<?>> m_elements;
@@ -168,22 +164,14 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final IObject<IEnvironment> release()
     {
-        m_shutdown.set( true );
-
         m_elements.remove( this.id() );
         m_elements.values().parallelStream().forEach( IObject::release );
         m_elements.clear();
 
+        CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
         ERuntime.INSTANCE.cancel();
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
         return this;
-    }
-
-    @Override
-    public final boolean shutdown()
-    {
-        return m_shutdown.get();
     }
 
     @Override

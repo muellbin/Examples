@@ -211,7 +211,7 @@ public class CTask implements ITask
             CCommon.languagestring( this, "simulationstart" )
         );
 
-        while ( !m_environment.shutdown() )
+        while ( true )
         {
             m_elements.values().parallelStream().forEach( CTask::execute );
             try
