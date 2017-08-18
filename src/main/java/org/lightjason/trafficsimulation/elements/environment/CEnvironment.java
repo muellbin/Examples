@@ -168,12 +168,12 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     public final IObject<IEnvironment> release()
     {
         m_shutdown.set( true );
-        CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
 
         m_elements.remove( this.id() );
         m_elements.values().parallelStream().forEach( IObject::release );
         m_elements.clear();
 
+        CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
         return this;
     }
 
@@ -279,9 +279,19 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @Override
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {
+        final DoubleMatrix1D l_position = this.position().copy();
+
         return StreamUtils.zip(
-            Stream.of( "type", "status", "id", "length", "laneslefttoright", "lanesrighttoleft" ),
-            Stream.of( FUNCTOR, p_status.toString(), this.id(), this.position().get( 1 ), m_lanes.get().getLeft(), m_lanes.get().getRight() ),
+            Stream.of( "type", "status", "id", "length", "laneslefttoright", "lanesrighttoleft", "distance" ),
+            Stream.of(
+                FUNCTOR,
+                p_status.toString(),
+                this.id(),
+                l_position.getQuick( 1 ),
+                m_lanes.get().getLeft(),
+                m_lanes.get().getRight(),
+                EUnit.INSTANCE.celltokilometer( l_position.getQuick( 1 ) )
+            ),
             ImmutablePair::new
         ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
     }
@@ -556,7 +566,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
             return Stream.of(
                 new CConstant<>( "Lanes", l_env.position().get( 0 ) ),
-                new CConstant<>( "StreetPositions", l_env.position().get( 1 ) )
+                new CConstant<>( "StreetPositions", l_env.position().get( 1 ) ),
+                new CConstant<>( "Distance", EUnit.INSTANCE.celltokilometer( l_env.position().get( 1 ) ) )
             );
         }
     }

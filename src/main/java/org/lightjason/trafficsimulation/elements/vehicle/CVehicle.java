@@ -232,18 +232,21 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final Map<String, Object> map( @Nonnull final EStatus p_status )
     {
+        final DoubleMatrix1D l_position = this.position().copy();
+
         return StreamUtils.zip(
-            Stream.of( "type", "status", "id", "y", "x", "goal", "speed", "maxspeed", "acceleration", "deceleration" ),
+            Stream.of( "type", "status", "id", "y", "x", "goal", "speed", "maxspeed", "acceleration", "deceleration", "distance" ),
             Stream.of( this.type().toString(),
                        p_status.toString(),
                        this.id(),
-                       this.position().get( 0 ),
-                       this.position().get( 1 ),
+                       l_position.get( 0 ),
+                       l_position.get( 1 ),
                        m_goal,
                        m_speed.get(),
                        m_maximumspeed,
                        m_accelerate,
-                       m_decelerate
+                       m_decelerate,
+                       EUnit.INSTANCE.celltokilometer( l_position.getQuick( 1 ) ).doubleValue()
             ),
             ImmutablePair::new
         ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );

@@ -95,7 +95,7 @@ public enum EUnit
      */
     public final Number celltometer( final Number p_cells )
     {
-        return p_cells.doubleValue() / m_cellsize;
+        return p_cells.doubleValue() * m_cellsize;
     }
 
     /**

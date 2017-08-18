@@ -54,11 +54,15 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 +!main <-
 
     // grid size (100km with 2x2 lanes for each direction)
-    simulation/initialize( 100, 2, 2 );
+    simulation/initialize( 50, 2, 2 );
     generic/print( "#Environment Agent", "grid has been created" );
 
     // create areas
-    area/initialize( 50, 0, 3, 10, 90 );
+    area/initialize( 35, 0, 3, 5, 15 );
+    area/initialize( 50, 0, 3, 15, 25 );
+    area/initialize( 75, 0, 3, 25, 35 );
+    area/initialize( 100, 0, 3, 35, 45 );
+    generic/print( "#Environment Agent", "areas have been created" );
 
     !uservehicle
 .
@@ -128,7 +132,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 // --- plan on collision execution ---
 +!vehicle/usercollision <-
-    generic/print( "#environment Agent", "user collision plan hash been called" );
+    generic/print( "#Environment Agent", "user collision plan hash been called" );
     simulation/shutdown
 .
 

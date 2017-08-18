@@ -32,9 +32,6 @@ import cern.colt.matrix.linalg.Algebra;
 import cern.jet.math.Functions;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.math3.random.MersenneTwister;
-import org.apache.commons.math3.random.RandomGenerator;
-import org.apache.commons.math3.random.SynchronizedRandomGenerator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,10 +50,6 @@ public final class CMath
      * reference to global algebra instance
      */
     public static final Algebra ALGEBRA = Algebra.DEFAULT;
-    /**
-     * synchronized random generator
-     */
-    public static final RandomGenerator RANDOMGENERATOR = new SynchronizedRandomGenerator( new MersenneTwister() );
     /**
      * matrix formatter
      */

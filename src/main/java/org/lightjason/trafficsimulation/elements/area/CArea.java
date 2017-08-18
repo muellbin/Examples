@@ -24,11 +24,7 @@
 package org.lightjason.trafficsimulation.elements.area;
 
 import cern.colt.matrix.DoubleMatrix1D;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
@@ -57,8 +53,11 @@ import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -83,7 +82,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     /**
      * set of objects inside
      */
-    private final Multimap<IObject<?>, Pair<Number, Number>> m_elements = Multimaps.synchronizedMultimap( HashMultimap.create() );
+    private final Set<IObject<?>> m_elements = Collections.synchronizedSet( new HashSet<>() );
     /**
      * allowed speed
      */
@@ -212,6 +211,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         if ( p_distance.doubleValue() == 0 )
             return;
 
+        m_elements.add( p_object );
         this.trigger(
             CTrigger.from(
                 ITrigger.EType.ADDGOAL,
@@ -244,6 +244,27 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         return Stream.of(
             CLiteral.from( "allowedspeed", CRawTerm.from( m_allowedspeed ) )
         );
+    }
+
+    @Override
+    public final IArea call() throws Exception
+    {
+        super.call();
+
+        m_elements.removeAll(
+            m_elements.parallelStream()
+                      .filter( i -> !this.inside( i.position() ) )
+                      .peek( i -> CTrigger.from(
+                          ITrigger.EType.ADDGOAL,
+                          CLiteral.from(
+                              "vehicle/leave",
+                              CRawTerm.from( i )
+                          )
+                      ) )
+                      .collect( Collectors.toSet() )
+        );
+
+        return this;
     }
 
     // --- agent actions ---------------------------------------------------------------------------------------------------------------------------------------

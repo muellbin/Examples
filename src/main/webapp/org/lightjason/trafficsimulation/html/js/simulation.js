@@ -946,6 +946,7 @@ jQuery(function() {
                 if ( SIMULATIONMUSIC.is(":checked") )
                     GAME.music.play();
 
+                jQuery( "#ui-fulldistance" ).text( p_data.distance.toFixed(0) );
                 GAME.instance.scale.setGameSize( jQuery( "#simulation-dashboard" ).width(), HEIGHT * TILESIZE );
 
                 GAME.instance.load.tilemap(
@@ -1088,6 +1089,7 @@ jQuery(function() {
 
             execute: function (p_data) {
                 GAUGE.value = p_data.speed;
+                jQuery( "#ui-distance" ).text( p_data.distance.toFixed(1) );
                 l_visualizationfunctions.defaultvehicle.execute( p_data );
             },
 

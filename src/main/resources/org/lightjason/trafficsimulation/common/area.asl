@@ -23,5 +23,10 @@
 
 +!vehicle/move( vehicle(V), speed(S), distance(D) )
     : S > AllowedSpeed <-
-        generic/print( "#Area Agent", "Vehicle Movement", S, D )
+        generic/print( "#Area Agent Move", "Vehicle Movement", S, D )
+.
+
+
++!vehicle/leave(V) <-
+    generic/print( "#Area Agent Leave", "vehicle leave area" )
 .
