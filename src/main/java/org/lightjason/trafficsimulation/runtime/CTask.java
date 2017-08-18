@@ -52,9 +52,14 @@ public class CTask implements ITask
      */
     private static final Logger LOGGER = CCommon.logger( ITask.class );
     /**
-     * thread
+     * simulation objects
      */
-    private final Thread m_thread;
+    private final Map<String, IObject<?>> m_elements;
+    /**
+     * environment reference
+     */
+    private final IEnvironment m_environment;
+
 
     /**
      * ctor
@@ -65,16 +70,15 @@ public class CTask implements ITask
      */
     public CTask( @Nonnull final Map<String, ERuntime.CAgentDefinition> p_agentdefinition, @Nonnull final Map<String, IObject<?>> p_elements )
     {
-        m_thread = new Thread( () ->
-        {
+        m_elements = p_elements;
 
-            // --- initialize generators ---
-            final IEnvironment.IGenerator<IEnvironment> l_environmentgenerator = this.generatorenvironment( p_agentdefinition );
+        // --- initialize generators ---
+        final IEnvironment.IGenerator<IEnvironment> l_environmentgenerator = this.generatorenvironment( p_agentdefinition );
 
-            if ( l_environmentgenerator == null )
-                return;
-
-            final IEnvironment l_environment = l_environmentgenerator.generatesingle(
+        if ( l_environmentgenerator == null )
+            m_environment = null;
+        else
+            m_environment = l_environmentgenerator.generatesingle(
                 p_elements,
                 this.generatorvehicle( p_agentdefinition, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),
                 this.generatorvehicle( p_agentdefinition,
@@ -88,41 +92,6 @@ public class CTask implements ITask
                 ),
                 this.generatorarea( p_agentdefinition )
             );
-
-            if ( l_environment == null )
-                return;
-
-
-            // --- execute objects ---
-            CMessage.CInstance.INSTANCE.write(
-                CMessage.EType.SUCCESS,
-                CCommon.languagestring( this, "initialize", "" ),
-                CCommon.languagestring( this, "simulationstart" )
-            );
-
-            while ( !l_environment.shutdown() )
-            {
-                p_elements.values().parallelStream().forEach( CTask::execute );
-                try
-                {
-                    Thread.sleep( ERuntime.INSTANCE.time().get() );
-                }
-                catch ( final InterruptedException l_exception )
-                {
-                    break;
-                }
-            }
-
-            CMessage.CInstance.INSTANCE.write(
-                CMessage.EType.SUCCESS,
-                CCommon.languagestring( this, "shutdown" ),
-                CCommon.languagestring( this, "simulationstop" )
-            );
-
-
-            // test sending penalty data
-            CData.CInstance.INSTANCE.penalty( 3.5 );
-        } );
     }
 
 
@@ -232,15 +201,40 @@ public class CTask implements ITask
     @Override
     public final ITask call() throws Exception
     {
-        if ( ( !m_thread.isAlive() ) && ( !m_thread.isInterrupted() ) )
-            m_thread.start();
+        if ( m_environment == null )
+            return this;
+
+        // --- execute objects ---
+        CMessage.CInstance.INSTANCE.write(
+            CMessage.EType.SUCCESS,
+            CCommon.languagestring( this, "initialize", "" ),
+            CCommon.languagestring( this, "simulationstart" )
+        );
+
+        while ( !m_environment.shutdown() )
+        {
+            m_elements.values().parallelStream().forEach( CTask::execute );
+            try
+            {
+                Thread.sleep( ERuntime.INSTANCE.time().get() );
+            }
+            catch ( final InterruptedException l_exception )
+            {
+                break;
+            }
+        }
+
+        CMessage.CInstance.INSTANCE.write(
+            CMessage.EType.SUCCESS,
+            CCommon.languagestring( this, "shutdown" ),
+            CCommon.languagestring( this, "simulationstop" )
+        );
+
+
+        // test sending penalty data
+        CData.CInstance.INSTANCE.penalty( 3.5 );
 
         return this;
     }
 
-    @Override
-    public final boolean running()
-    {
-        return m_thread.isAlive();
-    }
 }

@@ -53,6 +53,22 @@ public interface IRuntime extends Runnable
     boolean running();
 
     /**
+     * shutdown
+     *
+     * @return self reference
+     */
+    @Nonnull
+    IRuntime shutdown();
+
+    /**
+     * cancel running task
+     *
+     * @return self reference
+     */
+    @Nonnull
+    IRuntime cancel();
+
+    /**
      * saves all data
      *
      * @return self reference

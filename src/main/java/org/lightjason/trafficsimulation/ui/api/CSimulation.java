@@ -79,6 +79,8 @@ public final class CSimulation
 
         // asynchronized thread for shutdown, because server process cannot be disable during communication
         new Thread( EHTTPServer::shutdown ).start();
+        ERuntime.INSTANCE.shutdown();
+
         return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "shutdown" ) ).build();
     }
 

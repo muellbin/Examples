@@ -36,11 +36,6 @@ public interface ITask extends Callable<ITask>
      */
     ITask EMPTY = new ITask()
     {
-        @Override
-        public final boolean running()
-        {
-            return false;
-        }
 
         @Override
         public final ITask call() throws Exception
@@ -48,12 +43,5 @@ public interface ITask extends Callable<ITask>
             return this;
         }
     };
-
-    /**
-     * checks running state
-     *
-     * @return running state
-     */
-    boolean running();
 
 }

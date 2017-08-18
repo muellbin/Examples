@@ -52,6 +52,7 @@ import org.lightjason.trafficsimulation.elements.IBaseObject;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
+import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
 import org.lightjason.trafficsimulation.ui.api.CData;
 
@@ -172,6 +173,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_elements.remove( this.id() );
         m_elements.values().parallelStream().forEach( IObject::release );
         m_elements.clear();
+
+        ERuntime.INSTANCE.cancel();
 
         CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
         return this;

@@ -46,6 +46,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
@@ -61,9 +64,9 @@ public enum ERuntime implements IRuntime
     INSTANCE;
 
     /**
-     * execution task
+     * thread-pool
      */
-    private final AtomicReference<ITask> m_task = new AtomicReference<>( ITask.EMPTY );
+    private final ExecutorService m_pool = Executors.newSingleThreadExecutor();
     /**
      * supplier of tasks
      */
@@ -80,6 +83,25 @@ public enum ERuntime implements IRuntime
      * execution objects
      */
     private final Map<String, IObject<?>> m_elements = new ConcurrentHashMap<>();
+    /**
+     * last running task
+     */
+    private final AtomicReference<Future<ITask>> m_running = new AtomicReference<>(
+        m_pool.submit(
+            m_supplier.get().apply(
+                Collections.unmodifiableMap(
+                    m_agents.entrySet().stream().collect( Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        ( n, m ) -> n,
+                        () -> new TreeMap<>( String.CASE_INSENSITIVE_ORDER )
+                    ) )
+                ),
+                m_elements
+            )
+        )
+    );
+
 
 
     /**
@@ -108,6 +130,7 @@ public enum ERuntime implements IRuntime
                   throw new RuntimeException( CCommon.languagestring( this, "agentnotfound", i ) );
               } );
     }
+
 
 
     /**
@@ -223,28 +246,24 @@ public enum ERuntime implements IRuntime
     @Override
     public final void run()
     {
-        try
-        {
-            m_task.updateAndGet(
-                ( i ) -> i.running()
-                         ? i
-                         : m_supplier.get().apply(
-                             Collections.unmodifiableMap(
-                                 m_agents.entrySet().stream().collect( Collectors.toMap(
-                                     Map.Entry::getKey,
-                                     Map.Entry::getValue,
-                                     ( n, m ) -> n,
-                                     () -> new TreeMap<>( String.CASE_INSENSITIVE_ORDER )
-                                 ) )
-                             ),
-                             m_elements
-                         )
-            ).call();
-        }
-        catch ( final Exception l_exception )
-        {
-            // ignore errors
-        }
+        if ( this.running() )
+            return;
+
+        m_running.set(
+            m_pool.submit(
+                m_supplier.get().apply(
+                    Collections.unmodifiableMap(
+                        m_agents.entrySet().stream().collect( Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            ( n, m ) -> n,
+                            () -> new TreeMap<>( String.CASE_INSENSITIVE_ORDER )
+                        ) )
+                    ),
+                    m_elements
+                )
+            )
+        );
     }
 
 
@@ -268,8 +287,26 @@ public enum ERuntime implements IRuntime
     @Override
     public final boolean running()
     {
-        return m_task.get().running();
+        return ( !m_running.get().isDone() ) && ( !m_running.get().isCancelled() );
     }
+
+    @Nonnull
+    @Override
+    public final IRuntime shutdown()
+    {
+        m_pool.shutdownNow();
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public final IRuntime cancel()
+    {
+        m_running.get().cancel( true );
+        return this;
+    }
+
+
 
     /**
      * agent object
