@@ -47,14 +47,14 @@
     L = math/statistic/randomsimple;
     L >= 0.35;
 
-    vehicle/goback;
+    vehicle/pullin;
     !driveleft
 .
 
 
 // --- possible collision decelerate ---
 +!vehicle/collision <-
-    vehicle/swingout;
+    vehicle/pullout;
     !drive
 .
 

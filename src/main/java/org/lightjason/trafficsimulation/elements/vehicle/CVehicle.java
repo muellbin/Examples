@@ -402,7 +402,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * swing-out
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "vehicle/swingout" )
+    @IAgentActionName( name = "vehicle/pullout" )
     private void swingout()
     {
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? 1 : -1 );
@@ -414,7 +414,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * go back into lane
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "vehicle/goback" )
+    @IAgentActionName( name = "vehicle/pullin" )
     private void goback()
     {
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? -1 : 1 );

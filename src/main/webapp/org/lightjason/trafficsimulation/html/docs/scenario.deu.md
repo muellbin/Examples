@@ -13,5 +13,5 @@ Folgende Aktionen stehen dem Fahrzeug zur Verfügung
 
 * ```vehicle/accelerate( a )``` das Fahrzeug beschleunigt um den Faktor $a \in [0,1]$, wobei $a=1$ die maximale Beschleinigung ist. Kann das Fahrzeug nicht mehr beschleunigt werden, schlägt diese Aktion fehl.
 * ```vehicle/decelerate( b )``` das Fahrzeug bremst um den Faktor $b \in [0,1]$, wobei $b=1$ die maximale Bremskraft ist. Kann das Fahrzeug nicht mehr abgebremst werden, schlägt diese Aktion fehl.
-* ```vehicle/swingout``` lässt das Fahrzeug nach links in Fahrtrichtung ausscheren.
-* ```vehicle/goback``` lässt das Fahrzeug nach rechts in Fahrtrichtung einscheren.
+* ```vehicle/pullout``` lässt das Fahrzeug nach links in Fahrtrichtung ausscheren.
+* ```vehicle/pullin``` lässt das Fahrzeug nach rechts in Fahrtrichtung einscheren.

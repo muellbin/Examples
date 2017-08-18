@@ -17,5 +17,5 @@ The following actions are available to the vehicle
 * ```vehicle/decelerate( b )``` the vehicle decelerates with the factor $b \in [0,1]$,
     with $b=1$ being the maximum deceleration value. If the vehicle cannot decelerate anymore the action
     will fail.
-* ```vehicle/swingout``` the vehicle swings out to left in driving direction.
-* ```vehicle/goback``` the vehicle goes back to right in driving direction.
+* ```vehicle/pullout``` the vehicle swings out to left in driving direction.
+* ```vehicle/pullin``` the vehicle goes back to right in driving direction.
