@@ -154,7 +154,7 @@ Any literal can be a [belief or fact](https://lightjason.github.io/knowledgebase
 
 **Note:** Perceptions might be wrong!
 If for example a sensor is defect or other agents simply "lie" (depending on the scenario).
-So a .important[belief can be percieved as true, but need not to be factual true].
+So a .important[belief can be perceived as true, but need not to be factual true].
 
 #### Example
 
@@ -218,7 +218,7 @@ The example (prev. slide) translates to
 
 <svg width=600px class="railroad-diagram" viewBox="0 0 350 92" id="svg_37e402d5ccf7ec7d8ed9ebd1d8f2fe97"><path d="M20 21v20m10-20v20M20 31h20.5m-.5 0h10m0 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 31h4m52 0h4M74 20h52v22H74z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#883acd43c77567e1c3baced84ccf6ed7"><text x="100" y="35">PLUS</text></a></g><path d="M130 31h20M50 31a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 50h60v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#ffc0d9b54a1fe677c4c9e6b050e67c81"><text x="100" y="65">MINUS</text></a></g><path d="M130 61a10 10 0 0 0 10-10V41a10 10 0 0 1 10-10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M160 20h140v22H160z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#a811f517fa7f9ba04cf05d3a6c777799"><text x="230" y="35">EXCLAMATIONMARK</text></a></g><path d="M300 31h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
 
-* Goals define which plans an agent should try to instatiate and execute.
+* Goals define which plans an agent should try to instantiate and execute.
 * They can be defined as 
     * initial goal, e.g. by convention `!main.` or 
     * inside plans, e.g. `!phaseduration(90)`, which means _"try to instantiate and execute a plan `phaseduration(NewDuration)` (with parameter variable `NewDuration` set to `90`) in the next cycle"_.
@@ -305,7 +305,7 @@ If run twice or with different initial belief light, this will lead to unintende
 ## AOP - Agent Cycle
 
 * Agents are repeatedly executed by a [runtime](https://lightjason.github.io/knowledgebase/logicalprogramming/#runtime) of the simulation.
-* Each time an agent gets executed it runs through the [_agent cycle_](https://lightjason.github.io/knowledgebase/differencetojason/#lightjason-agent-cycle):
+* Each time an agent is executed it runs through the [_agent cycle_](https://lightjason.github.io/knowledgebase/differencetojason/#lightjason-agent-cycle):
 
 1. updating beliefs by perceiving the environment with sensors
 2. executes all possible, i.e. _instanciable_ plans in parallel
