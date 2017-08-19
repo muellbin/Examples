@@ -30,13 +30,10 @@ import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import cern.colt.matrix.impl.DenseDoubleMatrix2D;
 import cern.colt.matrix.linalg.Algebra;
 import cern.jet.math.Functions;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -70,18 +67,6 @@ public final class CMath
     }
 
     /**
-     * consums a stream of matrix objects
-     *
-     * @param p_stream stream
-     * @param p_consumer consumer function
-     * @return stream
-     */
-    public static Stream<DoubleMatrix1D> matrixconsumer( final Stream<DoubleMatrix1D> p_stream, final Consumer<String> p_consumer )
-    {
-        return p_stream.peek( i -> p_consumer.accept( MATRIXFORMAT.toString( i ) + " " ) );
-    }
-
-    /**
      * creates a rotation matrix
      *
      * @param p_alpha angel in radians
@@ -101,16 +86,16 @@ public final class CMath
      *
      * @param p_first first vector
      * @param p_second second vector
-     * @return pair of angel in radians and boolean for calulation correctness
+     * @return pair of angel in degree or NaN on error
      */
-    public static Pair<Double, Boolean> angle( final DoubleMatrix1D p_first, final DoubleMatrix1D p_second )
+    public static Number angle( final DoubleMatrix1D p_first, final DoubleMatrix1D p_second )
     {
         final double l_first = ALGEBRA.norm2( p_first );
         final double l_second = ALGEBRA.norm2( p_second );
 
         return ( l_first == 0 ) || ( l_second == 0 )
-               ? new ImmutablePair<>( 0.0, false )
-               : new ImmutablePair<>( Math.acos( ALGEBRA.mult( p_first, p_second ) / ( Math.sqrt( l_first ) * Math.sqrt( l_second ) ) ), true );
+               ? Double.NaN
+               : Math.toDegrees( Math.acos( ALGEBRA.mult( p_first, p_second ) / ( Math.sqrt( l_first ) * Math.sqrt( l_second ) ) ) );
     }
 
 
@@ -159,8 +144,8 @@ public final class CMath
     /**
      * line clipping
      *
-     * @param p_leftupper left-upper corner of the rectangle
-     * @param p_rightbottom right-bottom corner of the rectangle
+     * @param p_upperleft left-upper corner of the rectangle
+     * @param p_bottomright right-bottom corner of the rectangle
      * @param p_start line start point
      * @param p_end line end point
      * @return empty vector or clipped line
@@ -168,7 +153,7 @@ public final class CMath
      * @see http://www.thecrazyprogrammer.com/2017/02/liang-barsky-line-clipping-algorithm.html
      */
     @Nonnull
-    public static DoubleMatrix1D lineclipping( @Nonnull final DoubleMatrix1D p_leftupper, @Nonnull final DoubleMatrix1D p_rightbottom,
+    public static DoubleMatrix1D lineclipping( @Nonnull final DoubleMatrix1D p_upperleft, @Nonnull final DoubleMatrix1D p_bottomright,
                                      @Nonnull final DoubleMatrix1D p_start, @Nonnull final DoubleMatrix1D p_end )
     {
         final double[] l_pval = Stream.of(
@@ -179,14 +164,14 @@ public final class CMath
         ).mapToDouble( i -> i ).toArray();
 
         final double[] l_qval = Stream.of(
-            p_start.get( 1 ) - p_leftupper.getQuick( 1 ),
-            p_rightbottom.getQuick( 1 ) - p_start.getQuick( 1 ),
-            p_start.get( 0 ) - p_leftupper.getQuick( 0 ),
-            p_rightbottom.getQuick( 1 ) - p_start.getQuick( 0 )
+            p_start.get( 1 ) - p_upperleft.getQuick( 1 ),
+            p_bottomright.getQuick( 1 ) - p_start.getQuick( 1 ),
+            p_start.get( 0 ) - p_upperleft.getQuick( 0 ),
+            p_bottomright.getQuick( 1 ) - p_start.getQuick( 0 )
         ).mapToDouble( i -> i ).toArray();
 
 
-        final DoubleMatrix1D l_vector = lineinsideoutside( p_leftupper, p_rightbottom, p_start, p_end, l_pval, l_qval );
+        final DoubleMatrix1D l_vector = lineinsideoutside( p_upperleft, p_bottomright, p_start, p_end, l_pval, l_qval );
         return l_vector != null
                ? l_vector
                : linebounderies( p_start, p_end, l_pval, l_qval );
@@ -195,8 +180,8 @@ public final class CMath
     /**
      * check line inside rectangle
      *
-     * @param p_leftupper left-upper corner of the rectangle
-     * @param p_rightbottom right-bottom corner of the rectangle
+     * @param p_upperleft left-upper corner of the rectangle
+     * @param p_bottomright right-bottom corner of the rectangle
      * @param p_start line start point
      * @param p_end line end point
      * @param p_pval p-values
@@ -204,7 +189,7 @@ public final class CMath
      * @return null or clipped-line
      */
     @Nullable
-    private static DoubleMatrix1D lineinsideoutside( @Nonnull final DoubleMatrix1D p_leftupper, @Nonnull final DoubleMatrix1D p_rightbottom,
+    private static DoubleMatrix1D lineinsideoutside( @Nonnull final DoubleMatrix1D p_upperleft, @Nonnull final DoubleMatrix1D p_bottomright,
                                                      @Nonnull final DoubleMatrix1D p_start, @Nonnull final DoubleMatrix1D p_end,
                                                      final double[] p_pval, final double[] p_qval )
     {
@@ -216,14 +201,14 @@ public final class CMath
                             if ( i < 2 )
                             {
                                 return new DenseDoubleMatrix1D( new double[]{
-                                    p_start.getQuick( 0 ) < p_leftupper.getQuick( 0 )
-                                        ? p_leftupper.getQuick( 0 )
+                                    p_start.getQuick( 0 ) < p_upperleft.getQuick( 0 )
+                                        ? p_upperleft.getQuick( 0 )
                                         : p_start.getQuick( 0 ),
 
                                     p_start.getQuick( 1 ),
 
-                                    p_end.getQuick( 0 ) > p_rightbottom.getQuick( 0 )
-                                        ? p_rightbottom.getQuick( 0 )
+                                    p_end.getQuick( 0 ) > p_bottomright.getQuick( 0 )
+                                        ? p_bottomright.getQuick( 0 )
                                         : p_end.getQuick( 0 ),
 
                                     p_end.getQuick( 1 )
@@ -235,14 +220,14 @@ public final class CMath
                                 return new DenseDoubleMatrix1D( new double[]{
                                     p_start.getQuick( 0 ),
 
-                                    p_start.getQuick( 1 ) < p_leftupper.getQuick( 1 )
-                                        ? p_leftupper.getQuick( 1 )
+                                    p_start.getQuick( 1 ) < p_upperleft.getQuick( 1 )
+                                        ? p_upperleft.getQuick( 1 )
                                         : p_start.getQuick( 1 ),
 
                                     p_end.getQuick( 0 ),
 
-                                    p_end.getQuick( 1 ) > p_rightbottom.getQuick( 1 )
-                                        ? p_rightbottom.getQuick( 1 )
+                                    p_end.getQuick( 1 ) > p_bottomright.getQuick( 1 )
+                                        ? p_bottomright.getQuick( 1 )
                                         : p_end.getQuick( 1 )
                                 } );
                             }

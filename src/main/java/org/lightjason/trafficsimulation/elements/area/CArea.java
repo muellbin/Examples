@@ -24,6 +24,7 @@
 package org.lightjason.trafficsimulation.elements.area;
 
 import cern.colt.matrix.DoubleMatrix1D;
+import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
@@ -88,9 +89,17 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     private final Double m_allowedspeed;
     /**
-     * current position (lane start, lane end, position on the lane start, position on the lane end)
+     * current position (lane start, position on the lane start, lane end, position on the lane end)
      */
     private final DoubleMatrix1D m_position;
+    /**
+     * upper-left corner
+     */
+    private final DoubleMatrix1D m_upperleft;
+    /**
+     * lower-right corner
+     */
+    private final DoubleMatrix1D m_lowerright;
     /**
      * length of the area
      */
@@ -115,20 +124,20 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         super( p_configuration, FUNCTOR, p_id );
         m_environment = p_environment;
         m_allowedspeed = p_allowedspeed.doubleValue();
-        m_position = p_position;
 
         if ( m_allowedspeed < 10 )
             throw new RuntimeException( "maximumspeed is to low" );
-        if ( m_position.getQuick( 0 ) > m_position.getQuick( 1 ) )
+        if ( p_position.getQuick( 0 ) > p_position.getQuick( 1 ) )
             throw new RuntimeException( "lane index must be from lower to upper" );
-        if ( m_position.getQuick( 2 ) > m_position.getQuick( 3 ) )
+        if ( p_position.getQuick( 2 ) > p_position.getQuick( 3 ) )
             throw new RuntimeException( "position index must be from lower to upper" );
 
         // calculate km in cell position
-        m_length = m_position.getQuick( 3 ) - m_position.getQuick( 2 );
-        m_position.setQuick( 2, EUnit.INSTANCE.kilometertocell( m_position.getQuick( 2 ) ).doubleValue() );
-        m_position.setQuick( 3, EUnit.INSTANCE.kilometertocell( m_position.getQuick( 3 ) ).doubleValue() );
+        m_length = p_position.getQuick( 3 ) - p_position.getQuick( 2 );
 
+        m_upperleft = new DenseDoubleMatrix1D( new double[]{p_position.get( 0 ), EUnit.INSTANCE.kilometertocell( p_position.getQuick( 2 ) ).intValue()} );
+        m_lowerright = new DenseDoubleMatrix1D( new double[]{p_position.get( 1 ), EUnit.INSTANCE.kilometertocell( p_position.getQuick( 3 ) ).intValue()} );
+        m_position = new DenseDoubleMatrix1D( new double[]{m_upperleft.get( 0 ), m_lowerright.get( 0 ), m_upperleft.get( 1 ), m_lowerright.get( 1 )} );
     }
 
     /**
@@ -139,8 +148,8 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     private boolean inside( final DoubleMatrix1D p_position )
     {
-        return ( m_position.get( 0 ) <= p_position.get( 0 ) ) && ( p_position.get( 0 ) <= m_position.get( 1 ) )
-            && ( m_position.get( 2 ) <= p_position.get( 1 ) ) && ( p_position.get( 1 ) <= m_position.get( 3 ) );
+        return ( m_upperleft.get( 0 ) <= p_position.get( 0 ) ) && ( p_position.get( 0 ) <= m_lowerright.get( 0 ) )
+            && ( m_upperleft.get( 1 ) <= p_position.get( 1 ) ) && ( p_position.get( 1 ) <= m_lowerright.get( 1 ) );
     }
 
     @Nonnull
@@ -175,11 +184,10 @@ public final class CArea extends IBaseObject<IArea> implements IArea
                                 @Nonnull final DoubleMatrix1D p_end, @Nonnull final Number p_speed )
     {
         final DoubleMatrix1D l_line = CMath.lineclipping(
-                                        m_position.viewPart( 0, 2 ),
-                                        m_position.viewPart( 2, 2 ),
+                                        m_upperleft,
+                                        m_lowerright,
                                         p_start,
-                                        p_end
-        );
+                                        p_end );
 
         if ( l_line.size() != 0 )
             this.executetrigger(
@@ -254,11 +262,13 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         m_elements.removeAll(
             m_elements.parallelStream()
                       .filter( i -> !this.inside( i.position() ) )
-                      .peek( i -> CTrigger.from(
-                          ITrigger.EType.ADDGOAL,
-                          CLiteral.from(
-                              "vehicle/leave",
-                              CRawTerm.from( i )
+                      .peek( i -> this.trigger(
+                          CTrigger.from(
+                            ITrigger.EType.ADDGOAL,
+                            CLiteral.from(
+                                "vehicle/leave",
+                                CRawTerm.from( i )
+                            )
                           )
                       ) )
                       .collect( Collectors.toSet() )
