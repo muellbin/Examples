@@ -78,7 +78,7 @@ const l_gulp = require( "gulp" ),
 
               "markdown-slides" : {
                   output: "slides",
-                  source: l_gulp.src( l_sourcedir + "slides/*.md" )
+                  source: l_gulp.src( l_sourcedir + "slides/**/*.*" )
               },
 
               "markdown-documents" : {

@@ -67,12 +67,22 @@ h5 {
     color: darkred;
 }
 
-img[src$='#centering'], .centering {
+.centering {
     display: block;
     padding: 5px;
     margin: 0 auto;
     width: 95%;
     max-width: 95%;
+}
+
+img {
+    max-width: 95%;
+}
+
+img[src$='#centering'] {
+    display: block;
+    padding: 5px;
+    margin: 0 auto;
 }
 
 img[src$='#floatleft'] {
