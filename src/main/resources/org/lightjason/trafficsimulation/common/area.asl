@@ -31,4 +31,5 @@
     generic/print( "#Area Agent Leave", "vehicle leave area" )
 .
 
-// probability to act: 1- 1/ ( 1+ exp( - smooth * ( x - ( targetspeed + procent_targetspeed ) ) ) )
+// probability to act: 1 - 1/ ( 1+ exp( - smooth * ( x - ( targetspeed + procent_targetspeed ) ) ) )
+// penalty: ( targetspeed/10 / targetspeed * speeddifference )^4
