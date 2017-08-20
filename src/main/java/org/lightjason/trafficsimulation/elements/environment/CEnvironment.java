@@ -558,7 +558,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             return Stream.of(
                 new CConstant<>( "Lanes", l_env.position().get( 0 ) ),
                 new CConstant<>( "StreetPositions", l_env.position().get( 1 ) ),
-                new CConstant<>( "Distance", EUnit.INSTANCE.celltokilometer( l_env.position().get( 1 ) ) )
+                new CConstant<>( "Distance", EUnit.INSTANCE.celltokilometer( l_env.position().get( 1 ) ) ),
+                new CConstant<>( "PenaltyStatistic", ERuntime.INSTANCE.penalty() )
             );
         }
     }

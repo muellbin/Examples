@@ -25,6 +25,8 @@ package org.lightjason.trafficsimulation.runtime;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.apache.commons.math3.stat.descriptive.SynchronizedSummaryStatistics;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -64,10 +66,6 @@ public enum ERuntime implements IRuntime
     INSTANCE;
 
     /**
-     * thread-pool
-     */
-    private final ExecutorService m_pool = Executors.newSingleThreadExecutor();
-    /**
      * supplier of tasks
      */
     private AtomicReference<BiFunction<Map<String, CAgentDefinition>, Map<String, IObject<?>>, ITask>> m_supplier = new AtomicReference<>( ( i, j ) -> ITask.EMPTY );
@@ -83,6 +81,10 @@ public enum ERuntime implements IRuntime
      * execution objects
      */
     private final Map<String, IObject<?>> m_elements = new ConcurrentHashMap<>();
+    /**
+     * thread-pool
+     */
+    private final ExecutorService m_pool = Executors.newSingleThreadExecutor();
     /**
      * last running task
      */
@@ -101,6 +103,10 @@ public enum ERuntime implements IRuntime
             )
         )
     );
+    /**
+     * penalty statistic
+     */
+    private final SummaryStatistics m_penalty = new SynchronizedSummaryStatistics();
 
 
 
@@ -227,11 +233,20 @@ public enum ERuntime implements IRuntime
         return this;
     }
 
+
+
     @Override
     @Nonnull
     public final AtomicInteger time()
     {
         return m_threadsleeptime;
+    }
+
+    @Nonnull
+    @Override
+    public final SummaryStatistics penalty()
+    {
+        return m_penalty;
     }
 
 
