@@ -25,8 +25,8 @@ package org.lightjason.trafficsimulation.runtime;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.apache.commons.math3.stat.descriptive.SynchronizedSummaryStatistics;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
@@ -106,7 +106,7 @@ public enum ERuntime implements IRuntime
     /**
      * penalty statistic
      */
-    private final SummaryStatistics m_penalty = new SynchronizedSummaryStatistics();
+    private final DescriptiveStatistics m_penalty = new SynchronizedDescriptiveStatistics();
 
 
 
@@ -244,7 +244,7 @@ public enum ERuntime implements IRuntime
 
     @Nonnull
     @Override
-    public final SummaryStatistics penalty()
+    public final DescriptiveStatistics penalty()
     {
         return m_penalty;
     }

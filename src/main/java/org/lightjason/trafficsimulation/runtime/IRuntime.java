@@ -23,6 +23,7 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.lightjason.trafficsimulation.elements.IObject;
 
@@ -90,7 +91,7 @@ public interface IRuntime extends Runnable
      *
      * @return statistic object
      */
-    SummaryStatistics penalty();
+    DescriptiveStatistics penalty();
 
     /**
      * returns an element from the current executed objects
