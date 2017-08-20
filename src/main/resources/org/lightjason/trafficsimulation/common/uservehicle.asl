@@ -38,6 +38,6 @@
 
 
 // goal for entering area
-+!area/enter( speed(S), distance(D) ) <-
++!area/enter( allowedspeed(S), distance(D) ) <-
     generic/print( "#Vehicle", "enter area", S, D )
 .

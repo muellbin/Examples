@@ -226,7 +226,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
                     ITrigger.EType.ADDGOAL,
                     CLiteral.from(
                         "area/enter",
-                        CLiteral.from( "speed", CRawTerm.from( m_allowedspeed ) ),
+                        CLiteral.from( "allowedspeed", CRawTerm.from( m_allowedspeed ) ),
                         CLiteral.from( "distance", CRawTerm.from( m_length ) )
                     )
                 )
