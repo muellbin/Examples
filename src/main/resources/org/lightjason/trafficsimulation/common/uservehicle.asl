@@ -35,3 +35,9 @@
     vehicle/decelerate(1);
     !drive
 .
+
+
+// goal for entering area
++!area/enter( speed(S), distance(D) ) <-
+    generic/print( "#Vehicle", "enter area", S, D )
+.

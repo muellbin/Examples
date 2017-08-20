@@ -101,7 +101,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      */
     private final DoubleMatrix1D m_lowerright;
     /**
-     * length of the area
+     * length of the area in km
      */
     private final double m_length;
 
@@ -219,6 +219,20 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         if ( p_distance.doubleValue() == 0 )
             return;
 
+        // trigger cehicle agent for entering area
+        if ( !m_elements.contains( p_object ) )
+            p_object.trigger(
+                CTrigger.from(
+                    ITrigger.EType.ADDGOAL,
+                    CLiteral.from(
+                        "area/enter",
+                        CLiteral.from( "speed", CRawTerm.from( m_allowedspeed ) ),
+                        CLiteral.from( "distance", CRawTerm.from( m_length ) )
+                    )
+                )
+            );
+
+        // store agent for checking area leving and add trigger for the area
         m_elements.add( p_object );
         this.trigger(
             CTrigger.from(
