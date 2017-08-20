@@ -71,6 +71,56 @@ public final class TestCMath extends IBaseTest
 
             Stream.of( 10.0, 15.0, 15.0, 25.0 ).toArray()
         );
+
+        Assert.assertArrayEquals(
+            Arrays.stream(
+                CMath.lineclipping(
+                    new DenseDoubleMatrix1D( new double[]{10, 10} ), new DenseDoubleMatrix1D( new double[]{50, 80} ),
+                    new DenseDoubleMatrix1D( new double[]{45, 55} ), new DenseDoubleMatrix1D( new double[]{65, 85} )
+                ).toArray()
+            ).mapToInt( i -> (int)i ).boxed().toArray(),
+
+            Stream.of( 45, 55, 50, 62 ).toArray()
+        );
+    }
+
+    /**
+     * line clipping outside
+     */
+    @Test
+    public final void lineclippingoutside()
+    {
+        Assert.assertEquals(
+            CMath.lineclipping(
+                new DenseDoubleMatrix1D( new double[]{10, 10} ), new DenseDoubleMatrix1D( new double[]{50, 80} ),
+                new DenseDoubleMatrix1D( new double[]{105, 90} ), new DenseDoubleMatrix1D( new double[]{150, 150} )
+            ).size(),
+            0
+        );
+
+        Assert.assertEquals(
+            CMath.lineclipping(
+                new DenseDoubleMatrix1D( new double[]{10, 10} ), new DenseDoubleMatrix1D( new double[]{50, 80} ),
+                new DenseDoubleMatrix1D( new double[]{8, 8} ), new DenseDoubleMatrix1D( new double[]{20, 8} )
+            ).size(),
+            0
+        );
+
+        Assert.assertEquals(
+            CMath.lineclipping(
+                new DenseDoubleMatrix1D( new double[]{10, 10} ), new DenseDoubleMatrix1D( new double[]{50, 80} ),
+                new DenseDoubleMatrix1D( new double[]{8, 8} ), new DenseDoubleMatrix1D( new double[]{8, 20} )
+            ).size(),
+            0
+        );
+
+        Assert.assertEquals(
+            CMath.lineclipping(
+                new DenseDoubleMatrix1D( new double[]{10, 10} ), new DenseDoubleMatrix1D( new double[]{50, 80} ),
+                new DenseDoubleMatrix1D( new double[]{60, 8} ), new DenseDoubleMatrix1D( new double[]{60, 20} )
+            ).size(),
+            0
+        );
     }
 
     /**
