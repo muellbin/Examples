@@ -19,13 +19,16 @@ svg.railroad-diagram rect {
 svg.railroad-diagram .non-terminal {
     fill: #14811a;
 }
+code.remark-inline-code {
+    color: #8C1C00;
+}
 </style>
 
 # LightJason
 
 ## Agent-Orientated programming with AgentSpeak(L++)
 
-* Dipl- Inf. Philipp Kraus
+* Dipl-Inf. Philipp Kraus
 
 
 ---
@@ -360,7 +363,7 @@ If run twice or with different initial belief light, this will lead to unintende
   ```
 
   unifies `CurrentDuration`, `Program` and `Colour` to 
-  
+
   `60`, `morning` and `red` respectively.
 
 ---
