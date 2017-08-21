@@ -21,14 +21,27 @@
  * @endcond
  */
 
-+!vehicle/move( vehicle(V), speed(S), distance(D) )
-    : S > AllowedSpeed <-
-        generic/print( "#Area Agent Move", "Vehicle Movement", S, D )
 
-        // Value = Penality Value
-        // Inverse = 0.5 * ( 1 - Value )
-        // P = math/statistic/linearselection( ["penalty", "slowdriving", "nothing"], [Value, Inverse, Inverse] )
-        // !!P(S, V)
+// calculates the penality probability with the formula: 1 / ( 1 + exp( -( CurrentSpeed - ( AllowedSpeed + 0.1 * AllowedSpeed ) ) ) )
+penalityprobability( S, P ):-
+	P = AllowedSpeed + 0.1 * AllowedSpeed;
+    P = S - P;
+    P *= -1;
+    P = math/exp( P );
+    P += 1;
+    P = 1 / P
+.
+
+
++!vehicle/move( vehicle(V), speed(S), distance(D) ) <-
+	Penality = 0;
+   	$penalityprobability( S, Penality );
+    InverseHalfPenality = 1 - Penality;
+    InverseHalfPenality *= 0.5;
+
+    P = math/statistic/linearselection( ["penalty", "slowdriving", "nothing"], [Penality, InverseHalfPenality, InverseHalfPenality] );
+    generic/print( "#Area Move", P );
+    !!P(S, V)
 .
 
 
@@ -37,9 +50,14 @@
 .
 
 
-//+!penaly(V,S) <-
-//+!slowdriving(V,S) <-
-+!donothing(V,S) <- success.
++!penaly( V, S ) <-
+	generic/print( "#Area Penalty", S )
+.
 
-// probability to act: 1 - 1/ ( 1+ exp( - smooth * ( x - ( targetspeed + procent_targetspeed ) ) ) )
++!slowdriving( V, S ) <-
+	generic/print( "#Area Slowdriving", S )
+.
+
++!donothing( V, S ) <- success.
+
 // penalty: ( targetspeed/10 / targetspeed * speeddifference )^4
