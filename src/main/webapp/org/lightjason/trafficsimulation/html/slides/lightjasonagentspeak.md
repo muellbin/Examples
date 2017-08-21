@@ -22,10 +22,10 @@ svg.railroad-diagram .non-terminal {
 </style>
 
 # LightJason
-Agent-Orientated programming with AgentSpeak(L++)
 
+## Agent-Orientated programming with AgentSpeak(L++)
 
-Dipl- Inf. Philipp Kraus
+* Dipl- Inf. Philipp Kraus
 
 
 ---
@@ -125,7 +125,7 @@ Note: They have to be structured in the following form:
 ```prolog
 duration(60)
 ```
-The number `60` would be a term.
+Here, the number `60` would be a term.
 
 <!-- TODO: More examples(?) -->
 
@@ -158,7 +158,8 @@ There are two kinds of variables
 #### Example
 
 ```prolog
-NewDuration = 90; +duration(NewDuration).
+NewDuration = 90;
++duration(NewDuration).
 ```
 
 ---
@@ -179,7 +180,10 @@ So a .important[belief can be perceived or considered as true, but need not to b
 #### Example
 
 ```prolog
-+!weather : >>roadiswet(B) && B <- +hasrained(true).
++!weather
+  : >>roadiswet(B) && B
+ <- +hasrained(true)
+.
 ```
 
 ---
@@ -295,9 +299,8 @@ phase( duration(60), program(morning) ).
 .
 ```
 
-#### Question
-
-What could possibly go wrong? Hint: Have a look at the plan `+!phaseduration(NewDuration)`.
+* **Question**: What could possibly go wrong? 
+(Hint: Have a look at the plan `+!phaseduration(NewDuration)`)
 
 <!--
 Possible answer: +!phaseduration(NewDuration) assumes that the light is currently green.
@@ -314,10 +317,13 @@ If run twice or with different initial belief light, this will lead to unintende
 
 * Simple **Terminal Symbols** contain language keywords and *basic building blocks*
   * e.g. `:`, `<-`, `+`, `-`, `!`, `!!`, `;`, `(`, `)`, `.`
+
 * **Complex Types** extend Terminal Symbols to literals and logical language elements.
   * e.g. `light( red ).`
-* From CT agent behavour can be expressed by means of plans.
+
+* The language allows agent behavour to be expressed by means of plans.
   * e.g. `+!phaseduration(NewDuration)`
+
 * Agents comprise all these levels of language elements.
 
 
@@ -325,10 +331,10 @@ If run twice or with different initial belief light, this will lead to unintende
 ## AOP - Agent Cycle
 
 * Agents are repeatedly executed by a [runtime](https://lightjason.github.io/knowledgebase/logicalprogramming/#runtime) of the simulation.
-* Each time an agent is executed it runs through the [_agent cycle_](https://lightjason.github.io/knowledgebase/differencetojason/#lightjason-agent-cycle):
 
-1. updating beliefs by perceiving the environment with sensors
-2. executes all possible, i.e. _instanciable_ plans in parallel
+* Each time an agent is executed it runs through the [_agent cycle_](https://lightjason.github.io/knowledgebase/differencetojason/#lightjason-agent-cycle):
+  1. updating beliefs by perceiving the environment with sensors
+  2. executes all possible, i.e. _instanciable_ plans in parallel
 
 **Note**: Each step is executed in parallel, which means that data perception from sensors, agent and plan execution are done in parallel.
 
@@ -354,6 +360,7 @@ If run twice or with different initial belief light, this will lead to unintende
   ```
 
   unifies `CurrentDuration`, `Program` and `Colour` to 
+  
   `60`, `morning` and `red` respectively.
 
 ---
