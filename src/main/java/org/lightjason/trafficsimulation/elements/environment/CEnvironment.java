@@ -39,6 +39,7 @@ import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
+import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.agentspeak.language.instantiable.IInstantiable;
@@ -54,7 +55,7 @@ import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
-import org.lightjason.trafficsimulation.ui.api.CData;
+import org.lightjason.trafficsimulation.ui.api.CStatistic;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -168,7 +169,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         m_elements.values().parallelStream().forEach( IObject::release );
         m_elements.clear();
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
+        CAnimation.EInstance.INSTANCE.send( EStatus.RELEASE, this );
         ERuntime.INSTANCE.cancel();
 
         return this;
@@ -217,7 +218,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         if ( ( l_targetposition.intValue() > m_grid.columns() ) || ( l_targetposition.intValue() < 0 ) )
         {
             if ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) )
-                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "shutdown" ) ), true );
+                this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "finish", CRawTerm.from( p_vehicle ) ) ), true );
 
             m_elements.remove( p_vehicle.release().id() );
             return true;
@@ -332,7 +333,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
             EUnit.INSTANCE.kilometertocell( p_length ).intValue()
         );
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
+        CAnimation.EInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
 
     /**
@@ -346,15 +347,31 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     /**
-     * send penalty to simulation
+     * send value to simulation
      *
-     * @param p_value penalty value
+     * @param p_value value value
      */
     @IAgentActionFilter
     @IAgentActionName( name = "simulation/penalty" )
     private void simulationpenalty( final Number p_value )
     {
-        CData.CInstance.INSTANCE.penalty( p_value.doubleValue() );
+        CStatistic.EInstance.INSTANCE.value( CStatistic.EType.PENALTY, p_value.doubleValue() );
+    }
+
+    /**
+     * returns vehicle value
+     *
+     * @param p_object object
+     * @return penality value
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "vehicle/penalty" )
+    private Number vehiclepenalty( final IObject<?> p_object )
+    {
+        if ( !( p_object instanceof IVehicle ) )
+            throw new RuntimeException( "Object is not a vehicle" );
+
+        return p_object.<IVehicle>raw().penalty();
     }
 
     /**

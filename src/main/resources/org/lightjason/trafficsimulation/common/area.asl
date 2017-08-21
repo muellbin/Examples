@@ -50,11 +50,15 @@ penalityprobability( S, P ):-
 
 
 +!penalty( V, S ) <-
-	generic/print( "#Area Penalty", S )
+    P = AllowedSpeed - S;
+    P = math/abs( P );
+    P *= 0.1;
+    vehicle/penalize( V, P );
+	generic/print( "#Area Penalty", S, AllowedSpeed, P )
 .
 
 +!slow( V, S ) <-
-	generic/print( "#Area Slowdriving", S )
+	generic/print( "#Area Slowdriving", S, AllowedSpeed )
 .
 
 +!nothing( V, S ) <- success.

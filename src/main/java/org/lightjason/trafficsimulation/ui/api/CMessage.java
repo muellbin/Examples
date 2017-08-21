@@ -50,6 +50,10 @@ import java.util.stream.Stream;
 public final class CMessage extends IWebSocket.IBaseWebSocket
 {
     /**
+     * url path
+     */
+    public static final String PATH = "/message";
+    /**
      * default message delay
      */
     private static final int DELAY = CConfiguration.INSTANCE.getOrDefault( 2500, "main", "messagedelay", "default" );

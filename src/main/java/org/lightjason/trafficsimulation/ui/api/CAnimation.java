@@ -41,6 +41,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public final class CAnimation extends IWebSocket.IBaseWebSocket
 {
     /**
+     * url path
+     */
+    public static final String PATH = "/animation";
+    /**
      * current websocket connections
      */
     private static final Set<CAnimation> CONNECTIONS = new CopyOnWriteArraySet<>();
@@ -76,19 +80,9 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
     /**
      * singleton instance of all websocket connections
      */
-    public static final class CInstance
+    public enum EInstance
     {
-        /**
-         * singleton instance
-         */
-        public static final CInstance INSTANCE = new CInstance();
-
-        /**
-         * ctor
-         */
-        private CInstance()
-        {
-        }
+        INSTANCE;
 
         /**
          * sends an object

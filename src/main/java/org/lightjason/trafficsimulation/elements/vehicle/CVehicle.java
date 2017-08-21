@@ -200,7 +200,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         l_env.add( m_forwardview.create( "forward", l_env ) );
 
 
-        CAnimation.CInstance.INSTANCE.send( EStatus.INITIALIZE, this );
+        CAnimation.EInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
 
     @Nonnull
@@ -225,7 +225,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IObject<IVehicle> release()
     {
-        CAnimation.CInstance.INSTANCE.send( EStatus.RELEASE, this );
+        CAnimation.EInstance.INSTANCE.send( EStatus.RELEASE, this );
         return this;
     }
 

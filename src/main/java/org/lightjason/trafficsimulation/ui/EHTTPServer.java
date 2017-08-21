@@ -40,7 +40,7 @@ import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.ui.api.CAPI;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
-import org.lightjason.trafficsimulation.ui.api.CData;
+import org.lightjason.trafficsimulation.ui.api.CStatistic;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
@@ -111,9 +111,9 @@ public enum EHTTPServer
         restapi( l_webapp, new CAPI(), "/api/*" );
 
         // set websockets
-        websocket( l_webapp, CAnimation.class, "/animation" );
-        websocket( l_webapp, CMessage.class, "/message" );
-        websocket( l_webapp, CData.class, "/data" );
+        websocket( l_webapp, CAnimation.class, CAnimation.PATH );
+        websocket( l_webapp, CMessage.class, CMessage.PATH );
+        websocket( l_webapp, CStatistic.class, CStatistic.PATH );
     }
 
 

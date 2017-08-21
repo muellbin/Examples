@@ -332,7 +332,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
      * @param p_value value
      */
     @IAgentActionFilter
-    @IAgentActionName( name = "vehicle/penalty" )
+    @IAgentActionName( name = "vehicle/penalize" )
     private void penalty( final IObject<?> p_object, final Number p_value )
     {
         if ( !( p_object instanceof IVehicle ) )
@@ -341,17 +341,6 @@ public final class CArea extends IBaseObject<IArea> implements IArea
         p_object.<IVehicle>raw().penalty( p_value );
     }
 
-    /**
-     * send penalty to environment
-     *
-     * @param p_value value
-     */
-    @IAgentActionFilter
-    @IAgentActionName( name = "environment/send" )
-    private void sendpenalty(  @Nonnull final Number p_value )
-    {
-        m_environment.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "penalty", CRawTerm.from( p_value ) ) ) );
-    }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 

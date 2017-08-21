@@ -1223,7 +1223,7 @@ jQuery(function() {
     };
 
     // notify messages
-    LightJason.websocket( "/data" )
+    LightJason.websocket( "/statistic" )
               .onmessage = function ( i )
               {
                   const l_data = JSON.parse( i.data );

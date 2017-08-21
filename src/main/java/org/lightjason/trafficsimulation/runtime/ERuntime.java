@@ -104,7 +104,7 @@ public enum ERuntime implements IRuntime
         )
     );
     /**
-     * penalty statistic
+     * value statistic
      */
     private final DescriptiveStatistics m_penalty = new SynchronizedDescriptiveStatistics();
 

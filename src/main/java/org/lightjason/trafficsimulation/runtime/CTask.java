@@ -32,7 +32,6 @@ import org.lightjason.trafficsimulation.elements.environment.CEnvironment;
 import org.lightjason.trafficsimulation.elements.environment.IEnvironment;
 import org.lightjason.trafficsimulation.elements.vehicle.CVehicle;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
-import org.lightjason.trafficsimulation.ui.api.CData;
 import org.lightjason.trafficsimulation.ui.api.CMessage;
 
 import javax.annotation.Nonnull;
@@ -229,10 +228,6 @@ public class CTask implements ITask
             CCommon.languagestring( this, "shutdown" ),
             CCommon.languagestring( this, "simulationstop" )
         );
-
-
-        // test sending penalty data
-        CData.CInstance.INSTANCE.penalty( 3.5 );
 
         return this;
     }
