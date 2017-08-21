@@ -39,9 +39,8 @@ penalityprobability( S, P ):-
     InverseHalfPenality = 1 - Penality;
     InverseHalfPenality *= 0.5;
 
-    P = math/statistic/linearselection( ["penalty", "slowdriving", "nothing"], [Penality, InverseHalfPenality, InverseHalfPenality] );
-    generic/print( "#Area Move", P );
-    !!P(S, V)
+    P = math/statistic/linearselection( ["penalty", "slow", "nothing"], [Penality, InverseHalfPenality, InverseHalfPenality] );
+    !!P( V, S )
 .
 
 
@@ -50,14 +49,14 @@ penalityprobability( S, P ):-
 .
 
 
-+!penaly( V, S ) <-
++!penalty( V, S ) <-
 	generic/print( "#Area Penalty", S )
 .
 
-+!slowdriving( V, S ) <-
++!slow( V, S ) <-
 	generic/print( "#Area Slowdriving", S )
 .
 
-+!donothing( V, S ) <- success.
++!nothing( V, S ) <- success.
 
 // penalty: ( targetspeed/10 / targetspeed * speeddifference )^4
