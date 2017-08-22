@@ -365,4 +365,17 @@ public final class CSimulation
         return CConfiguration.SYSTEMID;
     }
 
+    /**
+     * returns statistic values
+     *
+     * @return penality values
+     */
+    @GET
+    @Path( "/penalty" )
+    @Produces( MediaType.APPLICATION_JSON )
+    public final Object penality()
+    {
+        return ERuntime.INSTANCE.penalty().getValues();
+    }
+
 }

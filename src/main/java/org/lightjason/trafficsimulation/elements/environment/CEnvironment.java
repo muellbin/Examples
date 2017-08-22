@@ -354,6 +354,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "simulation/penalty" )
     private void simulationpenalty( final Number p_value )
     {
+        ERuntime.INSTANCE.penalty().addValue( p_value.doubleValue() );
         CStatistic.EInstance.INSTANCE.value( CStatistic.EType.PENALTY, p_value.doubleValue() );
     }
 

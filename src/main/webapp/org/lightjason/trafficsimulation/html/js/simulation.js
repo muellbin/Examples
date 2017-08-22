@@ -715,13 +715,14 @@ jQuery(function() {
     };
 
     // statistic existing-values
-    LightJason.ajax( "/api/statistic/values" )
+    LightJason.ajax( "/api/simulation/penalty" )
               .success(function(i) {
-                  if ( (!Array.isArray(i)) || (!i.length) )
+                  if (!i)
                       return;
 
                   CHART.data.labels = Array.apply(null, {length: i.length+1}).map(Number.call, Number);
                   CHART.data.datasets[0].data = [0].concat(i);
+                  CHART.update();
               })
               .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
