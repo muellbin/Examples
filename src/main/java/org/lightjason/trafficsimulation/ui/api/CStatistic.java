@@ -72,7 +72,7 @@ public class CStatistic extends IWebSocket.IBaseWebSocket
      * @return penality values
      */
     @GET
-    @Path( "/value" )
+    @Path( "/values" )
     @Produces( MediaType.APPLICATION_JSON )
     public final Object penality()
     {

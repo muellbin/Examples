@@ -530,11 +530,31 @@ jQuery(function() {
           GAUGEWIDGET = jQuery( "#simulation-speedview-dashboard" ),
           WSANIMATION = LightJason.websocket( "/animation" ),
           WSMESSAGES = LightJason.websocket( "/message" ),
+          WSSTATISTIC = LightJason.websocket( "/statistic" ),
           TILESIZE = 32,
           VEHICLEXSIZE = 32,
           VEHICLEYSIZE = 16,
           PIXELCENTER = 9,
           GAME = { instance: null, layer: null, music: null },
+
+          CHART = new Chart( jQuery( "#simulation-panelty" ), {
+              type: "line",
+              data: {
+                  labels: [0],
+                  datasets: [{
+                      data: [0],
+                      fill: false,
+                      borderColor: "rgba(255,99,132,1)"
+                  }]
+              },
+                  options: {
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      legend: {
+                          display: false
+                      }
+                  }
+          }),
 
           GAUGE = new RadialGauge({
                             renderTo: 'simulation-speedview',
@@ -685,11 +705,30 @@ jQuery(function() {
                    })
                };
 
+    // statistic messages
+    WSSTATISTIC.onmessage = function ( i ) {
+        const l_data = JSON.parse( i.data );
+
+        CHART.data.labels.push( CHART.data.labels.slice(-1) + 1 );
+        CHART.data.datasets[0].data.push( l_data.data );
+        CHART.update();
+    };
+
+    // statistic existing-values
+    LightJason.ajax( "/api/statistic/values" )
+              .success(function(i) {
+                  if ( (!Array.isArray(i)) || (!i.length) )
+                      return;
+
+                  CHART.data.labels = Array.apply(null, {length: i.length+1}).map(Number.call, Number);
+                  CHART.data.datasets[0].data = [0].concat(i);
+              })
+              .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
     // initialize simulation speed
     LightJason.ajax( "/api/simulation/time/get" )
-        .success(function(i) { SIMULATIONSPEED.val(i).trigger( "change" ); })
-        .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+              .success(function(i) { SIMULATIONSPEED.val(i).trigger( "change" ); })
+              .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
     // initialize music
     LightJason.ajax( "/api/simulation/music" )
@@ -1177,62 +1216,6 @@ jQuery(function() {
         else
             GAME.music.stop();
     });
-
-
-
-
-
-
-
-
-
-    // ---- @test section --------------------------------------------------------------------------------------------------------------------------------------
-
-    // https://canvasjs.com/docs/charts/basics-of-creating-html5-chart/updating-chart-options/
-    var chart = new Chart( jQuery( "#simulation-panelty" ), {
-        type: "line",
-        data: {
-            labels: [0],
-            datasets: [{
-                data: [0],
-                fill: false,
-                borderColor: "rgba(255,99,132,1)"
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                display: false
-            }
-        }
-    });
-
-    /*
-    var chartlabel = 1;
-    const dataobject =
-    {
-        penalty: function( p_data )
-        {
-            chart.data.labels.push( chartlabel );
-            chart.data.datasets.forEach(function(dataset) {
-                dataset.data.push( p_data );
-            });
-            chart.update();
-            chartlabel++;
-        }
-    };
-*/
-    // notify messages
-    LightJason.websocket( "/statistic" )
-              .onmessage = function ( i )
-              {
-                  const l_data = JSON.parse( i.data );
-
-                  chart.data.labels.push( 1 );
-                  chart.data.datasets[0].push( l_data );
-                  chart.update();
-              };
 
 });
 
