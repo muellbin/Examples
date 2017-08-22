@@ -1208,6 +1208,7 @@ jQuery(function() {
         }
     });
 
+    /*
     var chartlabel = 1;
     const dataobject =
     {
@@ -1221,13 +1222,16 @@ jQuery(function() {
             chartlabel++;
         }
     };
-
+*/
     // notify messages
     LightJason.websocket( "/statistic" )
               .onmessage = function ( i )
               {
                   const l_data = JSON.parse( i.data );
-                  dataobject[l_data.type](l_data.data);
+
+                  chart.data.labels.push( 1 );
+                  chart.data.datasets[0].push( l_data );
+                  chart.update();
               };
 
 });
