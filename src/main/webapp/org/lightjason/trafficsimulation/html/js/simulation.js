@@ -396,6 +396,22 @@ function aslname( pc_value )
 }
 
 /**
+ * update chart with data
+ *
+ * @param po_chart chart reference
+ * @param po_data data
+ */
+function penaltychart(po_chart, po_data )
+{
+    po_chart.data.labels = Array.apply(null, {length: po_data.elements + 1}).map(Function.call, Number);
+    po_chart.data.datasets[0].data = [0].concat( po_data.values );
+    po_chart.data.datasets[1].data = Array( po_data.elements + 1 ).fill( po_data.median );
+    po_chart.data.datasets[2].data = Array( po_data.elements + 1 ).fill( po_data["75-percentile"] );
+    po_chart.data.datasets[3].data = Array( po_data.elements + 1 ).fill( po_data["25-percentile"] );
+    po_chart.update();
+}
+
+/**
  * loads an asl script into the editor
  *
  * @param pc_id agent id
@@ -542,9 +558,28 @@ jQuery(function() {
               data: {
                   labels: [0],
                   datasets: [{
+                      // penality values
                       data: [0],
                       fill: false,
                       borderColor: "rgba(255,99,132,1)"
+                  },{
+                      // median
+                      data: [0],
+                      fill: false,
+                      borderDash: [5, 5],
+                      borderColor: "rgba(172,172,172,1)"
+                  },{
+                      // 75-percentile
+                      data: [0],
+                      fill: false,
+                      borderDash: [5, 5],
+                      borderColor: "rgba(215,215,215,1)"
+                  },{
+                      // 25-percentile
+                      data: [0],
+                      fill: false,
+                      borderDash: [5, 5],
+                      borderColor: "rgba(215,215,215,1)"
                   }]
               },
                   options: {
@@ -707,11 +742,7 @@ jQuery(function() {
 
     // statistic messages
     WSSTATISTIC.onmessage = function ( i ) {
-        const l_data = JSON.parse( i.data );
-
-        CHART.data.labels.push( l_data.elements );
-        CHART.data.datasets[0].data.push( l_data.values.slice( -1 )[0] );
-        CHART.update();
+        penaltychart( CHART, JSON.parse( i.data ) );
     };
 
     // statistic existing-values
@@ -720,9 +751,7 @@ jQuery(function() {
                   if ( !i.elements )
                       return;
 
-                  CHART.data.labels = Array.apply(null, {length: i.elements + 1}).map(Number.call, Number);
-                  CHART.data.datasets[0].data = [0].concat( i.values );
-                  CHART.update();
+                  penaltychart( CHART, i );
               })
               .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
