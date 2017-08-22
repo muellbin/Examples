@@ -35,7 +35,6 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
-import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
@@ -396,17 +395,19 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     /**
      * variable builder of vehicle
      */
-    private static class CVariableBuilder implements IVariableBuilder
+    private static final class CVariableBuilder extends IBaseVariableBuilder
     {
 
         @Override
         public final Stream<IVariable<?>> apply( final IAgent<?> p_agent, final IInstantiable p_instance )
         {
             final IArea l_area = p_agent.<IArea>raw();
-
-            return Stream.of(
-                new CConstant<>( "Length", l_area.length() ),
-                new CConstant<>( "AllowedSpeed", l_area.allowedspeed() )
+            return Stream.concat(
+                super.apply( p_agent, p_instance ),
+                Stream.of(
+                    new CConstant<>( "Length", l_area.length() ),
+                    new CConstant<>( "AllowedSpeed", l_area.allowedspeed() )
+                )
             );
         }
     }

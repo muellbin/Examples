@@ -24,6 +24,7 @@
 package org.lightjason.trafficsimulation.elements;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.beliefbase.CBeliefbase;
 import org.lightjason.agentspeak.beliefbase.storage.CMultiStorage;
@@ -38,9 +39,12 @@ import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.agentspeak.language.fuzzy.operator.IFuzzyBundle;
+import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
 import org.lightjason.agentspeak.language.instantiable.rule.IRule;
 import org.lightjason.agentspeak.language.unify.IUnifier;
+import org.lightjason.agentspeak.language.variable.CConstant;
+import org.lightjason.agentspeak.language.variable.IVariable;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.ui.EHTTPServer;
 
@@ -244,6 +248,22 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
 
                 return l_view;
             }
+        }
+    }
+
+
+    /**
+     * variable builder of any object
+     */
+    protected abstract static class IBaseVariableBuilder implements IVariableBuilder
+    {
+
+        @Override
+        public Stream<IVariable<?>> apply( final IAgent<?> p_agent, final IInstantiable p_instantiable )
+        {
+            return Stream.of(
+                new CConstant<>( "ID", p_agent.<IObject<?>>raw().id() )
+            );
         }
     }
 

@@ -22,6 +22,8 @@
  */
 
 
+// --- rules ---------------------------------------------------------------------------------------------------------------------------------------------------
+
 // calculates the penality probability with the formula: 1 / ( 1 + exp( -( CurrentSpeed - ( AllowedSpeed + 0.1 * AllowedSpeed ) ) ) )
 penalityprobability( S, P ):-
 	P = AllowedSpeed + 0.1 * AllowedSpeed;
@@ -32,7 +34,20 @@ penalityprobability( S, P ):-
     P = 1 / P
 .
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
+// --- plans ---------------------------------------------------------------------------------------------------------------------------------------------------
+
+// --- vehicle leaving area ---
++!vehicle/leave( V ) <-
+    generic/print( "#Area", "Vehicle leave area", ID )
+.
+
+
+
+// --- vehicle moving (trajectory) plan, calculates choice what should be done ---
 +!vehicle/move( vehicle(V), speed(S), distance(D) ) <-
 	Penality = 0;
    	$penalityprobability( S, Penality );
@@ -44,23 +59,28 @@ penalityprobability( S, P ):-
 .
 
 
-+!vehicle/leave(V) <-
-    generic/print( "#Area Agent Leave", "vehicle leave area" )
-.
 
-
+// --- calculates penalty value (vehicle is to fast) ---
 +!penalty( V, S ) <-
     P = AllowedSpeed - S;
     P = math/abs( P );
     P *= 0.1;
     vehicle/penalize( V, P );
-	generic/print( "#Area Penalty", S, AllowedSpeed, P )
+	generic/print( "#Area Penalty", "You get a punishment, your are driving to fast" )
 .
 
+
+
+// --- calculates penalty value (vehicle is to slow) ---
 +!slow( V, S ) <-
-	generic/print( "#Area Slowdriving", S, AllowedSpeed )
+    S /= AllowedSpeed;
+    P = math/statistic/randomsimple;
+    P <= S;
+    P *= 10;
+    vehicle/penalize( V, P );
+	generic/print( "#Area", "You get a punishment, your are driving to slow")
 .
 
-+!nothing( V, S ) <- success.
 
-// penalty: ( targetspeed/10 / targetspeed * speeddifference )^4
+// --- calculates penalty value (vehicle has a stroke of luck)
++!nothing( V, S ) <- success.

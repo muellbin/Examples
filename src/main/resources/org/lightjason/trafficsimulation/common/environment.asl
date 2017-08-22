@@ -58,10 +58,10 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     generic/print( "#Environment Agent", "grid has been created" );
 
     // create areas
-    area/initialize( 75, 0, 3, 5, 15 );
-    area/initialize( 100, 0, 3, 15, 25 );
-    area/initialize( 125, 0, 3, 25, 35 );
-    area/initialize( 150, 0, 3, 35, 45 );
+    area/initialize( 125, 0, 3, 5, 15 );
+    area/initialize( 145, 0, 3, 15, 25 );
+    area/initialize( 150, 0, 3, 25, 35 );
+    area/initialize( 175, 0, 3, 35, 45 );
     generic/print( "#Environment Agent", "areas have been created" );
 
     !uservehicle
@@ -121,40 +121,24 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 .
 
 
-
-// --- plan to shutdown simulation execution ---
-+!shutdown <-
-    simulation/shutdown
-.
-
-+!finish(V) <-
+// --- successful finishing plan to calculate penalty values ---
++!finish( V ) <-
     simulation/penalty( vehicle/penalty( V ) );
     generic/print( "#Environment Agent", "user vehicle has finished the tour, so simulation will be shutdown" );
-    simulation/shutdown
+    !!shutdown
 .
 
 
 
-// --- plan on collision execution ---
-+!vehicle/usercollision <-
+// --- plan for user-collision execution ---
++!vehicle/usercollision( V ) <-
     generic/print( "#Environment Agent", "user collision plan hash been called" );
+    !!shutdown
+.
+
+
+
+// --- plan to shutdown simulation execution / called by the UI ---
++!shutdown <-
     simulation/shutdown
-.
-
-
-
-
-
-
-
-
-
-
-+!penalty(N) <-
-    +value(N);
-    !finish
-.
-
-+!finish <-
-    simulation/penalty( 10 )
 .

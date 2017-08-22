@@ -41,7 +41,6 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
-import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
@@ -564,19 +563,21 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     /**
      * variable builder of environment
      */
-    private static class CVariableBuilder implements IVariableBuilder
+    private static final class CVariableBuilder extends IBaseVariableBuilder
     {
 
         @Override
         public final Stream<IVariable<?>> apply( final IAgent<?> p_agent, final IInstantiable p_instance )
         {
             final IEnvironment l_env = p_agent.<IEnvironment>raw();
-
-            return Stream.of(
-                new CConstant<>( "Lanes", l_env.position().get( 0 ) ),
-                new CConstant<>( "StreetPositions", l_env.position().get( 1 ) ),
-                new CConstant<>( "Distance", EUnit.INSTANCE.celltokilometer( l_env.position().get( 1 ) ) ),
-                new CConstant<>( "PenaltyStatistic", ERuntime.INSTANCE.penalty() )
+            return Stream.concat(
+                super.apply( p_agent, p_instance ),
+                Stream.of(
+                    new CConstant<>( "Lanes", l_env.position().get( 0 ) ),
+                    new CConstant<>( "StreetPositions", l_env.position().get( 1 ) ),
+                    new CConstant<>( "Distance", EUnit.INSTANCE.celltokilometer( l_env.position().get( 1 ) ) ),
+                    new CConstant<>( "PenaltyStatistic", ERuntime.INSTANCE.penalty() )
+                )
             );
         }
     }
