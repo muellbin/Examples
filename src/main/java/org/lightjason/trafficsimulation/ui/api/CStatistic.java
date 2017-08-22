@@ -23,17 +23,15 @@
 
 package org.lightjason.trafficsimulation.ui.api;
 
-import com.codepoetics.protonpack.StreamUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jetty.websocket.api.Session;
+import org.lightjason.trafficsimulation.runtime.IStatistic;
+import org.lightjason.trafficsimulation.ui.IMap;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * websocket and rest for sending statistic data
@@ -84,18 +82,12 @@ public final class CStatistic extends IWebSocket.IBaseWebSocket
         /**
          * send value to UI
          *
-         * @param p_type data type
-         * @param p_penalty value
+         * @param p_data data obejct
          * @return self reference
          */
-        public final EInstance value( final EType p_type, final double p_penalty )
+        public final EInstance send( final IStatistic.EValue p_type, final IMap<IStatistic.EValue> p_data )
         {
-            final Map<Object, Object> l_data = StreamUtils.zip(
-                Stream.of( "type", "data" ),
-                Stream.of( p_type.toString(), p_penalty ),
-                ImmutablePair::new
-            ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
-
+            final Map<String, Object> l_data = p_data.map( p_type );
             CONNECTIONS.parallelStream().forEach( i -> i.send( l_data ) );
             return this;
         }

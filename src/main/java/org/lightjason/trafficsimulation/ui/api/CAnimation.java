@@ -24,7 +24,7 @@
 package org.lightjason.trafficsimulation.ui.api;
 
 import org.eclipse.jetty.websocket.api.Session;
-import org.lightjason.trafficsimulation.elements.IMap;
+import org.lightjason.trafficsimulation.ui.IMap;
 import org.lightjason.trafficsimulation.elements.IObject;
 import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
@@ -58,7 +58,7 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
         {
             final IObject<?> l_object = ERuntime.INSTANCE.elements().get( i.get( "id" ) );
             if ( l_object != null )
-                j.send( l_object.map( IMap.EStatus.EXECUTE ) );
+                j.send( l_object.map( IObject.EStatus.EXECUTE ) );
         } );
     }
 
@@ -90,7 +90,7 @@ public final class CAnimation extends IWebSocket.IBaseWebSocket
          * @param p_status status of the object
          * @param p_object object
          */
-        public final void send( @Nonnull final IMap.EStatus p_status, final IMap p_object )
+        public final void send( @Nonnull final IObject.EStatus p_status, final IMap<IObject.EStatus> p_object )
         {
             final Map<String, Object> l_data = p_object.map( p_status );
             if ( !l_data.isEmpty() )

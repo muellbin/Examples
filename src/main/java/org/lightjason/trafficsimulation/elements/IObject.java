@@ -27,8 +27,10 @@ package org.lightjason.trafficsimulation.elements;
 import cern.colt.matrix.DoubleMatrix1D;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.generator.IAgentGenerator;
+import org.lightjason.trafficsimulation.ui.IMap;
 
 import javax.annotation.Nonnull;
+import java.util.Locale;
 
 
 /**
@@ -36,7 +38,7 @@ import javax.annotation.Nonnull;
  *
  * @tparam T domain specific type
  */
-public interface IObject<T extends IAgent<?>> extends IMap, IPerceiveable, IAgent<T>
+public interface IObject<T extends IAgent<?>> extends IMap<IObject.EStatus>, IPerceiveable, IAgent<T>
 {
 
     /**
@@ -87,5 +89,21 @@ public interface IObject<T extends IAgent<?>> extends IMap, IPerceiveable, IAgen
         IGenerator<T> resetcount();
     }
 
+
+    /**
+     * status of the object
+     */
+    enum EStatus
+    {
+        INITIALIZE,
+        EXECUTE,
+        RELEASE;
+
+        @Override
+        public final String toString()
+        {
+            return super.toString().toLowerCase( Locale.ROOT );
+        }
+    }
 }
 

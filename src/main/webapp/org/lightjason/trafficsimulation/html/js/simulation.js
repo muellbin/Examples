@@ -709,19 +709,19 @@ jQuery(function() {
     WSSTATISTIC.onmessage = function ( i ) {
         const l_data = JSON.parse( i.data );
 
-        CHART.data.labels.push( CHART.data.labels.slice(-1) + 1 );
-        CHART.data.datasets[0].data.push( l_data.data );
+        CHART.data.labels.push( l_data.elements );
+        CHART.data.datasets[0].data.push( l_data.values.slice( -1 )[0] );
         CHART.update();
     };
 
     // statistic existing-values
     LightJason.ajax( "/api/simulation/penalty" )
               .success(function(i) {
-                  if (!i)
+                  if ( !i.elements )
                       return;
 
-                  CHART.data.labels = Array.apply(null, {length: i.length+1}).map(Number.call, Number);
-                  CHART.data.datasets[0].data = [0].concat(i);
+                  CHART.data.labels = Array.apply(null, {length: i.elements + 1}).map(Number.call, Number);
+                  CHART.data.datasets[0].data = [0].concat( i.values );
                   CHART.update();
               })
               .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });

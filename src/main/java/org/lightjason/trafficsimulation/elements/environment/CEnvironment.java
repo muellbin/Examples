@@ -54,7 +54,6 @@ import org.lightjason.trafficsimulation.elements.area.IArea;
 import org.lightjason.trafficsimulation.elements.vehicle.IVehicle;
 import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.ui.api.CAnimation;
-import org.lightjason.trafficsimulation.ui.api.CStatistic;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -354,8 +353,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "simulation/penalty" )
     private void simulationpenalty( final Number p_value )
     {
-        ERuntime.INSTANCE.penalty().addValue( p_value.doubleValue() );
-        CStatistic.EInstance.INSTANCE.value( CStatistic.EType.PENALTY, p_value.doubleValue() );
+        ERuntime.INSTANCE.penalty().accept( p_value );
     }
 
     /**

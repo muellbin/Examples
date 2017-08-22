@@ -21,39 +21,24 @@
  * @endcond
  */
 
-package org.lightjason.trafficsimulation.elements;
+package org.lightjason.trafficsimulation.ui;
 
 import javax.annotation.Nonnull;
-import java.util.Locale;
 import java.util.Map;
 
 
 /**
  * interface to define the object as key-value pair
  */
-public interface IMap
+public interface IMap<E extends Enum<?>>
 {
 
     /**
      * creates for the object a map / yaml definition
+     *
+     * @param p_status enum on data
      * @return map representation with status
      */
-    Map<String, Object> map( @Nonnull final EStatus p_status );
+    Map<String, Object> map( @Nonnull final E p_status );
 
-
-    /**
-     * status of the object
-     */
-    enum EStatus
-    {
-        INITIALIZE,
-        EXECUTE,
-        RELEASE;
-
-        @Override
-        public final String toString()
-        {
-            return super.toString().toLowerCase( Locale.ROOT );
-        }
-    }
 }
