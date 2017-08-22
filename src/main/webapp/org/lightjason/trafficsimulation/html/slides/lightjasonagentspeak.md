@@ -217,10 +217,12 @@ To transform the imperative method to a logical plan proceed as follows:
   (-> see example on the next slide)
 
 * **Advanced**: Execution of plans differ depending on trigger symbol `!` and `!!`
-  * `!phaseduration(90)`: will run in the next agent cycle.
-  * `!!phaseduration(90)`: will run in the current agent cycle.
-  * `!phaseduration(90); !phaseduration(60)`: two plans for `90` and `60` run in *parallel* in the next cycle.
-  * `!!phaseduration(90); !!phaseduration(60)`: two plans will run *sequentially* in this cycle.
+  * `!phaseduration(90)`: will run in the **next** agent cycle.
+    
+    => `!phaseduration(90); !phaseduration(60)`: two plans for `90` and `60` run in *parallel* in the next cycle.
+  * `!!phaseduration(90)`: will run in the **current** agent cycle.
+    
+    => `!!phaseduration(90); !!phaseduration(60)`: two plans will run *sequentially* in this cycle.
 
 ---
 ### Goals - Example
@@ -242,7 +244,6 @@ To transform the imperative method to a logical plan proceed as follows:
     generic/print( "Changing phase duration to", NewDuration )
 .
 ```
-
 
 ---
 ### Beliefs and Facts
@@ -336,15 +337,28 @@ If run twice or with different initial belief light, this will lead to unintende
 **Note**: Each step is executed in parallel, which means that data perception from sensors, agent and plan execution are also done in parallel.
 
 ---
-### Execution - Finite-State-Machine
+### Execution - Finite-State Machine
 
-Finite state machines (FSM) can be used to illustrate the execution of agents.
+[Finite-state machines (FSM)](https://lightjason.github.io/knowledgebase/finitestatemachine) can be used to illustrate the execution of agents.
+* The **initial state** is equivalent to the initial goal
+* A **state** is the agent's knowledge, i.e. the set of beliefs after the execution phase in the agent cycle finished.
+* A **transition** is the execution of a plan (with instantiation of a goal), limited by the plan condition.
 
+#### Example
+
+```prolog
+!main.
++!main <- !first; !second.
++!first <- !first.
++!second <- !main.
+```
+
+<svg height=230px id="agentfsm" xmlns="http://www.w3.org/2000/svg" viewBox="71 51 490 248"><defs><style>@keyframes colorchange{0%{fill:#fff}50%{fill:#0e7}100%{fill:#fff}}tspan{font-family:sans-serif;fill:#000}</style><marker orient="auto" overflow="visible" id="a" viewBox="-1 -4 10 8" markerWidth="10" markerHeight="8" color="#000"><path d="M8 0L0-3v6z" fill="currentColor" stroke="currentColor"></path></marker><marker orient="auto" overflow="visible" id="b" viewBox="-9 -4 10 8" markerWidth="10" markerHeight="8" color="#000"><path d="M-8 0l8 3v-6z" fill="currentColor" stroke="currentColor"></path></marker></defs><g fill="none"><circle class="state" cx="130.5" cy="121.5" r="22.5"></circle><circle id="init" cx="130.5" cy="121.5" r="22.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round"></circle><path d="M82.5 109.5l25.5 12.75L82.5 135z" fill="#fff"></path><path d="M82.5 109.5l25.5 12.75L82.5 135z" stroke="#000" stroke-linecap="round" stroke-linejoin="round"></path><circle class="state" cx="292.5" cy="121.5" r="22.5"></circle><circle id="main" cx="292.5" cy="121.5" r="22.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round"></circle><circle class="state" cx="434.376" cy="121.5" r="22.5"></circle><circle id="first" cx="434.376" cy="121.5" r="22.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round"></circle><circle class="state" cx="355.5" cy="265.5" r="22.5"></circle><circle id="second" cx="355.5" cy="265.5" r="22.5" stroke="#000" stroke-linecap="round" stroke-linejoin="round"></circle><path marker-end="url(#a)" stroke="#000" stroke-linecap="round" stroke-linejoin="round" d="M153 121.5h107.1m54.9 0h86.976m-89.208 9.784c15.854 9.18 36.886 25.068 47.232 48.716 8.308 18.99 7.907 38.826 5.104 54.606"></path><path d="M282.896 152.394c-2.803 15.78-3.204 35.617 5.104 54.606 10.346 23.648 31.378 39.537 47.232 48.716" marker-start="url(#b)" stroke="#000" stroke-linecap="round" stroke-linejoin="round"></path><path d="M448.939 104.346C464.217 87.377 488.17 63.813 504 63c24.824-1.275 37.725 37.427 18 54-10.586 8.895-35.047 9.538-55.441 8.225" marker-end="url(#a)" stroke="#000" stroke-linecap="round" stroke-linejoin="round"></path><path fill="#fff" d="M177.515 106.5h49v30h-49z"></path><text transform="translate(182.515 112.276)"><tspan x=".084" y="15" textLength="38.832">!main</tspan></text><path fill="#fff" d="M338.2 106.5h41v30h-41z"></path><text transform="translate(343.2 112.276)"><tspan x=".1" y="15" textLength="30.8">!first</tspan></text><path fill="#fff" d="M510.291 72.278h41v30h-41z"></path><text transform="translate(515.291 78.054)"><tspan x=".1" y="15" textLength="30.8">!first</tspan></text><path fill="#fff" d="M317.016 148.745h67v30h-67z"></path><text transform="translate(322.016 154.521)"><tspan x=".052" y="15" textLength="56.896">!second</tspan></text><path fill="#fff" d="M266.617 198.336h49v30h-49z"></path><text transform="translate(271.617 204.112)"><tspan x=".084" y="15" textLength="38.832">!main</tspan></text></g></svg>
 
 ---
 ### Execution - Unification
 
-<svg width=800px class="railroad-diagram" viewBox="0 0 1052 101" id="svg_e732ce4bb8479dc479e294d62beaf1cf"><path d="M20 30v20m10-20v20M20 40h20.5m-.5 0h10m0 0a10 10 0 0 0 10-10 10 10 0 0 1 10-10m0 0h36m0 0a10 10 0 0 1 10 10 10 10 0 0 0 10 10m-76 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 29h36v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fa868488740aa25870ced6b9169951fb"><text x="88" y="44">AT</text></a></g><path d="M106 40h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M136 29h100v22H136z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f2160f407f56e0f4d495cecd44055e2d"><text x="186" y="44">RIGHTSHIFT</text></a></g><path d="M236 40h10m0 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M266 40h320m76 0h320M586 29h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f0d674f1e0ed4292267f149c5983db02"><text x="624" y="44">literal</text></a></g><path d="M982 40h20m-756 0a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10m716 0" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M266 59h148v22H266z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#5ffa5d1c78ad09c7bf5b4d0b0764641f"><text x="340" y="74">LEFTROUNDBRACKET</text></a></g><path d="M414 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M434 59h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f0d674f1e0ed4292267f149c5983db02"><text x="472" y="74">literal</text></a></g><path d="M510 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M530 59h60v22h-60z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#4d9b3e9fc12849d060371eb65154c751"><text x="560" y="74">COMMA</text></a></g><path d="M590 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M610 59h196v22H610z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#89368367b9f48fd82a781f5a4e1ad8b6"><text x="708" y="74">unification_constraint</text></a></g><path d="M806 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M826 59h156v22H826z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#3a52152b9f1e9dd45998ce24723d98ed"><text x="904" y="74">RIGHTROUNDBRACKET</text></a></g><path d="M982 70a10 10 0 0 0 10-10V50a10 10 0 0 1 10-10m0 0h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
+<svg width=1000px class="railroad-diagram" viewBox="0 0 1052 101" id="svg_e732ce4bb8479dc479e294d62beaf1cf"><path d="M20 30v20m10-20v20M20 40h20.5m-.5 0h10m0 0a10 10 0 0 0 10-10 10 10 0 0 1 10-10m0 0h36m0 0a10 10 0 0 1 10 10 10 10 0 0 0 10 10m-76 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 29h36v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fa868488740aa25870ced6b9169951fb"><text x="88" y="44">AT</text></a></g><path d="M106 40h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M136 29h100v22H136z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f2160f407f56e0f4d495cecd44055e2d"><text x="186" y="44">RIGHTSHIFT</text></a></g><path d="M236 40h10m0 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M266 40h320m76 0h320M586 29h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f0d674f1e0ed4292267f149c5983db02"><text x="624" y="44">literal</text></a></g><path d="M982 40h20m-756 0a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10m716 0" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M266 59h148v22H266z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#5ffa5d1c78ad09c7bf5b4d0b0764641f"><text x="340" y="74">LEFTROUNDBRACKET</text></a></g><path d="M414 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M434 59h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f0d674f1e0ed4292267f149c5983db02"><text x="472" y="74">literal</text></a></g><path d="M510 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M530 59h60v22h-60z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#4d9b3e9fc12849d060371eb65154c751"><text x="560" y="74">COMMA</text></a></g><path d="M590 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M610 59h196v22H610z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#89368367b9f48fd82a781f5a4e1ad8b6"><text x="708" y="74">unification_constraint</text></a></g><path d="M806 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M826 59h156v22H826z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#3a52152b9f1e9dd45998ce24723d98ed"><text x="904" y="74">RIGHTROUNDBRACKET</text></a></g><path d="M982 70a10 10 0 0 0 10-10V50a10 10 0 0 1 10-10m0 0h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
 
 * [Unification](https://lightjason.github.io/knowledgebase/logicalprogramming/#unification) is the process for setting values from one literal into the variables of another literal, e.g. what is the current value of `Colour` in `light(Colour)`?
   Note: `Colour` is a variable!
