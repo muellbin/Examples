@@ -25,7 +25,8 @@ package org.lightjason.trafficsimulation.ui.api;
 
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
-import org.lightjason.trafficsimulation.elements.IMap;
+import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.runtime.IStatistic;
 import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.runtime.CTask;
 import org.lightjason.trafficsimulation.ui.EHTTPServer;
@@ -336,7 +337,7 @@ public final class CSimulation
     @Produces( MediaType.APPLICATION_JSON )
     public final Object elements()
     {
-        return ERuntime.INSTANCE.elements().values().stream().map( i -> i.map( IMap.EStatus.EXECUTE ) ).toArray();
+        return ERuntime.INSTANCE.elements().values().stream().map( i -> i.map( IObject.EStatus.EXECUTE ) ).toArray();
     }
 
     /**
@@ -375,7 +376,7 @@ public final class CSimulation
     @Produces( MediaType.APPLICATION_JSON )
     public final Object penality()
     {
-        return ERuntime.INSTANCE.penalty().getValues();
+        return ERuntime.INSTANCE.penalty().map( IStatistic.EValue.PENALTY );
     }
 
 }

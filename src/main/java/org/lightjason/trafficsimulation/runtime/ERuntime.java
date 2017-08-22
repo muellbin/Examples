@@ -23,13 +23,16 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
+import com.codepoetics.protonpack.StreamUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
 import org.lightjason.trafficsimulation.common.CCommon;
 import org.lightjason.trafficsimulation.common.CConfiguration;
 import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.ui.api.CStatistic;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -106,8 +109,41 @@ public enum ERuntime implements IRuntime
     /**
      * value statistic
      */
-    private final DescriptiveStatistics m_penalty = new SynchronizedDescriptiveStatistics();
+    private final IStatistic m_penalty = new IStatistic()
+    {
+        /**
+         * statistic
+         */
+        private final DescriptiveStatistics m_values = new SynchronizedDescriptiveStatistics();
 
+        @Override
+        public final Map<String, Object> map( @Nonnull final EValue p_status )
+        {
+            return StreamUtils.zip(
+                Stream.of( "type", "values", "standarddeviation", "variance", "25-percentile", "75-percentile", "median", "average", "min", "max", "elements" ),
+                Stream.of( p_status.toString(),
+                           m_values.getValues(),
+                           m_values.getStandardDeviation(),
+                           m_values.getVariance(),
+                           m_values.getPercentile( 25 ),
+                           m_values.getPercentile( 75 ),
+                           m_values.getPercentile( 50 ),
+                           m_values.getMean(),
+                           m_values.getMin(),
+                           m_values.getMax(),
+                           m_values.getN()
+                ),
+                ImmutablePair::new
+            ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
+        }
+
+        @Override
+        public final void accept( final Number p_number )
+        {
+            m_values.addValue( p_number.doubleValue() );
+            CStatistic.EInstance.INSTANCE.send( EValue.PENALTY, this );
+        }
+    };
 
 
     /**
@@ -244,7 +280,7 @@ public enum ERuntime implements IRuntime
 
     @Nonnull
     @Override
-    public final DescriptiveStatistics penalty()
+    public final IStatistic penalty()
     {
         return m_penalty;
     }

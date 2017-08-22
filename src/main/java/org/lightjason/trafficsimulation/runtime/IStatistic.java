@@ -23,87 +23,28 @@
 
 package org.lightjason.trafficsimulation.runtime;
 
-import org.lightjason.trafficsimulation.elements.IObject;
+import org.lightjason.trafficsimulation.ui.IMap;
 
-import javax.annotation.Nonnull;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
+import java.util.Locale;
+import java.util.function.Consumer;
 
 
 /**
- * runtime instance
+ * interface of the statistic
  */
-public interface IRuntime extends Runnable
+public interface IStatistic extends IMap<IStatistic.EValue>, Consumer<Number>
 {
-
     /**
-     * sets the task-supplier
-     *
-     * @param p_supplier task supplier
-     * @return self reference
+     * value type
      */
-    IRuntime supplier( @Nonnull final BiFunction<Map<String, ERuntime.CAgentDefinition>, Map<String, IObject<?>>, ITask> p_supplier );
+    enum EValue
+    {
+        PENALTY;
 
-    /**
-     * task is running
-     *
-     * @return running flag
-     */
-    boolean running();
-
-    /**
-     * shutdown
-     *
-     * @return self reference
-     */
-    @Nonnull
-    IRuntime shutdown();
-
-    /**
-     * cancel running task
-     *
-     * @return self reference
-     */
-    @Nonnull
-    IRuntime cancel();
-
-    /**
-     * saves all data
-     *
-     * @return self reference
-     */
-    @Nonnull
-    IRuntime save();
-
-    /**
-     * get time reference
-     *
-     * @return time
-     */
-    @Nonnull
-    AtomicInteger time();
-
-    /**
-     * returns the penalty statistic
-     *
-     * @return statistic object
-     */
-    IStatistic penalty();
-
-    /**
-     * returns an element from the current executed objects
-     *
-     * @return current element list
-     */
-    @Nonnull
-    Map<String, IObject<?>> elements();
-
-    /**
-     * agents map
-     *
-     * @return map with agent names and visibilites
-     */
-    @Nonnull
-    Map<String, ERuntime.CAgentDefinition> agents();
+        @Override
+        public final String toString()
+        {
+            return super.toString().toLowerCase( Locale.ROOT );
+        }
+    }
 }
