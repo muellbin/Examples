@@ -207,14 +207,20 @@ To transform the imperative method to a logical plan proceed as follows:
 ---
 ### Goals
 
-<svg width=500px class="railroad-diagram" viewBox="0 0 350 92" id="svg_37e402d5ccf7ec7d8ed9ebd1d8f2fe97"><path d="M20 21v20m10-20v20M20 31h20.5m-.5 0h10m0 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 31h4m52 0h4M74 20h52v22H74z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#883acd43c77567e1c3baced84ccf6ed7"><text x="100" y="35">PLUS</text></a></g><path d="M130 31h20M50 31a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 50h60v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#ffc0d9b54a1fe677c4c9e6b050e67c81"><text x="100" y="65">MINUS</text></a></g><path d="M130 61a10 10 0 0 0 10-10V41a10 10 0 0 1 10-10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M160 20h140v22H160z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#a811f517fa7f9ba04cf05d3a6c777799"><text x="230" y="35">EXCLAMATIONMARK</text></a></g><path d="M300 31h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
+<svg class="railroad-diagram" width="524" height="92" viewBox="0 0 524 92"><path d="M20.5 21.5v20m10-20v20m-10-10H41M40.5 31.5h10M50.5 31.5h20"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 31h24M234 31h24M94 20h140v22H94z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#a811f517fa7f9ba04cf05d3a6c777799"><text x="164" y="35">EXCLAMATIONMARK</text></a></g><path d="M258.5 31.5h20M50.5 31.5a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 50h188v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#54d93a03ab9f9e3d0cdcbe9e3ce017be"><text x="164" y="65">DOUBLEEXCLAMATIONMARK</text></a></g><path d="M258.5 61.5a10 10 0 0 0 10-10v-10a10 10 0 0 1 10-10"/><g><path d="M278.5 31.5h20"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M298 31h40M414 31h40M338 20h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f0d674f1e0ed4292267f149c5983db02"><text x="376" y="35">literal</text></a></g><path d="M454.5 31.5h20M278.5 31.5a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M298 50h156v22H298z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#a8a6a0dad629d3c681de3e882cbc44a9"><text x="376" y="65">variable_evaluate</text></a></g><path d="M454.5 61.5a10 10 0 0 0 10-10v-10a10 10 0 0 1 10-10"/></g><path d="M474.5 31.5h10M484.5 31.5h20m-10-10v20m10-20v20"/></svg>
 
 * Goals define which plans an agent should try to instantiate and execute.
 * They can be defined as 
-    * initial goal, e.g. by convention `!main.` or 
-    * inside plans, e.g. `!phaseduration(90)`, which means _"try to instantiate and execute a plan `phaseduration(NewDuration)` (with parameter variable `NewDuration` set to `90`) in the next cycle"_.
+    * [the initial goal](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#12a3e79ad1f2c67d5cd687d1277a51b1), i.e. by convention `!main.` or 
+    * [achievement goals inside plans](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#a6ff3b47279b01ca106287f45227661c), e.g. `!phaseduration(90)`, which means _"try to instantiate and execute a plan `phaseduration(NewDuration)` (with parameter variable `NewDuration` set to `90`) in the next cycle"_.
   
   (-> see example on the next slide)
+
+* **Advanced**: Execution of plans differ depending on trigger symbol `!` and `!!`
+  * `!phaseduration(90)`: runs in the next agent cycle.
+  * `!!phaseduration(90)`: runs in the current agent cycle.
+  * `!phaseduration(90); !phaseduration(60)`: two plans for `90` and `60` run in *parallel* in the next cycle.
+  * `!!phaseduration(90); !!phaseduration(60)`: two plans run *sequentially* in this cycle.
 
 ---
 ### Goals - Example
@@ -241,7 +247,7 @@ To transform the imperative method to a logical plan proceed as follows:
 ---
 ### Beliefs and Facts
 
-<svg height=125px class="railroad-diagram" viewBox="0 0 180 92" id="svg_858bcfe2e941e450adf21315fc0aa172"><path d="M20 21v20m10-20v20M20 31h20.5m-.5 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M60 31h4m52 0h4M64 20h52v22H64z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#883acd43c77567e1c3baced84ccf6ed7"><text x="90" y="35">PLUS</text></a></g><path d="M120 31h20M40 31a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M60 50h60v22H60z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#ffc0d9b54a1fe677c4c9e6b050e67c81"><text x="90" y="65">MINUS</text></a></g><path d="M120 61a10 10 0 0 0 10-10V41a10 10 0 0 1 10-10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
+<svg class="railroad-diagram" width="286" height="92" viewBox="0 0 286 92"><path d="M20.5 21.5v20m10-20v20m-10-10H41M40.5 31.5h10M50.5 31.5h20"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 31h4M126 31h4M74 20h52v22H74z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#883acd43c77567e1c3baced84ccf6ed7"><text x="100" y="35">PLUS</text></a></g><path d="M130.5 31.5h20M50.5 31.5a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 50h60v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#ffc0d9b54a1fe677c4c9e6b050e67c81"><text x="100" y="65">MINUS</text></a></g><path d="M130.5 61.5a10 10 0 0 0 10-10v-10a10 10 0 0 1 10-10M150.5 31.5h10"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M160 20h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#f0d674f1e0ed4292267f149c5983db02"><text x="198" y="35">literal</text></a></g><path d="M236.5 31.5h10M246.5 31.5h20m-10-10v20m10-20v20"/></svg>
 
 Any literal can be a [belief or fact](https://lightjason.github.io/knowledgebase/logicalprogramming/#facts-beliefs):
 
@@ -332,6 +338,8 @@ If run twice or with different initial belief light, this will lead to unintende
 ---
 ### Execution - Finite-State-Machine
 
+Finite state machines (FSM) can be used to illustrate the execution of agents.
+
 
 ---
 ### Execution - Unification
@@ -353,7 +361,7 @@ If run twice or with different initial belief light, this will lead to unintende
     unifies `CurrentDuration`, `Program` and `Colour` to `60`, `morning` and `red` respectively.
 
 ---
-### Unification - Traffic Light Example With Unification
+### Unification - Extending The Traffic Light Example
 
 ```prolog
 light(red).
