@@ -217,10 +217,10 @@ To transform the imperative method to a logical plan proceed as follows:
   (-> see example on the next slide)
 
 * **Advanced**: Execution of plans differ depending on trigger symbol `!` and `!!`
-  * `!phaseduration(90)`: runs in the next agent cycle.
-  * `!!phaseduration(90)`: runs in the current agent cycle.
+  * `!phaseduration(90)`: will run in the next agent cycle.
+  * `!!phaseduration(90)`: will run in the current agent cycle.
   * `!phaseduration(90); !phaseduration(60)`: two plans for `90` and `60` run in *parallel* in the next cycle.
-  * `!!phaseduration(90); !!phaseduration(60)`: two plans run *sequentially* in this cycle.
+  * `!!phaseduration(90); !!phaseduration(60)`: two plans will run *sequentially* in this cycle.
 
 ---
 ### Goals - Example
