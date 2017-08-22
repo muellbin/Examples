@@ -26,13 +26,8 @@ package org.lightjason.trafficsimulation.ui.api;
 import com.codepoetics.protonpack.StreamUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.jetty.websocket.api.Session;
-import org.lightjason.trafficsimulation.runtime.ERuntime;
 import org.lightjason.trafficsimulation.ui.IWebSocket;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -43,8 +38,7 @@ import java.util.stream.Stream;
 /**
  * websocket and rest for sending statistic data
  */
-@Path( "/statistic" )
-public class CStatistic extends IWebSocket.IBaseWebSocket
+public final class CStatistic extends IWebSocket.IBaseWebSocket
 {
     /**
      * url path
@@ -65,20 +59,6 @@ public class CStatistic extends IWebSocket.IBaseWebSocket
 
         } );
     }
-
-    /**
-     * returns statistic values
-     *
-     * @return penality values
-     */
-    @GET
-    @Path( "/values" )
-    @Produces( MediaType.APPLICATION_JSON )
-    public final Object penality()
-    {
-        return ERuntime.INSTANCE.penalty().getValues();
-    }
-
 
     @Override
     public final void onWebSocketConnect( final Session p_session )
