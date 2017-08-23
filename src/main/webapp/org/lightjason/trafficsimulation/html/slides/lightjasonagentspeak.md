@@ -405,6 +405,55 @@ phase( duration(60), program(morning) ).
 ```
 
 ---
+### Unification - Exercise
+
+**Exercise to the reader:** 
+
+* Write a plan `+!changelight` which changes the traffic light to the next logical state (depending on the current), i.e. `light(red)` -> `light(redyellow)` -> `light(green)` -> `light(yellow)` -> `light(red)` -> ... each time the plan gets triggered.
+* Hints:
+  * Encode all possible states in an initial belief.
+  * You will have to trigger the plan **sequentially** (a traffic light would not switch states in parallel, would it?). So it would be advised to use `!!changelight` in the `+!main` plan.
+  * Start with the following code excerpt:
+  
+  ```prolog
+  states( red, redyellow, yellow, green ).  // initial definition of states
+  light( red ).                             // inital traffic light state
+  !main.
+
+  +!main
+   <- >>light( Colour );
+      generic/print( "initial state", Colour );
+      !!changelight;   // use !! to sequentially trigger changelight in THIS agent cycle
+      !!changelight;
+      // ...
+  .
+  ```
+
+<!-- possible solution
++!changelight
+  : >>light( Colour ) && >>states( Red, RedYellow, Yellow, Green ) && Colour == Red
+  <- generic/print( "changing light: red -> redyellow");
+     -light( Colour );
+     +light( RedYellow )
+
+  : >>light( Colour) && >>states( Red, RedYellow, Yellow, Green ) && Colour == RedYellow
+  <- generic/print( "changing light: redyellow -> green" );
+     -light( Colour );
+     +light( Green )
+
+  : >>light( Colour) && >>states( Red, RedYellow, Yellow, Green ) && Colour == Green
+  <- generic/print( "changing light: green -> yellow" );
+     -light( Colour );
+     +light( Yellow )
+
+  : >>light(Colour) && >>states( Red, RedYellow, Yellow, Green ) && Colour == Yellow
+  <- generic/print( "changing light: yellow -> red" );
+     -light( Colour );
+     +light( Red )
+.
+-->
+
+---
 ### Theory - Closed- and Open-World-Assumption
 
 
