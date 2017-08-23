@@ -1103,6 +1103,7 @@ jQuery(function() {
 
             // execute vehicle, create new tween animation (y-position must be increment based on footway)
             execute: function (p_data) {
+
                 if ( !l_visualizationobjects[p_data.id] )
                     l_visualizationfunctions[p_data.type]["initialize"](p_data);
 
@@ -1115,11 +1116,16 @@ jQuery(function() {
                         i.time = new Date().getTime(); return i;
                 } );
 
-                // create tween
-                const TWEEN = GAME.instance.add.tween( l_visualizationobjects[p_data.id] ).to({ x: l_xpos, y: l_ypos }, SIMULATIONSPEED.val() );
-                TWEEN.onComplete.add(function(){ WSANIMATION.send( JSON.stringify({ id: p_data.id }) ); }, this);
-                TWEEN.delay(0);
-                TWEEN.start();
+                // create tween if possible otherwise recall websocket
+                if ( l_xpos === l_visualizationobjects[p_data.id].x )
+                    WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
+                else
+                {
+                    const TWEEN = GAME.instance.add.tween(l_visualizationobjects[p_data.id]).to({x: l_xpos, y: l_ypos}, SIMULATIONSPEED.val());
+                    TWEEN.onComplete.add(function () { WSANIMATION.send(JSON.stringify({id: p_data.id})); }, this);
+                    TWEEN.delay(0);
+                    TWEEN.start();
+                }
             },
 
 

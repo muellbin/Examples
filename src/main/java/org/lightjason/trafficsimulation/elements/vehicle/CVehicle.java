@@ -199,7 +199,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         l_env.add( m_backwardview.create( "backward", l_env ) );
         l_env.add( m_forwardview.create( "forward", l_env ) );
 
-
         CAnimation.EInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
 
@@ -569,18 +568,25 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         public final void run()
         {
             m_cache.clear();
-            m_environment.get(
-                m_position.parallelStream()
-                          .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
-                          .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
-            )
-                         .parallel()
-                         .map( i -> new ImmutablePair<>( distancevariation( CVehicle.this, i ), i ) )
-                         .sorted( Comparator.comparingDouble( i -> i.getLeft().doubleValue() ) )
-                         .map( ImmutablePair::getRight )
-                         .map( i -> i.literal( CVehicle.this ) )
-                         .forEachOrdered( m_cache::add );
 
+            try
+            {
+                m_environment.get(
+                    m_position.parallelStream()
+                              .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
+                              .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
+                )
+                             .parallel()
+                             .map( i -> new ImmutablePair<>( distancevariation( CVehicle.this, i ), i ) )
+                             .sorted( Comparator.comparingDouble( i -> i.getLeft().doubleValue() ) )
+                             .map( ImmutablePair::getRight )
+                             .map( i -> i.literal( CVehicle.this ) )
+                             .forEachOrdered( m_cache::add );
+            }
+            catch ( final Exception l_exception )
+            {
+                l_exception.printStackTrace();
+            }
         }
     }
 }

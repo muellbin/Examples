@@ -27,7 +27,7 @@
 +!drive <-
     // linger
     L = math/statistic/randomsimple;
-    L >= 0.2;
+    L < 0.8;
 
     vehicle/accelerate(1);
     !driveright;
@@ -47,20 +47,13 @@
     L = math/statistic/randomsimple;
     L >= 0.35;
 
-    vehicle/pullin;
-    !driveleft
+    vehicle/pullin
 .
 
 
 // --- possible collision decelerate ---
-+!vehicle/collision <-
-    vehicle/pullout;
-    !drive
-.
++!vehicle/collision <- vehicle/pullout.
 
 
 // --- swing-out fails then decelerate ---
--!vehicle/collision <-
-    vehicle/decelerate(1);
-    !drive
-.
+-!vehicle/collision <- vehicle/decelerate(1).

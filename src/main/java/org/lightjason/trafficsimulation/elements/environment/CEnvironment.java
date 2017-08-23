@@ -124,6 +124,8 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
      * ctor
      *
      * @param p_configuration agent configuration
+     * @param p_configuration agent configuration
+     * @param p_configuration agent configuration
      * @param p_id name of the object
      * @param p_elements objects
      * @param p_generatordefaultvehicle default vehicle generator

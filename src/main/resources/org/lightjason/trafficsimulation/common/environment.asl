@@ -76,7 +76,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 // --- creating and repair user-vehicle plan ---
 +!uservehicle <-
-    MaxSpeed = 180;
+    MaxSpeed = 260;
     MaxAcceleration = 6;
     MaxDeceleration = 7;
 
@@ -107,7 +107,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
             Help = Lanes;
             Lane *= Help;
 
-            MaxSpeed = 160;
+            MaxSpeed = 220;
             MaxAcceleration = 6;
             MaxDeceleration = 7;
 

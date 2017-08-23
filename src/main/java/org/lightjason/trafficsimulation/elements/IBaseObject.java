@@ -66,6 +66,10 @@ import java.util.stream.Stream;
 public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> implements IObject<T>
 {
     /**
+     * dynamic beliefbase
+     */
+    private static final String DYNAMICBELIEFBASE = "dynamic";
+    /**
      * serial id
      */
     private static final long serialVersionUID = 6278806527768825298L;
@@ -78,9 +82,9 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
      */
     private final String m_id;
     /**
-     * reference to external beliefbase
+     * reference to dynamic beliefbase
      */
-    private final IView m_external;
+    private final IView m_dynamicbeliefs;
 
 
 
@@ -97,7 +101,9 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
 
         m_id = p_id;
         m_functor = p_functor;
-        m_external = m_beliefbase.beliefbase().view( "dynamic" );
+        m_dynamicbeliefs = m_beliefbase.beliefbase().view( DYNAMICBELIEFBASE );
+        if ( m_dynamicbeliefs == null )
+            throw new RuntimeException( "dynamic beliefbase is null, cannot create object" );
     }
 
     @Override
@@ -119,7 +125,7 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
                 CLiteral.from( "object", CRawTerm.from( this ) ),
                 CLiteral.from(
                     "data",
-                    CLiteral.from( "dynamic", m_external.stream().map( i -> i.shallowcopysuffix() ) ),
+                    CLiteral.from( DYNAMICBELIEFBASE, m_dynamicbeliefs.stream().map( i -> i.shallowcopysuffix() ) ),
                     CLiteral.from( "static", this.staticliteral( p_object ).sorted().sequential() )
                 )
             )
@@ -242,7 +248,7 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
             public final IView beliefbase()
             {
                 final IView l_view = new CBeliefbase( new CMultiStorage<>() ).create( BELIEFBASEROOTNAME );
-                l_view.add( new CBeliefbase( new CSingleStorage<>() ).create( "extern", l_view ) );
+                l_view.add( new CBeliefbase( new CSingleStorage<>() ).create( DYNAMICBELIEFBASE, l_view ) );
 
                 // add initial beliefs and clear initial beliefbase trigger
                 m_initialbeliefs.parallelStream().forEach( i -> l_view.add( i.shallowcopy() ) );

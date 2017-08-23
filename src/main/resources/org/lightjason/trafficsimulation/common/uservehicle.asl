@@ -27,7 +27,6 @@
 +!drive <-
     vehicle/accelerate(1);
     !drive
-
 .
 
 
