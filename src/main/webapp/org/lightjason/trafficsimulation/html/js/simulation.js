@@ -1116,13 +1116,18 @@ jQuery(function() {
                         i.time = new Date().getTime(); return i;
                 } );
 
-                // create tween if possible otherwise recall websocket
-                if ( l_xpos === l_visualizationobjects[p_data.id].x )
-                    WSANIMATION.send( JSON.stringify({ id: p_data.id }) );
+                // create tween and call at  the end websocket, if object not moving or outside view call websocket directly
+                if ( ( l_xpos === l_visualizationobjects[p_data.id].x )
+                    || ( ( GAME.instance.camera.x - GAME.instance.camera.width <= l_xpos ) && ( l_xpos <= GAME.instance.camera.x + GAME.instance.camera.width ) ) ) {
+                    l_visualizationobjects[p_data.id].x = l_xpos;
+                    WSANIMATION.send(JSON.stringify({id: p_data.id}));
+                }
                 else
                 {
                     const TWEEN = GAME.instance.add.tween(l_visualizationobjects[p_data.id]).to({x: l_xpos, y: l_ypos}, SIMULATIONSPEED.val());
-                    TWEEN.onComplete.add(function () { WSANIMATION.send(JSON.stringify({id: p_data.id})); }, this);
+                    TWEEN.onComplete.add(function () {
+                        WSANIMATION.send(JSON.stringify({id: p_data.id}));
+                    }, this);
                     TWEEN.delay(0);
                     TWEEN.start();
                 }
