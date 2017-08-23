@@ -51,7 +51,7 @@ code.remark-inline-code {
     * [well](https://lightjason.github.io) [documented](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/) [software](http://lightjason.github.io/AgentSpeak/sources/) (not just "documentation by research papers")
     * extended PRS with a mechanism optimised for concurrency
     * [REST-API](https://en.wikipedia.org/wiki/Representational_state_transfer) for flexible, system independed control of [multi-agent system (MAS)](https://en.wikipedia.org/wiki/Multi-agent_system)
-    * scalable, concurrent execution of approximately 2.6 Mio agents on a desktop computer
+    * scalable, concurrent execution of approximately 2.6 million agents on a desktop computer
     * additional support for cloud computing, for example [Hadoop](https://en.wikipedia.org/wiki/Apache_Hadoop)
 
 * **Important** to distinguish between
@@ -191,7 +191,7 @@ To transform the imperative method to a logical plan proceed as follows:
   1. The plan always fails, if the phase duration is less than one second (-> early exit).
   2. If the plan duration is larger than or equal to one second, set the traffic light to `red` and the phase duration to the value of variable `newduration`.
 
-* Note: Variables have to start with a captial letter, i.e. `newduration` => `NewDuration`.
+* Note: Variables have to start with a capital letter, e.g. `newduration` => `NewDuration`.
 
 ```prolog
 +!phaseduration(NewDuration)
@@ -320,7 +320,7 @@ If run twice or with different initial belief light, this will lead to unintende
 * **Complex Types** extend Terminal Symbols to literals and logical language elements.
   * e.g. `light( red ).`
 
-* The language allows agent behavour to be expressed by means of plans.
+* The language allows agent behaviour to be expressed by means of plans.
   * e.g. `+!phaseduration(NewDuration)`
 
 * Agents comprise all these levels of language elements.
@@ -412,12 +412,12 @@ phase( duration(60), program(morning) ).
 * Write a plan `+!changelight` which changes the traffic light to the next logical state (depending on the current), i.e. `light(red)` -> `light(redyellow)` -> `light(green)` -> `light(yellow)` -> `light(red)` -> ... each time the plan gets triggered.
 * Hints:
   * Encode all possible states in an initial belief.
-  * You will have to trigger the plan **sequentially** (a traffic light would not switch states in parallel, would it?). So it would be advised to use `!!changelight` in the `+!main` plan.
+  * You will have to trigger the plan **sequentially** (a traffic light would not switch states in parallel, would it?). So you should to use `!!changelight` in the `+!main` plan.
   * Start with the following code excerpt:
 
   ```prolog
   states( red, redyellow, yellow, green ).  // initial definition of states
-  light( red ).                             // inital traffic light state
+  light( red ).                             // initial traffic light state
   !main.
 
   +!main
