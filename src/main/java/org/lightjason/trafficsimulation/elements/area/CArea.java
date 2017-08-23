@@ -34,7 +34,7 @@ import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
-import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.ITerm;
 import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
@@ -260,7 +260,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
 
 
     @Override
-    protected final Stream<ILiteral> individualliteral( final IObject<?> p_object )
+    protected final Stream<ITerm> staticliteral( final IObject<?> p_object )
     {
         return Stream.of(
             CLiteral.from( "allowedspeed", CRawTerm.from( m_allowedspeed ) )
@@ -338,6 +338,19 @@ public final class CArea extends IBaseObject<IArea> implements IArea
             throw new RuntimeException( MessageFormat.format( "penality value can be set for vehicles only, but it is set to: {0}", p_object ) );
 
         p_object.<IVehicle>raw().penalty( p_value );
+    }
+
+    /**
+     * check object of uservehicle
+     *
+     * @param p_object object
+     * @return checks a vehicle that is a userbased vehicle
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "vehicle/isuser" )
+    private boolean penalty( final IObject<?> p_object )
+    {
+        return ( p_object instanceof IVehicle ) && ( p_object.<IVehicle>raw().type().equals( IVehicle.ETYpe.USERVEHICLE ) );
     }
 
 

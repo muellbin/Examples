@@ -48,25 +48,27 @@ penalityprobability( S, P ):-
 
 
 // --- vehicle moving (trajectory) plan, calculates choice what should be done ---
-+!vehicle/move( vehicle(V), speed(S), distance(D) ) <-
-	Penality = 0;
-   	$penalityprobability( S, Penality );
-    InverseHalfPenality = 1 - Penality;
-    InverseHalfPenality *= 0.5;
++!vehicle/move( vehicle(V), speed(S), distance(D) )
+    : vehicle/isuser(V) <-
+        Penality = 0;
+        $penalityprobability( S, Penality );
+        InverseHalfPenality = 1 - Penality;
+        InverseHalfPenality *= 0.5;
 
-    P = math/statistic/linearselection( ["penalty", "slow", "nothing"], [Penality, InverseHalfPenality, InverseHalfPenality] );
-    !!P( V, S )
+        P = math/statistic/linearselection( ["penalty", "slow", "nothing"], [Penality, InverseHalfPenality, InverseHalfPenality] );
+        !!P( V, S )
 .
 
 
 
 // --- calculates penalty value (vehicle is to fast) ---
-+!penalty( V, S ) <-
-    P = AllowedSpeed - S;
-    P = math/abs( P );
-    P *= 0.1;
-    vehicle/penalize( V, P );
-	generic/print( "#Area Penalty", "You get a punishment, your are driving to fast" )
++!penalty( V, S )
+    : vehicle/isuser(V) <-
+        P = AllowedSpeed - S;
+        P = math/abs( P );
+        P *= 0.1;
+        vehicle/penalize( V, P );
+        generic/print( "#Area Penalty", "You get a punishment, your are driving to fast" )
 .
 
 

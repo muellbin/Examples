@@ -43,6 +43,7 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.ITerm;
 import org.lightjason.agentspeak.language.instantiable.IInstantiable;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
@@ -252,7 +253,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     }
 
     @Override
-    protected final Stream<ILiteral> individualliteral( final IObject<?> p_object )
+    protected final Stream<ITerm> staticliteral( final IObject<?> p_object )
     {
         return Stream.of(
             CLiteral.from( "speed", CRawTerm.from( m_speed.get() ) ),

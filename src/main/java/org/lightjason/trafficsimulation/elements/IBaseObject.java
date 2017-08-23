@@ -37,6 +37,7 @@ import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.ITerm;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.agentspeak.language.fuzzy.operator.IFuzzyBundle;
 import org.lightjason.agentspeak.language.instantiable.IInstantiable;
@@ -96,7 +97,7 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
 
         m_id = p_id;
         m_functor = p_functor;
-        m_external = m_beliefbase.beliefbase().view( "extern" );
+        m_external = m_beliefbase.beliefbase().view( "dynamic" );
     }
 
     @Override
@@ -111,17 +112,18 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
     public final ILiteral literal( @Nonnull final IObject<?> p_object )
     {
         return CLiteral.from(
-                    m_functor,
-                    Stream.concat(
-                        Stream.concat(
-                            Stream.of(
-                                CLiteral.from( "id", CRawTerm.from( m_id ) )
-                            ),
-                            m_external.stream().map( i -> i.shallowcopysuffix() )
-                        ),
-                        this.individualliteral( p_object ).sorted().sequential()
-                    )
-               );
+            m_functor,
+
+            Stream.of(
+                CLiteral.from( "id", CRawTerm.from( m_id ) ),
+                CLiteral.from( "object", CRawTerm.from( this ) ),
+                CLiteral.from(
+                    "data",
+                    CLiteral.from( "dynamic", m_external.stream().map( i -> i.shallowcopysuffix() ) ),
+                    CLiteral.from( "static", this.staticliteral( p_object ).sorted().sequential() )
+                )
+            )
+        );
     }
 
     /**
@@ -130,7 +132,7 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
      * @param p_object calling object
      * @return literal stream
      */
-    protected abstract Stream<ILiteral> individualliteral( final IObject<?> p_object );
+    protected abstract Stream<ITerm> staticliteral( final IObject<?> p_object );
 
     @Override
     public final int hashCode()
