@@ -154,7 +154,7 @@ phase( duration(60), program(morning) )
 
 There are two kinds of variables
 * Regular variables start with an **upper-case** letter
-* Variables prefixed with an underscore "`_`" are a _garbage bin_, than can be used if the content of the variable is not of interest but a variable has to be provided.
+* The _garbage bin_ variable `_` can be used as a substitute in cases where the content of the variable is not of interest but a variable has to be provided.
 
 #### Example
 
@@ -414,7 +414,7 @@ phase( duration(60), program(morning) ).
   * Encode all possible states in an initial belief.
   * You will have to trigger the plan **sequentially** (a traffic light would not switch states in parallel, would it?). So it would be advised to use `!!changelight` in the `+!main` plan.
   * Start with the following code excerpt:
-  
+
   ```prolog
   states( red, redyellow, yellow, green ).  // initial definition of states
   light( red ).                             // inital traffic light state
