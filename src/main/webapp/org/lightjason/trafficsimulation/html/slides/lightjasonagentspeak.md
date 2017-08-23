@@ -479,24 +479,33 @@ under _Closed World-Assumption_ and respectively _Open-World Assumption_?
 ### Theory - LightJason Architecture
 
 
-![image](slides/lightjasonagentspeak/agenthouse.png#centering)
+![image](slides/lightjasonagentspeak/agenthouse.png#floatright)
 
-* From a developer's perspective LightJason combines aspects of
-  * functional 
-  * object oriented and
-  * logical
+From a developer's perspective LightJason combines aspects of
 
-  programming to the concept of *agent oriented programming (AOP)*.
+* functional 
+* object oriented and
+* logical
+
+programming to the concept of *agent oriented programming (AOP)*. For developing a software
+we need on the one hand an object-oriented Java system, on the other hand we need the *functions (behaviour) of the simulation elements*.
+Based on the LightJason concept the behaviour is written in AgentSpeak(L++).
 
 
 ---
 ### Theory - Two Layer Agent
 
-![image](slides/lightjasonagentspeak/twolayeragent.png#centering)
+![image](slides/lightjasonagentspeak/twolayeragent.png#floatright)
 
----
-### Exercise - Agent Example
+The concept of the architecture is also found within the agent:
 
+* The *body* is the Java part of the simulation element
+* The mind is the AgentSpeak(L++) script    
+* The Java object passes all data to the AgentSpeak(L++) script 
+* With the  data the agent-mind will be executed
+
+On the developing perspective the agent-mind should be used for the *domain dependend behaviour model* (e.g. the
+driving behaviour of the vehicle) and the body is the *domain independed execution model* within the simulation software.
 
 ---
 ### Exercise - Concepts and Hints
