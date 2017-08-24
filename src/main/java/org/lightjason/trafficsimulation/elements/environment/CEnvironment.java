@@ -176,77 +176,87 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     @Override
-    public final synchronized boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
+    public final boolean set( @Nonnull final IVehicle p_vehicle, @Nonnull final DoubleMatrix1D p_position )
     {
-        final IVehicle l_vehicle = (IVehicle) m_grid.getQuick( (int) p_position.get( 0 ), (int) p_position.get( 1 ) );
-        if ( l_vehicle != null )
-            return false;
+        synchronized ( this )
+        {
+            final IVehicle l_vehicle = (IVehicle) m_grid.getQuick( (int) p_position.get( 0 ), (int) p_position.get( 1 ) );
+            if ( l_vehicle != null )
+                return false;
+            m_grid.set( (int) p_position.get( 0 ), (int) p_position.get( 1 ), p_vehicle );
+        }
 
-        m_grid.set( (int) p_position.get( 0 ), (int) p_position.get( 1 ), p_vehicle );
         p_vehicle.position().setQuick( 0, p_position.get( 0 ) );
         p_vehicle.position().setQuick( 1, p_position.get( 1 ) );
-
         return true;
     }
 
     @Override
-    public final synchronized boolean move( @Nonnull final IVehicle p_vehicle )
+    public final boolean move( @Nonnull final IVehicle p_vehicle )
     {
         final Number l_lane = p_vehicle.position().get( 0 );
         final Number l_start = p_vehicle.position().get( 1 );
         final DoubleMatrix1D l_target = p_vehicle.nextposition();
         final Number l_targetposition = l_target.get( 1 );
 
-        // test free direction
-        if ( ( l_start.intValue() < l_targetposition.intValue()
-            ? IntStream.range( l_start.intValue() + 1, Math.min( l_targetposition.intValue(), m_grid.columns() ) )
-            : IntStream.range( Math.max( l_targetposition.intValue(), 0 ), l_start.intValue() - 1 ) )
-                      .parallel()
-                      .filter( i -> m_grid.getQuick( l_lane.intValue(), i ) != null )
-                      .findAny()
-                      .isPresent()
-        )
-            return false;
-
         // test area
         m_areas.parallelStream().forEach( i -> i.push( p_vehicle, p_vehicle.position(), l_target, p_vehicle.speed() ) );
 
-
-        // object moving
-        m_grid.setQuick( l_lane.intValue(), l_start.intValue(), null );
-
-        if ( ( l_targetposition.intValue() > m_grid.columns() ) || ( l_targetposition.intValue() < 0 ) )
+        if ( ( l_targetposition.intValue() >= m_grid.columns() ) || ( l_targetposition.intValue() < 0 ) )
         {
             if ( p_vehicle.type().equals( IVehicle.ETYpe.USERVEHICLE ) )
                 this.trigger( CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "finish", CRawTerm.from( p_vehicle ) ) ), true );
 
             m_elements.remove( p_vehicle.release().id() );
+            synchronized ( this )
+            {
+                m_grid.setQuick( l_lane.intValue(), l_start.intValue(), null );
+            }
             return true;
         }
 
-        m_grid.setQuick( l_lane.intValue(), l_targetposition.intValue(), p_vehicle );
-        p_vehicle.position().setQuick( 1, l_targetposition.intValue() );
-        return true;
+        synchronized ( this )
+        {
+            // test free direction
+            if ( ( l_start.intValue() < l_targetposition.intValue()
+                   ? IntStream.range( l_start.intValue() + 1, Math.min( l_targetposition.intValue(), m_grid.columns() ) )
+                   : IntStream.range( Math.max( l_targetposition.intValue(), 0 ), l_start.intValue() - 1 ) )
+                .parallel()
+                .filter( i -> m_grid.getQuick( l_lane.intValue(), i ) != null )
+                .findAny()
+                .isPresent()
+                )
+                return false;
+
+            // object moving
+            m_grid.setQuick( l_lane.intValue(), l_start.intValue(), null );
+            m_grid.setQuick( l_lane.intValue(), l_targetposition.intValue(), p_vehicle );
+            p_vehicle.position().setQuick( 1, l_targetposition.intValue() );
+            return true;
+        }
     }
 
     @Override
-    public final synchronized boolean lanechange( @Nonnull final IVehicle p_vehicle, final Number p_lane )
+    public final boolean lanechange( @Nonnull final IVehicle p_vehicle, final Number p_lane )
     {
         final Number l_xpos = p_vehicle.position().get( 1 );
         final Number l_lane = p_vehicle.position().get( 0 );
         if ( ( p_lane.intValue() < 0 ) || ( p_lane.intValue() > m_grid.columns() - 1 ) )
             return false;
 
-        if ( IntStream.range( Math.min( l_lane.intValue(), p_lane.intValue() ), Math.max( l_lane.intValue(), p_lane.intValue() ) )
-                      .parallel()
-                      .boxed()
-                      .anyMatch( i -> m_grid.getQuick( i, l_xpos.intValue() ) != null )
-            )
-            return false;
+        synchronized ( this )
+        {
+            if ( IntStream.range( Math.min( l_lane.intValue(), p_lane.intValue() ), Math.max( l_lane.intValue(), p_lane.intValue() ) )
+                          .parallel()
+                          .boxed()
+                          .anyMatch( i -> m_grid.getQuick( i, l_xpos.intValue() ) != null )
+                )
+                return false;
 
-        m_grid.setQuick( l_lane.intValue(), l_xpos.intValue(), null );
-        m_grid.setQuick( p_lane.intValue(), l_xpos.intValue(), p_vehicle );
-        return true;
+            m_grid.setQuick( l_lane.intValue(), l_xpos.intValue(), null );
+            m_grid.setQuick( p_lane.intValue(), l_xpos.intValue(), p_vehicle );
+            return true;
+        }
     }
 
     @Nonnull

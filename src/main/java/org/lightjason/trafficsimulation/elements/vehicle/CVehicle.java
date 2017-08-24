@@ -255,8 +255,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     protected final Stream<ITerm> staticliteral( final IObject<?> p_object )
     {
         return Stream.of(
-            CLiteral.from( "speed", CRawTerm.from( m_speed.get() ) ),
             CLiteral.from( "lane", CRawTerm.from( this.position().get( 0 ) ) ),
+            CLiteral.from( "speed", CRawTerm.from( m_speed.get() ) ),
             CLiteral.from( "distance", CRawTerm.from( distancevariation( this, p_object ) ) )
         );
     }
@@ -513,6 +513,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 super.apply( p_agent, p_instance ),
                 Stream.of(
                     new CConstant<>( "CurrentSpeed", l_vehicle.speed() ),
+                    //new CConstant<Double>( "CurrentLane", l_vehicle.position().get( 0 ) ),
                     new CConstant<>( "Acceleration", l_vehicle.acceleration() ),
                     new CConstant<>( "Deceleration", l_vehicle.deceleration() )
                 )

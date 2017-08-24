@@ -55,20 +55,20 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
     // grid size (100km with 2x2 lanes for each direction)
     simulation/initialize( 50, 2, 2 );
-    generic/print( "#Environment Agent", "grid has been created" );
+    generic/print( "#Environment Agent", "Street world has been created" );
 
     // create areas
     area/initialize( 125, 0, 3, 5, 15 );
     area/initialize( 145, 0, 3, 15, 25 );
     area/initialize( 150, 0, 3, 25, 35 );
     area/initialize( 175, 0, 3, 35, 45 );
-    generic/print( "#Environment Agent", "areas have been created" );
+    generic/print( "#Environment Agent", "Areas with different speed ranges have been created" );
 
     !uservehicle
 .
 
 -!main <-
-    generic/print( "#Environment Agent", "initializing fails, simulation shutdown" );
+    generic/print( "#Environment Agent", "Initializing fails, simulation shutdown" );
     simulation/shutdown
 .
 
@@ -82,13 +82,13 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
     $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    generic/print( "#Environment Agent", "user vehicle has been created" );
+    generic/print( "#Environment Agent", "Your vehicle has been created" );
 
     !defaultvehicle( 100, 10 )
 .
 
 -!uservehicle <-
-    generic/print( "#Environment Agent", "user vehicle initializing has been faild, try again" );
+    generic/print( "#Environment Agent", "Cannot create your vehicle, try again..." );
     !uservehicle
 .
 
@@ -115,7 +115,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
             vehicle/default/position( MaxSpeed, MaxAcceleration, MaxDeceleration, Lane, Position ) << true
         };
 
-        generic/print( "#Environment Agent", "default vehicle generated" );
+        generic/print( "#Environment Agent", "Other vehicles are created" );
         EndCycle--;
         !defaultvehicle( Count, EndCycle )
 .
@@ -124,7 +124,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 // --- successful finishing plan to calculate penalty values ---
 +!finish( V ) <-
     simulation/penalty( vehicle/penalty( V ) );
-    generic/print( "#Environment Agent", "user vehicle has finished the tour, so simulation will be shutdown" );
+    generic/print( "#Environment Agent", "You have finished the tour successfully" );
     !!shutdown
 .
 
@@ -136,7 +136,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     P = simulation/maxpenalty;
     P *= PV;
     simulation/penalty( P );
-    generic/print( "#Environment Agent", "user collision plan hash been called" );
+    generic/print( "#Environment Agent", "You have been crashed into another car, you get a high punishment" );
     !!shutdown
 .
 
