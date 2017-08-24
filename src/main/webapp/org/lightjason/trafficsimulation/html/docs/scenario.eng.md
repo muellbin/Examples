@@ -1,8 +1,8 @@
 The goal of the simulation is to realise a traffic scenario by means of a [multi-agent system (MAS)](https://en.wikipedia.org/wiki/Multi-agent_system).
 The scenario comprises the following problem
 
-> A traffic scenario is shown which contains an agent vehicle (green) that should be programmed by the user, so that the vehicle should drive optimal.
-> Optimal is defined as being traffic rule compliant, i.e. not exceeding the speed limit but drive as fast as you can.
+> A traffic scenario is shown which contains an agent vehicle (green) that should be programmed by the user, so that the vehicle drives optimally.
+> Optimal is defined as driving as fast as you can, while being traffic rule compliant, i.e. not exceeding the speed limit.
 
 The following events are available to the vehicle
 

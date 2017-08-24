@@ -260,7 +260,7 @@ Any literal can be a [belief or fact](https://lightjason.github.io/knowledgebase
 
 **Note:** Perceptions might be wrong!
 If for example a sensor is defect or other agents simply "lie" (depending on the scenario).
-So a .important[belief can be perceived or considered as true, but need not to be factual true].
+So a .important[belief can be perceived or considered as true, but need not to be factually true].
 
 #### Examples
 
@@ -476,7 +476,7 @@ under _Closed World-Assumption_ and respectively _Open-World Assumption_?
 
 
 ---
-### Theory - LightJason Architecture
+### For Developers (Optional) - LightJason Architecture
 
 
 ![image](slides/lightjasonagentspeak/agenthouse.png#floatright)
@@ -487,28 +487,37 @@ From a developer's perspective LightJason combines aspects of
 * object oriented and
 * logical
 
-programming to the concept of *agent oriented programming (AOP)*. For developing a software
-we need on the one hand an object-oriented Java system, on the other hand we need the *functions (behaviour) of the simulation elements*.
+programming to the concept of *agent oriented programming (AOP)*.
+
+For developing a multi-agent system, object-oriented parts (Java) and *functional behaviour of the simulated elements* are needed.
+
 Based on the LightJason concept the behaviour is written in AgentSpeak(L++).
 
 
 ---
-### Theory - Two Layer Agent
+### For Developers (Optional) - Two Layer Agent
 
 ![image](slides/lightjasonagentspeak/twolayeragent.png#floatright)
 
-The concept of the architecture is also found within the agent:
+Our agent design reflects the concepts of the LightJason architecture:
 
-* The *body* is the Java part of the simulation element
-* The mind is the AgentSpeak(L++) script    
-* The Java object passes all data to the AgentSpeak(L++) script 
-* With the  data the agent-mind will be executed
+The
+* *body* is the **Java part** of the simulation element.
+* *mind* is the **AgentSpeak(L++) script**.
+* *body* passes all information and perceived data to the mind.
+* *mind* will be executed with the information provided by the body and passes information back to the body.
 
-On the developing perspective the agent-mind should be used for the *domain dependend behaviour model* (e.g. the
-driving behaviour of the vehicle) and the body is the *domain independed execution model* within the simulation software.
+From the developer perspective the 
+  * *mind* of an agent should be implemented with a **domain dependent behaviour model**, e.g. the driving behaviour of the vehicle and the
+  * *body* with a **domain independent execution model** within the simulation software.
 
 ---
-### Exercise - Concepts and Hints
+### Useful Links
 
 * A full list of all syntax elements of the programming language can be found in the [agent syntax diagram](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/)
 
+* For developers interested in LightJason/AgentSpeak(L++), we provide a
+
+  * set of [tutorials](https://lightjason.github.io/tutorials/) to understand the practical applications of our framework,
+  * [knowledge base](https://lightjason.github.io/knowledgebase/) for the theoretical aspects and
+  * [wizard](https://lightjason.github.io/tutorials/wizard/) to create a LightJason project package for multi-agent simulations.
