@@ -245,7 +245,7 @@ Execution order of plans differs depending on used trigger symbol `!` or `!!`:
   * **Note:** Adding `!planname` multiple times in one cycle will result in `+!planname` to be executed **once** in the next cycle because the same trigger gets only added once.
 * `!!planname` executes the matching plan immediately.
   * **Note:** As every plan body gets executed sequentially, for each given `!!planname` the plan `+!planname` will be executed in that sequence.
-* If the plan contains a variable, e.g. `!plan(N)` and multiple different trigger are possible (`!plan(5)` and `!plan(23)` differ), each individual trigger will be queued for execution in the next cycle.
+* If the plan contains a variable, e.g. `!plan(N)`, multiple different trigger are possible (e.g. `!plan(5)` and `!plan(23)` differ). Each individual trigger will be queued for execution in the next cycle.
   
 For example consider the plan `+!phaseduration(Duration)`.
 A plan body containing
