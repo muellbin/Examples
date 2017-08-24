@@ -132,7 +132,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 // --- plan for user-collision execution ---
 +!vehicle/usercollision( V ) <-
-    PV = math/min( vehicle/penalty( V ), 1 );
+    PV = math/min( vehicle/penalty( V ), 1.25 );
     P = simulation/maxpenalty;
     P *= PV;
     simulation/penalty( P );

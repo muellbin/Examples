@@ -1117,8 +1117,15 @@ jQuery(function() {
                 } );
 
                 // create tween and call at  the end websocket, if object not moving or outside view call websocket directly
-                if ( ( l_xpos === l_visualizationobjects[p_data.id].x )
-                    || ( ( GAME.instance.camera.x - GAME.instance.camera.width <= l_xpos ) && ( l_xpos <= GAME.instance.camera.x + GAME.instance.camera.width ) ) ) {
+                if (
+                    ( !l_visualizationobjects[p_data.id].forcetween )
+                    && ( l_xpos === l_visualizationobjects[p_data.id].x )
+                    || (
+                        ( GAME.instance.camera.x - GAME.instance.camera.width <= l_xpos )
+                        && ( l_xpos <= GAME.instance.camera.x + GAME.instance.camera.width )
+                    )
+                )
+                {
                     l_visualizationobjects[p_data.id].x = l_xpos;
                     WSANIMATION.send(JSON.stringify({id: p_data.id}));
                 }
@@ -1146,9 +1153,11 @@ jQuery(function() {
         },
 
         uservehicle: {
-            // initialize a user vehicle
+            // initialize a user vehicle (forcing tween call)
             initialize: function (p_data) {
                 l_visualizationfunctions.defaultvehicle.initialize( p_data );
+                l_visualizationobjects[p_data.id].forcetween = true;
+
                 GAME.instance.camera.follow(l_visualizationobjects[p_data.id]);
 
                 var l_max = Math.ceil( p_data.maxspeed / 10 + 5) * 10;

@@ -29,6 +29,7 @@
     	CurrentSpeed < S;
     	vehicle/accelerate(1);
     	!drive
+
     : ~>>allowedspeed(_) <-
     	vehicle/accelerate(1);
     	!drive
@@ -41,20 +42,13 @@
     !drive
 .
 
-+allowedspeed(S) <-
-	generic/print( "#Vehicle", string/concat( "maximum speed has been set to [", S, "]" ) )
-.
-
--allowedspeed(S) <-
-   generic/print( "#Vehicle", string/concat("maximum speed [", S, "] has been removed") )
-.
-
 
 // goal for entering area
 +!area/enter( allowedspeed(S), distance(D) )
 	: >>allowedspeed(X) <-
     	-allowedspeed(X);
         +allowedspeed(S)
+
     : ~>>allowedspeed(_) <-
     	+allowedspeed(S)
 .
@@ -62,3 +56,13 @@
 
 // goal for leaving are
 +!area/leave <- success.
+
+
++allowedspeed(S) <-
+	generic/print( "#Vehicle", string/concat( "maximum speed has been set to [", S, "]" ) )
+.
+
+
+-allowedspeed(S) <-
+   generic/print( "#Vehicle", string/concat("maximum speed [", S, "] has been removed") )
+.
