@@ -5,8 +5,8 @@ Move your mouse cursor over the links (in the item lists below) to get more info
 The menu column on the left provides a description about the given scenario and access to exercise and lecture slides:
 
 * <a class="helptooltip" data-targetid="information"  data-backdrop="false" data-position="right" data-deletebg="true" data-content="This menu provides information regarding theoretical and practical aspects of multi-agent systems" href="#">Information</a>
-* <a class="helptooltip" data-targetid="agents"  data-backdrop="false" data-position="right" data-deletebg="true" data-content="This menu shows created and available agents. The active agent for the next run can be chosen via context menu (right-click on the desired agent)." href="#">Agenten</a>
-* <a class="helptooltip" data-targetid="footer-buttons"  data-backdrop="false" data-position="top" data-deletebg="false" data-content="The control elements allow starting, stopping, cancelling and shutdown of the simulation" href="#">Steuerung</a>
+* <a class="helptooltip" data-targetid="agents"  data-backdrop="false" data-position="right" data-deletebg="true" data-content="This menu shows created and available agents. The active agent for the next run can be chosen via context menu (right-click on the desired agent)." href="#">Agents</a>
+* <a class="helptooltip" data-targetid="footer-buttons"  data-backdrop="false" data-position="top" data-deletebg="false" data-content="The control elements allow starting, stopping, cancelling and shutdown of the simulation" href="#">Control</a>
 
 
 ##### Simulation Visualisation
