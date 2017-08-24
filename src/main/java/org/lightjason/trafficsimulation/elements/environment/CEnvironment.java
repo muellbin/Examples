@@ -515,6 +515,20 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         );
     }
 
+    /**
+     * returns the maximum penalty value
+     *
+     * @return penalty value or on non existing a random value
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "simulation/maxpenalty" )
+    private Number lastpenalty()
+    {
+        return ERuntime.INSTANCE.penalty().valuesexist()
+               ? ERuntime.INSTANCE.penalty().max()
+               : 500 + Math.random() * 500;
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     /**

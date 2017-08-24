@@ -84,7 +84,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
     generic/print( "#Environment Agent", "user vehicle has been created" );
 
-    !defaultvehicle( 150, 15 )
+    !defaultvehicle( 100, 10 )
 .
 
 -!uservehicle <-
@@ -132,6 +132,10 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 // --- plan for user-collision execution ---
 +!vehicle/usercollision( V ) <-
+    PV = math/min( vehicle/penalty( V ), 1 );
+    P = simulation/maxpenalty;
+    P *= PV;
+    simulation/penalty( P );
     generic/print( "#Environment Agent", "user collision plan hash been called" );
     !!shutdown
 .

@@ -117,6 +117,19 @@ public enum ERuntime implements IRuntime
         private final DescriptiveStatistics m_values = new SynchronizedDescriptiveStatistics();
 
         @Override
+        public final boolean valuesexist()
+        {
+            return m_values.getN() != 0;
+        }
+
+        @Override
+        @Nonnull
+        public final Number max()
+        {
+            return m_values.getMax();
+        }
+
+        @Override
         public final Map<String, Object> map( @Nonnull final EValue p_status )
         {
             return StreamUtils.zip(

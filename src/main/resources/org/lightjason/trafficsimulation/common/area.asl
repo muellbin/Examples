@@ -41,8 +41,9 @@ penalityprobability( S, P ):-
 // --- plans ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 // --- vehicle leaving area ---
-+!vehicle/leave( V ) <-
-    generic/print( "#Area", "Vehicle leave area", ID )
++!vehicle/leave( V )
+	: vehicle/isuser(V) <-
+    	generic/print( "#Area", string/concat( "Vehicle leaves [", ID, "]" ) )
 .
 
 

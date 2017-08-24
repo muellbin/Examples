@@ -25,6 +25,7 @@ package org.lightjason.trafficsimulation.runtime;
 
 import org.lightjason.trafficsimulation.ui.IMap;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.function.Consumer;
 
@@ -34,6 +35,21 @@ import java.util.function.Consumer;
  */
 public interface IStatistic extends IMap<IStatistic.EValue>, Consumer<Number>
 {
+    /**
+     * returns if values exists
+     *
+     * @return existing flag
+     */
+    boolean valuesexist();
+
+    /**
+     * returns maimum value
+     *
+     * @return value
+     */
+    @Nonnull
+    Number max();
+
     /**
      * value type
      */

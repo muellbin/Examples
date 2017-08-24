@@ -42,11 +42,11 @@
 .
 
 +allowedspeed(S) <-
-	generic/print( "#Vehicle", "maximum speed has been set", S )
+	generic/print( "#Vehicle", string/concat( "maximum speed has been set to [", S, "]" ) )
 .
 
 -allowedspeed(S) <-
-   generic/print( "#Vehicle", "maximum speed has been removed", S )
+   generic/print( "#Vehicle", string/concat("maximum speed [", S, "] has been removed") )
 .
 
 
