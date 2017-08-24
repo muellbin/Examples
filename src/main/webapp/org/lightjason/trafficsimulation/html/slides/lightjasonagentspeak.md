@@ -260,7 +260,7 @@ Any literal can be a [belief or fact](https://lightjason.github.io/knowledgebase
 
 **Note:** Perceptions might be wrong!
 If for example a sensor is defect or other agents simply "lie" (depending on the scenario).
-So a .important[belief can be perceived or considered as true, but need not to be factual true].
+So a .important[belief can be perceived or considered as true, but need not to be factually true].
 
 #### Examples
 
@@ -489,7 +489,7 @@ From a developer's perspective LightJason combines aspects of
 
 programming to the concept of *agent oriented programming (AOP)*.
 
-For developing a multi-agent system object-oriented parts (Java) and *functional behaviour of the simulated elements* are needed.
+For developing a multi-agent system, object-oriented parts (Java) and *functional behaviour of the simulated elements* are needed.
 
 Based on the LightJason concept the behaviour is written in AgentSpeak(L++).
 
