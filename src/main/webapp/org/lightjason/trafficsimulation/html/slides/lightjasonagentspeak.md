@@ -216,14 +216,6 @@ To transform the imperative method to a logical plan proceed as follows:
   
   (-> see example on the next slide)
 
-* **Advanced**: Execution of plans differ depending on trigger symbol `!` and `!!`
-  * `!phaseduration(90)`: will run in the **next** agent cycle.
-    
-    => `!phaseduration(90); !phaseduration(60)`: two plans for `90` and `60` run in *parallel* in the next cycle.
-  * `!!phaseduration(90)`: will run in the **current** agent cycle.
-    
-    => `!!phaseduration(90); !!phaseduration(60)`: two plans will run *sequentially* in this cycle.
-
 ---
 ### Goals - Example
 
@@ -244,6 +236,31 @@ To transform the imperative method to a logical plan proceed as follows:
     generic/print( "Changing phase duration to", NewDuration )
 .
 ```
+
+---
+### Goals - Advanced Triggering: ! vs. !!
+
+Execution order of plans differs depending on used trigger symbol `!` or `!!`:
+* The trigger `!planname` marks a plan `+!planname` to be executed in the next cycle.
+  * **Note:** Adding `!planname` multiple times in one cycle will result in `+!planname` to be executed **once** in the next cycle because the same trigger gets only added once.
+* `!!planname` executes the matching plan immediately.
+  * **Note:** As every plan body gets executed sequentially, for each given `!!planname` the plan `+!planname` will be executed in that sequence.
+* If the plan contains a variable, e.g. `!plan(N)` and multiple different trigger are possible (`!plan(5)` and `!plan(23)` differ), each individual trigger will be queued for execution in the next cycle.
+  
+For example consider the plan `+!phaseduration(Duration)`.
+A plan body containing
+
+```prolog
+!phaseduration(90); !phaseduration(60)
+```
+
+will result in two plans for `90` and `60` to be run in *parallel* in the next cycle, whereas
+
+```prolog
+!!phaseduration(90); !!phaseduration(60)
+```
+
+in two plans running immediately in the given order, i.e. `+!phaseduration(90)` -> `+phaseduration(60)`.
 
 ---
 ### Beliefs and Facts
