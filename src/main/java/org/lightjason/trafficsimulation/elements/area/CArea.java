@@ -272,6 +272,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
     {
         super.call();
 
+        final ITrigger l_leave = CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "area/leave" ) );
         m_elements.removeAll(
             m_elements.parallelStream()
                       .filter( i -> !this.inside( i.position() ) )
@@ -284,6 +285,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
                             )
                           )
                       ) )
+                      .peek( i -> i.trigger( l_leave ) )
                       .collect( Collectors.toSet() )
         );
 

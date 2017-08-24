@@ -24,9 +24,14 @@
 !drive.
 
 // driving call equal to Nagel-Schreckenberg driving model, on success accelerate
-+!drive <-
-    vehicle/accelerate(1);
-    !drive
++!drive
+	: >>allowedspeed(S) <-
+    	CurrentSpeed < S;
+    	vehicle/accelerate(1);
+    	!drive
+    : ~>>allowedspeed(_) <-
+    	vehicle/accelerate(1);
+    	!drive
 .
 
 
@@ -36,8 +41,24 @@
     !drive
 .
 
++allowedspeed(S) <-
+	generic/print( "#Vehicle", "maximum speed has been set", S )
+.
+
+-allowedspeed(S) <-
+   generic/print( "#Vehicle", "maximum speed has been removed", S )
+.
+
 
 // goal for entering area
-+!area/enter( allowedspeed(S), distance(D) ) <-
-    generic/print( "#Vehicle", "enter area", S, D )
++!area/enter( allowedspeed(S), distance(D) )
+	: >>allowedspeed(X) <-
+    	-allowedspeed(X);
+        +allowedspeed(S)
+    : ~>>allowedspeed(_) <-
+    	+allowedspeed(S)
 .
+
+
+// goal for leaving are
++!area/leave <- success.
