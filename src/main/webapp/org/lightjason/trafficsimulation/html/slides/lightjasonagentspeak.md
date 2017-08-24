@@ -247,7 +247,7 @@ Execution order of plans differs depending on used trigger symbol `!` or `!!`:
   * **Note:** As every plan body gets executed sequentially, for each given `!!planname` the plan `+!planname` will be executed in that sequence.
 * If the plan contains a variable, e.g. `!plan(N)`, multiple different trigger are possible (e.g. `!plan(5)` and `!plan(23)` differ). Each individual trigger will be queued for execution in the next cycle.
   
-For example consider the plan `+!phaseduration(Duration)`.
+For example consider the plan `+!phaseduration(NewDuration)`.
 A plan body containing
 
 ```prolog
