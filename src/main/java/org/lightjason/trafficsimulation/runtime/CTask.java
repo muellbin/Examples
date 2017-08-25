@@ -97,7 +97,7 @@ public class CTask implements ITask
                                                                                        IVehicle.ETYpe.USERVEHICLE );
 
             final IArea.IGenerator<IArea> l_area = this.generatorarea( p_agentdefinition );
-            m_environment = ( l_defaultvehicle != null ) && ( l_uservehicle != null ) && ( l_area != null)
+            m_environment = ( l_defaultvehicle != null ) && ( l_uservehicle != null ) && ( l_area != null )
                             ? l_environmentgenerator.generatesingle( p_elements, l_defaultvehicle, l_uservehicle, l_area )
                             : null;
         }
