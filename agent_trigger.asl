@@ -35,7 +35,7 @@
 
 // plan with is run every cycle
 +!mynextgoal <-
-    generic/print( "Hello World again in cycle", Cycle, "on agent", MyName );
+    generic/print( "Hello World again on agent", MyName );
     !mynextgoal
 .
 
@@ -46,5 +46,5 @@
  * @param X any value which is pushed by the trigger call
  */
 +!special-goal(X) <-
-    generic/print( "special goal with value", X, "triggered in cycle", Cycle, "on agent", MyName )
+    generic/print( "special goal with value", X, "triggered on agent", MyName )
 .
