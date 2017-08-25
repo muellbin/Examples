@@ -24,14 +24,27 @@
 !drive.
 
 // --- driving call equal to Nagel-Schreckenberg driving model, on success accelerate ---
-+!drive <-
-    // linger
-    L = math/statistic/randomsimple;
-    L < 0.8;
++!drive
 
-    vehicle/accelerate(1);
-    !driveright;
-    !drive
+    : ~>>allowedspeed(_) <-
+		!!linger;
+    	vehicle/accelerate(1);
+        !driveright;
+    	!drive
+
+	: >>allowedspeed(S) <-
+    	CurrentSpeed < S;
+        !!linger
+    	vehicle/accelerate(1);
+        !driveright;
+    	!drive
+.
+
+
+// --- linger possibility ---
++!linger <-
+	L = math/statistic/randomsimple;
+    L < 0.8
 .
 
 
@@ -46,7 +59,6 @@
 +!driveright <-
     L = math/statistic/randomsimple;
     L >= 0.35;
-
     vehicle/pullin
 .
 
@@ -55,5 +67,5 @@
 +!vehicle/collision <- vehicle/pullout.
 
 
-// --- swing-out fails then decelerate ---
+// --- pull-out fails then decelerate ---
 -!vehicle/collision <- vehicle/decelerate(1).

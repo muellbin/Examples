@@ -77,20 +77,30 @@ public class CTask implements ITask
         if ( l_environmentgenerator == null )
             m_environment = null;
         else
-            m_environment = l_environmentgenerator.generatesingle(
-                p_elements,
-                this.generatorvehicle( p_agentdefinition, "defaultvehicle", IVehicle.ETYpe.DEFAULTVEHICLE ),
-                this.generatorvehicle( p_agentdefinition,
-                                       p_agentdefinition.entrySet()
-                                                        .stream()
-                                                        .filter( i -> i.getValue().getactive() )
-                                                        .findFirst()
-                                                        .map( Map.Entry::getKey )
-                                                        .orElseThrow( () -> new RuntimeException( CCommon.languagestring( this, "notactivefound" ) ) ),
-                                       IVehicle.ETYpe.USERVEHICLE
-                ),
-                this.generatorarea( p_agentdefinition )
-            );
+        {
+            final IVehicle.IGenerator<IVehicle> l_defaultvehicle = this.generatorvehicle( p_agentdefinition,
+                                                                                          "defaultvehicle",
+                                                                                          IVehicle.ETYpe.DEFAULTVEHICLE );
+
+            final IVehicle.IGenerator<IVehicle> l_uservehicle = this.generatorvehicle( p_agentdefinition,
+                                                                                       p_agentdefinition.entrySet()
+                                                                                                        .stream()
+                                                                                                        .filter( i -> i.getValue().getactive() )
+                                                                                                        .findFirst()
+                                                                                                        .map( Map.Entry::getKey )
+                                                                                                        .orElseThrow(
+                                                                                                            () -> new RuntimeException( CCommon.languagestring(
+                                                                                                                this,
+                                                                                                                "notactivefound"
+                                                                                                            ) )
+                                                                                                        ),
+                                                                                       IVehicle.ETYpe.USERVEHICLE );
+
+            final IArea.IGenerator<IArea> l_area = this.generatorarea( p_agentdefinition );
+            m_environment = ( l_defaultvehicle != null ) && ( l_uservehicle != null ) && ( l_area != null)
+                            ? l_environmentgenerator.generatesingle( p_elements, l_defaultvehicle, l_uservehicle, l_area )
+                            : null;
+        }
     }
 
 

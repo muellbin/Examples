@@ -23,38 +23,59 @@
 
 !drive.
 
-// driving call equal to Nagel-Schreckenberg driving model, on success accelerate
+// driving vehicle with Nagel-Schreckenberg model
 +!drive
-	: >>allowedspeed(S) <-
+
+	// if we don't know the allowed speed and in front is no other vehicle, accelerate
+    : ~>>allowedspeed(_) <- //&& ~>>env/forward/vehicle(_, _, _) <-
+    	vehicle/accelerate(1);
+    	!drive
+
+    // if we don't know the allowed speed and there is another vehicle in front, drive continously
+    //: ~>>allowedspeed(_) && >>env/forward/vehicle( _, _, data(static(lane(L), _, _)) ) && Lane != CurrentLane <-
+    //	!drive
+
+	// if we know the allowed speed and there is no other vehicle in front,
+    // test the current speed, if is lower, we try to accelerate
+	: >>allowedspeed(S) <- // && ~>>env/forward/vehicle(_, _, _) <-
     	CurrentSpeed < S;
     	vehicle/accelerate(1);
     	!drive
 
-    : ~>>allowedspeed(_) <-
-    	vehicle/accelerate(1);
-    	!drive
+	// if we know the allowed speed and there is another vehicle in front,
+    // test the current speed, if is lower, drive continously
+    //: >>allowedspeed(S) && >>env/forward/vehicle(_, _, _) <-
+    //	CurrentSpeed < S;
+    //    !drive
+
+
 .
 
 
-// on driving failing decelerate
+// if anything goes wrong on driving, decelerate
 -!drive <-
     vehicle/decelerate(1);
     !drive
 .
 
 
-// goal for entering area
+// we know the we enter a new area
 +!area/enter( allowedspeed(S), distance(D) )
+
+	// if we have got an information about the allowed speed,
+    // we replaced it with the new information
 	: >>allowedspeed(X) <-
     	-allowedspeed(X);
         +allowedspeed(S)
 
+	// if we have got no information about the current allowed
+    // speed, we put it in our beliefbase
     : ~>>allowedspeed(_) <-
     	+allowedspeed(S)
 .
 
 
-// goal for leaving are
+// we ignoring the information, that we leave an area
 +!area/leave <- success.
 
 

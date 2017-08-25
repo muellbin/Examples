@@ -536,7 +536,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     {
         final double l_random = 500 + Math.random() * 500;
         return ERuntime.INSTANCE.penalty().valuesexist()
-               ? Math.min( ERuntime.INSTANCE.penalty().max().doubleValue(), l_random )
+               ? Math.max( ERuntime.INSTANCE.penalty().max().doubleValue(), l_random )
                : l_random;
     }
 
