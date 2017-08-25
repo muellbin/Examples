@@ -260,7 +260,7 @@ will result in two plans for `90` and `60` to be run in *parallel* in the next c
 !!phaseduration(90); !!phaseduration(60)
 ```
 
-in two plans running immediately in the given order, i.e. `+!phaseduration(90)` -> `+phaseduration(60)`.
+will execute the two plans immediately in the given order, i.e. `+!phaseduration(90)` -> `+phaseduration(60)`.
 
 ---
 ### Beliefs and Facts
@@ -429,7 +429,7 @@ phase( duration(60), program(morning) ).
 * Write a plan `+!changelight` which changes the traffic light to the next logical state (depending on the current), i.e. `light(red)` -> `light(redyellow)` -> `light(green)` -> `light(yellow)` -> `light(red)` -> ... each time the plan gets triggered.
 * Hints:
   * Encode all possible states in an initial belief.
-  * You will have to trigger the plan **sequentially** (a traffic light would not switch states in parallel, would it?). So you should to use `!!changelight` in the `+!main` plan.
+  * You will have to trigger the plan **sequentially** (a traffic light would not switch states in parallel, would it?). So you should use `!!changelight` in the `+!main` plan.
   * Start with the following code excerpt:
 
   ```prolog
