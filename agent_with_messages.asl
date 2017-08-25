@@ -48,7 +48,7 @@
  */
 +!message/receive(  message( Message ), from( AgentName )  ) <-
 
-    // variable MyName is set by the variable builder, Cycle is set by default, other variables will be unified
-    generic/print( MyName, " received message [", Message, "] from [", AgentName, "] in cycle [", Cycle, "]")
+    // variable MyName is set by the variable builder
+    generic/print( MyName, " received message [", Message, "] from [", AgentName, "]")
 
 .
