@@ -534,9 +534,10 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     @IAgentActionName( name = "simulation/maxpenalty" )
     private Number lastpenalty()
     {
+        final double l_random = 500 + Math.random() * 500;
         return ERuntime.INSTANCE.penalty().valuesexist()
-               ? ERuntime.INSTANCE.penalty().max()
-               : 500 + Math.random() * 500;
+               ? Math.min( ERuntime.INSTANCE.penalty().max().doubleValue(), l_random )
+               : l_random;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
