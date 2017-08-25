@@ -35,6 +35,6 @@
 
 // plan which calls the plan again within the next cycle
 +!mynextgoal <-
-    generic/print("Hello World! (again)", Cycle);
+    generic/print("Hello World! (again)");
     !mynextgoal
 .
