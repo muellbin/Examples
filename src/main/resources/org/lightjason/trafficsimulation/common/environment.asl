@@ -64,7 +64,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     area/initialize( 175, 0, 3, 35, 45 );
     generic/print( "#Environment Agent", "Areas with different speed ranges have been created" );
 
-    !uservehicle
+    !defaultvehicle( 100, 10 )
 .
 
 -!main <-
@@ -82,9 +82,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
     $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    generic/print( "#Environment Agent", "Your vehicle has been created" );
-
-    !defaultvehicle( 100, 10 )
+    generic/print( "#Environment Agent", "Your vehicle has been created" )
 .
 
 -!uservehicle <-
@@ -96,6 +94,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 
 // --- creating default-vehicle plan ---
 +!defaultvehicle( Count, EndCycle )
+	: EndCycle == 1 <- !uservehicle
     : EndCycle > 0 <-
         C = math/statistic/randomsimple;
         C *= Count;
@@ -115,7 +114,7 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
             vehicle/default/position( MaxSpeed, MaxAcceleration, MaxDeceleration, Lane, Position ) << true
         };
 
-        generic/print( "#Environment Agent", "Other vehicles are created" );
+        generic/print( "#Environment Agent", string/concat( "Other vehicles are created in call [", EndCycle, "]" ) );
         EndCycle--;
         !defaultvehicle( Count, EndCycle )
 .
