@@ -45,13 +45,24 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 .
 
 
-areadata( From, To, Minimum, Maximum, MinimumSize ) :-
+areadata( From, To, MinimumCount, MaximumCount ) :-
     [ P25 | P50 | P75 ] = math/statistic/multiplepercentile( PenaltyStatistic, 25, 50, 75 );
     PVariance = P25 / P75;
-    PStd = P75 - P25;
-    PStd /= P50;
+    PZeroDistance = 1 - P50 / P75;
 
-    PMin = math/min( 1, PVariance, PStd )
+    AreaNumber = MaximumCount * PZeroDistance;
+    AreaNumber = math/min( MinimumCount, AreaNumber );
+
+    N = collection/list/range(0, AreaNumber);
+    @(N) -> I : {
+
+        Speed = math/statistic/randomsimple;
+        Speed = Speed <= PVariance ? Speed : 1 - Speed;
+        Speed = 50 + 120 * Speed
+
+    };
+
+    success
 .
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
