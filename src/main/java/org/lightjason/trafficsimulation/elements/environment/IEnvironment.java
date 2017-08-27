@@ -74,12 +74,11 @@ public interface IEnvironment extends IObject<IEnvironment>
     Stream<? extends IObject<?>> get( @Nonnull final Stream<DoubleMatrix1D> p_position );
 
     /**
-     * checks if a position is within th egrid
+     * checks if a position is within the grid
      *
-     * @param p_lane lane number
-     * @param p_position position number
+     * @param p_position position
      * @return position is inside
      */
-    boolean isinside( @Nonnull final Number p_lane, @Nonnull final Number p_position );
+    boolean isinside( @Nonnull final DoubleMatrix1D p_position );
 
 }

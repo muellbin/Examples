@@ -272,12 +272,12 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     @Override
-    public final boolean isinside( @Nonnull final Number p_lane, @Nonnull final Number p_position )
+    public final boolean isinside( @Nonnull final DoubleMatrix1D p_position )
     {
-        return ( p_lane.intValue() >= 0 )
-               && ( p_position.intValue() >= 0 )
-               && ( p_lane.intValue() < m_grid.rows() )
-               && ( p_position.intValue() < m_grid.columns() );
+        return ( p_position.getQuick( 0 ) >= 0 )
+               && ( p_position.getQuick( 1 ) >= 0 )
+               && ( p_position.getQuick( 0 ) < m_grid.rows() )
+               && ( p_position.getQuick( 1 ) < m_grid.columns() );
     }
 
     @Override

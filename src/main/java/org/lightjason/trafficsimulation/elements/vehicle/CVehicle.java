@@ -337,8 +337,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     public final IVehicle call() throws Exception
     {
         // @bug in perceiving
-        //m_backwardview.run();
-        //m_forwardview.run();
+        m_backwardview.run();
+        m_forwardview.run();
 
         super.call();
 
@@ -586,7 +586,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             m_environment.get(
                 m_position.parallelStream()
                           .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
-                          .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
+                          .filter( m_environment::isinside )
             )
                  .parallel()
                  .map( i -> new ImmutablePair<>( distancevariation( CVehicle.this, i ), i ) )

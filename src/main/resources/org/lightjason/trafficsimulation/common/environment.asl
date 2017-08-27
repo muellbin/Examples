@@ -48,8 +48,8 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
 areadata( From, To, Minimum, Maximum, MinimumSize ) :-
     [ P25 | P50 | P75 ] = math/statistic/multiplepercentile( PenaltyStatistic, 25, 50, 75 );
     PVariance = P25 / P75;
-    PStd = P75 - P25
-    PStd  /= P50;
+    PStd = P75 - P25;
+    PStd /= P50;
 
     PMin = math/min( 1, PVariance, PStd )
 .
@@ -74,6 +74,7 @@ areadata( From, To, Minimum, Maximum, MinimumSize ) :-
     area/initialize( 175, 0, 3, 35, 45 );
     generic/print( "#Environment Agent", "Areas with different speed ranges have been created" );
 
+	//!uservehicle
     !defaultvehicle( 100, 10 )
 .
 
@@ -94,8 +95,8 @@ areadata( From, To, Minimum, Maximum, MinimumSize ) :-
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
     generic/print( "#Environment Agent", "Your vehicle has been created" )
 
-     //vehicle/default/position( 160, 2, 3, 2, 0 );
-     //vehicle/default/position( 160, 2, 3, 2, 30 )
+    //vehicle/default/position( 160, 2, 3, 3, 0 )
+    //vehicle/default/position( 160, 2, 3, 2, 30 )
 .
 
 -!uservehicle <-
