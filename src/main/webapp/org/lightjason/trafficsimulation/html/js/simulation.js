@@ -1117,18 +1117,8 @@ jQuery(function() {
                 } );
 
                 // create tween and call at  the end websocket, if object not moving or outside view call websocket directly
-                if (
-                    ( !l_visualizationobjects[p_data.id].forcetween )
-                    && ( l_xpos === l_visualizationobjects[p_data.id].x )
-                    || (
-                        ( GAME.instance.camera.x - GAME.instance.camera.width <= l_xpos )
-                        && ( l_xpos <= GAME.instance.camera.x + GAME.instance.camera.width )
-                    )
-                )
-                {
-                    l_visualizationobjects[p_data.id].x = l_xpos;
+                if ( l_xpos === l_visualizationobjects[p_data.id].x )
                     WSANIMATION.send(JSON.stringify({id: p_data.id}));
-                }
                 else
                 {
                     const TWEEN = GAME.instance.add.tween(l_visualizationobjects[p_data.id]).to({x: l_xpos, y: l_ypos}, SIMULATIONSPEED.val());
@@ -1146,9 +1136,19 @@ jQuery(function() {
                 if ( !l_visualizationobjects[p_data.id] )
                     return;
 
-                GAME.instance.tweens.remove( l_visualizationobjects[p_data.id] );
-                l_visualizationobjects[p_data.id].destroy();
-                delete l_visualizationobjects[p_data.id];
+                const l_xpos = p_data.goal * TILESIZE + VEHICLEXSIZE / 2,
+                      l_ypos = ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER;
+
+                const TWEEN = GAME.instance.add.tween(l_visualizationobjects[p_data.id]).to({x: l_xpos, y: l_ypos}, SIMULATIONSPEED.val());
+                TWEEN.onComplete.add(function () {
+
+                    GAME.instance.tweens.remove( l_visualizationobjects[p_data.id] );
+                    l_visualizationobjects[p_data.id].destroy();
+                    delete l_visualizationobjects[p_data.id];
+
+                }, this);
+                TWEEN.delay(0);
+                TWEEN.start();
             }
         },
 
@@ -1156,7 +1156,6 @@ jQuery(function() {
             // initialize a user vehicle (forcing tween call)
             initialize: function (p_data) {
                 l_visualizationfunctions.defaultvehicle.initialize( p_data );
-                l_visualizationobjects[p_data.id].forcetween = true;
 
                 GAME.instance.camera.follow(l_visualizationobjects[p_data.id]);
 

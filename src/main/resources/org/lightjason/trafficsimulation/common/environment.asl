@@ -44,6 +44,16 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     MaxDeceleration = Deceleration * MaxDeceleration + 0.25 * MaxDeceleration
 .
 
+
+areadata( From, To, Minimum, Maximum, MinimumSize ) :-
+    [ P25 | P50 | P75 ] = math/statistic/multiplepercentile( PenaltyStatistic, 25, 50, 75 );
+    PVariance = P25 / P75;
+    PStd = P75 - P25
+    PStd  /= P50;
+
+    PMin = math/min( 1, PVariance, PStd )
+.
+
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -83,6 +93,9 @@ vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration ) :-
     $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
     generic/print( "#Environment Agent", "Your vehicle has been created" )
+
+     //vehicle/default/position( 160, 2, 3, 2, 0 );
+     //vehicle/default/position( 160, 2, 3, 2, 30 )
 .
 
 -!uservehicle <-

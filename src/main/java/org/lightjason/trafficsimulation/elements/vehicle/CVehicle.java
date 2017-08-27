@@ -159,11 +159,11 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         if ( p_maximumspeed < 120 )
             throw new RuntimeException( "maximum speed to low" );
 
-        if ( ( p_acceleration < 3 ) || ( p_deceleration < 3 ) )
+        if ( ( p_acceleration < 2 ) || ( p_deceleration < 2 ) )
             throw new RuntimeException( "acceleration or deceleration is to low" );
 
-        if ( p_deceleration < p_acceleration )
-            throw new RuntimeException( "deceleration should be greater than acceleration" );
+        if ( p_deceleration <= p_acceleration )
+            throw new RuntimeException( "deceleration should be greater or equal than acceleration" );
 
 
         m_type = p_type;
@@ -336,8 +336,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     @Override
     public final IVehicle call() throws Exception
     {
-        m_backwardview.run();
-        m_forwardview.run();
+        // @bug in perceiving
+        //m_backwardview.run();
+        //m_forwardview.run();
 
         super.call();
 
@@ -513,6 +514,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 super.apply( p_agent, p_instance ),
                 Stream.of(
                     new CConstant<>( "CurrentSpeed", l_vehicle.speed() ),
+                    // @bug lane is missing
                     //new CConstant<Double>( "CurrentLane", l_vehicle.position().get( 0 ) ),
                     new CConstant<>( "Acceleration", l_vehicle.acceleration() ),
                     new CConstant<>( "Deceleration", l_vehicle.deceleration() )
@@ -545,6 +547,18 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             m_position = p_position;
         }
 
+        @Override
+        public final boolean empty()
+        {
+            return m_cache.isEmpty();
+        }
+
+        @Override
+        public final int size()
+        {
+            return m_cache.size();
+        }
+
         @Nonnull
         @Override
         public final Stream<ILiteral> streamLiteral()
@@ -569,25 +583,18 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         public final void run()
         {
             m_cache.clear();
+            m_environment.get(
+                m_position.parallelStream()
+                          .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
+                          .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
+            )
+                 .parallel()
+                 .map( i -> new ImmutablePair<>( distancevariation( CVehicle.this, i ), i ) )
+                 .sorted( Comparator.comparingDouble( i -> i.getLeft().doubleValue() ) )
+                 .map( ImmutablePair::getRight )
+                 .map( i -> i.literal( CVehicle.this ) )
+                 .forEachOrdered( m_cache::add );
 
-            try
-            {
-                m_environment.get(
-                    m_position.parallelStream()
-                              .map( i -> new DenseDoubleMatrix1D( CVehicle.this.m_position.toArray() ).assign( i, Functions.plus ) )
-                              .filter( i -> m_environment.isinside( i.getQuick( 0 ), i.getQuick( 1 ) ) )
-                )
-                             .parallel()
-                             .map( i -> new ImmutablePair<>( distancevariation( CVehicle.this, i ), i ) )
-                             .sorted( Comparator.comparingDouble( i -> i.getLeft().doubleValue() ) )
-                             .map( ImmutablePair::getRight )
-                             .map( i -> i.literal( CVehicle.this ) )
-                             .forEachOrdered( m_cache::add );
-            }
-            catch ( final Exception l_exception )
-            {
-                l_exception.printStackTrace();
-            }
         }
     }
 }

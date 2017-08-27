@@ -25,7 +25,6 @@
 
 // --- driving call equal to Nagel-Schreckenberg driving model, on success accelerate ---
 +!drive
-
     : ~>>allowedspeed(_) <-
 		!!linger;
     	vehicle/accelerate(1);
@@ -44,7 +43,7 @@
 // --- linger possibility ---
 +!linger <-
 	L = math/statistic/randomsimple;
-    L < 0.8
+    L > 0.3
 .
 
 
