@@ -359,18 +359,6 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     }
 
     /**
-     * send value to simulation
-     *
-     * @param p_value value value
-     */
-    @IAgentActionFilter
-    @IAgentActionName( name = "simulation/penalty" )
-    private void simulationpenalty( final Number p_value )
-    {
-        ERuntime.INSTANCE.penalty().accept( p_value );
-    }
-
-    /**
      * returns vehicle value
      *
      * @param p_object object
@@ -540,6 +528,18 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         return ERuntime.INSTANCE.penalty().valuesexist()
                ? Math.max( ERuntime.INSTANCE.penalty().max().doubleValue(), l_random )
                : l_random;
+    }
+
+    /**
+     * send value to simulation
+     *
+     * @param p_value value value
+     */
+    @IAgentActionFilter
+    @IAgentActionName( name = "simulation/penalty" )
+    private void simulationpenalty( final Number p_value )
+    {
+        ERuntime.INSTANCE.penalty().accept( p_value );
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

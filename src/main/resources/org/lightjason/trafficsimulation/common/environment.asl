@@ -144,7 +144,7 @@ areadata( From, To, Minimum, Maximum, MinimumSize ) :-
 
 // --- plan for user-collision execution ---
 +!vehicle/usercollision( V ) <-
-    PV = math/min( vehicle/penalty( V ), 1.25 );
+    PV = math/max( vehicle/penalty( V ), 1.25 );
     P = simulation/maxpenalty;
     P *= PV;
     simulation/penalty( P );
