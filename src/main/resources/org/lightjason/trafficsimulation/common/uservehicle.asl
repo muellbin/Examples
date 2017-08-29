@@ -27,24 +27,24 @@
 +!drive
 
 	// if we don't know the allowed speed and in front is no other vehicle, accelerate
-    : ~>>allowedspeed(_) <- //&& ~>>env/forward/vehicle(_, _, _) <-
+    : ~>>allowedspeed(_) <- //&& ~>>forward/vehicle(_, _, _) <-
     	vehicle/accelerate(1);
     	!drive
 
     // if we don't know the allowed speed and there is another vehicle in front, drive continously
-    //: ~>>allowedspeed(_) && >>env/forward/vehicle( _, _, data(static(lane(L), _, _)) ) && Lane != CurrentLane <-
+    //: ~>>allowedspeed(_) && >>forward/vehicle( _, _, data(static(lane(L), _, _)) ) && Lane != CurrentLane <-
     //	!drive
 
 	// if we know the allowed speed and there is no other vehicle in front,
     // test the current speed, if is lower, we try to accelerate
-	: >>allowedspeed(S) <- // && ~>>env/forward/vehicle(_, _, _) <-
+	: >>allowedspeed(S) <- // && ~>>forward/vehicle(_, _, _) <-
     	CurrentSpeed < S;
     	vehicle/accelerate(1);
     	!drive
 
 	// if we know the allowed speed and there is another vehicle in front,
     // test the current speed, if is lower, drive continously
-    //: >>allowedspeed(S) && >>env/forward/vehicle(_, _, _) <-
+    //: >>allowedspeed(S) && >>forward/vehicle(_, _, _) <-
     //	CurrentSpeed < S;
     //    !drive
 

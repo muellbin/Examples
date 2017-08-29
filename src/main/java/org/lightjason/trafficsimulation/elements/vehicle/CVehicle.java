@@ -176,11 +176,6 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_accelerate = p_acceleration;
         m_decelerate = p_deceleration;
 
-        // beliefbase
-        final IView l_env = new CBeliefbase( new CSingleOnlyStorage<>() ).create( "env", m_beliefbase );
-        m_beliefbase.add( l_env );
-
-
         m_backwardview = new CEnvironmentView(
             Collections.unmodifiableSet(
                 CMath.cellangle( EUnit.INSTANCE.metertocell( 150 + ( Math.random() - 0.5 ) * 50 ), 135, 225 ).collect( Collectors.toSet() )
@@ -196,8 +191,9 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
             )
         );
 
-        l_env.add( m_backwardview.create( "backward", l_env ) );
-        l_env.add( m_forwardview.create( "forward", l_env ) );
+        // beliefbase
+        m_beliefbase.add( m_backwardview.create( "backward", m_beliefbase ) );
+        m_beliefbase.add( m_forwardview.create( "forward", m_beliefbase ) );
 
         CAnimation.EInstance.INSTANCE.send( EStatus.INITIALIZE, this );
     }
@@ -276,7 +272,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
 
         return (
                    // scale distance difference on a sigmoid function
-                   1 / ( 1 + Math.exp(  -p_first.speed() / p_second.<IVehicle>raw().speed() ) )
+                   1 / ( 1 + Math.exp(  -p_second.<IVehicle>raw().speed() / Math.max( p_first.speed(), 0.0001 ) ) )
                    // normalize the result in [-0.5, 0.5]
                    - 0.5
                  )
