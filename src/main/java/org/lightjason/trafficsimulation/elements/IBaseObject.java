@@ -122,7 +122,6 @@ public abstract class IBaseObject<T extends IObject<?>> extends IBaseAgent<T> im
 
             Stream.of(
                 CLiteral.from( "id", CRawTerm.from( m_id ) ),
-                CLiteral.from( "object", CRawTerm.from( this ) ),
                 CLiteral.from(
                     "data",
                     CLiteral.from( DYNAMICBELIEFBASE, m_dynamicbeliefs.stream().map( i -> i.shallowcopysuffix() ) ),
