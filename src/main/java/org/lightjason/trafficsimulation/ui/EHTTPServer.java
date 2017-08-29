@@ -157,8 +157,8 @@ public enum EHTTPServer
             // open browser if possible
             if ( ( CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "ui", "openbrowser" ) ) && ( Desktop.isDesktopSupported() ) )
                 Desktop.getDesktop().browse( new URI(
-                                                 "http://" + CConfiguration.INSTANCE.<String>getOrDefault( "localhost", "ui", "host" )
-                                                 + ":" + CConfiguration.INSTANCE.<Integer>getOrDefault( 12345, "ui", "port" )
+                                                 "http://" + CConfiguration.INSTANCE.<String>getOrDefault( DEFAULTHOST, "ui", "host" )
+                                                 + ":" + CConfiguration.INSTANCE.<Integer>getOrDefault( DEFAULTPORT, "ui", "port" )
                                              )
                 );
 
