@@ -382,7 +382,7 @@ If run twice or with different initial belief light, this will lead to unintende
 * [Unification](https://lightjason.github.io/knowledgebase/logicalprogramming/#unification) is the process for setting values from one literal into the variables of another literal, e.g. what is the current value of `Colour` in `light(Colour)`?
   Note: `Colour` is a variable!
 
-* Remember the issue we had with the plan `+!phaseduration(NewDuration)` and the traffic light state?
+* [Remember the issue](#16) we had with the plan `+!phaseduration(NewDuration)` and the traffic light state?
   * It can easily be fixed with _unification_ to get the current state and act accordingly:
 
     Based on the initial beliefs of the previous example
