@@ -536,10 +536,15 @@ From the developer perspective the
 ---
 ### Useful Links
 
-* A full list of all syntax elements of the programming language can be found in the [agent syntax diagram](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/)
+* [Source code](https://github.com/LightJason/Examples/tree/workshop-trafficsimulation) and [executable jar](https://github.com/LightJason/Examples/tree/jar-workshop-trafficsimulation) of this workshop
+
+* LightJason [project site](http://lightjason.org)
+
+* A complete list of syntax elements of AgentSpeak(L++) can be found in the [agent syntax diagram](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/)
 
 * For developers interested in LightJason/AgentSpeak(L++), we provide a
-
-  * set of [tutorials](https://lightjason.github.io/tutorials/) to understand the practical applications of our framework,
-  * [knowledge base](https://lightjason.github.io/knowledgebase/) for the theoretical aspects and
-  * [wizard](https://lightjason.github.io/tutorials/wizard/) to create a LightJason project package for multi-agent simulations.
+  * set of [tutorials](https://lightjason.github.io/tutorials/) with [source code](https://github.com/LightJason/Examples) to understand the practical applications of our framework,
+  * [knowledge base](https://lightjason.github.io/knowledgebase/) for the theoretical aspects,
+  * [wizard](https://lightjason.github.io/tutorials/wizard/) to create a LightJason project package for multi-agent simulations
+  * [GitHub repository](https://github.com/LightJason/AgentSpeak) and
+  * [project](http://lightjason.github.io/AgentSpeak/) and [source code](http://lightjason.github.io/AgentSpeak/sources/) documentation.
