@@ -1,8 +1,9 @@
 Ziel der Simulation ist es ein Verkehrsszenario mit einem [Multi-Agenten System (MAS)](https://de.wikipedia.org/wiki/Multiagentensystem) zu realisieren.
 Das Szenario umfasst folgende Problemstellung
 
-> Es soll ein Verkehrssystem beschrieben werden, in dem ein Agenten-Fahrzeug (grün) durch den Benutzer _programmiert_ werden soll, so dass es _optimal_ die Strecke von 100km abfährt.
-> Optimal bedeutet, dass es sich regelkonform verhält, d.h. die Geschwindigkeitsbegrenzung einhält aber trotzdem so schnell wie möglich die Strecke bewältigt.
+> Es soll ein Verkehrssystem beschrieben werden, in dem ein Agenten-Fahrzeug (grün) durch den Benutzer _programmiert_ werden soll, so dass es _optimal_ die
+> Strecke  abfährt. Optimal bedeutet, dass es sich regelkonform verhält, d.h. die Geschwindigkeitsbegrenzung einhält aber trotzdem so schnell wie möglich die
+> Strecke bewältigt.
 
 Folgende Events werden dem Fahrzeug zur Verfügung gestellt:
 
