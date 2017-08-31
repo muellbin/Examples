@@ -19,3 +19,5 @@ The following actions are available to the vehicle
     will fail.
 * ```vehicle/pullout``` the vehicle swings out to left in driving direction.
 * ```vehicle/pullin``` the vehicle goes back to right in driving direction.
+
+The agent beliefs can be shown within the UI widget _beliefs_ during runtime.

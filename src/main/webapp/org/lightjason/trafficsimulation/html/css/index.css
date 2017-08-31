@@ -30,15 +30,6 @@
 #simulation-dashboard, #penalty-dashboard {
     min-height: 200px;
 }
-.CodeMirror {
-    font-size: 150%;
-    min-height: 20em;
-    height: auto;
-}
-
-#simulation-dashboard, #penalty-dashboard {
-    min-height: 200px;
-}
 
 .fixed_height_300 {
     height: 300px;

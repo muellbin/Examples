@@ -22,4 +22,5 @@ Die Simulation wird durch Widgets in dem oberen Bereich der Hauptsicht angezeigt
 
 Um den Agenten zur Steuerung des Fahrzeuges zu progammieren, verwende den Editor im unteren Bereich der Hauptsicht.
 
+* <a class="helptooltip" data-targetid="widget-belief"  data-backdrop="true" data-position="top" data-deletebg="false" data-content="Mit einem Klick auf den Refresh Button werden alle Beliefs des Agenten angezeigt, diese Beliefs repräsentieren das aktuelle Wissen des Agenten." href="#">Beliefs</a>
 * <a class="helptooltip" data-targetid="widget-editor"  data-backdrop="true" data-position="top" data-deletebg="false" data-content="Agenten-Editor ermöglich die Programmierung des Agenten in der Sprache Agentspeak(L++)." href="#">Editor</a>

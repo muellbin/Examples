@@ -26,11 +26,11 @@
  *
  * asserts - contains all components which are copied only
  * minifyjs - contains all components wich are based on JavaScript and will be minifed
- * minifycss - contains all components which ar ebased on CSS and will be minifed
+ * minifycss - contains all components which are based on CSS and will be minifed
  *
  */
 
-const MINIFY = true;
+const MINIFY = false;
 
 const l_gulp = require( "gulp" ),
       l_clean = require( "gulp-clean" ),

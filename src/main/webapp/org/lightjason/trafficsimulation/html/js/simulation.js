@@ -488,7 +488,7 @@ function deleteagent( pc_id, po_editor )
  */
 function shutdown()
 {
-    jQuery( ".nav_menu, #sidebar-menu, .sidebar-footer, #second_row" ).fadeOut();
+    jQuery( ".nav_menu, #sidebar-menu, .sidebar-footer, #second_row, #third_row" ).fadeOut();
     for(var i = 0; i < arguments.length; i++)
         arguments[i].close();
 }
@@ -533,7 +533,8 @@ jQuery(function() {
 
     var l_editor = null,
         l_visualizationobjects = {},
-        l_visualizationfunctions = {};
+        l_visualizationfunctions = {},
+        l_iduserverhicle = null;
 
     const MARKDOWN = new showdown.Converter({
             smartIndentationFix: true,
@@ -952,6 +953,23 @@ jQuery(function() {
     });
 
 
+    // get and show beliefs
+    jQuery( "#ui-belief-refersh" ).click(function() {
+        var lo = jQuery( "#ui-belieflist" );
+        lo.empty();
+
+        if (!l_iduserverhicle)
+            return;
+
+        LightJason.ajax( "/lightjason/agent/" + l_iduserverhicle + "/view")
+            .success(function(i) {
+                console.log();
+                //lo.text( i );
+            })
+            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
+    });
+
+
     // slide view
     jQuery( ".slide-view" ).click(function() {
         const l_source = jQuery(this).data("slidesource");
@@ -1157,6 +1175,7 @@ jQuery(function() {
             initialize: function (p_data) {
                 l_visualizationfunctions.defaultvehicle.initialize( p_data );
 
+                l_iduserverhicle = p_data.id;
                 GAME.instance.camera.follow(l_visualizationobjects[p_data.id]);
 
                 var l_max = Math.ceil( p_data.maxspeed / 10 + 5) * 10;
@@ -1182,6 +1201,7 @@ jQuery(function() {
             },
 
             release: function(p_data) {
+                l_iduserverhicle = null;
                 l_visualizationfunctions.defaultvehicle.release( p_data );
                 GAUGE.value = 0;
                 GAUGE.update({ value: 0 });

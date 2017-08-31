@@ -18,8 +18,9 @@ The simulation is visualised in the upper area of the main view by means of widg
 * <a class="helptooltip" data-targetid="widget-penalty"  data-backdrop="true" data-position="bottom" data-deletebg="false" data-content="This widget display the score, i.e. penalty of previous runs." href="#">Penalty</a>
 
 
-##### Agent Editor
+##### Agent Editor & Beliefs
 
 To program the agent, use the agent editor on the lower area of the main view:
 
+* <a class="helptooltip" data-targetid="widget-belief"  data-backdrop="true" data-position="top" data-deletebg="false" data-content="The beliefs can be catched with a click on the refresh button and shows the current knowledge of the agent." href="#">Beliefs</a>
 * <a class="helptooltip" data-targetid="widget-editor"  data-backdrop="true" data-position="top" data-deletebg="false" data-content="The agent-editor allows the programming of the agent behaviour with the language Agentspeak(L++)." href="#">Editor</a>

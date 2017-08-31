@@ -16,3 +16,5 @@ Folgende Aktionen stehen dem Fahrzeug zur Verfügung
 * ```vehicle/decelerate( b )``` das Fahrzeug bremst um den Faktor $b \in [0,1]$, wobei $b=1$ die maximale Bremskraft ist. Kann das Fahrzeug nicht mehr abgebremst werden, schlägt diese Aktion fehl.
 * ```vehicle/pullout``` lässt das Fahrzeug nach links in Fahrtrichtung ausscheren.
 * ```vehicle/pullin``` lässt das Fahrzeug nach rechts in Fahrtrichtung einscheren.
+
+Die Beliefs des Agenten können zur Laufzeit über das UI Widget ```Beliefs``` angesehen werden.
