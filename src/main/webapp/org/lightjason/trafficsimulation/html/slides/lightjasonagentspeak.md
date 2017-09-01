@@ -249,7 +249,7 @@ Execution order of plans differs depending on used trigger symbol `!` or `!!`:
   * **Note:** Adding `!planname` multiple times in one cycle will result in `+!planname` to be executed only **once** in the next cycle because the same trigger gets only added once.
 * `!!planname` executes the matching plan immediately.
   * **Note:** As every plan body is executed sequentially, for each given `!!planname` the plan `+!planname` will be executed in that sequence.
-* If the plan contains a variable, e.g. `!plan(N)`, multiple different triggers are possible (e.g. `!plan(5)` and `!plan(23)` differ). Each individual trigger will be queued for execution in the next cycle.
+* If the plan contains a variable, e.g. `+!plan(N)`, multiple different triggers are possible (e.g. `!plan(5)` and `!plan(23)` differ). Each individual trigger will be queued for execution in the next cycle.
   
 For example consider the plan `+!phaseduration(NewDuration)`.
 A plan body containing
@@ -545,6 +545,6 @@ From the developer perspective,
 * For developers interested in LightJason/AgentSpeak(L++), we provide a
   * set of [tutorials](https://lightjason.github.io/tutorials/) with [source code](https://github.com/LightJason/Examples) to understand the practical applications of our framework,
   * [knowledge base](https://lightjason.github.io/knowledgebase/) for the theoretical aspects,
-  * [wizard](https://lightjason.github.io/tutorials/wizard/) to create a LightJason project package for multi-agent simulations
+  * [wizard](https://lightjason.github.io/tutorials/wizard/) to create a LightJason project package for multi-agent simulations,
   * [GitHub repository](https://github.com/LightJason/AgentSpeak) and
   * [project](http://lightjason.github.io/AgentSpeak/) and [source code](http://lightjason.github.io/AgentSpeak/sources/) documentation.
