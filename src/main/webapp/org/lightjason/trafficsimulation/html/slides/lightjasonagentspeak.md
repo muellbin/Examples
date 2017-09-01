@@ -51,7 +51,7 @@ code.remark-inline-code {
     * [well](https://lightjason.github.io) [documented](http://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/) [software](http://lightjason.github.io/AgentSpeak/sources/) (not just "documentation by research papers")
     * extended PRS with a mechanism optimised for concurrency
     * [REST-API](https://en.wikipedia.org/wiki/Representational_state_transfer) for flexible, system independed control of [multi-agent system (MAS)](https://en.wikipedia.org/wiki/Multi-agent_system)
-    * scalable, concurrent execution of approximately 2.6 million agents on a desktop computer
+    * scalable, concurrent execution of up to 2.6 million agents on a desktop computer
     * additional support for cloud computing, for example [Hadoop](https://en.wikipedia.org/wiki/Apache_Hadoop)
 
 * **Important** to distinguish between
@@ -101,14 +101,14 @@ The same information in a _symbolic representation_:
 ```prolog
 light( green ).
 phase( duration(60), program(morning) ).
-applies( vehicles ).
-~applies( pedestrians ).
+appliesto( vehicles ).
+~appliesto( pedestrians ).
 ```
 
 ---
 ### Atoms
 
-[Atoms](https://lightjason.github.io/knowledgebase/logicalprogramming/#atomliterals) are **unsplitable** elements and represent the _basic building blocks_.
+[Atoms](https://lightjason.github.io/knowledgebase/logicalprogramming/#atomliterals) are **unsplittable** elements and represent the _basic building blocks_.
 Note: They have to be structured in the following form:
 
 <svg height=300px class="railroad-diagram centering" viewBox="0 0 490 229" id="svg_3e10f8c809242d3a0f94c18e7addb866"><path d="M20 30v20m10-20v20M20 40h20.5m-.5 0h10m390 0" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M50 29h140v22H50z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#28e746830337961c5de40b87c99980a6"><text x="120" y="44">LOWERCASELETTER</text></a></g><path d="M190 40h10m0 0a10 10 0 0 0 10-10 10 10 0 0 1 10-10m0 0h200m0 0a10 10 0 0 1 10 10 10 10 0 0 0 10 10m-240 0h20m0 0h10m0 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M250 29h140v22H250z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#28e746830337961c5de40b87c99980a6"><text x="320" y="44">LOWERCASELETTER</text></a></g><path d="M390 40h20m-180 0a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M250 59h140v22H250z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#c857e06a9c6dcbcfd625e4859380c98e"><text x="320" y="74">UPPERCASELETTER</text></a></g><path d="M390 70a10 10 0 0 0 10-10V50a10 10 0 0 1 10-10m-180 0a10 10 0 0 1 10 10v40a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M250 100h20m100 0h20M270 89h100v22H270z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#a058c5dc734e54ff3d93b96acac339f4"><text x="320" y="104">UNDERSCORE</text></a></g><path d="M390 100a10 10 0 0 0 10-10V50a10 10 0 0 1 10-10m-180 0a10 10 0 0 1 10 10v70a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M250 130h40m60 0h40m-100-11h60v22h-60z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#999bbbf1d86bc7611397c77222e076db"><text x="320" y="134">DIGIT</text></a></g><path d="M390 130a10 10 0 0 0 10-10V50a10 10 0 0 1 10-10m-180 0a10 10 0 0 1 10 10v100a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M250 160h40m60 0h40m-100-11h60v22h-60z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#646da671ca01bb5d84dbb5fb2238dc8e"><text x="320" y="164">SLASH</text></a></g><path d="M390 160a10 10 0 0 0 10-10V50a10 10 0 0 1 10-10m-180 0a10 10 0 0 1 10 10v130a10 10 0 0 0 10 10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M250 190h40m60 0h40m-100-11h60v22h-60z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#ffc0d9b54a1fe677c4c9e6b050e67c81"><text x="320" y="194">MINUS</text></a></g><path d="M390 190a10 10 0 0 0 10-10V50a10 10 0 0 1 10-10m0 0h10m-190 0a10 10 0 0 0-10 10v149a10 10 0 0 0 10 10m0 0h180m0 0a10 10 0 0 0 10-10V50a10 10 0 0 0-10-10m10 0h20m0 0h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
@@ -157,7 +157,7 @@ phase( duration(60), program(morning) )
 
 There are two kinds of variables
 * Regular variables start with an **upper-case** letter
-* The _garbage bin_ variable `_` can be used as a substitute in cases where the content of the variable is not of interest but a variable has to be provided.
+* The _garbage bin_ variable `_` can be used as a substitute in cases where the content of the variable is not of interest, but a variable has to be provided.
 
 #### Example
 
@@ -188,11 +188,11 @@ NewDuration = 90
 
 <svg width=800px class="railroad-diagram" viewBox="0 0 726 80" id="svg_5fc25157650d0cb24f02216d904584df"><path d="M20 30v20m10-20v20M20 40h20.5m-.5 0h10m0 0a10 10 0 0 0 10-10 10 10 0 0 1 10-10m0 0h108m0 0a10 10 0 0 1 10 10 10 10 0 0 0 10 10M50 40h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 29h108v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#4ab6864fc58ecd8b598ee10dfe2ac311"><text x="124" y="44">annotations</text></a></g><path d="M178 40h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M208 29h116v22H208z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#4f0fa1b5875427a602b3f913163be2ca"><text x="266" y="44">plan_trigger</text></a></g><path d="M324 40h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M344 29h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#f0d674f1e0ed4292267f149c5983db02"><text x="382" y="44">literal</text></a></g><path d="M420 40h10m0 0a10 10 0 0 0 10-10 10 10 0 0 1 10-10m0 0h152m0 0a10 10 0 0 1 10 10 10 10 0 0 0 10 10m-192 0h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M460 29h132v22H460z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#d60b4a42e52668da3017e5717ef3f60"><text x="526" y="44">plandefinition</text></a></g><path d="M592 40h10m-142 0a10 10 0 0 0-10 10 10 10 0 0 0 10 10m0 0h132m0 0a10 10 0 0 0 10-10 10 10 0 0 0-10-10m10 0h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M632 29h44v22h-44z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#40679521b5da0954b705341a2859f782"><text x="654" y="44">DOT</text></a></g><path d="M676 40h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
 
-To transform the imperative method to a logical plan proceed as follows:
+To transform the imperative method to a logical plan, proceed as follows:
 
 * Consider every execution path! For the method `phaseduration` this would be
-  1. The plan always fails, if the phase duration is less than one second (-> early exit).
-  2. If the plan duration is larger than or equal to one second, set the traffic light to `red` and the phase duration to the value of variable `newduration`.
+  1. If the phase duration is less than one second, the plan always fails (-> early exit).
+  2. If the phase duration is equal to or greater than one second, set the traffic light to `red` and the phase duration to the value of variable `newduration`.
 * Variables have to start with a capital letter, e.g. `newduration` => `NewDuration`.
 * Statements have to be separated by a semicolon `;`, except the last one!
 * A plan has to be terminated by a full stop symbol `.`
@@ -246,10 +246,10 @@ To transform the imperative method to a logical plan proceed as follows:
 
 Execution order of plans differs depending on used trigger symbol `!` or `!!`:
 * The trigger `!planname` marks a plan `+!planname` to be executed in the next cycle.
-  * **Note:** Adding `!planname` multiple times in one cycle will result in `+!planname` to be executed **once** in the next cycle because the same trigger gets only added once.
+  * **Note:** Adding `!planname` multiple times in one cycle will result in `+!planname` to be executed only **once** in the next cycle because the same trigger gets only added once.
 * `!!planname` executes the matching plan immediately.
-  * **Note:** As every plan body gets executed sequentially, for each given `!!planname` the plan `+!planname` will be executed in that sequence.
-* If the plan contains a variable, e.g. `!plan(N)`, multiple different trigger are possible (e.g. `!plan(5)` and `!plan(23)` differ). Each individual trigger will be queued for execution in the next cycle.
+  * **Note:** As every plan body is executed sequentially, for each given `!!planname` the plan `+!planname` will be executed in that sequence.
+* If the plan contains a variable, e.g. `!plan(N)`, multiple different triggers are possible (e.g. `!plan(5)` and `!plan(23)` differ). Each individual trigger will be queued for execution in the next cycle.
   
 For example consider the plan `+!phaseduration(NewDuration)`.
 A plan body containing
@@ -277,11 +277,11 @@ Any literal can be a [belief or fact](https://lightjason.github.io/knowledgebase
 * Both are denoted as literals.
 * A belief can be generated by
     * sensors the agent uses to perceive its environment.
-    * agents themselves, so the agent can _conclude_ anything by combining beliefs to new ones
+    * agents themselves, so the agent can _conclude_ new beliefs by combining existing ones
 * Initial beliefs are defined at the beginning of the `.asl` and terminated via `.`, e.g. `light(red).`.
 
 **Note:** Perceptions might be wrong!
-If for example a sensor is defect or other agents simply "lie" (depending on the scenario).
+For instance, a sensor can be defect, or other agents may simply "lie" (depending on the scenario).
 So a .important[belief can be perceived or considered as true, but need not to be factually true].
 
 #### Examples
@@ -354,7 +354,7 @@ If run twice or with different initial belief light, this will lead to unintende
 
 * Each time an agent is executed it runs through the [_agent cycle_](https://lightjason.github.io/knowledgebase/differencetojason/#lightjason-agent-cycle):
   1. updating beliefs by perceiving the environment with sensors
-  2. executes all possible, i.e. _instanciable_ plans in parallel
+  2. executes all possible, i.e. _instantiable_ plans in parallel
 
 **Note**: Each step is executed in parallel, which means that data perception from sensors, agent and plan execution are also done in parallel.
 
@@ -382,7 +382,7 @@ If run twice or with different initial belief light, this will lead to unintende
 
 <svg width=1000px class="railroad-diagram" viewBox="0 0 1052 101" id="svg_e732ce4bb8479dc479e294d62beaf1cf"><path d="M20 30v20m10-20v20M20 40h20.5m-.5 0h10m0 0a10 10 0 0 0 10-10 10 10 0 0 1 10-10m0 0h36m0 0a10 10 0 0 1 10 10 10 10 0 0 0 10 10m-76 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M70 29h36v22H70z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#fa868488740aa25870ced6b9169951fb"><text x="88" y="44">AT</text></a></g><path d="M106 40h20m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M136 29h100v22H136z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#f2160f407f56e0f4d495cecd44055e2d"><text x="186" y="44">RIGHTSHIFT</text></a></g><path d="M236 40h10m0 0h20" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M266 40h320m76 0h320M586 29h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#f0d674f1e0ed4292267f149c5983db02"><text x="624" y="44">literal</text></a></g><path d="M982 40h20m-756 0a10 10 0 0 1 10 10v10a10 10 0 0 0 10 10m716 0" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M266 59h148v22H266z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#5ffa5d1c78ad09c7bf5b4d0b0764641f"><text x="340" y="74">LEFTROUNDBRACKET</text></a></g><path d="M414 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M434 59h76v22h-76z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#f0d674f1e0ed4292267f149c5983db02"><text x="472" y="74">literal</text></a></g><path d="M510 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M530 59h60v22h-60z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#4d9b3e9fc12849d060371eb65154c751"><text x="560" y="74">COMMA</text></a></g><path d="M590 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M610 59h196v22H610z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#89368367b9f48fd82a781f5a4e1ad8b6"><text x="708" y="74">unification_constraint</text></a></g><path d="M806 70h10m0 0h10" transform="translate(.5 .5)"/><g class="non-terminal" transform="translate(.5 .5)"><path d="M826 59h156v22H826z"/><a xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://lightjason.github.io/AgentSpeak/rrd-output/html/org/lightjason/agentspeak/grammar/Agent.g4/index.htm#3a52152b9f1e9dd45998ce24723d98ed"><text x="904" y="74">RIGHTROUNDBRACKET</text></a></g><path d="M982 70a10 10 0 0 0 10-10V50a10 10 0 0 1 10-10m0 0h10m0 0h20m-10-10v20m10-20v20" transform="translate(.5 .5)"/></svg>
 
-* [Unification](https://lightjason.github.io/knowledgebase/logicalprogramming/#unification) is the process for setting values from one literal into the variables of another literal, e.g. what is the current value of `Colour` in `light(Colour)`?
+* [Unification](https://lightjason.github.io/knowledgebase/logicalprogramming/#unification) is the process for setting values from one literal to the variables of another literal, e.g. determining the current value of `Colour` in `light(Colour)`?
   Note: `Colour` is a variable!
 
 * [Remember the issue](#16) we had with the plan `+!phaseduration(NewDuration)` and the traffic light state?
@@ -476,11 +476,11 @@ phase( duration(60), program(morning) ).
 -->
 
 ---
-### Theory - Closed- and Open-World-Assumption
+### Theory - Closed-World vs. Open-World Assumption
 
 
 ---
-### Theory - Closed- and Open-World-Assumption - Example
+### Theory - Closed-World vs. Open-World Assumption - Example
 
 Consider the belief base
 ```prolog
@@ -494,7 +494,7 @@ What does this imply for
 	* `yellow`
 * belief `duration(90)`
 
-under _Closed World-Assumption_ and respectively _Open-World Assumption_?
+under _Closed World-Assumption_ and  _Open-World Assumption_, respectively?
 
 
 ---
@@ -503,21 +503,21 @@ under _Closed World-Assumption_ and respectively _Open-World Assumption_?
 
 ![image](slides/lightjasonagentspeak/agenthouse.png#floatright)
 
-From a developer's perspective LightJason combines aspects of
+From a developer's perspective, LightJason combines aspects of
 
 * functional 
-* object oriented and
-* logical
+* object-oriented and
+* logic
 
-programming to the concept of *agent oriented programming (AOP)*.
+programming to the concept of *agent-oriented programming (AOP)*.
 
 For developing a multi-agent system, object-oriented parts (Java) and *functional behaviour of the simulated elements* are needed.
 
-Based on the LightJason concept the behaviour is written in AgentSpeak(L++).
+In LightJason, this behaviour is written in AgentSpeak(L++).
 
 
 ---
-### For Developers (Optional) - Two Layer Agent
+### For Developers (Optional) - Two-Layer Agent
 
 ![image](slides/lightjasonagentspeak/twolayeragent.png#floatright)
 
@@ -529,9 +529,9 @@ The
 * *body* passes all information and perceived data to the mind.
 * *mind* will be executed with the information provided by the body and passes information back to the body.
 
-From the developer perspective the 
-  * *mind* of an agent should be implemented with a **domain dependent behaviour model**, e.g. the driving behaviour of the vehicle and the
-  * *body* with a **domain independent execution model** within the simulation software.
+From the developer perspective,  
+  * the *mind* of an agent should be implemented with a **domain-dependent behaviour model**, e.g. the driving behaviour of the vehicle; 
+  * the *body* should be implemented with a **domain independent execution model** within the simulation software.
 
 ---
 ### Useful Links
