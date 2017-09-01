@@ -155,7 +155,7 @@ public final class CSimulation
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
         if ( !l_data.getvisibility() )
-            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
+            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessible", p_id ) ).build();
 
         return l_data.getasl();
     }
@@ -175,7 +175,7 @@ public final class CSimulation
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
         if ( ( !l_data.getvisibility() ) || ( Stream.concat( CConfiguration.baseagents(), CConfiguration.activatableagents() ).anyMatch( p_id::equals ) ) )
-            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
+            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessible", p_id ) ).build();
 
         ERuntime.INSTANCE.agents().remove( p_id.toLowerCase( Locale.ROOT ) );
         return Response.status( Response.Status.OK ).entity( CCommon.languagestring( this, "agentremove", p_id ) ).build();
@@ -198,7 +198,7 @@ public final class CSimulation
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
         if ( !l_data.getvisibility() )
-            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
+            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessible", p_id ) ).build();
 
         if ( !l_data.getasl().equals( p_content ) )
         {
@@ -224,7 +224,7 @@ public final class CSimulation
         if ( l_data == null )
             return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
         if ( !l_data.getvisibility() )
-            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessable", p_id ) ).build();
+            return Response.status( Response.Status.FORBIDDEN ).entity( CCommon.languagestring( this, "agentnotaccessible", p_id ) ).build();
 
         ERuntime.INSTANCE
                 .agents()
