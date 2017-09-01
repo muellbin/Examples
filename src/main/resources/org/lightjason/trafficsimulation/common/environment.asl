@@ -27,7 +27,7 @@
 // --- rules ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
- * function to generate vehcile data
+ * function to generate vehicle data
  * @param MaxSpeed speed in km/h
  * @param MaxAcceleration in m/sec^2
  * @param MaxDeceleration in m/sec^2
