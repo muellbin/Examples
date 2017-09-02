@@ -20,4 +20,11 @@ The following actions are available to the vehicle
 * ```vehicle/pullout``` the vehicle swings out to left in driving direction.
 * ```vehicle/pullin``` the vehicle goes back to right in driving direction.
 
+The agent contains the following bounded constants
+
+* ```ÌD``` agent unique name
+* ```CurrentSpeed``` the current speed of the vehicle in $km/h$
+* ```Acceleration``` the acceleration value in $m/sec^2$
+* ```Deceleration``` the deceleration value in $m/sec^2$
+
 The agent beliefs can be shown within the UI widget _beliefs_ during runtime.

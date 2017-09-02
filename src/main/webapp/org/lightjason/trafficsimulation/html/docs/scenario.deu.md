@@ -17,4 +17,11 @@ Folgende Aktionen stehen dem Fahrzeug zur Verfügung
 * ```vehicle/pullout``` lässt das Fahrzeug nach links in Fahrtrichtung ausscheren.
 * ```vehicle/pullin``` lässt das Fahrzeug nach rechts in Fahrtrichtung einscheren.
 
+Der Agent besitzt automisch folgende gebundene Konstanten
+
+* ```ÌD``` seinen eigenen Namen (eindeutiger Identifier)
+* ```CurrentSpeed``` aktuelle Geschwindigkeit $km/h$
+* ```Acceleration``` Beschleunigungswert $m/sec^2$
+* ```Deceleration``` Verzägerungswert $m/sec^2$
+
 Die Beliefs des Agenten können zur Laufzeit über das UI Widget ```Beliefs``` angesehen werden.
