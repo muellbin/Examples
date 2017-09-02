@@ -227,7 +227,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         final DoubleMatrix1D l_position = this.position().copy();
 
         return StreamUtils.zip(
-            Stream.of( "type", "status", "id", "y", "x", "goal", "speed", "maxspeed", "acceleration", "deceleration", "distance" ),
+            Stream.of( "type", "status", "id", "y", "x", "goal", "speed", "maxspeed", "acceleration", "deceleration", "distance", "belief" ),
             Stream.of( this.type().toString(),
                        p_status.toString(),
                        this.id(),
@@ -238,7 +238,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                        m_maximumspeed,
                        m_accelerate,
                        m_decelerate,
-                       EUnit.INSTANCE.celltokilometer( l_position.getQuick( 1 ) ).doubleValue()
+                       EUnit.INSTANCE.celltokilometer( l_position.getQuick( 1 ) ).doubleValue(),
+                       m_beliefbase.stream().map( Object::toString ).collect( Collectors.toList() )
             ),
             ImmutablePair::new
         ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );

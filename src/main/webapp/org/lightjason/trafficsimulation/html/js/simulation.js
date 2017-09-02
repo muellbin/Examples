@@ -533,8 +533,7 @@ jQuery(function() {
 
     var l_editor = null,
         l_visualizationobjects = {},
-        l_visualizationfunctions = {},
-        l_iduserverhicle = null;
+        l_visualizationfunctions = {};
 
     const MARKDOWN = new showdown.Converter({
             smartIndentationFix: true,
@@ -545,6 +544,7 @@ jQuery(function() {
           SIMULATIONSPEED = jQuery("#simulation-speed"),
           SIMULATIONMUSIC = jQuery( "#simulation-music" ),
           GAUGEWIDGET = jQuery( "#simulation-speedview-dashboard" ),
+          BELIEFLIST = jQuery( "#ui-belieflist" ),
           WSANIMATION = LightJason.websocket( "/animation" ),
           WSMESSAGES = LightJason.websocket( "/message" ),
           WSSTATISTIC = LightJason.websocket( "/statistic" ),
@@ -953,23 +953,6 @@ jQuery(function() {
     });
 
 
-    // get and show beliefs
-    jQuery( "#ui-belief-refersh" ).click(function() {
-        var lo = jQuery( "#ui-belieflist" );
-        lo.empty();
-
-        if (!l_iduserverhicle)
-            return;
-
-        LightJason.ajax( "/lightjason/agent/" + l_iduserverhicle + "/view")
-            .success(function(i) {
-                console.log();
-                //lo.text( i );
-            })
-            .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
-    });
-
-
     // slide view
     jQuery( ".slide-view" ).click(function() {
         const l_source = jQuery(this).data("slidesource");
@@ -1175,7 +1158,6 @@ jQuery(function() {
             initialize: function (p_data) {
                 l_visualizationfunctions.defaultvehicle.initialize( p_data );
 
-                l_iduserverhicle = p_data.id;
                 GAME.instance.camera.follow(l_visualizationobjects[p_data.id]);
 
                 var l_max = Math.ceil( p_data.maxspeed / 10 + 5) * 10;
@@ -1197,11 +1179,11 @@ jQuery(function() {
             execute: function (p_data) {
                 GAUGE.value = p_data.speed;
                 jQuery( "#ui-distance" ).text( p_data.distance.toFixed(1) );
+                BELIEFLIST.empty().text( p_data.belief.join("\n") );
                 l_visualizationfunctions.defaultvehicle.execute( p_data );
             },
 
             release: function(p_data) {
-                l_iduserverhicle = null;
                 l_visualizationfunctions.defaultvehicle.release( p_data );
                 GAUGE.value = 0;
                 GAUGE.update({ value: 0 });
