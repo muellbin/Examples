@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -226,6 +227,23 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     {
         final DoubleMatrix1D l_position = this.position().copy();
 
+        // an concurrency excpetion can be thrown, because execution call
+        // can be done in parallel, so we need to create a more secured structure
+        Object[] l_beliefs;
+        while ( true )
+        {
+            try
+            {
+                l_beliefs = m_beliefbase.stream().map( Object::toString ).toArray();
+                break;
+            }
+            catch ( final ConcurrentModificationException l_exception )
+            {
+                // ignore and just do it again
+            }
+        }
+
+
         return StreamUtils.zip(
             Stream.of( "type", "status", "id", "y", "x", "goal", "speed", "maxspeed", "acceleration", "deceleration", "distance", "belief" ),
             Stream.of( this.type().toString(),
@@ -239,7 +257,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                        m_accelerate,
                        m_decelerate,
                        EUnit.INSTANCE.celltokilometer( l_position.getQuick( 1 ) ).doubleValue(),
-                       m_beliefbase.stream().map( Object::toString ).collect( Collectors.toList() )
+                       l_beliefs
             ),
             ImmutablePair::new
         ).collect( Collectors.toMap( ImmutablePair::getLeft, ImmutablePair::getRight ) );
