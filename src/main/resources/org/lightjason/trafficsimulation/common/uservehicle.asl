@@ -26,29 +26,16 @@
 // driving vehicle with Nagel-Schreckenberg model
 +!drive
 
-	// if we don't know the allowed speed and in front is no other vehicle, accelerate
-    : ~>>allowedspeed(_) <- //&& ~>>forward/vehicle(_, _, _) <-
+	// if we don't know the allowed speed, try to accelerate
+    : ~>>allowedspeed(_) <-
     	vehicle/accelerate(1);
     	!drive
 
-    // if we don't know the allowed speed and there is another vehicle in front, drive continously
-    //: ~>>allowedspeed(_) && >>forward/vehicle( _, _, data(static(lane(L), _, _)) ) && Lane != CurrentLane <-
-    //	!drive
-
-	// if we know the allowed speed and there is no other vehicle in front,
-    // test the current speed, if is lower, we try to accelerate
-	: >>allowedspeed(S) <- // && ~>>forward/vehicle(_, _, _) <-
+	// if we know the allowed speed, try to accelerate
+	: >>allowedspeed(S) <-
     	CurrentSpeed < S;
     	vehicle/accelerate(1);
     	!drive
-
-	// if we know the allowed speed and there is another vehicle in front,
-    // test the current speed, if is lower, drive continously
-    //: >>allowedspeed(S) && >>forward/vehicle(_, _, _) <-
-    //	CurrentSpeed < S;
-    //    !drive
-
-
 .
 
 
@@ -79,11 +66,13 @@
 +!area/leave <- success.
 
 
+// give some information to the ui, that the allowed speed has been changed
 +allowedspeed(S) <-
 	generic/print( "#Vehicle", string/concat( "maximum speed has been set to [", S, "]" ) )
 .
 
 
+// give some information to the ui, that the allowed speed has been changed
 -allowedspeed(S) <-
    generic/print( "#Vehicle", string/concat("maximum speed [", S, "] has been removed") )
 .
