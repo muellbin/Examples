@@ -427,7 +427,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/pullout" )
-    private void swingout()
+    private void pullout()
     {
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? 1 : -1 );
         if ( !m_environment.lanechange( this, l_lane.intValue() ) )
@@ -441,7 +441,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      */
     @IAgentActionFilter
     @IAgentActionName( name = "vehicle/pullin" )
-    private void goback()
+    private void pullin()
     {
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? -1 : 1 );
         if ( !m_environment.lanechange( this, l_lane.intValue() ) )
