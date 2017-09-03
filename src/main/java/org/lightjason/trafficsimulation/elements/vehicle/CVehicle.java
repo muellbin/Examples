@@ -431,8 +431,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? 1 : -1 );
         if ( !m_environment.lanechange( this, l_lane.intValue() ) )
             this.oncollision();
-
-        m_lane.set( l_lane.intValue() );
+        else
+            m_lane.set( l_lane.intValue() );
     }
 
     /**
@@ -445,8 +445,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? -1 : 1 );
         if ( !m_environment.lanechange( this, l_lane.intValue() ) )
             this.oncollision();
-
-        m_lane.set( l_lane.intValue() );
+        else
+            m_lane.set( l_lane.intValue() );
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
