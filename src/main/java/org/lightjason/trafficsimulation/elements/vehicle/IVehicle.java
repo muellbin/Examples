@@ -85,6 +85,12 @@ public interface IVehicle extends IObject<IVehicle>
     @Nonnegative
     double maximumspeed();
 
+    /**
+     * lane index
+     *
+     * @return lane index
+     */
+    Number lane();
 
 
     /**

@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -119,6 +120,10 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
      * panelize value
      */
     private final AtomicDouble m_panelize = new AtomicDouble();
+    /**
+     * lane index cache for access from variable builder
+     */
+    private final AtomicDouble m_lane = new AtomicDouble();
     /*
      * current position on lane / cell position
      */
@@ -167,6 +172,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         m_type = p_type;
         m_environment = p_environment;
 
+        m_lane.set( p_start.getQuick( 0 ) );
         m_position = p_start;
         m_goal = p_goal;
 
@@ -326,6 +332,12 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     }
 
     @Override
+    public final Number lane()
+    {
+        return m_lane.get();
+    }
+
+    @Override
     public final double speed()
     {
         return m_speed.get();
@@ -420,6 +432,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? 1 : -1 );
         if ( !m_environment.lanechange( this, l_lane.intValue() ) )
             this.oncollision();
+
+        m_lane.set( l_lane.intValue() );
     }
 
     /**
@@ -432,6 +446,8 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? -1 : 1 );
         if ( !m_environment.lanechange( this, l_lane.intValue() ) )
             this.oncollision();
+
+        m_lane.set( l_lane.intValue() );
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -526,8 +542,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
                 super.apply( p_agent, p_instance ),
                 Stream.of(
                     new CConstant<>( "CurrentSpeed", l_vehicle.speed() ),
-                    // @bug breaks execution
-                    //new CConstant<>( "CurrentLane", l_vehicle.position().get( 0 ) + 1 ),
+                    new CConstant<>( "CurrentLane", l_vehicle.lane().intValue() + 1 ),
                     new CConstant<>( "Acceleration", l_vehicle.acceleration() ),
                     new CConstant<>( "Deceleration", l_vehicle.deceleration() )
                 )

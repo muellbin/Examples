@@ -21,6 +21,7 @@ Der Agent besitzt automisch folgende gebundene Konstanten
 
 * ```ÌD``` seinen eigenen Namen (eindeutiger Identifier)
 * ```CurrentSpeed``` aktuelle Geschwindigkeit $km/h$
+* ```CurrentLane``` aktuelle Fahrspurnummer (beginnend mit 1 von oben)
 * ```Acceleration``` Beschleunigungswert $m/sec^2$
 * ```Deceleration``` Verzägerungswert $m/sec^2$
 

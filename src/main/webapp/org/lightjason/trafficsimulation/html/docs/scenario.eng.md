@@ -24,6 +24,7 @@ The agent contains the following bounded constants
 
 * ```ÌD``` agent unique name
 * ```CurrentSpeed``` the current speed of the vehicle in $km/h$
+* ```CurrentLane``` the current lane index (starts with 1 from top)
 * ```Acceleration``` the acceleration value in $m/sec^2$
 * ```Deceleration``` the deceleration value in $m/sec^2$
 
