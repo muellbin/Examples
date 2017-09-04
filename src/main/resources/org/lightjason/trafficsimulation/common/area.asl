@@ -24,8 +24,8 @@
 
 // --- rules ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-// calculates the penality probability with the formula: 1 / ( 1 + exp( -( CurrentSpeed - ( AllowedSpeed + 0.1 * AllowedSpeed ) ) ) )
-penalityprobability( S, P ):-
+// calculates the penalty probability with the formula: 1 / ( 1 + exp( -( CurrentSpeed - ( AllowedSpeed + 0.1 * AllowedSpeed ) ) ) )
+penaltyprobability( S, P ):-
 	P = AllowedSpeed + 0.1 * AllowedSpeed;
     P = S - P;
     P *= -1;
@@ -52,7 +52,7 @@ penalityprobability( S, P ):-
 +!vehicle/move( vehicle(V), speed(S), distance(D) )
     : vehicle/isuser(V) <-
         Penalty = 0;
-        $penalityprobability( S, Penalty );
+        $penaltyprobability( S, Penalty );
         InverseHalfPenalty = 1 - Penalty;
         InverseHalfPenalty *= 0.5;
 
@@ -62,26 +62,26 @@ penalityprobability( S, P ):-
 
 
 
-// --- calculates penalty value (vehicle is to fast) ---
+// --- calculates penalty value (vehicle is too fast) ---
 +!penalty( V, S )
     : vehicle/isuser(V) <-
         P = AllowedSpeed - S;
         P = math/abs( P );
         P *= 0.1;
         vehicle/penalize( V, P );
-        generic/print( "#Area Penalty", "You get a punishment, your are driving too fast" )
+        generic/print( "#Area Penalty", "You get a penalty, your are driving too fast" )
 .
 
 
 
-// --- calculates penalty value (vehicle is to slow) ---
+// --- calculates penalty value (vehicle is too slow) ---
 +!slow( V, S ) <-
     S /= AllowedSpeed;
     P = math/statistic/randomsimple;
     P <= S;
     P *= 10;
     vehicle/penalize( V, P );
-	generic/print( "#Area", "You get a punishment, your are driving too slow")
+	generic/print( "#Area", "You lose time by driving too slow!")
 .
 
 
