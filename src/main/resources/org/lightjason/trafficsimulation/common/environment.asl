@@ -79,10 +79,10 @@ areadata( From, To, MinimumCount, MaximumCount ) :-
     generic/print( "#Environment Agent", "Street world has been created" );
 
     // create areas
-    area/initialize( 125, 0, 3, 5, 15 );
-    area/initialize( 145, 0, 3, 15, 25 );
-    area/initialize( 150, 0, 3, 25, 35 );
-    area/initialize( 175, 0, 3, 35, 45 );
+    area/initialize( 80, 0, 3, 5, 15 );
+    area/initialize( 120, 0, 3, 15, 25 );
+    area/initialize( 160, 0, 3, 25, 35 );
+    area/initialize( 200, 0, 3, 35, 45 );
     generic/print( "#Environment Agent", "Areas with different speed ranges have been created" );
 
 	!uservehicle

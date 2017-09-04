@@ -26,7 +26,7 @@
 
 // calculates the penalty probability with the formula: 1 / ( 1 + exp( -( CurrentSpeed - ( AllowedSpeed + 0.1 * AllowedSpeed ) ) ) )
 penaltyprobability( S, P ) :-
-	P = AllowedSpeed + 0.1 * AllowedSpeed;
+	P = AllowedSpeed + 0.15 * AllowedSpeed;
     P = S - P;
     P *= -1;
     P = math/exp( P );
@@ -53,6 +53,12 @@ penaltyprobability( S, P ) :-
     : vehicle/isuser(V) <-
         Penalty = 0;
         $penaltyprobability( S, Penalty );
+
+        // value to ignore penalty by area id
+        I = bool/equal( ID, "area2" ) ? 0.1 : 1;
+        Penalty *= I;
+
+        // inverse probability for ignoring
         InverseHalfPenalty = 1 - Penalty;
         InverseHalfPenalty *= 0.5;
 
