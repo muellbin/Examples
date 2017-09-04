@@ -243,17 +243,21 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
     {
         final Number l_xpos = p_vehicle.position().get( 1 );
         final Number l_lane = p_vehicle.position().get( 0 );
-        if ( ( p_lane.intValue() < 0 ) || ( p_lane.intValue() > m_grid.columns() - 1 ) )
+        if ( ( p_lane.intValue() < 0 ) || ( p_lane.intValue() > m_grid.rows() - 1 ) )
             return false;
 
         synchronized ( this )
         {
-            if ( IntStream.range( Math.min( l_lane.intValue(), p_lane.intValue() ), Math.max( l_lane.intValue(), p_lane.intValue() ) )
+            if ( IntStream.rangeClosed( Math.min( l_lane.intValue(), p_lane.intValue() ), Math.max( l_lane.intValue(), p_lane.intValue() ) )
                           .parallel()
                           .boxed()
-                          .anyMatch( i -> m_grid.getQuick( i, l_xpos.intValue() ) != null )
+                          .map( i -> m_grid.getQuick( i, l_xpos.intValue() ) )
+                          .anyMatch( i -> ( i != null ) && ( !i.equals( p_vehicle ) ) )
                 )
+            {
+                System.out.println( "bar" );
                 return false;
+            }
 
             m_grid.setQuick( l_lane.intValue(), l_xpos.intValue(), null );
             m_grid.setQuick( p_lane.intValue(), l_xpos.intValue(), p_vehicle );

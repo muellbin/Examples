@@ -429,9 +429,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     private void pullout()
     {
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? 1 : -1 );
-        System.out.println( "---> " + l_lane + "    " + this.position().getQuick( 0 ) );
-
-        if ( !m_environment.lanechange( this, l_lane.intValue() ) )
+        if ( !m_environment.lanechange( this, l_lane ) )
             this.oncollision();
         else
             m_lane.set( l_lane.intValue() );
@@ -445,7 +443,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
     private void pullin()
     {
         final Number l_lane = this.position().get( 0 ) + ( m_goal == 0 ? -1 : 1 );
-        if ( !m_environment.lanechange( this, l_lane.intValue() ) )
+        if ( !m_environment.lanechange( this, l_lane ) )
             this.oncollision();
         else
             m_lane.set( l_lane.intValue() );
@@ -627,7 +625,3 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         }
     }
 }
-
-// @todo simulation speed Regler invertieren
-// pullout / in fixen
-// self nicht in beliefs

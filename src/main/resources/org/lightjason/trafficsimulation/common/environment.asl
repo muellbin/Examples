@@ -85,8 +85,8 @@ areadata( From, To, MinimumCount, MaximumCount ) :-
     area/initialize( 175, 0, 3, 35, 45 );
     generic/print( "#Environment Agent", "Areas with different speed ranges have been created" );
 
-	//!uservehicle
-    !defaultvehicle( 100, 10 )
+	!uservehicle
+    //!defaultvehicle( 100, 10 )
 .
 
 -!main <-
@@ -163,7 +163,7 @@ areadata( From, To, MinimumCount, MaximumCount ) :-
     P = simulation/maxpenalty;
     P *= PV;
     simulation/penalty( P );
-    generic/print( "#Environment Agent", "You have been crashed into another car, you get a high punishment" );
+    generic/print( "#Environment Agent", "You have been crashed, you get a high punishment" );
     !!shutdown
 .
 
