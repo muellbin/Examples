@@ -542,6 +542,7 @@ jQuery(function() {
           }),
           SIMULATIONSCREEN = jQuery("#simulation-screen"),
           SIMULATIONSPEED = jQuery("#simulation-speed"),
+          SIMULATIONSPEEDMAX = SIMULATIONSPEED.data( "max" ),
           SIMULATIONMUSIC = jQuery( "#simulation-music" ),
           GAUGEWIDGET = jQuery( "#simulation-speedview-dashboard" ),
           BELIEFLIST = jQuery( "#ui-belieflist" ),
@@ -758,7 +759,7 @@ jQuery(function() {
 
     // initialize simulation speed
     LightJason.ajax( "/api/simulation/time/get" )
-              .success(function(i) { SIMULATIONSPEED.val(i).trigger( "change" ); })
+              .success(function(i) { SIMULATIONSPEED.val( SIMULATIONSPEEDMAX - i ).trigger( "change" ); })
               .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
 
     // initialize music
@@ -896,9 +897,9 @@ jQuery(function() {
     // set simulation speed
     SIMULATIONSPEED.change(function(e) {
         if (e.value)
-            LightJason.ajax( "/api/simulation/time/set/" + Math.round( e.value ) )
+            LightJason.ajax( "/api/simulation/time/set/" + Math.round( SIMULATIONSPEEDMAX - e.value ) )
                       .success(function(i) {
-                          GAUGE.update({ animationDuration: e.value });
+                          GAUGE.update({ animationDuration: SIMULATIONSPEEDMAX - e.value });
                           notifymessage({ title: "Simulation", text: i, type: "success" });
                       })
                       .error(function(i) { notifymessage({ title: i.statusText, text: i.responseText, type: "error" }); });
@@ -1122,7 +1123,7 @@ jQuery(function() {
                     WSANIMATION.send(JSON.stringify({id: p_data.id}));
                 else
                 {
-                    const TWEEN = GAME.instance.add.tween(l_visualizationobjects[p_data.id]).to({x: l_xpos, y: l_ypos}, SIMULATIONSPEED.val());
+                    const TWEEN = GAME.instance.add.tween(l_visualizationobjects[p_data.id]).to({x: l_xpos, y: l_ypos}, SIMULATIONSPEEDMAX - SIMULATIONSPEED.val());
                     TWEEN.onComplete.add(function () {
                         WSANIMATION.send(JSON.stringify({id: p_data.id}));
                     }, this);
@@ -1140,7 +1141,7 @@ jQuery(function() {
                 const l_xpos = p_data.goal * TILESIZE + VEHICLEXSIZE / 2,
                       l_ypos = ( p_data.y + 1 ) * TILESIZE + VEHICLEYSIZE / 2 + PIXELCENTER;
 
-                const TWEEN = GAME.instance.add.tween(l_visualizationobjects[p_data.id]).to({x: l_xpos, y: l_ypos}, SIMULATIONSPEED.val());
+                const TWEEN = GAME.instance.add.tween(l_visualizationobjects[p_data.id]).to({x: l_xpos, y: l_ypos}, SIMULATIONSPEEDMAX - SIMULATIONSPEED.val());
                 TWEEN.onComplete.add(function () {
 
                     GAME.instance.tweens.remove( l_visualizationobjects[p_data.id] );
