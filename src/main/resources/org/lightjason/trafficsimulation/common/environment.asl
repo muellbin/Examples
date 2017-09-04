@@ -98,16 +98,19 @@ areadata( From, To, MinimumCount, MaximumCount ) :-
 
 // --- creating and repair user-vehicle plan ---
 +!uservehicle <-
+
+    /* user vehicle by random definition
     MaxSpeed = 260;
     MaxAcceleration = 6;
     MaxDeceleration = 7;
 
     $vehicledata( MaxSpeed, MaxAcceleration, MaxDeceleration );
     vehicle/user( MaxSpeed, MaxAcceleration, MaxDeceleration );
-    generic/print( "#Environment Agent", "Your vehicle has been created" )
+    */
 
-    //vehicle/default/position( 160, 2, 3, 3, 0 )
-    //vehicle/default/position( 160, 2, 3, 2, 30 )
+    // user vehicle with fixed data
+    vehicle/user( 240, 5, 7 );
+    generic/print( "#Environment Agent", "Your vehicle has been created" )
 .
 
 -!uservehicle <-
