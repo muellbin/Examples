@@ -33,7 +33,7 @@
 
 	: >>allowedspeed(S) <-
     	CurrentSpeed < S;
-        !!linger
+        !!linger;
     	vehicle/accelerate(1);
         !driveright;
     	!drive
