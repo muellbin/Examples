@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -561,7 +562,7 @@ public final class CVehicle extends IBaseObject<IVehicle> implements IVehicle
         /**
          * object cache with distance and literal
          */
-        private final List<ILiteral> m_cache = new ArrayList<>();
+        private final List<ILiteral> m_cache = new CopyOnWriteArrayList<>();
 
         /**
          * ctor

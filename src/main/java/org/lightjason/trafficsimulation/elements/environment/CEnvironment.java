@@ -220,13 +220,14 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         synchronized ( this )
         {
             // test free direction
-            if ( ( l_xposstart.intValue() < l_xposend.intValue()
-                   ? IntStream.range( l_xposstart.intValue() + 1, Math.min( l_xposend.intValue(), m_grid.columns() ) )
-                   : IntStream.range( Math.max( l_xposend.intValue(), 0 ), l_xposstart.intValue() - 1 ) )
+            if ( IntStream.rangeClosed(
+                    Math.max( 0, Math.min( l_xposstart.intValue(), l_xposend.intValue() ) ),
+                    Math.min( m_grid.columns() - 1, Math.max( l_xposstart.intValue(), l_xposend.intValue() ) )
+                )
                 .parallel()
-                .filter( i -> m_grid.getQuick( l_ypos.intValue(), i ) != null )
-                .findAny()
-                .isPresent()
+                .boxed()
+                .map( i -> m_grid.getQuick( l_ypos.intValue(), i ) )
+                .anyMatch( i -> ( i != null ) && ( !i.equals( p_vehicle ) ) )
                 )
                 return false;
 
@@ -238,6 +239,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
         }
     }
 
+
     @Override
     public final boolean lanechange( @Nonnull final IVehicle p_vehicle, final Number p_lane )
     {
@@ -248,16 +250,14 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
         synchronized ( this )
         {
+            // test free move (Manhatten distance)
             if ( IntStream.rangeClosed( Math.min( l_lane.intValue(), p_lane.intValue() ), Math.max( l_lane.intValue(), p_lane.intValue() ) )
                           .parallel()
                           .boxed()
                           .map( i -> m_grid.getQuick( i, l_xpos.intValue() ) )
                           .anyMatch( i -> ( i != null ) && ( !i.equals( p_vehicle ) ) )
                 )
-            {
-                System.out.println( "bar" );
                 return false;
-            }
 
             m_grid.setQuick( l_lane.intValue(), l_xpos.intValue(), null );
             m_grid.setQuick( p_lane.intValue(), l_xpos.intValue(), p_vehicle );

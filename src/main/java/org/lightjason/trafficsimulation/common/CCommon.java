@@ -24,6 +24,7 @@
 package org.lightjason.trafficsimulation.common;
 
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,6 +78,28 @@ public final class CCommon
      */
     private CCommon()
     {
+    }
+
+    /**
+     * minimum of multiple values
+     *
+     * @param p_values values
+     * @return minium
+     */
+    static Number min( @Nonnull final Number... p_values )
+    {
+        return Arrays.stream( p_values ).mapToDouble( Number::doubleValue ).min().getAsDouble();
+    }
+
+    /**
+     * maximum of multiple values
+     *
+     * @param p_values values
+     * @return maximum
+     */
+    static Number max( @Nonnull final Number... p_values )
+    {
+        return Arrays.stream( p_values ).mapToDouble( Number::doubleValue ).max().getAsDouble();
     }
 
     /**
