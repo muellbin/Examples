@@ -50,15 +50,13 @@ penaltyprobability( S, P ) :-
 
 // --- vehicle moving (trajectory) plan, calculates choice what should be done ---
 +!vehicle/move( vehicle(V), speed(S), distance(D) )
-    : vehicle/isuser(V) <-
+    : vehicle/isuser(V) && ~bool/equal( ID, "area2" ) <-
+
+        // panelty probability based on speed
         Penalty = 0;
         $penaltyprobability( S, Penalty );
 
-        // value to ignore penalty by area id
-        I = bool/equal( ID, "area2" ) ? 0.1 : 1;
-        Penalty *= I;
-
-        // inverse probability for ignoring
+		// inverse probability for ignoring
         InverseHalfPenalty = 1 - Penalty;
         InverseHalfPenalty *= 0.5;
 

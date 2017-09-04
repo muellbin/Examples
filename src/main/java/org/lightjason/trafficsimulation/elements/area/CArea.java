@@ -396,7 +396,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
             return new ImmutableTriple<>(
                 new CArea(
                     m_configuration,
-                    MessageFormat.format( "{0} {1}", FUNCTOR, COUNTER.getAndIncrement() ),
+                    MessageFormat.format( "{0}{1}", FUNCTOR, COUNTER.getAndIncrement() ),
                     (IEnvironment) p_data[0],
                     (DoubleMatrix1D) p_data[1],
                     (Number) p_data[2]
