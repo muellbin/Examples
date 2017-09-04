@@ -47,7 +47,7 @@
 
 
 // we know the we enter a new area
-+!area/enter( allowedspeed(S), distance(D) )
++!area/enter( allowedspeed(S), length(D) )
 
 	// if we have got an information about the allowed speed,
     // we replaced it with the new information

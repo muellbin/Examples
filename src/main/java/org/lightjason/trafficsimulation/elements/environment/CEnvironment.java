@@ -257,6 +257,7 @@ public final class CEnvironment extends IBaseObject<IEnvironment> implements IEn
 
             m_grid.setQuick( l_lane.intValue(), l_xpos.intValue(), null );
             m_grid.setQuick( p_lane.intValue(), l_xpos.intValue(), p_vehicle );
+            p_vehicle.position().setQuick( 0, p_lane.doubleValue() );
             return true;
         }
     }

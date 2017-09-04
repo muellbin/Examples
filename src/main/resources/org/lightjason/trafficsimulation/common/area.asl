@@ -25,7 +25,7 @@
 // --- rules ---------------------------------------------------------------------------------------------------------------------------------------------------
 
 // calculates the penalty probability with the formula: 1 / ( 1 + exp( -( CurrentSpeed - ( AllowedSpeed + 0.1 * AllowedSpeed ) ) ) )
-penaltyprobability( S, P ):-
+penaltyprobability( S, P ) :-
 	P = AllowedSpeed + 0.1 * AllowedSpeed;
     P = S - P;
     P *= -1;
@@ -75,13 +75,14 @@ penaltyprobability( S, P ):-
 
 
 // --- calculates penalty value (vehicle is too slow) ---
-+!slow( V, S ) <-
-    S /= AllowedSpeed;
-    P = math/statistic/randomsimple;
-    P <= S;
-    P *= 10;
-    vehicle/penalize( V, P );
-	generic/print( "#Area", "You lose time by driving too slow!")
++!slow( V, S )
+    : vehicle/isuser(V) <-
+        S /= AllowedSpeed;
+        P = math/statistic/randomsimple;
+        P <= S;
+        P *= 10;
+        vehicle/penalize( V, P );
+        generic/print( "#Area", "You lose time by driving too slow!")
 .
 
 

@@ -226,7 +226,7 @@ public final class CArea extends IBaseObject<IArea> implements IArea
                     CLiteral.from(
                         "area/enter",
                         CLiteral.from( "allowedspeed", CRawTerm.from( m_allowedspeed ) ),
-                        CLiteral.from( "distance", CRawTerm.from( m_length ) )
+                        CLiteral.from( "length", CRawTerm.from( m_length ) )
                     )
                 )
             );
