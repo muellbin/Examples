@@ -20,6 +20,8 @@
 !src/main/webapp/**/*.jpg
 !src/main/webapp/**/*.gif
 !src/main/webapp/**/*.ogg
+!src/main/webapp/**/*.mp4
+
 
 !src/site/*.doxyfile
 !src/site/*.htm*

@@ -28,7 +28,9 @@ code.remark-inline-code {
 
 ### Agent-Oriented programming with AgentSpeak(L++)
 
-* Dipl-Inf. Philipp Kraus
+* Philipp Kraus 
+* TU Clausthal
+* September 19-20, 2017
 
 
 ---
