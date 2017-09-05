@@ -38,7 +38,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
 
 
 /**
@@ -46,10 +45,6 @@ import java.util.logging.Logger;
  */
 public class CTask implements ITask
 {
-    /**
-     * logger
-     */
-    private static final Logger LOGGER = CCommon.logger( ITask.class );
     /**
      * simulation objects
      */
@@ -65,7 +60,6 @@ public class CTask implements ITask
      *
      * @param p_agentdefinition asl map
      * @param p_elements element map
-     * @todo exception handling for evnrionment agent generator
      */
     public CTask( @Nonnull final Map<String, ERuntime.CAgentDefinition> p_agentdefinition, @Nonnull final Map<String, IObject<?>> p_elements )
     {
@@ -193,16 +187,22 @@ public class CTask implements ITask
      * execute any object
      *
      * @param p_object callable
+     * @return successful execution
      */
-    private static void execute( @Nonnull final Callable<?> p_object )
+    private static boolean execute( @Nonnull final Callable<?> p_object )
     {
         try
         {
             p_object.call();
+            return true;
         }
         catch ( final Exception l_execution )
         {
-            LOGGER.warning( l_execution.getLocalizedMessage() );
+            CMessage.CInstance.INSTANCE.write(
+                CMessage.EType.ERROR, CCommon.languagestring( CTask.class, "agentexecution" ),
+                l_execution.getMessage()
+            );
+            return false;
         }
     }
 
@@ -222,7 +222,9 @@ public class CTask implements ITask
 
         while ( true )
         {
-            m_elements.values().parallelStream().forEach( CTask::execute );
+            if ( !m_elements.values().parallelStream().allMatch( CTask::execute ) )
+                break;
+
             try
             {
                 Thread.sleep( ERuntime.INSTANCE.time().get() );
