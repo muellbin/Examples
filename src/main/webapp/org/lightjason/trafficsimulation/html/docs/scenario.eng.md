@@ -6,7 +6,7 @@ The scenario comprises the following problem
 
 The following events are available to the vehicle
 
-* ```area/enter``` the vehicle enters a new area with a new speed definition.
+* ```area/enter( allowedspeed(S), length(D) )``` the vehicle enters a new area with a new speed definition.
 * ```area/leave``` the vehicle leaves an area.
 
 The following actions are available to the vehicle

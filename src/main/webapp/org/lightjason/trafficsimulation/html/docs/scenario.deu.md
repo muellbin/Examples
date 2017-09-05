@@ -7,7 +7,7 @@ Das Szenario umfasst folgende Problemstellung
 
 Folgende Events werden dem Fahrzeug zur Verfügung gestellt:
 
-* ```area/enter``` das Fahrzeug betritt einen neuen Bereich mit ggf. veränderter Geschwindigkeit.
+* ```area/enter( allowedspeed(S), length(D) )``` das Fahrzeug betritt einen neuen Bereich mit ggf. veränderter Geschwindigkeit.
 * ```area/leave``` das Fahrzeug verlässt einen Bereich.
 
 Folgende Aktionen stehen dem Fahrzeug zur Verfügung
