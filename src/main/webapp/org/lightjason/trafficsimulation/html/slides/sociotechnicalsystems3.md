@@ -98,14 +98,20 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 
 
 ---
-## Social choice rule vs. Social choice function
+## Social choice rule vs. Social choice function (1)
 
 ![image](slides/sociotechnicalsystems3/image_004.png#floatright)
 <sup>Adapted from (Wooldridge, 2009, p. 285)</sup>
 
-* $$Ag={1,...,n}$$ set of agents
-* $$\Omega = { \omega , \omega ' , ... }$$ possible outcomes
-*   Preference ordering for each voter i, e.g.$$\omega_2 \succ  \omega_1 \succ  \omega_3$$
+$$Ag={1,...,n}$$ 
+set of agents
+$$\Omega = { \omega , \omega ' , ... }$$
+possible outcomes
+
+---
+## Social choice rule vs. Social choice function (2)
+Preference ordering for each voter i, e.g.
+$$\omega_2 \succ  \omega_1 \succ  \omega_3$$
 
 
 ---
@@ -132,14 +138,27 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 
 
 ---
-## Plurality voting: Political elections example I
+## Plurality voting: Political elections example I (1)
 
-*   Consider elections with three parties $c(du)$, $s(pd)$, and $f(dp)$
-    * Candidates</span> $\omega_c$, $\omega_s$, $\omega_f$
+*   Consider elections with three parties 
+$$c(du), \ s(pd), \ and \ f(dp)$$
+
+Candidates 
+$$\omega_c, \omega_s, \omega_f$$
+
+
+
+---
+## Plurality voting: Political elections example I (2)
+
 *   We consider three voter groups with similar preferences:
-    * Conventionally left-wing (38%): $\omega_s \succ  \omega_f \succ  \omega_c$
-    * Social liberal (18%): $\omega_f \succ  \omega_s \succ  \omega_c$
-    * Conservative right-wing (44%): $\omega_c \succ  \omega_f \succ  \omega_s$
+
+Conventionally left-wing (38%): 
+$$\omega_s \succ  \omega_f \succ  \omega_c$$
+Social liberal (18%): 
+$$\omega_f \succ  \omega_s \succ  \omega_c$$
+Conservative right-wing (44%): 
+$$\omega_c \succ  \omega_f \succ  \omega_s$$
 
 
 ---
@@ -147,31 +166,53 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 
 *   Plurality voting
     *   CDU wins
-    *   But: For 56% of the voters,$$\omega_c $$ was the least preferred candidate
-    *   Consequence:
-        *   FDP voters are likely to vote for SPD candidate
-        *   Strategically misrepresent preferences in order to bring about a more preferred outcome
+
+But: For 56% of the voters,
+$$\omega_c $$
+was the least preferred candidate
+
+*   Consequence:
+	*   FDP voters are likely to vote for SPD candidate
+    *   Strategically misrepresent preferences in order to bring about a more preferred outcome
 
 ---
 ## Plurality voting: Condorcet paradox I
 
-*   Suppose you have three candidates $$\omega_1, \omega_2, \omega_3$$ and three voters, $$Ag = {1,2,3}$$ with preferences
-	*   $\omega_1 \succ_1  \omega_2 \succ_1  \omega_3$
-	*   $\omega_3 \succ_2  \omega_1 \succ_2  \omega_2$
-	*   $\omega_2 \succ_3  \omega_3 \succ_3  \omega_1$
+*   Suppose you have three candidates 
+$$\omega_1, \omega_2, \omega_3$$ 
+and three voters, 
+$$Ag = {1,2,3}$$ 
+with preferences
+$$\omega_1 \succ_1  \omega_2 \succ_1  \omega_3$$
+$$\omega_3 \succ_2  \omega_1 \succ_2  \omega_2$$
+$$\omega_2 \succ_3  \omega_3 \succ_3  \omega_1$$
  
 
 ---
-## Plurality voting: Condorcet paradox II
+## Plurality voting: Condorcet paradox II (1)
 
 *   Observations for plurality voting
     *   outcome is tied - no winner
-    *   Suppose, we select
-        *   $$\omega_1$$: 2/3 of the voters would prefer $$\omega_3$$ over $$\omega_1$$!
-        *   $$\omega_3$$: 2/3 of the voters would prefer $$\omega_2$$ over $$\omega_1$$!
-        *   $$\omega_2$$: 2/3 of the voters would prefer $$\omega_1$$ over $$\omega_2$$!
-	*   For every outcome, there is another candidate that is preferred by at least 2/3 of the candidates!
-	*   Paradox of the cyclic majorities
+    *   Suppose, we select:
+$$\omega_1$$
+2/3 of the voters would prefer 
+$$\omega_3 \ over \ \omega_1 !$$
+
+---
+## Plurality voting: Condorcet paradox II (2)
+*   Suppose, we select:
+$$\omega_3$$
+2/3 of the voters would prefer 
+$$\omega_2 \ \omega_1 \ !$$
+
+---
+## Plurality voting: Condorcet paradox II (3)
+*   Suppose, we select:
+$$\omega_2$$
+2/3 of the voters would prefer 
+$$\omega_1 \ over \ \omega_2 \!$$
+*   For every outcome, there is another candidate that is preferred by at least 2/3 of the candidates!
+*   Paradox of the cyclic majorities
 
 
 ---
@@ -184,25 +225,84 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 
 
 ---
-## Analysing preference structures: majority graph
+## Analysing preference structures: majority graph (1)
 
-*   Directed graph
-*   Nodes correspond to outcomes $\omega \in \Omega$
-*   Edge from outcome $\omega$ to $\omega'$ if a majority of voters rank $< \omega$ above $\omega'$ (in a direct competition)
+Directed graph
+*   Nodes correspond to outcomes 
+$$\omega \in \Omega$$
+*   Edge from outcome 
+$$\omega \ to \ \omega'$$
+if a majority of voters rank  
+$$\omega \ above \ \omega'$$
+(in a direct competition)
+
+
+---
+## Analysing preference structures: majority graph (2)
 *   Properties of majority graph
-    *   Complete: For any two outcomes $\omega_i$ and $\omega_j$ either $\omega_i$ defeats $\omega_j$  or $\omega_j$ defeats $\omega_i$
-    *   Asymmetric: if $\omega_i$  defeats $\omega_j$, $\omega_j$  must not defeat $\omega_i$
-    *   Irreflexive: An outcome will never defeat itself
+    *   Complete: For any two outcomes 
+    $$\omega_i \ and \ \omega_j$$ 
+either 
+$$\omega_i$$
+defeats 
+$$\omega_j$$
+
+
+
+---
+## Analysing preference structures: majority graph (3)
+
+or 
+$$\omega_j$$ 
+defeats 
+$$\omega_i$$
+
+
+
+---
+## Analysing preference structures: majority graph (4)
+
+*   Asymmetric: if 
+$$\omega_i$$
+defeats 
+$$\omega_j,$$
+
+$$\omega_j$$  
+must not defeat 
+$$\omega_i$$
+
+*   Irreflexive: An outcome will never defeat itself
 *   A graph with these properties is called "tournament"
 
 
 ---
-## Majority graph: Usage and Examples
+## Majority graph: Usage and Examples (1)
 
-*   A candidate $\omega_i$ is a possible winner, if for every other outcome $\omega_j$ there is an path from $\omega_i$ to $\omega_j$
-*   A candidate $\omega_i$ is a Condorcet winner, if there is an edge $\omega_i$ to every other edge in the graph
+*   A candidate 
+$$\omega_i$$
+is a possible winner, if for every other outcome 
+$$\omega_j$$ 
+there is an path from 
+$$\omega_i \ to \ \omega_j$$
+
+
+---
+## Majority graph: Usage and Examples (2)
+*   A candidate 
+$$\omega_i$$
+is a Condorcet winner, if there is an edge 
+$$\omega_i$$ 
+to every other edge in the graph
+
+
+
+---
+## Majority graph: Usage and Examples (3)
+
 *   Left: Every outcome is a possible winner
-*   Right: Outcome $$\omega_1$$ is a Condorcet winner
+*   Right: Outcome 
+$$\omega_1$$
+is a Condorcet winner
 
 ![image](slides/sociotechnicalsystems3/image_006.png#centering)
 
@@ -240,8 +340,13 @@ The result depends on how the schedule is designed
 *   Consider cases b) and c) in the example on the previous slide
 *   Z is irrelevant, because it wins in neither of the two cases
 *   But:
-    *   If z first plays against x $$\rightarrow $$ y wins
-    *   If z first plays against y $$\rightarrow $$ x wins
+
+If z first plays against 
+$$x \rightarrow y$$
+wins
+If z first plays against 
+$$y \rightarrow x $$
+wins
 
 
 ---
@@ -252,7 +357,8 @@ The result depends on how the schedule is designed
     *   Group 1: x > y > b > a
     *   Group 2: a > x > y > b
     *   Group 3: b > a > x > y
-<span>![image](slides/sociotechnicalsystems3/image_011.png)</span>
+    
+![image](slides/sociotechnicalsystems3/image_011.png)
 *   y wins even though everyone prefers x to y
 
 
@@ -260,7 +366,9 @@ The result depends on how the schedule is designed
 ## Borda Voting 1
 
 *   The Borda mechanism attempts to resolve the problems observed for binary voting
-*   Let $$x_1, ..., x_n$$ be the possible outcomes, then each agent scores its most-preferred outcomes n points, its second- most preferred outcome n-1 points, etc., and its least preferred outcome 1 point.
+*   Let 
+$$x_1, ..., x_n$$
+be the possible outcomes, then each agent scores its most-preferred outcomes n points, its second- most preferred outcome n-1 points, etc., and its least preferred outcome 1 point.
 *   The sum of scores is calculated for all outcomes/agents
 *   The outcome with the highest aggregated score wins
 
@@ -269,9 +377,9 @@ The result depends on how the schedule is designed
 ## Borda Voting 2
 
 Example above:
-    * X receives score of $$3 * 0.35 + 2 * 0.33 + 1 * 0.32 = 2.03$$
+    * X receives score of 3 * 0.35 + 2 * 0.33 + 1 * 0.32 = 2.03
     * Y receives score of 1.98
-    * Z receives score of 1.99 $\rightarrow$ _**Using Borda Voting, x wins**_
+    * Z receives score of 1.99 -> _**Using Borda Voting, x wins**_
 
 
 ---
@@ -320,34 +428,77 @@ Example above:
 
 
 ---
-## Is there a desirable way of aggregating preferences of multiple agents?
+## Is there a desirable way of aggregating preferences of multiple agents? (1)
 
-*   Let $$\Omega$$ be a set of outcomes
-*   Let _A_ be a set of agents
-*   Each agent $$\in A$$ has a (total) preference ordering $$R_i$$ over $$\Omega$$
-*    Let $$R = (R_i,...,R_(|A|))$$
-*   Let $$G(R,\Omega)$$ be the social choice function
+Let 
+$$\Omega$$
+be a set of outcomes and let _A_ be a set of agents
+
+Each agent 
+$$\in A$$
+has a (total) preference ordering 
+$$R_i$$ 
+over 
+$$\Omega$$
 
 
 ---
-## Desiderata for G
+## Is there a desirable way of aggregating preferences of multiple agents? (2)
+
+*    Let 
+$$R = (R_i,...,R_(|A|))$$
+*   Let 
+$$G(R,\Omega)$$ 
+be the social choice function
+
+
+---
+## Desiderata for G (1)
 
 G should:
 
 *   _**satisfy the Pareto principle:**_
-	*	if each agent prefers x over y, then $$G(R, \Omega)$$ also prefers x over y
+	*	if each agent prefers x over y, then 
+$$G(R, \Omega)$$ 
+also prefers x over y
+
 *   **_be independent of irrelevant alternatives:_**
-    *   **if** $$G(R,\Omega)$$ prefers $$x$$ over $$y$$ AND
-    *   $$R'$$ is another preference profile
-    *   such that the preference value between x and y is the same in $$R'$$ as in $$R$$ for each agent
-    *   **then**  $$G(R ',  \Omega)$$ also prefers x over y
-*   _**be non-dictatorial**_: No single agent in A determines the preferences for every pair x,y in $\Omega$
+    *   **if** 
+$$G(R,\Omega)$$
+prefers x over y 
+
+
+---
+## Desiderata for G (1)
+
+AND
+
+$$R'$$
+
+is another preference profile
+    *   such that the preference value between x and y is the same in 
+$$R'$$
+as in 
+$$R$$
+for each agent
+
+
+---
+## Desiderata for G (2)
+
+**then**  
+$$G(R ',  \Omega)$$ 
+also prefers x over y
+*   _**be non-dictatorial**_: No single agent in A determines the preferences for every pair x,y in 
+$$\Omega$$
 
 
 ---
 ## Arrow's impossibility theorem (in a nutshell)
 
-For $|\Omega| \geq 3$, there exists no social choice function G that satisfies all desiderata 1-3
+For 
+$$|\Omega| \geq 3,$$ 
+there exists no social choice function G that satisfies all desiderata 1-3
 
 *   Implication: every social choice function that satisfies 1\. and 2\. is dictatorial
 *   What can we do? Which property can we do compromise on more easily? 1\. or 2.?
@@ -370,7 +521,7 @@ For $|\Omega| \geq 3$, there exists no social choice function G that satisfies a
 ---
 ## A (Near?) Future Scenario: Ridesharing with PATs I
 
-<span>![image](slides/sociotechnicalsystems3/image_013.jpg)</span>
+![image](slides/sociotechnicalsystems3/image_013.jpg)
 <sup>[Source: NEXT Transportation Systems, https://www.youtube.com/watch?v=IDgh29SqZzE](http://www.youtube.com/watch?v=IDgh29SqZzE)<sup>
 
 *   2030: _Personalized Autonomous Transportation_ Cells (PATs)
@@ -435,7 +586,8 @@ For $|\Omega| \geq 3$, there exists no social choice function G that satisfies a
 
 
 ---
-## Results: Voting architecture and simulation testbed <sup><sup><sup><sup>(Dennisen & Müller, MATES 2015)
+## Results: 
+### Voting architecture and simulation testbed <sup><sup><sup><sup>(Dennisen & Müller, MATES 2015)
 
 *   Requirements for traffic voting identified
 *   Formal model and voting architecture
@@ -444,7 +596,8 @@ For $|\Omega| \geq 3$, there exists no social choice function G that satisfies a
 
 
 ---
-## Results: Iterative committee elections in a ride-sharing application <sup><sup>(Dennisen and MĂźller, ATT 2016)
+## Results: 
+### Iterative committee elections in a ride-sharing application <sup><sup>(Dennisen and MĂźller, ATT 2016)
 *   Propose iterative winner determination protocol
     *   allows dissatisfied voters to leave
     *   guarantees that remaining voters are satisfied
@@ -480,9 +633,9 @@ $\rightarrow$ **_Results depend heavily on input parameters_** **dissatisfaction
 ---
 ## Conferences
 
-*   International Joint Conference on Autonomous Agents and Multiagent Systems (AAMAS, www.ifaamas.org)
-*   International Joint Conference on Artificial Intelligence (www.ijcai.org)
-*   International Conference on Practical Applications of Agents and Multi-Agent Systems (www.paams.net)
+*   International Joint Conference on Autonomous Agents and Multiagent Systems <sup><sup>(AAMAS, www.ifaamas.org)</sup></sup>
+*   International Joint Conference on Artificial Intelligence <sup><sup>(www.ijcai.org)</sup></sup>
+*   International Conference on Practical Applications of Agents and Multi-Agent Systems <sup><sup>(www.paams.net)</sup></sup>
 *   IEEE/WIC/ACM International Conference on Intelligent Agent Technology (IAT)
 *   EUMAS: European Conference on Multiagent Systems
 
