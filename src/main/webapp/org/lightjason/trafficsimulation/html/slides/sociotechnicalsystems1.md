@@ -1,4 +1,4 @@
-﻿<!-- $theme: default -->
+<!-- $theme: default -->
 <!-- $size: 16:9 -->
 
 ## Course & Simulation Lab 
@@ -78,7 +78,7 @@ But
 
 
 ---
-## Socio-technical systems (STS) (Singh, 2014)
+## Socio-technical systems (STS) <sup><sup>(Singh, 2014)</sup></sup>
 
 Combine (information) technology with real-life societal considerations
 System characteristics
@@ -88,7 +88,7 @@ System characteristics
 
 
 ---
-## Socio-technical systems (STS) (Singh, 2014)
+## Socio-technical systems (STS) <sup><sup>(Singh, 2014)</sup></sup>
 
 Member characteristics
 *   Longevity and identity
@@ -163,7 +163,7 @@ E.g. Social forces model <sup><sup>(Helbing and Molnar,1995)
 
  
 ---
-## Example: Nagel-Schreckenberg Car Following Model (Nagel and Schreckenberg, 1992)
+## Example: Nagel-Schreckenberg Car Following Model <sup><sup>(Nagel and Schreckenberg, 1992)</sup></sup>
 
 ![image](slides/sociotechnicalsystems1/image_016.gif#floatright)
 
@@ -171,10 +171,10 @@ E.g. Social forces model <sup><sup>(Helbing and Molnar,1995)
 	* based on cellular automata
 	* car behaviour determined by state of preceding car
 * Use four rules in each step
-	1. Increase $\overrightarrow{v}$ by 1 if possible
-	2. Reduce $\overrightarrow{v}$ by 1 if not enough free cells in front 
-	3. Reduce $\overrightarrow{v}$ by 1 with probability $p$
-	4. Drive with new $\overrightarrow{v}$ (all vehicles)
+	1. Increase $$\overrightarrow{v}$$ by 1 if possible
+	2. Reduce $$\overrightarrow{v}$$ by 1 if not enough free cells in front 
+	3. Reduce $$\overrightarrow{v}$$ by 1 with probability $$p$$
+	4. Drive with new $$\overrightarrow{v}$$ (all vehicles)
 * Simple, homogeneous, not very realistic (but useful)
 
 
@@ -188,7 +188,7 @@ E.g. Social forces model <sup><sup>(Helbing and Molnar,1995)
 *   Interaction of human and automated actors
 *   Flexible, changing regulatory regimes (rules, norms)
 
-<video width="320" height="240" controls>  <source src="mas-lecture1/video_001.mp4" type="video/mp4">![image](slides/sociotechnicalsystems1/image_019.png) Your browser does not support the video tag.</video> 
+<video width="320" height="240" controls>  <source src="sociotechnicalsystems1/video_001.mp4" type="video/mp4">![image](slides/sociotechnicalsystems1/image_019.png) Your browser does not support the video tag.</video> 
 
 
 ---
@@ -197,7 +197,7 @@ E.g. Social forces model <sup><sup>(Helbing and Molnar,1995)
 
 ![image](slides/sociotechnicalsystems1/image_021.png#floatright)
 
-> is a (computational) modelling and simulation paradigm that uses the concept of a  multiagent system as the basic metaphor of the simulation model [Klügl, 2013]
+> is a (computational) modelling and simulation paradigm that uses the concept of a  multiagent system as the basic metaphor of the simulation model <sup><sup>[Klügl, 2013]</sup></sup>
 
 * Microscopic paradigm
 * Abstraction: <u>Agent</u> - fine-granular description of (autonomous) system entities <sup><sup>(Jennings et al., 1998)
@@ -208,18 +208,16 @@ E.g. Social forces model <sup><sup>(Helbing and Molnar,1995)
 ## (Multi-)agent-based modelling and simulation
 *   Abstraction: <u>Multiagent system</u>
 
-		… a (computer) system that is designed and implemented 
-        as several interacting agents
-		… types of interactions including: 
-        cooperation …; coordination …; and negotiation 
-     <sup><sup><sup>[Jennings et al, 1998]
+>… a (computer) system that is designed and implemented as several interacting agents
+>… types of interactions including: 
+>cooperation …; coordination …; and negotiation <sup><sup>[Jennings et al, 1998]</sup></sup>
 
 <img alt="" height="280" src="slides/sociotechnicalsystems1/image_022.png" width="516">
 
 
 ---
 ## Example: Vehicle agent
-<span>![image](slides/sociotechnicalsystems1/image_026.png)</span> <span>![image](slides/sociotechnicalsystems1/image_027.png)</span> <span>![image](slides/sociotechnicalsystems1/image_028.png)</span>
+![image](slides/sociotechnicalsystems1/image_026.png)![image](slides/sociotechnicalsystems1/image_027.png)![image](slides/sociotechnicalsystems1/image_028.png)
 
 *   Perceives the environment via sensors
 *   Maintains a model of the state of the environment
@@ -231,19 +229,27 @@ E.g. Social forces model <sup><sup>(Helbing and Molnar,1995)
 
 
 ---
-## Key challenges in agent’s research (Wooldridge, 2009) 
+## Key challenges in agent’s research <sup><sup>(Wooldridge, 2009) </sup></sup>
 
 *   Construct intelligent agents that can carry out actions autonomously on behalf of their users/owners
--> Represent knowledge & semantics of knowledge and action
--> Behave flexibly and adaptively
--> Embedded in environment (sensing & acting)
+
+    * $$\rightarrow$$ Represent knowledge & semantics of knowledge and action
+
+    * $$\rightarrow$$ Behave flexibly and adaptively
+
+    * $$\rightarrow$$ Embedded in environment (sensing & acting)
+
 *   Construct multiagent systems, i.e., systems consisting of agents that can interact with other agents to perform the tasks we delegate to them, and to resolve emerging goal conflicts
--> User/agent modelling, personalization</span>
--> Communication, coordination, cooperation, and negotiation</span>
--> Representing and dealing with semantic interoperability</span>
 
+    * $$\rightarrow$$ User/agent modelling, personalization
 
+    * $$\rightarrow$$ Communication, coordination, cooperation, and negotiation
+
+    * $$\rightarrow$$ Representing and dealing with semantic interoperability
+
+*
 ---
+
 ## Micro- and macro perspective of Agents/MAS
 
 ![image](slides/sociotechnicalsystems1/image_029.png#centering)
@@ -252,7 +258,7 @@ E.g. Social forces model <sup><sup>(Helbing and Molnar,1995)
 ---
 ## History of intelligent agents
 *   1930ies: Cybernetics - mathematical model for analogue control
-*   1950ies: Physical symbol systems hypothesis (Simon and Newell)
+*   1950ies: Physical symbol systems hypothesis <sup><sup>(Simon and Newell)</sup></sup>
     The ability to symbolically represent aspects of the world is a prerequisite for intelligent behaviour (use explicit logical reasoning in order to decide what to do) 
     -> <u>deliberative agents</u>
 *   Since mid 1980s: Problems with symbolic reasoning lead to <u>reactive agents/</u>emergent behaviour (since 1985)
@@ -274,9 +280,9 @@ Let
    *   A possible output (actions) of system
 
 Let
-   *   s(t) state of environment at time $t \in T$
-   *   p(t) input to system at time $t \in T$
-   *   a(t) output of system at time $t \in T$
+   *   $$s(t)$$ state of environment at time $$t \in T$$
+   *   $$p(t)$$ input to system at time $$t \in T$$
+   *   $$a(t)$$ output of system at time $$t \in T$$
 
 
 ---
@@ -289,8 +295,8 @@ Let
 ## Describing the environment
 
 *   The behaviour of the environment in dynamic systems is described by two functions
-*   Actions performed by the system modify the state of the environment: $s(t+1) = f(s(t), a(t))$
-*   Outputs of the environment (signals) are considered as inputs and result directly from the current state of the environment $s(t): _p(t) = g(s(t))$
+*   Actions performed by the system modify the state of the environment: $$s(t+1) = f(s(t), a(t))$$
+*   Outputs of the environment (signals) are considered as inputs and result directly from the current state of the environment $$s(t): _p(t) = g(s(t))$$
 
  
 ---
@@ -301,8 +307,10 @@ Let
 *   The _state estimation problem_ determines the current state of the environment from the current input into the system
 *   The _regulation problem_ determines an appropriate system response (action) given a recognized state of the environment
 *   Functions:
-    *   State recognition:  est: $P \rightarrow S$
-    *   Regulator: 		    reg: $S \rightarrow A$
+    *   State recognition:  est: 
+	$$P \rightarrow S$$
+    *   Regulator: 		    reg: 
+	$$S \rightarrow A$$
 
 
 ---
@@ -358,14 +366,14 @@ But: useful as a basic mathematical model
   *   Simple internal world representation
   *   Tight coupling of perception and action
   *   Simple decision rules
-*   Simon (1981): The complexity of agent behaviour can be a reflection of the complexity of the agent’s environment rather than of the agent’s complex internal design
+*   Simon<sup><sup>(1981)</sup></sup>: The complexity of agent behaviour can be a reflection of the complexity of the agent’s environment rather than of the agent’s complex internal design
 *   Often: communication via the environment (stigmergy)
 *   Model: ant colonies, bee-hives (swarm intelligence)
 *   Control architectures: e.g. subsumption architecture by Rodney Brooks
 
 
 ---
-## Subsumption architecture (Brooks): Generate intelligent behaviour without explicit representation
+## Subsumption architecture <sup><sup>(Brooks)</sup></sup>: Generate intelligent behaviour without explicit representation
 
 ![image](slides/sociotechnicalsystems1/image_032.png#centering)
     
@@ -397,7 +405,7 @@ But: useful as a basic mathematical model
     *   Decision algorithms undecidable for first-order language
     *   Worst case co-NP-complete for propositional logic
 *   Alternative approach: Practical reasoning
-    *   ”Practical reasoning is a matter of weighing conflicting ”considerations for and against competing options, where the relevant considerations are provided by what the agent <span style=" color: #808089;">desires/values/cares about</span> and what the agent <span style=" color: #808089;">believes”</span> <sup><sup>(Bratman, 1990)
+    *   ”Practical reasoning is a matter of weighing conflicting ”considerations for and against competing options, where the relevant considerations are provided by what the agent desires/values/cares aboutand what the agent believes”<sup><sup>(Bratman, 1990)
 *   Combines
     * *Deliberation*: What goals to achieve?
     * *Means-Ends Reasoning*: How to achieve goals?
@@ -426,7 +434,7 @@ Underlying theory: Daniel Dennett’s model of intentionality <sup><sup>(Dennett
 ---
 ## Intentionality: What is an agent?
 
-*   Why would you want to ascribe human-like properties such as beliefs, goals, or intentions to a technical system? (McCarthy)
+*   Why would you want to ascribe human-like properties such as beliefs, goals, or intentions to a technical system? <sup><sup>(McCarthy)</sup></sup>
 
 You always can!
 *   ’It is perfectly coherent to treat a light switch as a (very cooperative) agent with the capability of transmitting current at will, who invariably transmits current when it believes that we want it transmitted and not otherwise; flicking the switch is simply our way of communicating our desires’. <sup><sup>(Yoav Shoham, 1993)
@@ -447,8 +455,8 @@ Yet - Why do we find this absurd?
 ---
 ## Means-Ends Reasoning
 
-*   Means-Ends: ”from means to ends”
-    *   Means = ”What can the agent do”
+*   Means-Ends: "from means to ends"
+    *   Means = "What can the agent do"
     *   Ends = Goals
 *   Agent has:
     *   Representation of task to be achieved (intention)
@@ -462,13 +470,13 @@ Yet - Why do we find this absurd?
 
 
 ---
-## The mother of BDI architectures: IRMA (Bratman et al, 1987)
+## The mother of BDI architectures: IRMA <sup><sup>(Bratman et al, 1987)</sup></sup>
 
 ![image](slides/sociotechnicalsystems1/image_039.gif#centering)
 
 
 ---
-## Abstract BDI Agent interpreter (Rao and Georgeff, 1991)
+## Abstract BDI Agent interpreter <sup><sup>(Rao and Georgeff, 1991)</sup></sup>
 
 ```
 initialize-state();
@@ -489,7 +497,7 @@ end repeat
     *   Programming/modelling languages
     *   Runtime execution platforms
     *   Modelling and development tools
-*   First practically usable implemented BDI system: Procedural Reasoning System PRS (Georgeff and Lansky, 1987)
+*   First practically usable implemented BDI system: Procedural Reasoning System PRS <sup><sup>(Georgeff and Lansky, 1987)</sup></sup>
 *   Since then: numerous extensions and re-implementations
 *   In this course, we shall investigate as an example:
     *   Programming/modelling language: AgentSpeak
