@@ -118,7 +118,7 @@ _Multiagent COORDINATION: RATIONAL INTERACTION_
         *   how is the message meant by the sender or understood by the receiver?
         *   e.g., a request to turn on the AC, or an assertion about the temperature
     *   perlocution:
-        *   how does the message influence the receiverĂ˘ÂÂs behaviour
+        *   how does the message influence the receiver's behaviour
         *   e.g., turn on the AC, opens the window, nods her head, ignores the speaker
 
 
@@ -171,13 +171,16 @@ Sender of a message is always saved by the recipient as an annotation to the con
 
 
 ---
-## Multiagent system types
+## Multiagent system types (1)
 
 The literature often distinguishes two types of systems in the area of MAS **Self-interested agents**
 *   Existence of a global goal/problem is not required
 *   Agents co-exist and pursue local goals in a self-interested fashion, independent from each other
 *   Often: assumption of _(bounded) individual rationality_
 *   Interaction/coordination occurs through a shared environment: Avoid/resolve resource conflicts; exploit synergies
+
+---
+## Multiagent system types (1)
 
 Benevolent agents: Distributed Problem Solving
 *   A global, shared problem; often: global utility function
@@ -198,12 +201,19 @@ However...
 
 
 ---
-## Two decision problems
+## Two decision problems (1)
 
 *   Routing: Navigation system announces a congestion ahead and suggests a deviation
-<span>![image](slides/sociotechnicalsystems2/image_025.png)</span>
-    *   What should you do; stay on the road or take the deviation?
-    *   What is better depends on your fellow drivers' decisions...
+![image](slides/sociotechnicalsystems2/image_025.png)
+
+*   What should you do; stay on the road or take the deviation?
+*   What is better depends on your fellow drivers' decisions...
+
+
+
+---
+## Two decision problems (2)
+
 *   Traffic planners: Should we build a new clearway to reduce overall travel times from S to E?
 
 ![image](slides/sociotechnicalsystems2/image_026.png#centering)
@@ -225,31 +235,58 @@ _**By adding a road, travel time increases!!!**_
 
 *   Assume that the cars agree to avoid the new road and to distribute equally over the old routes
 *   We did already show that faster route exists (travel time 70 instead of 83)
-    → <span class="p">There is a huge incentive for agents to defect</span>
-    → <span class="p">This solution is unstable for egoistic agents</span>
+    * → <span class="p">There is a huge incentive for agents to defect</span>
+    * → <span class="p">This solution is unstable for egoistic agents</span>
 *   What can be done?
 
 
 ---
-## Example: Traffic routing
+## Example: Traffic routing (1)
 
-*   Public transport companies $$TC_1 and $$TC_2 of neighbouring countries Clausland and Zellerreich have agreed to route passengers "seamlessly"
-*   Both own/operate their local networks
-*   In routing traffic originating in one network with destination in the other, routing choice is made by originating network's TC
-*   Routing choices made by one TC may affect load and cost of the other! <span>![image](slides/sociotechnicalsystems2/image_032.png)</span>
-
+Public transport companies 
+$$TC_1,  TC_2$$ 
+of neighbouring countries Clausland and Zellerreich have agreed to route passengers "seamlessly"
+<span>![image](slides/sociotechnicalsystems2/image_032.png)</span>
 
 ---
 ## Example: Traffic routing (2)
 
+*   Both own/operate their local networks
+*   In routing traffic originating in one network with destination in the other, routing choice is made by originating network's TC
+*   Routing choices made by one TC may affect load and cost of the other! 
+
+
+---
+## Example: Traffic routing (3)
+
 ![image](slides/sociotechnicalsystems2/image_032.png#floatright)
 
 *   _C, S_ are boundary nodes through which traffic must go
-*   Traffic streams to be routed: $$o_1$$ → $$d_1$$ and $$o_2$$ → $$d_2$$
-*   Assume each edge has cost 1 associatedz
+*   Traffic streams to be routed: 
+
+$$o_1 \rightarrow d_1$$ 
+
+$$o_2 \rightarrow d_2$$
+
+---
+## Example: Traffic routing (4)
+
+*   Assume each edge has cost 1 associated
 *   Each TC pays for cost occurring on its own network
-*   Cost from _C_ to $$d_1$$ and $$d_2$$ is assumed to be 0
-*   How should $$TC_1$$ and $$TC_2$$ route their traffic streams?
+*   Cost from 
+$$C\ to\  d_1$$ 
+and 
+$$d_2$$
+is assumed to be 0
+
+---
+## Example: Traffic routing (5)
+
+How should 
+$$TC_1$$
+and 
+$$TC_2$$
+route their traffic streams?
 
 
 --- 
@@ -268,26 +305,42 @@ _**By adding a road, travel time increases!!!**_
 --- 
 ## Game-theoretic model of rational multiagent interaction
 
-*   Simple case: two agents only $$(|Ag| = 2, Ag = \left \{  i, j\right \})$$
+*   Simple case: two agents only 
+$$(|Ag| = 2, Ag = \left \{  i, j\right \})$$
 *   Interaction of agents produce results
 *   The environment in our MAS is described through a set of result states
-	* $$Ω = \left \{  ω_1, ω_2, ...\right \}$$
+	$$\Omega = \left \{  \omega_1, \omega_2, ...\right \}$$
 
 *   Assumption: Agents are self-interested, i.e., they have (individual) preferences over result states
 *   Preferences can be represented by assigning utility (payoff) values to states
 
 
 ---
-## Utility and preferences
+## Utility and preferences (1)
 
 ![image](slides/sociotechnicalsystems2/image_038.jpg#floatright)
 
 *   We represent preferences through utility functions:
-    _$$u_i: Ω  → \mathfrak{R}$$_
-    _$$u_j: Ω  → \mathfrak{R}$$_
-*   Utility functions induce preference orderings over the result states of interactions
-    _Ω $$≥_i$$ Ω' means $$u_i(\omega)$$ ≥ $$u_i(Ω')$$_
-    _Ω $$>_i$$ Ω' means $$u_i(Ω)$$ > $$u_i(Ω')$$_
+$$u_i: \Omega  \rightarrow  \mathfrak{R}$$
+$$u_j: \Omega  \rightarrow  \mathfrak{R}$$
+
+---
+## Utility and preferences (2)
+Utility functions induce preference orderings over the result states of interactions
+    
+$$\Omega \ge_i \Omega'$$ 
+means 
+$$u_i(\omega) \ge u_i(\Omega')$$
+
+and
+
+$$\Omega >_i \Omega'$$
+means 
+$$u_i(\Omega) > u_i(\Omega')$$
+
+---
+## Utility and preferences (3)
+
 *   Interpretation of utility
 	*   Not the same as money
 	*   But useful analogy
@@ -296,13 +349,13 @@ _**By adding a road, travel time increases!!!**_
 ---
 ## Multiagent encounters
 
-![image](slides/sociotechnicalsystems2/image_040.jpg#floatright)
 
 We need a model of the environment in which these agents will act...
 *   agents simultaneously choose an action to perform, and as a result of the actions they select, an outcome in W will result
 *   the actual outcome depends on the combination of actions
 *   assume each agent has just two possible actions that it can perform, C ("cooperate") and D ("defect") Environment behaviour given by state transformer function:
-
+*   
+![image](slides/sociotechnicalsystems2/image_040.jpg)
 
 ---
 ## State transformer functions - Some examples
@@ -311,19 +364,47 @@ We need a model of the environment in which these agents will act...
 
 
 ---
-## Rational choice
+## Rational choice (1)
 
 *   Relevant: Environments that can be influenced by both agents consider following utility functions
-	_$$u_i($$ω_1) = 1; $$u_i($$ω_2) = 1; $$u_i($$ω_3) = 4; $$u_i($$ω_4) = 4;_
-	_$$u_j($$ω_1) = 1; $$u_j($$ω_2) = 4; $$u_j($$ω_3) = 1; $$u_j($$ω_4) = 4;_ 
+    $$u_i(\omega_1) = 1;$$
+    
+	$$u_i(\omega_2) = 1;$$    
+ 
+    $$u_i(\omega_3) = 4;$$
+    
+    $$u_i(\omega_4) = 4;$$
+	
+    $$u_j(\omega_1) = 1;$$
+    
+    $$u_j(\omega_2) = 4;$$
+    
+    $$u_j(\omega_3) = 1;$$
+    
+    $$u_j(\omega_4) = 4;$$ 
 
+
+
+---
+## Rational choice (2)
 
 *   Simplified notation
-	_$$u_i(D, D) = 1; _$$u_i(D, C) = 1; _$$u_i(C, D) = 4; _$$u_i(C, C) = 4;_
-    _$$u_j(D, D) = 1; _$$u_j(D, C) = 4; _$$u_j(C, D) = 1; _$$u_j(C, C) = 1;_
+	$$u_i(D, D) = 1;$$
+    $$u_i(D, C) = 1;$$
+    $$u_i(C, D) = 4;$$
+    $$u_i(C, C) = 4;$$
+    $$u_j(D, D) = 1;$$
+    $$u_j(D, C) = 4;$$ 
+    $$u_j(C, D) = 1;$$
+    $$u_j(C, C) = 1;$$
+    
+---
+## Rational choice (3)
+    
    
-*   Then agent _i_'s preferences are:
-    _(C,C) $$≥_i (C,D) $$>_i (D,C) $$≥_i (D,D)_
+*   Then agent _i_'s preferences are:   
+$$(C,C) \ge_i (C,D) >_i (D,C) \ge_i (D,D)$$
+
 
 *   "_C_" is the individual _rational choice_ for _i_. (Because _i_ prefers all outcomes that arise through _C_ over all outcomes that arise through _D_.)
 
@@ -337,10 +418,20 @@ We need a model of the environment in which these agents will act...
 
 
 ---
-## Dominant strategies
+## Dominant strategies (1)
 
 *   Given any particular strategy (either _C_ or _D_) of agent _i_, there will be a number of possible outcomes
-*   We say $$s_1 **_dominates_** $$s_2 if every outcome possible by _i_ playing $$s_1 is preferred over every outcome possible by _i_ playing $$s_2
+*   We say 
+$$s_1$$ 
+**_dominates_** 
+$$s_2$$
+if every outcome possible by _i_ playing 
+$$s_1$$ 
+is preferred over every outcome possible by _i_ playing 
+$$s_2$$
+
+---
+## Dominant strategies (2)
 *   A rational agent will never play a dominated strategy
 *   So, in deciding what to do, we can **_delete dominated strategies_**
 *   Unfortunately, there isn't always a unique undominated strategy
@@ -366,12 +457,27 @@ We need a model of the environment in which these agents will act...
 *   Is there a stable setting, where no player has an incentive to change their strategies?
 
 
---- 
-## Nash Equilibrium
 
-*   In general, we will say that two strategies $$s_1$$ and $$s_2$$ are in Nash equilibrium if
-    1.    under the assumption that agent _i_ plays $$s_1$$, agent _j_ can do no better than play $$s_2$$; and
-    2.    under the assumption that agent _j_ plays $$s_2$$, agent i can do no better than play $$s_1$$.
+--- 
+## Nash Equilibrium (1)
+
+*   In general, we will say that two strategies 
+$$s_1 \ and \ s_2$$
+are in Nash equilibrium if
+    1.    under the assumption that agent _i_ plays 
+$$s_1,$$
+agent _j_ can do no better than play 
+$$s_2;$$
+and ...
+
+
+--- 
+## Nash Equilibrium (2)
+2.    under the assumption that agent _j_ plays 
+$$s_2,$$
+agent i can do no better than play 
+$$s_1.$$
+
 *    _Neither agent has any incentive to deviate from a Nash equilibrium_
 *    This is desirable as modifying strategies requires effort (cost!) and can endanger system stability
 *    Unfortunately:
@@ -422,11 +528,17 @@ We need a model of the environment in which these agents will act...
 
 
 ---
-## N-player game: Investment in pollution reduction
+## N-player game: Investment in pollution reduction (1)
 
-N countries need to decide on whether or not to take extra efforts by passing a legislation to reduce pollution
-Doing so will cost the country 3 billion €
-Not doing so will cause cost of 1 billion € to each country (because of pollution)
+* N countries need to decide on whether or not to take extra efforts by passing a legislation to reduce pollution
+
+* Doing so will cost the country 3 billion €
+
+* Not doing so will cause cost of 1 billion € to each country (because of pollution)
+
+---
+## N-player game: Investment in pollution reduction (2)
+
 *   What should the governments of the countries do?
 
 <span>![image](slides/sociotechnicalsystems2/image_059.gif)</span>
@@ -444,8 +556,8 @@ Is there a stable solution?
 *   Players: the n countries simultaneously decide on whether to pass policy to reduce pollution
 *   Strategies: YES = Cooperate, NO = Defect
 *   Assume k out of n countries choose not to control pollution
-    → The cost incurred by each of the defecting countries is k
-    → The cost incurred by each of the n-k cooperating countries is k+3
+    * → The cost incurred by each of the defecting countries is k
+    * → The cost incurred by each of the n-k cooperating countries is k+3
 *   _Does the game have Nash equilibria?_
 *   _(How) does this game relate to any of the games we have previously seem?_
 
@@ -453,27 +565,50 @@ Is there a stable solution?
 ---
 ## Tragedy of the commons
 
-![image](slides/sociotechnicalsystems2/image_065.png#floatright)
-
 *  N parties have access to a shared resource
 *  E.g. logistics companies that send lorries through a road segment with known maximum capacity _c_, say _c_=1
 *  Each party wants a large fragment of the road capacity, but:
 *  Service quality deteriorates as overall assigned load increases
 
+![image](slides/sociotechnicalsystems2/image_065.png)
 
 ---
-## Tragedy of the commons: formulation as a game
+## Tragedy of the commons: formulation as a game (1)
 
-**LATEX FORMELN**
 
 *   Each players' optimal selfish strategy depends on what other players do
-*   Infinite number of strategies for each player:
-	**_Use $$x_i$$ fragment of road capacity, $$x_i$$ ∈ [0,1]_**
+*   Infinite number of strategies for each player: 
+
+**_Use_** 
+$$x_i$$
+_**fragment of road capacity,**_
+$$x_i \in [0,1]$$ 
+
+
+---
+## Tragedy of the commons: formulation as a game (2)
+    
 *	Define players' payoff:
-	* If $$\Sigma_j x_j \geq 1$$ (total traffic exceeds capacity):
-	→  payoff for all players j is	0 	
-	* If $$\Sigma_j x_j < 1$$
-	→ payoff for player i is $$x_i  \cdot (1-\Sigma_j x_j)$$
+
+If (total traffic exceeds capacity):
+$$\Sigma_j x_j \geq 1$$ 
+
+payoff for all players j is	
+$$0$$
+	
+If 
+
+$$\Sigma_j x_j < 1$$
+
+payoff for player i is 
+
+$$x_i  \cdot (1-\Sigma_j x_j)$$
+
+
+
+---
+## Tragedy of the commons: formulation as a game (3)
+
 
 *   This definition reflects the intended trade-off
     *  Players want to use as much of the resource as possible
@@ -482,25 +617,57 @@ Is there a stable solution?
 
 
 ---
-## Tragedy of the commons game: stable strategies
+## Tragedy of the commons game: stable strategies (1)
 
 *   We consider player i
-*   Assume: other players j use $$t=\Sigma_(j \neq i)  x_j < 1$$
-*   Optimization problem for player i: $$x \cdot (1-t-x)\rightarrow max)$$
-*   Solving it reveals $$x=(1-t)/2$$ (see next slide for some high school maths)
-*   A set of strategies is stable if all players are playing their optimal-- selfish strategy, given the strategies of all other players
-*   For our case, that means:
-		$$x_i = (1-\Sigma_(j \neq i)x_j)/2 $$ which has as unique solution:
-		$$x_i = 1/(n+1)$$for all i
+*   Assume: other players j use 
+$$t=\Sigma_(j \neq i)  x_j < 1$$
+*   Optimization problem for player i: 
+$$x \cdot (1-t-x)\rightarrow max)$$
+*   Solving it reveals (see next slide for some high school maths)
+$$x=(1-t)/2$$ 
 
 
 ---
-## But why is it called _tragedy_?
+## Tragedy of the commons game: stable strategies (1)
+*   A set of strategies is stable if all players are playing their optimal-- selfish strategy, given the strategies of all other players
+*   For our case, that means:
+$$x_i = (1-\Sigma_(j \neq i)x_j)/2 $$ 
+which has as unique solution:
+$$x_i = 1/(n+1)$$
+for all i
+
+
+---
+## But why is it called _tragedy_? (1)
 
 *   It is a tragedy, because the resulting total payoff is extremely    low
-With $$ x_i = 1/(n+1)$$, we can calculate each playerâs payoff as $$x_i \cdot (1-\Sigma_(j \neq i)  x_j  = \frac{1}{(n+1)^2} $$
-*	This means that the sum of all players' payoffs is $$\frac{1}{(n+1)^2} = \approx \frac{1}{n} $$
-Compare if the overall used fraction of the resource capacity was $$\Sigma_j x_j = \frac{1}{2}$$ , the sum of all players' payoffs were $$\frac{1}{4}$$ and hence approximately  $$\frac{n}{4}$$ times bigger
+With 
+$$ x_i = 1/(n+1)$$
+we can calculate each player's payoff as 
+$$x_i \cdot (1-\Sigma_(j \neq i)  x_j  = \frac{1}{(n+1)^2} $$
+
+
+---
+## But why is it called _tragedy_? (2)
+
+*	This means that the sum of all players' payoffs is 
+$$\frac{1}{(n+1)^2} \approx \frac{1}{n} $$
+
+
+---
+## But why is it called _tragedy_? (3)
+Compare if the overall used fraction of the resource capacity was 
+$$\Sigma_j x_j = \frac{1}{2}$$
+the sum of all players' payoffs were 
+$$\frac{1}{4}$$ 
+and hence approximately  
+$$\frac{n}{4}$$ 
+times bigger
+
+---
+## But why is it called _tragedy_? (4)
+
 *	In this game, the n users sharing the common resource _overuse it so that the total value of the shared resource decreases quite dramatically_
 
 
@@ -530,14 +697,30 @@ Compare if the overall used fraction of the resource capacity was $$\Sigma_j x_j
 
 
 ---
-## Mixed strategy (Wooldridge 2009, 260f)
+## Mixed strategy (Wooldridge 2009, 260f) (1)
 
 *   Mixed strategy
     *   Choice of actions based on probabilities
 *   Formally:
-    *   Let S = {s1, s2, ... , sk } be possible actions
-    *   A mixed strategy for player i is a probability distribution $$P_i=\left [  p_i1, $$p_i2, ..., $$p_ik\right ] over S
-	*	Meaning: i plays s1 with probability $p_11, s_2$$ with probability $p_12$$, etc.
+Let 
+$$S = \{ s_1, s_2, ... , s_k \}  $$ 
+be possible actions
+
+A mixed strategy for player i is a probability distribution 
+
+$$P_i=\left [  p_{i1}, p_{i2}, ..., p_{ik}\right ]  over S$$
+
+---
+## Mixed strategy (Wooldridge 2009, 260f) (2)
+
+Meaning: i plays s1 with probability 
+$$p_11, s_2$$
+
+with probability 
+
+$$p_12,$$
+ etc.
+ 
 *   Apply to rock, stone, scissors
     *   "Choose randomly between rock, stone, scissors, where each alternative is chosen with equal probability"
     *   Note: This mixed strategy is in a Nash Equilibrium with itself
