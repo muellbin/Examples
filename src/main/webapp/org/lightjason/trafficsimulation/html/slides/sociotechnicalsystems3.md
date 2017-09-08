@@ -1,5 +1,5 @@
-<!-- $theme: default -->
-<!-- $size: 16:9 -->
+<!-- $$theme: default -->
+<!-- $$size: 16:9 -->
 
 ## Course & Simulation Lab 
 ## _Modelling and simulation of socio-technical systems_
@@ -48,7 +48,7 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 
 *   Social Choice Theory <sup><sup>(Arrow et al., 2002)</sup></sup> is the study of mechanisms for collective decision making
 *   Usually considered part of economic theory, with contributions also from political science, sociology, philosophy, and maths
-*   __Computational Social Choice__ <span class="p"> <sup><sup>(Brandt et al., 2013)</sup></sup>: Applies concepts of Social Choice Theory to automated collective decision processes in the field of autonomous agents and multiagent systems.</span>
+*   __Computational Social Choice__ <span class="p"> <sup><sup>(Brandt et al., 2013)</sup></sup>: Applies concepts of Social Choice Theory to automated collective decision processes in the field of autonomous agents and multiagent systems.
 *   Related to game theory and decision theory
 
 
@@ -63,7 +63,7 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 
 *   Interactions between <u>agents</u> are described and enforced by a <u>mechanism</u>
 *   The mechanism defines the rules of encounters among agents (e.g. auction, voting, game, or exchange market)
-*   <u>Protocols</u> <span class="p">describe how agents interact with each other and with components implementing the mechanism (e.g., an auctioneer)</span>
+*   <u>Protocols</u> <span class="p">describe how agents interact with each other and with components implementing the mechanism (e.g., an auctioneer)
 *   The field of mechanism design investigates how mechanisms should be defined to support certain desirable properties
 *   We look at some desirable properties of mechanisms
 
@@ -74,17 +74,17 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 *   __Convergence__: Does the mechanism guarantee successful completion of the interaction?
 *   __Maximize social welfare__: Does the mechanism maximize the aggregated utilities of the participating agents?
 *   __Pareto efficiency__: Does the mechanism guarantee a solution that no agent can improve for itself without reducing the utility of at least one other agent?
-*   __Individual rationality__: Is it the rational choice of all agents to follow the rules given by the mechanism?</span>
-*   __Stability__: Does the mechanisms provide all agents an incentive to behave in a certain (desirable) manner (e.g. Nash equilibrium)?</span>
+*   __Individual rationality__: Is it the rational choice of all agents to follow the rules given by the mechanism?
+*   __Stability__: Does the mechanisms provide all agents an incentive to behave in a certain (desirable) manner (e.g. Nash equilibrium)?
 
 
 ---
 ## More properties of mechanisms
 
-*   __Simplicity__<span class="p">: Does the mechanism make it easy for agents to find an optimal (or appropriate) strategy?</span>
+*   __Simplicity__<span class="p">: Does the mechanism make it easy for agents to find an optimal (or appropriate) strategy?
 *   __Efficiency of communication__<span class="p">: Does the mechanism support finding a solution with low communication effort?
 *   __Robustness__<span class="p">: Is the mechanism tolerant with respect to the failure of individual agents? (e.g., no "single point of failure")
-*   __Symmetry, fairness__<span class="p">: Does the protocol treat all participants equally or does it intrinsically favour certain agents?</span>
+*   __Symmetry, fairness__<span class="p">: Does the protocol treat all participants equally or does it intrinsically favour certain agents?
 
 
 ---
@@ -93,7 +93,7 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 *   Voting is an often used class of mechanisms for collective decision-making
 *   Individual agents of a group have differing preferences over possible outcomes
 *   A central instance knows these preferences, or agents reveal their preferences truthfully (assumption!)
-*   A <span class="s11">__social choice function__</span> aggregates the preferences and makes a decision
+*   A <span class="s11">__social choice function__ aggregates the preferences and makes a decision
 *   This decision is considered binding for/by all agents of the group
 
 
@@ -134,12 +134,12 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 ---
 ## Plurality voting: Political elections example I
 
-*   Consider elections with three parties $c(du)$, $s(pd)$, and $f(dp)$
-    * Candidates</span> $\omega_c$, $\omega_s$, $\omega_f$
+*   Consider elections with three parties $$c(du)$$, $$s(pd)$$, and $$f(dp)$$
+    * Candidates $$\omega_c$$, $$\omega_s$$, $$\omega_f$$
 *   We consider three voter groups with similar preferences:
-    * Conventionally left-wing (38%): $\omega_s \succ  \omega_f \succ  \omega_c$
-    * Social liberal (18%): $\omega_f \succ  \omega_s \succ  \omega_c$
-    * Conservative right-wing (44%): $\omega_c \succ  \omega_f \succ  \omega_s$
+    * Conventionally left-wing (38%): $$\omega_s \succ  \omega_f \succ  \omega_c$$
+    * Social liberal (18%): $$\omega_f \succ  \omega_s \succ  \omega_c$$
+    * Conservative right-wing (44%): $$\omega_c \succ  \omega_f \succ  \omega_s$$
 
 
 ---
@@ -156,9 +156,9 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 ## Plurality voting: Condorcet paradox I
 
 *   Suppose you have three candidates $$\omega_1, \omega_2, \omega_3$$ and three voters, $$Ag = {1,2,3}$$ with preferences
-	*   $\omega_1 \succ_1  \omega_2 \succ_1  \omega_3$
-	*   $\omega_3 \succ_2  \omega_1 \succ_2  \omega_2$
-	*   $\omega_2 \succ_3  \omega_3 \succ_3  \omega_1$
+	*   $$\omega_1 \succ_1  \omega_2 \succ_1  \omega_3$$
+	*   $$\omega_3 \succ_2  \omega_1 \succ_2  \omega_2$$
+	*   $$\omega_2 \succ_3  \omega_3 \succ_3  \omega_1$$
  
 
 ---
@@ -187,11 +187,11 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 ## Analysing preference structures: majority graph
 
 *   Directed graph
-*   Nodes correspond to outcomes $\omega \in \Omega$
-*   Edge from outcome $\omega$ to $\omega'$ if a majority of voters rank $< \omega$ above $\omega'$ (in a direct competition)
+*   Nodes correspond to outcomes $$\omega \in \Omega$$
+*   Edge from outcome $$\omega$$ to $$\omega'$$ if a majority of voters rank $$< \omega$$ above $$\omega'$$ (in a direct competition)
 *   Properties of majority graph
-    *   Complete: For any two outcomes $\omega_i$ and $\omega_j$ either $\omega_i$ defeats $\omega_j$  or $\omega_j$ defeats $\omega_i$
-    *   Asymmetric: if $\omega_i$  defeats $\omega_j$, $\omega_j$  must not defeat $\omega_i$
+    *   Complete: For any two outcomes $$\omega_i$$ and $$\omega_j$$ either $$\omega_i$$ defeats $$\omega_j$$  or $$\omega_j$$ defeats $$\omega_i$$
+    *   Asymmetric: if $$\omega_i$$  defeats $$\omega_j$$, $$\omega_j$$  must not defeat $$\omega_i$$
     *   Irreflexive: An outcome will never defeat itself
 *   A graph with these properties is called "tournament"
 
@@ -199,8 +199,8 @@ _MECHANISMS FOR COLLECTIVE DECISION-MAKING_
 ---
 ## Majority graph: Usage and Examples
 
-*   A candidate $\omega_i$ is a possible winner, if for every other outcome $\omega_j$ there is an path from $\omega_i$ to $\omega_j$
-*   A candidate $\omega_i$ is a Condorcet winner, if there is an edge $\omega_i$ to every other edge in the graph
+*   A candidate $$\omega_i$$ is a possible winner, if for every other outcome $$\omega_j$$ there is an path from $$\omega_i$$ to $$\omega_j$$
+*   A candidate $$\omega_i$$ is a Condorcet winner, if there is an edge $$\omega_i$$ to every other edge in the graph
 *   Left: Every outcome is a possible winner
 *   Right: Outcome $$\omega_1$$ is a Condorcet winner
 
@@ -252,7 +252,7 @@ The result depends on how the schedule is designed
     *   Group 1: x > y > b > a
     *   Group 2: a > x > y > b
     *   Group 3: b > a > x > y
-<span>![image](slides/sociotechnicalsystems3/image_011.png)</span>
+![image](slides/sociotechnicalsystems3/image_011.png)
 *   y wins even though everyone prefers x to y
 
 
@@ -271,7 +271,7 @@ The result depends on how the schedule is designed
 Example above:
     * X receives score of $$3 * 0.35 + 2 * 0.33 + 1 * 0.32 = 2.03$$
     * Y receives score of 1.98
-    * Z receives score of 1.99 $\rightarrow$ _**Using Borda Voting, x wins**_
+    * Z receives score of 1.99 $$\rightarrow$$ _**Using Borda Voting, x wins**_
 
 
 ---
@@ -296,9 +296,9 @@ Example above:
 
 *   Let x, y, z be possible outcomes
 *   Three groups of agents
-    * <span style=" color: #000;">Group 1: x > z > y (35%)</span>
-    * <span style=" color: #000;">Group 2: y > x > z (33%)</span>
-    * <span style=" color: #000;">Group 3: z > y > x (32%)</span>
+    * <span style=" color: #000;">Group 1: x > z > y (35%)
+    * <span style=" color: #000;">Group 2: y > x > z (33%)
+    * <span style=" color: #000;">Group 3: z > y > x (32%)
 *   As described before, the winner using Borda Voting is x, i.e. z can be considered an irrelevant alternative
 *   By removing z from the voting, y becomes the winner
 
@@ -315,8 +315,8 @@ Example above:
     *   Group 5: b > c > a
     *   Group 6: b > a > c
     *   Group 7: c > a > b
-*   Winner according to the majority rule for every binary protocol: <span class="s11">**_a_**</span>
-*   Borda values: <span class="s11">**_b_**</span>=16, a=15, c=11
+*   Winner according to the majority rule for every binary protocol: **_a_**
+*   Borda values: **_b_**=16, a=15, c=11
 
 
 ---
@@ -341,13 +341,13 @@ G should:
     *   $$R'$$ is another preference profile
     *   such that the preference value between x and y is the same in $$R'$$ as in $$R$$ for each agent
     *   **then**  $$G(R ',  \Omega)$$ also prefers x over y
-*   _**be non-dictatorial**_: No single agent in A determines the preferences for every pair x,y in $\Omega$
+*   _**be non-dictatorial**_: No single agent in A determines the preferences for every pair x,y in $$\Omega$$
 
 
 ---
 ## Arrow's impossibility theorem (in a nutshell)
 
-For $|\Omega| \geq 3$, there exists no social choice function G that satisfies all desiderata 1-3
+For $$|\Omega| \geq 3$$, there exists no social choice function G that satisfies all desiderata 1-3
 
 *   Implication: every social choice function that satisfies 1\. and 2\. is dictatorial
 *   What can we do? Which property can we do compromise on more easily? 1\. or 2.?
@@ -370,7 +370,7 @@ For $|\Omega| \geq 3$, there exists no social choice function G that satisfies a
 ---
 ## A (Near?) Future Scenario: Ridesharing with PATs I
 
-<span>![image](slides/sociotechnicalsystems3/image_013.jpg)</span>
+![image](slides/sociotechnicalsystems3/image_013.jpg)
 <sup>[Source: NEXT Transportation Systems, https://www.youtube.com/watch?v=IDgh29SqZzE](http://www.youtube.com/watch?v=IDgh29SqZzE)<sup>
 
 *   2030: _Personalized Autonomous Transportation_ Cells (PATs)
@@ -439,7 +439,7 @@ For $|\Omega| \geq 3$, there exists no social choice function G that satisfies a
 
 *   Requirements for traffic voting identified
 *   Formal model and voting architecture
-    <span>![image](slides/sociotechnicalsystems3/image_072.jpg)</span>
+    ![image](slides/sociotechnicalsystems3/image_072.jpg)
 *   J-VOTING evaluation testbed based on <sup><sup>(Grimaldo et al, 2012)
 
 
@@ -454,7 +454,7 @@ For $|\Omega| \geq 3$, there exists no social choice function G that satisfies a
     *   Minisum Approval: Utilitarian approach - minimise sum of dissatisfaction values
     *   Minimax Approval: Egalitarian approach - minimise maximal dissatisfaction
 
-$\rightarrow$ **_Results depend heavily on input parameters_** **dissatisfaction threshold** **_and_** **committee size**
+$$\rightarrow$$ **_Results depend heavily on input parameters_** **dissatisfaction threshold** **_and_** **committee size**
 
 
 ---
